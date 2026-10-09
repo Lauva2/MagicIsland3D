@@ -1,0 +1,179 @@
+using System.Linq;
+using System.IO;
+using MagicIsland.Loading;
+using MagicIsland.Configuration;
+using MagicIsland.Inventory;
+using MagicIsland.UI.Views;
+using UnityEditor;
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Settings;
+using UnityEditor.AddressableAssets.Settings.GroupSchemas;
+using UnityEditor.AddressableAssets.Build;
+using UnityEngine;
+
+namespace MagicIsland.EditorTools
+{
+    [InitializeOnLoad]
+    public static class PrototypeAddressablesSetup
+    {
+        private const string MenuScene = "Assets/Scenes/MainMenu.unity";
+        private const string GameScene = "Assets/Scenes/MainGame.unity";
+
+        static PrototypeAddressablesSetup() => EditorApplication.delayCall += EnsureSetup;
+
+        [MenuItem("Magic Island/Configure Prototype Addressables")]
+        public static void EnsureSetup()
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode || EditorApplication.isCompiling) return;
+            PrototypeUiPrefabBuilder.CreateMissing();
+            AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.GetSettings(true);
+            if (settings == null) return;
+            const string configPath = "Assets/Config/GameConfig.asset";
+            Directory.CreateDirectory("Assets/Config");
+            GameConfig config = AssetDatabase.LoadAssetAtPath<GameConfig>(configPath);
+            if (config == null)
+            {
+                config = ScriptableObject.CreateInstance<GameConfig>();
+                AssetDatabase.CreateAsset(config, configPath);
+            }
+            AddressableAssetGroup configGroup = settings.FindGroup("Configuration");
+            if (configGroup == null)
+                configGroup = settings.CreateGroup("Configuration", false, false, true, null,
+                    typeof(BundledAssetGroupSchema), typeof(ContentUpdateGroupSchema));
+            var configEntry = settings.FindAssetEntry(AssetDatabase.AssetPathToGUID(configPath))
+                ?? settings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(configPath), configGroup);
+            if (configEntry.address != GameConfig.Address) configEntry.SetAddress(GameConfig.Address);
+            const string catalogPath = "Assets/Config/ItemCatalog.asset";
+            ItemCatalog catalog = AssetDatabase.LoadAssetAtPath<ItemCatalog>(catalogPath);
+            if (catalog == null)
+            {
+                catalog = ScriptableObject.CreateInstance<ItemCatalog>();
+                Sprite icon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/UI/RoundedPanel.png");
+                catalog.Items.Add(new ItemConfig { Id = "turnip_seed", DisplayName = "芜菁种子", Type = ItemType.Seed,
+                    MaxStack = 99, Icon = icon, IconColor = new Color(0.87f, 0.69f, 0.38f), Description = "播种在耕好的土地上。每天浇水，等待芜菁成熟。" });
+                catalog.Items.Add(new ItemConfig { Id = "turnip", DisplayName = "芜菁", Type = ItemType.Crop,
+                    MaxStack = 99, Icon = icon, IconColor = new Color(0.46f, 0.65f, 0.37f), Description = "刚从农田收获的芜菁。岛屿生活的第一份收成。" });
+                AssetDatabase.CreateAsset(catalog, catalogPath);
+            }
+            var catalogEntry = settings.FindAssetEntry(AssetDatabase.AssetPathToGUID(catalogPath))
+                ?? settings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(catalogPath), configGroup);
+            if (catalogEntry.address != ItemCatalog.Address) catalogEntry.SetAddress(ItemCatalog.Address);
+            var existing = settings.FindAssetEntry(AssetDatabase.AssetPathToGUID(GameScene));
+            if (existing == null)
+            {
+                AddressableAssetGroup group = settings.FindGroup("Farm Prototype");
+                if (group == null)
+                    group = settings.CreateGroup("Farm Prototype", false, false, true, null,
+                        typeof(BundledAssetGroupSchema), typeof(ContentUpdateGroupSchema));
+                settings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(GameScene), group)
+                    .SetAddress(config.GameSceneAddress);
+                EditorUtility.SetDirty(settings);
+                AssetDatabase.SaveAssets();
+            }
+            else if (existing.address != config.GameSceneAddress)
+            {
+                existing.SetAddress(config.GameSceneAddress);
+                AssetDatabase.SaveAssets();
+            }
+            AddressableAssetGroup uiGroup = settings.FindGroup("UI");
+            if (uiGroup == null)
+                uiGroup = settings.CreateGroup("UI", false, false, true, null,
+                    typeof(BundledAssetGroupSchema), typeof(ContentUpdateGroupSchema));
+            foreach (string path in Directory.GetFiles(PrototypeUiPrefabBuilder.Folder, "*.prefab"))
+            {
+                string assetPath = path.Replace('\\', '/');
+                string guid = AssetDatabase.AssetPathToGUID(assetPath);
+                if (string.IsNullOrEmpty(guid)) continue;
+                var uiEntry = settings.FindAssetEntry(guid) ?? settings.CreateOrMoveEntry(guid, uiGroup);
+                string address = Path.GetFileNameWithoutExtension(assetPath);
+                if (uiEntry.address != address) uiEntry.SetAddress(address);
+            }
+            EnsurePrototypeShader();
+            AssetDatabase.SaveAssets();
+            // The bootstrap is bundled with the player. MainGame belongs to AA only.
+            var scenes = EditorBuildSettings.scenes.Where(scene => scene.path != GameScene).ToList();
+            if (!scenes.Any(scene => scene.path == MenuScene))
+            {
+                scenes.Insert(0, new EditorBuildSettingsScene(MenuScene, true));
+                EditorBuildSettings.scenes = scenes.ToArray();
+            }
+            else if (scenes.Count != EditorBuildSettings.scenes.Length)
+                EditorBuildSettings.scenes = scenes.ToArray();
+            ValidateUiPrefabs();
+            Directory.CreateDirectory("Logs");
+            File.WriteAllText("Logs/PrototypeUiValidation.txt",
+                "PASS: MainMenuUI and FarmHUD prefab components, serialized references, AA addresses.\n"
+                + "UTC: " + System.DateTime.UtcNow.ToString("O") + "\n");
+        }
+
+        private static void EnsurePrototypeShader()
+        {
+            // Procedural materials have no serialized shader reference in the scene.
+            Object graphics = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/GraphicsSettings.asset").FirstOrDefault();
+            if (graphics == null) return;
+            var serialized = new SerializedObject(graphics);
+            SerializedProperty shaders = serialized.FindProperty("m_AlwaysIncludedShaders");
+            Shader standard = Shader.Find("Standard");
+            if (shaders == null || standard == null) return;
+            for (int i = 0; i < shaders.arraySize; i++)
+                if (shaders.GetArrayElementAtIndex(i).objectReferenceValue == standard) return;
+            shaders.InsertArrayElementAtIndex(shaders.arraySize);
+            shaders.GetArrayElementAtIndex(shaders.arraySize - 1).objectReferenceValue = standard;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        [MenuItem("Magic Island/Build Prototype Addressables")]
+        public static void BuildContent()
+        {
+            EnsureSetup();
+            ValidateUiPrefabs();
+            AddressableAssetSettings.BuildPlayerContent(out AddressablesPlayerBuildResult result);
+            if (!string.IsNullOrEmpty(result.Error)) throw new System.Exception(result.Error);
+            Debug.Log("Prototype Addressables content build succeeded.");
+        }
+
+        [MenuItem("Magic Island/Validate UI Prefabs")]
+        public static void ValidateUiPrefabs()
+        {
+            var settings = AddressableAssetSettingsDefaultObject.Settings;
+            foreach (string name in new[] { RuntimeUi.MenuAddress, RuntimeUi.HudAddress, RuntimeUi.InventoryAddress, "SettingsUI" })
+            {
+                string path = PrototypeUiPrefabBuilder.Folder + "/" + name + ".prefab";
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                if (prefab == null || prefab.GetComponent<UnityEngine.Canvas>() == null
+                    || prefab.GetComponent<UnityEngine.UI.CanvasScaler>() == null
+                    || prefab.GetComponent<UnityEngine.UI.GraphicRaycaster>() == null)
+                    throw new System.Exception("Missing UI prefab or Canvas components: " + name);
+                if (prefab.GetComponentsInChildren<UnityEngine.UI.Text>(true).Length != 0
+                    || prefab.GetComponentsInChildren<TMPro.TMP_Text>(true).Any(text => text.font == null)
+                    || prefab.GetComponent<UIView>() == null)
+                    throw new System.Exception("UI requires UIView and TMP texts with fonts: " + name);
+                var entry = settings.FindAssetEntry(AssetDatabase.AssetPathToGUID(path));
+                if (entry == null || entry.address != name)
+                    throw new System.Exception("UI address must match prefab name: " + name);
+            }
+            var menu = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/MainMenuUI.prefab")
+                .GetComponent<MainMenuView>();
+            var hud = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/FarmHUD.prefab")
+                .GetComponent<MagicIsland.Interaction.PrototypeHud>();
+            if (menu == null || menu.StatusText == null || menu.EnterButton == null || menu.ContinueButton == null
+                || menu.SettingsButton == null || menu.QuitButton == null
+                || hud == null || hud.DayText == null || hud.InventoryText == null
+                || hud.HintText == null || hud.FeedbackText == null || hud.NextDayButton == null || hud.ReturnMenuButton == null || hud.InventoryButton == null
+                || hud.ToolButtons == null || hud.ToolButtons.Length != 3 || hud.ToolButtons.Any(button => button == null))
+                throw new System.Exception("UI prefab component references are incomplete.");
+            InventoryView inventory = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/InventoryUI.prefab")
+                .GetComponent<InventoryView>();
+            if (inventory == null || inventory.CloseButton == null || inventory.CapacityText == null
+                || inventory.DetailTitleText == null || inventory.DetailText == null || inventory.Slots == null || inventory.Slots.Length < 36
+                || inventory.Slots.Any(slot => slot == null || slot.Icon == null || slot.NameText == null || slot.QuantityText == null || slot.SelectButton == null))
+                throw new System.Exception("InventoryUI component references are incomplete.");
+            SettingsView options = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/SettingsUI.prefab")
+                .GetComponent<SettingsView>();
+            if (options == null || options.CloseButton == null || options.VolumeSlider == null
+                || options.FullscreenToggle == null || options.VolumeText == null)
+                throw new System.Exception("SettingsUI component references are incomplete.");
+            Debug.Log("UI prefab validation succeeded: MainMenuUI, FarmHUD, InventoryUI, SettingsUI; AA addresses match names.");
+        }
+    }
+}
