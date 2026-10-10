@@ -10,7 +10,13 @@ namespace MagicIsland.Interaction
     public sealed class PrototypeHud : UIView
     {
         public TMP_Text DayText;
+        public TMP_Text TimeText;
+        public TMP_Text WeatherText;
+        public TMP_Text SeedText;
         public TMP_Text InventoryText;
+        public TMP_Text GoldText;
+        public TMP_Text StaminaText;
+        public Image StaminaFill;
         public TMP_Text HintText;
         public TMP_Text FeedbackText;
         public Button NextDayButton;
@@ -24,8 +30,16 @@ namespace MagicIsland.Interaction
 
         public void Render(FarmHudModel model)
         {
-            DayText.text = $"第 {model.Day} 天";
-            InventoryText.text = $"种子 {model.Seeds}    作物 {model.Harvest}";
+            DayText.text = model.Date;
+            TimeText.text = model.Time;
+            WeatherText.text = model.Weather;
+            SeedText.text = "播种：" + model.SeedName;
+            InventoryText.text = $"种子 {model.Seeds}  作物 {model.Harvest}  木材 {model.Wood}  石料 {model.Stone}";
+            GoldText.text = $"金币 {model.Gold}";
+            StaminaText.text = $"体力 {model.Stamina} / {model.MaxStamina}";
+            StaminaFill.fillAmount = (float)model.Stamina / model.MaxStamina;
+            StaminaFill.color = model.Stamina <= model.MaxStamina * 0.2f
+                ? new Color(0.83f, 0.49f, 0.34f) : new Color(0.44f, 0.66f, 0.45f);
             HintText.text = model.Hint;
             FeedbackText.text = model.Feedback;
             for (int i = 0; i < ToolButtons.Length; i++)

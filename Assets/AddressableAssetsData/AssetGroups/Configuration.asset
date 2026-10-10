@@ -27,10 +27,49 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b34f50c0cc84ece45b7918c77b96a275
+    m_Address: CropCatalog
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 12bec57ceb51d3848a798f85f2e12a52
+    m_Address: WeatherConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7a6872af6bbb48e1b936824f99867c70
+    m_Address: SeasonConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be5a0483bc8d5784487c256069100fc1
+    m_Address: TaskCatalog
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc2efa37028687948a8c5884202ea657
+    m_Address: OrderCatalog
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b36f4438104b95f4eaaa269b96e80788
+    m_Address: GatheringCatalog
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e01b534f7baf5e5449e3fd3aa9e2caee
+    m_Address: ToolUpgradeCatalog
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0449efab9bf07954c83799f0dba847d4
+    m_Address: StorageConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: ac955b8fe83d22d4a85c3b3fc30e9c11, type: 2}
   m_SchemaSet:
     m_Schemas:
     - {fileID: 11400000, guid: 4369c320ba405fe45b866ccfd2072fab, type: 2}
     - {fileID: 11400000, guid: 9b97b0433d9fa52488cb5028a9027eb4, type: 2}
-

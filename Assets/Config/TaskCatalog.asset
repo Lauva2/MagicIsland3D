@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 280619362bed41aea4f554753e09b1be, type: 3}
+  m_Name: TaskCatalog
+  m_EditorClassIdentifier: 
+  Tasks:
+  - Id: first_hoe
+    Title: "\u7B2C\u4E00\u6B21\u8015\u5730"
+    Description: "\u9009\u62E9\u9504\u5934\uFF0C\u9760\u8FD1\u519C\u7530\uFF0C\u7528\u9F20\u6807\u70B9\u51FB\u4E00\u5757\u7A7A\u5730\u3002"
+    Action: 0
+    Required: 1
+    GoldReward: 5
+  - Id: first_plant
+    Title: "\u64AD\u4E0B\u7B2C\u4E00\u9897\u79CD\u5B50"
+    Description: "\u9009\u62E9\u9002\u5408\u5F53\u5B63\u7684\u79CD\u5B50\uFF0C\u7528\u9F20\u6807\u70B9\u51FB\u5DF2\u8015\u597D\u7684\u571F\u5730\u3002"
+    Action: 1
+    Required: 1
+    GoldReward: 10
+  - Id: first_water
+    Title: "\u7167\u6599\u5C0F\u82D7"
+    Description: "\u9009\u62E9\u6C34\u58F6\uFF0C\u7ED9\u4E00\u682A\u5C1A\u672A\u6D47\u6C34\u7684\u4F5C\u7269\u6D47\u6C34\u3002"
+    Action: 2
+    Required: 1
+    GoldReward: 10
+  - Id: first_sleep
+    Title: "\u8FCE\u63A5\u65B0\u7684\u4E00\u5929"
+    Description: "\u5230\u84DD\u8272\u88AB\u5B50\u7684\u5E8A\u8FB9\uFF0C\u70B9\u51FB\u5E8A\u5E76\u786E\u8BA4\u7761\u89C9\u3002"
+    Action: 3
+    Required: 1
+    GoldReward: 15
+  - Id: first_harvest
+    Title: "\u7B2C\u4E00\u4EFD\u6536\u6210"
+    Description: "\u6BCF\u5929\u6D47\u6C34\uFF0C\u7B49\u5F85\u6210\u719F\u540E\uFF0C\u7528\u9F20\u6807\u70B9\u51FB\u4F5C\u7269\u6536\u83B7\u3002"
+    Action: 4
+    Required: 1
+    GoldReward: 20
+  - Id: first_sell
+    Title: "\u5206\u4EAB\u4E30\u6536"
+    Description: "\u5230\u9EC4\u8272\u68DA\u9876\u7684\u5546\u5E97\uFF0C\u51FA\u552E\u4E00\u4E2A\u6536\u83B7\u7684\u4F5C\u7269\u3002"
+    Action: 5
+    Required: 1
+    GoldReward: 25

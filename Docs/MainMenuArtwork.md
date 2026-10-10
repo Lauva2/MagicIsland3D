@@ -1,7 +1,7 @@
 # 主菜单背景
 
 使用内置 image_gen 生成，保存到 `Assets/Art/Textures/UI/MainMenuBackground.png`。
-由 `MainMenuUI` 的 Background Image 引用，作为 AA 预制体的依赖一起加载。
+由 `MainMenuPanel` 的 Background Image 引用，作为 AA 预制体的依赖一起加载。
 背景按比例铺满，超出画布的部分裁切，不拉伸。
 
 ## 生成提示词

@@ -17,6 +17,8 @@ MonoBehaviour:
     DisplayName: "\u829C\u83C1\u79CD\u5B50"
     Type: 0
     MaxStack: 99
+    BuyPrice: 10
+    SellPrice: 0
     Icon: {fileID: 21300000, guid: bc6444388e7c1ba48b7553bf48017bdb, type: 3}
     IconColor: {r: 0.87, g: 0.69, b: 0.38, a: 1}
     Description: "\u64AD\u79CD\u5728\u8015\u597D\u7684\u571F\u5730\u4E0A\u3002\u6BCF\u5929\u6D47\u6C34\uFF0C\u7B49\u5F85\u829C\u83C1\u6210\u719F\u3002"
@@ -24,6 +26,62 @@ MonoBehaviour:
     DisplayName: "\u829C\u83C1"
     Type: 1
     MaxStack: 99
+    BuyPrice: 0
+    SellPrice: 25
     Icon: {fileID: 21300000, guid: bc6444388e7c1ba48b7553bf48017bdb, type: 3}
     IconColor: {r: 0.46, g: 0.65, b: 0.37, a: 1}
     Description: "\u521A\u4ECE\u519C\u7530\u6536\u83B7\u7684\u829C\u83C1\u3002\u5C9B\u5C7F\u751F\u6D3B\u7684\u7B2C\u4E00\u4EFD\u6536\u6210\u3002"
+  - Id: tomato_seed
+    DisplayName: "\u756A\u8304\u79CD\u5B50"
+    Type: 0
+    MaxStack: 99
+    BuyPrice: 20
+    SellPrice: 0
+    Icon: {fileID: 21300000, guid: bc6444388e7c1ba48b7553bf48017bdb, type: 3}
+    IconColor: {r: 0.89, g: 0.47, b: 0.32, a: 1}
+    Description: "\u64AD\u79CD\u540E\u6D47\u6C34\uFF0C5 \u6B21\u751F\u957F\u540E\u6536\u83B7\u756A\u8304\u3002"
+  - Id: tomato
+    DisplayName: "\u756A\u8304"
+    Type: 1
+    MaxStack: 99
+    BuyPrice: 0
+    SellPrice: 50
+    Icon: {fileID: 21300000, guid: bc6444388e7c1ba48b7553bf48017bdb, type: 3}
+    IconColor: {r: 0.89, g: 0.3, b: 0.21, a: 1}
+    Description: "\u7EA2\u6DA6\u7684\u756A\u8304\uFF0C\u53EF\u4EE5\u5728\u5546\u5E97\u51FA\u552E\u3002"
+  - Id: corn_seed
+    DisplayName: "\u7389\u7C73\u79CD\u5B50"
+    Type: 0
+    MaxStack: 99
+    BuyPrice: 30
+    SellPrice: 0
+    Icon: {fileID: 21300000, guid: bc6444388e7c1ba48b7553bf48017bdb, type: 3}
+    IconColor: {r: 0.9, g: 0.75, b: 0.32, a: 1}
+    Description: "\u64AD\u79CD\u540E\u6D47\u6C34\uFF0C7 \u6B21\u751F\u957F\u540E\u6536\u83B7\u7389\u7C73\u3002"
+  - Id: corn
+    DisplayName: "\u7389\u7C73"
+    Type: 1
+    MaxStack: 99
+    BuyPrice: 0
+    SellPrice: 85
+    Icon: {fileID: 21300000, guid: bc6444388e7c1ba48b7553bf48017bdb, type: 3}
+    IconColor: {r: 0.97, g: 0.79, b: 0.24, a: 1}
+    Description: "\u91D1\u9EC4\u7684\u7389\u7C73\uFF0C\u53EF\u4EE5\u5728\u5546\u5E97\u51FA\u552E\u3002"
+  - Id: wood
+    DisplayName: "\u6728\u6750"
+    Type: 2
+    MaxStack: 99
+    BuyPrice: 0
+    SellPrice: 0
+    Icon: {fileID: 21300000, guid: bc6444388e7c1ba48b7553bf48017bdb, type: 3}
+    IconColor: {r: 0.59, g: 0.39, b: 0.23, a: 1}
+    Description: "\u780D\u6811\u83B7\u5F97\u7684\u6728\u6750\uFF0C\u53EF\u7528\u4E8E\u540E\u7EED\u5236\u4F5C\u3001\u5DE5\u5177\u5347\u7EA7\u548C\u5EFA\u7B51\u4FEE\u7F2E\u3002"
+  - Id: stone
+    DisplayName: "\u77F3\u6599"
+    Type: 2
+    MaxStack: 99
+    BuyPrice: 0
+    SellPrice: 0
+    Icon: {fileID: 21300000, guid: bc6444388e7c1ba48b7553bf48017bdb, type: 3}
+    IconColor: {r: 0.59, g: 0.65, b: 0.67, a: 1}
+    Description: "\u91C7\u77F3\u83B7\u5F97\u7684\u77F3\u6599\uFF0C\u53EF\u7528\u4E8E\u540E\u7EED\u5236\u4F5C\u3001\u5DE5\u5177\u5347\u7EA7\u548C\u5EFA\u7B51\u4FEE\u7F2E\u3002"

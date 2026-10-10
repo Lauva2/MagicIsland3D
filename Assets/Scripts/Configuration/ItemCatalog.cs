@@ -12,6 +12,8 @@ namespace MagicIsland.Configuration
         public string DisplayName;
         public ItemType Type;
         [Min(1)] public int MaxStack = 99;
+        [Min(0)] public int BuyPrice;
+        [Min(0)] public int SellPrice;
         public Sprite Icon;
         public Color IconColor = Color.white;
         [TextArea] public string Description;
@@ -28,8 +30,9 @@ namespace MagicIsland.Configuration
             var ids = new HashSet<string>(StringComparer.Ordinal);
             foreach (ItemConfig item in Items)
                 if (item == null || string.IsNullOrWhiteSpace(item.Id) || string.IsNullOrWhiteSpace(item.DisplayName)
-                    || item.MaxStack < 1 || !ids.Add(item.Id)) return false;
-            return Find(game.SeedItemId)?.Type == ItemType.Seed && Find(game.HarvestItemId)?.Type == ItemType.Crop;
+                    || item.MaxStack < 1 || item.BuyPrice < 0 || item.SellPrice < 0 || !ids.Add(item.Id)) return false;
+            return Find(game.SeedItemId)?.Type == ItemType.Seed && Find(game.HarvestItemId)?.Type == ItemType.Crop
+                && Find(game.SeedItemId).BuyPrice > 0 && Find(game.HarvestItemId).SellPrice > 0;
         }
         public IEnumerable<ItemDefinition> Definitions()
         {

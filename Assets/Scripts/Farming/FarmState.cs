@@ -1,13 +1,15 @@
 using System;
+using System.Collections.Generic;
 
 namespace MagicIsland.Farming
 {
-    public enum FarmTool { Hoe, Seeds, WateringCan }
+    public enum FarmTool { Hoe, Seeds, WateringCan, Axe, Pickaxe }
 
     [Serializable]
     public sealed class FarmCell
     {
         public bool Tilled;
+        public string CropId;
         public bool Planted;
         public bool Watered;
         public int Growth;
@@ -22,12 +24,21 @@ namespace MagicIsland.Farming
         public int Size { get; }
         public int Day { get; private set; } = 1;
         public FarmCell[] Cells { get; }
+        public string DefaultCropId { get; }
+        private readonly Dictionary<string, CropDefinition> definitions = new Dictionary<string, CropDefinition>(StringComparer.Ordinal);
+        public CropDefinition FindCrop(string id) => id != null && definitions.TryGetValue(id, out CropDefinition crop) ? crop : null;
 
-        public FarmState(int size, int growthDays = GrowthDays)
+        public FarmState(int size, int growthDays = GrowthDays, IEnumerable<CropDefinition> crops = null, string defaultCropId = "turnip")
         {
             if (size <= 0) throw new ArgumentOutOfRangeException(nameof(size));
             if (growthDays < 1) throw new ArgumentOutOfRangeException(nameof(growthDays));
             Size = size;
+            if (crops == null) crops = new[] { new CropDefinition(defaultCropId, "turnip_seed", "turnip", growthDays) };
+            foreach (CropDefinition crop in crops)
+                if (crop == null || definitions.ContainsKey(crop.Id)) throw new ArgumentException("Duplicate or missing crop");
+                else definitions.Add(crop.Id, crop);
+            DefaultCropId = defaultCropId;
+            if (FindCrop(defaultCropId)?.GrowthDays != growthDays) throw new ArgumentException("Invalid default crop");
             Cells = new FarmCell[size * size];
             for (int i = 0; i < Cells.Length; i++) Cells[i] = new FarmCell { RequiredGrowthDays = growthDays };
         }
@@ -36,6 +47,7 @@ namespace MagicIsland.Farming
         {
             FarmCell cell = Cells[index];
             if (cell.Mature) return "收获";
+            if (tool == FarmTool.Axe || tool == FarmTool.Pickaxe) return "请选择锄头、种子或水壶操作农田";
             switch (tool)
             {
                 case FarmTool.Hoe: return cell.Tilled ? "土地已耕作" : "耕地";
@@ -49,7 +61,7 @@ namespace MagicIsland.Farming
             }
         }
 
-        public bool TryAct(int index, FarmTool tool, out string message)
+        public bool TryAct(int index, FarmTool tool, out string message, string cropId = null)
         {
             message = Describe(index, tool);
             FarmCell cell = Cells[index];
@@ -58,6 +70,8 @@ namespace MagicIsland.Farming
                 cell.Planted = false;
                 cell.Watered = false;
                 cell.Growth = 0;
+                cell.CropId = null;
+                cell.RequiredGrowthDays = definitions[DefaultCropId].GrowthDays;
                 return true;
             }
             if (tool == FarmTool.Hoe && !cell.Tilled)
@@ -67,7 +81,11 @@ namespace MagicIsland.Farming
             }
             if (tool == FarmTool.Seeds && cell.Tilled && !cell.Planted)
             {
+                CropDefinition crop = FindCrop(cropId ?? DefaultCropId);
+                if (crop == null) { message = "无法种植这种种子"; return false; }
                 cell.Planted = true;
+                cell.CropId = crop.Id;
+                cell.RequiredGrowthDays = crop.GrowthDays;
                 return true;
             }
             if (tool == FarmTool.WateringCan && cell.Planted && !cell.Watered)
@@ -76,6 +94,14 @@ namespace MagicIsland.Farming
                 return true;
             }
             return false;
+        }
+
+        public bool WaterPlanted()
+        {
+            bool changed = false;
+            foreach (FarmCell cell in Cells)
+                if (cell.Planted && !cell.Watered) { cell.Watered = true; changed = true; }
+            return changed;
         }
 
         public void AdvanceDay()
@@ -94,10 +120,11 @@ namespace MagicIsland.Farming
             for (int i = 0; i < saved.Length; i++)
             {
                 FarmCell cell = saved[i];
-                if (cell == null || cell.RequiredGrowthDays != Cells[i].RequiredGrowthDays
+                CropDefinition crop = cell != null && cell.Planted ? FindCrop(cell.CropId) : definitions[DefaultCropId];
+                if (cell == null || crop == null || cell.RequiredGrowthDays != crop.GrowthDays
                     || cell.Growth < 0 || cell.Growth > cell.RequiredGrowthDays
                     || (cell.Planted && !cell.Tilled) || (cell.Watered && !cell.Planted)
-                    || (!cell.Planted && cell.Growth != 0)) throw new ArgumentException("Invalid saved farm cell");
+                    || (!cell.Planted && (cell.Growth != 0 || !string.IsNullOrEmpty(cell.CropId)))) throw new ArgumentException("Invalid saved farm cell");
             }
             Day = day;
             for (int i = 0; i < saved.Length; i++)
@@ -106,6 +133,8 @@ namespace MagicIsland.Farming
                 Cells[i].Planted = saved[i].Planted;
                 Cells[i].Watered = saved[i].Watered;
                 Cells[i].Growth = saved[i].Growth;
+                Cells[i].CropId = saved[i].CropId;
+                Cells[i].RequiredGrowthDays = saved[i].RequiredGrowthDays;
             }
         }
     }

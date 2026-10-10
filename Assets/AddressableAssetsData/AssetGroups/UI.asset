@@ -18,22 +18,62 @@ MonoBehaviour:
   m_GUID: 2aec98514d1801540b24875b0a2a59eb
   m_SerializeEntries:
   - m_GUID: cf2556779a5a3054f9750c12cf49fa7a
-    m_Address: InventoryUI
+    m_Address: InventoryPanel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8b4f833b5fb2b454fbd887a7ec96fbc2
-    m_Address: FarmHUD
+    m_Address: FarmHudPanel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0e12b4c2532353a4fa0cb94833e17e02
-    m_Address: MainMenuUI
+    m_Address: MainMenuPanel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e9767df3619f8f247a0084a0789ee17a
-    m_Address: SettingsUI
+    m_Address: SettingsPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1f24871b39d908945a2a1db07a34bcc9
+    m_Address: ShopPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 87755524e35941d4e96490ee730ca90b
+    m_Address: SleepPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 618d289a0dad6e74ba4336802b05efac
+    m_Address: FeedbackPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 61c985eba41dcf14c9bbfef84b138753
+    m_Address: CropInfoPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69f48d2033a73b6498663a4057411003
+    m_Address: TaskPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09222a52ee0ed134d92e985eb0ef7cd7
+    m_Address: OrderPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8e32206f3d0fed40baa4bbacb0b4720
+    m_Address: ToolUpgradePanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 366ce3e11a7c95f429ab9f41d43a94a3
+    m_Address: StoragePanel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -32,23 +32,57 @@ namespace MagicIsland.EditorTools
             {
                 ApplyCozyTheme();
             }
-            if (!File.Exists(Folder + "/MainMenuUI.prefab")) CreateMenu();
-            if (!File.Exists(Folder + "/FarmHUD.prefab")) CreateHud();
+            if (!File.Exists(Folder + "/MainMenuPanel.prefab")) CreateMenu();
+            if (!File.Exists(Folder + "/FarmHudPanel.prefab")) CreateHud();
             InventoryUiPrefabBuilder.CreateMissing();
             SettingsUiPrefabBuilder.CreateMissing();
+            ShopUiPrefabBuilder.CreateMissing();
+            SleepUiPrefabBuilder.CreateMissing();
+            FeedbackPanelPrefabBuilder.CreateMissing();
+            CropInfoPanelPrefabBuilder.CreateMissing();
+            TaskPanelPrefabBuilder.CreateMissing();
+            OrderPanelPrefabBuilder.CreateMissing();
+            ToolUpgradeSetup.CreatePanel();
+            StorageSetup.CreatePanel();
             EnsureMvcControls();
+            CropUiUpgrade.Apply();
             UiPrefabMigration.UpgradeAll();
         }
 
         private static void EnsureMvcControls()
         {
             EnsureContinueButton();
-            string path = Folder + "/FarmHUD.prefab";
+            string path = Folder + "/FarmHudPanel.prefab";
             GameObject root = PrefabUtility.LoadPrefabContents(path);
             try
             {
                 PrototypeHud hud = root.GetComponent<PrototypeHud>();
                 bool changed = false;
+                if (hud.TimeText == null)
+                {
+                    hud.TimeText = Label("Clock", hud.DayText.transform.parent, new Vector2(300, -12), new Vector2(154, 32), "06:00", 22, TextAnchor.MiddleRight);
+                    changed = true;
+                }
+                if (hud.GoldText == null)
+                {
+                    Transform top = hud.DayText.transform.parent;
+                    top.GetComponent<RectTransform>().sizeDelta = new Vector2(470, 188);
+                    hud.GoldText = Label("Gold", top, new Vector2(16, -144), new Vector2(438, 32), "金币 100", 20);
+                    changed = true;
+                }
+                if (hud.StaminaText == null || hud.StaminaFill == null)
+                {
+                    Transform top = hud.DayText.transform.parent;
+                    top.GetComponent<RectTransform>().sizeDelta = new Vector2(470, 230);
+                    hud.GoldText.rectTransform.sizeDelta = new Vector2(188, 32);
+                    hud.StaminaText = Label("Stamina", top, new Vector2(214, -144), new Vector2(240, 32), "体力 100 / 100", 20, TextAnchor.MiddleRight);
+                    RectTransform track = Panel("Stamina Track", top, new Vector2(0, 1), new Vector2(0, 1), new Vector2(16, -190), new Vector2(438, 18), Sand);
+                    RectTransform fill = Panel("Stamina Fill", track, new Vector2(0, 1), new Vector2(0, 1), Vector2.zero, new Vector2(438, 18), new Color(0.44f, 0.66f, 0.45f));
+                    hud.StaminaFill = fill.GetComponent<Image>(); hud.StaminaFill.type = Image.Type.Filled;
+                    hud.StaminaFill.fillMethod = Image.FillMethod.Horizontal; hud.StaminaFill.fillOrigin = 0;
+                    hud.StaminaFill.raycastTarget = false; track.GetComponent<Image>().raycastTarget = false;
+                    changed = true;
+                }
                 if (hud.ReturnMenuButton == null) { hud.ReturnMenuButton = CreateReturnButton(root.transform); changed = true; }
                 if (hud.InventoryButton == null) { hud.InventoryButton = CreateInventoryButton(root.transform); changed = true; }
                 if (!changed) return;
@@ -59,7 +93,7 @@ namespace MagicIsland.EditorTools
 
         private static void EnsureContinueButton()
         {
-            string path = Folder + "/MainMenuUI.prefab";
+            string path = Folder + "/MainMenuPanel.prefab";
             GameObject root = PrefabUtility.LoadPrefabContents(path);
             try
             {

@@ -15,6 +15,7 @@ namespace MagicIsland.UI.Models
     {
         public InventorySlotModel[] Slots;
         public int Occupied;
+        public bool CanUseSeed;
         public string DetailTitle = "选择物品";
         public string DetailText = "点击一个格子，查看物品详情。";
     }

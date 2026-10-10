@@ -11,9 +11,9 @@ namespace MagicIsland.EditorTools
     {
         public static void CreateMissing()
         {
-            string path = Factory.Folder + "/SettingsUI.prefab";
+            string path = Factory.Folder + "/SettingsPanel.prefab";
             if (File.Exists(path)) return;
-            GameObject root = Factory.CanvasRoot("SettingsUI");
+            GameObject root = Factory.CanvasRoot("SettingsPanel");
             SettingsView view = root.AddComponent<SettingsView>();
             view.Layer = UILayer.PopUp;
             RectTransform backdrop = Factory.Panel("Backdrop", root.transform, Vector2.zero, Vector2.zero,

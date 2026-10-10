@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using MagicIsland.Configuration;
 
 namespace MagicIsland.Farming
 {
@@ -9,31 +10,31 @@ namespace MagicIsland.Farming
         public FarmState State { get; private set; }
         private Renderer[] soil;
         private Transform[] crops;
-        private Renderer[] cropRenderers;
+        private string[] displayedAddresses;
         private Transform highlight;
         private readonly List<Material> materials = new List<Material>();
-        private Material grass, dry, wet, leaf, ripe, valid, invalid;
+        private Material grass, dry, wet, valid, invalid;
+        private CropCatalog catalog;
+        private IReadOnlyDictionary<string, GameObject> visualPrefabs;
 
-        public void Initialize(int size, int growthDays = FarmState.GrowthDays)
+        public void Initialize(int size, int growthDays = FarmState.GrowthDays, CropCatalog catalog = null, string defaultCropId = "turnip",
+            IReadOnlyDictionary<string, GameObject> visualPrefabs = null)
         {
-            State = new FarmState(size, growthDays);
+            this.catalog = catalog;
+            this.visualPrefabs = visualPrefabs;
+            State = new FarmState(size, growthDays, catalog?.Definitions(), defaultCropId);
             grass = MakeMaterial(new Color(0.39f, 0.56f, 0.27f));
             dry = MakeMaterial(new Color(0.43f, 0.28f, 0.16f));
             wet = MakeMaterial(new Color(0.25f, 0.19f, 0.13f));
-            leaf = MakeMaterial(new Color(0.32f, 0.69f, 0.26f));
-            ripe = MakeMaterial(new Color(1f, 0.68f, 0.17f));
             valid = MakeMaterial(new Color(0.97f, 0.9f, 0.48f));
             invalid = MakeMaterial(new Color(0.95f, 0.35f, 0.29f));
             soil = new Renderer[State.Cells.Length];
             crops = new Transform[soil.Length];
-            cropRenderers = new Renderer[soil.Length];
+            displayedAddresses = new string[soil.Length];
             for (int i = 0; i < soil.Length; i++)
             {
                 GameObject tile = Primitive("Plot " + i, PrimitiveType.Cube, CellCenter(i), new Vector3(1.16f, 0.06f, 1.16f), grass);
                 soil[i] = tile.GetComponent<Renderer>();
-                GameObject crop = Primitive("Crop " + i, PrimitiveType.Sphere, CellCenter(i), Vector3.one * 0.2f, leaf);
-                crops[i] = crop.transform;
-                cropRenderers[i] = crop.GetComponent<Renderer>();
             }
             highlight = new GameObject("Target outline").transform;
             highlight.SetParent(transform, false);
@@ -83,13 +84,28 @@ namespace MagicIsland.Farming
             {
                 FarmCell cell = State.Cells[i];
                 soil[i].sharedMaterial = !cell.Tilled ? grass : cell.Watered ? wet : dry;
-                crops[i].gameObject.SetActive(cell.Planted);
-                float growth = Mathf.Clamp01((float)cell.Growth / cell.RequiredGrowthDays);
-                float height = 0.18f + growth * 0.54f;
-                crops[i].localScale = new Vector3(0.3f + growth * 0.3f, height, 0.3f + growth * 0.3f);
-                crops[i].position = CellCenter(i) + Vector3.up * (height * 0.5f + 0.04f);
-                cropRenderers[i].sharedMaterial = cell.Mature ? ripe : leaf;
+                string address = cell.Planted ? catalog.Find(cell.CropId).PrefabAddress(CropStages.FromGrowth(cell.Growth, cell.RequiredGrowthDays)) : null;
+                if (displayedAddresses[i] == address) continue;
+                RemoveCrop(i);
+                if (address == null) continue;
+                if (visualPrefabs == null || !visualPrefabs.TryGetValue(address, out GameObject prefab))
+                    throw new System.InvalidOperationException("Crop model not loaded: " + address);
+                GameObject model = Instantiate(prefab, CellCenter(i) + Vector3.up * 0.035f, Quaternion.identity, transform);
+                model.name = "Crop " + i + " - " + prefab.name;
+                crops[i] = model.transform; displayedAddresses[i] = address;
             }
+        }
+
+        public Transform GetCropVisual(int index) => crops[index];
+        private void RemoveCrop(int index)
+        {
+            if (crops[index] != null) { crops[index].gameObject.SetActive(false); Destroy(crops[index].gameObject); }
+            crops[index] = null; displayedAddresses[index] = null;
+        }
+        public void ClearCropVisuals()
+        {
+            if (crops != null) for (int i = 0; i < crops.Length; i++) RemoveCrop(i);
+            visualPrefabs = null;
         }
 
         private Material MakeMaterial(Color color)

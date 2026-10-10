@@ -25,7 +25,8 @@ namespace MagicIsland.EditorTools
                     distances[i] = canvases[i].planeDistance;
                     canvases[i].renderMode = RenderMode.ScreenSpaceCamera;
                     canvases[i].worldCamera = camera;
-                    canvases[i].planeDistance = 1f;
+                    // Match overlay UI: nearby world geometry must not cover preview labels.
+                    canvases[i].planeDistance = camera.nearClipPlane + 0.01f;
                 }
                 Canvas.ForceUpdateCanvases();
                 camera.Render();

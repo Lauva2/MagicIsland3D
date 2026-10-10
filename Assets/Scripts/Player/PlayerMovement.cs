@@ -9,6 +9,7 @@ namespace MagicIsland.Player
         public Transform Visual;
         public float Speed = 4f;
         public float ActionUntil { get; private set; }
+        public bool ToolActionLocked { get; set; }
         private CharacterController controller;
         private float verticalSpeed;
 
@@ -21,7 +22,7 @@ namespace MagicIsland.Player
             Vector3 right = Vector3.ProjectOnPlane(ViewCamera.transform.right, Vector3.up).normalized;
             Vector3 forward = Vector3.ProjectOnPlane(ViewCamera.transform.forward, Vector3.up).normalized;
             Vector3 direction = Vector3.ClampMagnitude(right * x + forward * z, 1f);
-            if (Time.time < ActionUntil) direction = Vector3.zero;
+            if (ToolActionLocked || Time.time < ActionUntil) direction = Vector3.zero;
             if (direction.sqrMagnitude > 0.001f)
                 Visual.rotation = Quaternion.Slerp(Visual.rotation, Quaternion.LookRotation(direction), 14f * Time.deltaTime);
             if (controller.isGrounded && verticalSpeed < 0f) verticalSpeed = -2f;

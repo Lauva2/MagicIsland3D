@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Crop Models
+  m_EditorClassIdentifier: 
+  m_GroupName: Crop Models
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 3d52aefc6d043b64a9614a5838fd2f60
+  m_SerializeEntries:
+  - m_GUID: d05f9d1531ab4dd4d8ab53b8079666fa
+    m_Address: TurnipSeedling
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da075527c644d3246868dfa2c4798778
+    m_Address: TurnipGrowing
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc0f8e049c54b4742ae27a268df427bc
+    m_Address: TurnipMature
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b0d04ab0967c8cc4087ba12f5566193f
+    m_Address: TomatoSeedling
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9736193587538d2498dd38307d448e95
+    m_Address: TomatoGrowing
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cb7b624f0143ce54a905aea36e023e71
+    m_Address: TomatoMature
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 988f5dcde0b5f794498e4b5c1f140baa
+    m_Address: CornSeedling
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c9f14c3d25d47ec43934e7fa6a6951de
+    m_Address: CornGrowing
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7547942986d6abf4e921aa34e1182d89
+    m_Address: CornMature
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: ac955b8fe83d22d4a85c3b3fc30e9c11, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: f7e4d46644917fd49b8d347a2a9fdcc9, type: 2}
+    - {fileID: 11400000, guid: 0fa082d5fd4b63446b0ecbc3f0726c57, type: 2}

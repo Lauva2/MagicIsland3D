@@ -6,9 +6,9 @@ namespace MagicIsland.Loading
     public static class RuntimeUi
     {
         // Addresses always match the UI prefab file names (without extension).
-        public const string MenuAddress = "MainMenuUI";
-        public const string HudAddress = "FarmHUD";
-        public const string InventoryAddress = "InventoryUI";
+        public const string MenuAddress = "MainMenuPanel";
+        public const string HudAddress = "FarmHudPanel";
+        public const string InventoryAddress = "InventoryPanel";
 
         public static void EnsureEventSystem(Transform parent = null)
         {

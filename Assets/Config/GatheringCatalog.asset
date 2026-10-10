@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 046862f7d7b040faafb087e4698810be, type: 3}
+  m_Name: GatheringCatalog
+  m_EditorClassIdentifier: 
+  Types:
+  - Id: tree
+    DisplayName: "\u6A61\u6811"
+    ItemId: wood
+    PrefabAddress: GatheringTree
+    Tool: 3
+    Hits: 3
+    Yield: 3
+    StaminaCost: 4
+    RespawnDays: 3
+  - Id: rock
+    DisplayName: "\u77F3\u5934"
+    ItemId: stone
+    PrefabAddress: GatheringRock
+    Tool: 4
+    Hits: 2
+    Yield: 2
+    StaminaCost: 5
+    RespawnDays: 2
+  Nodes:
+  - Id: tree_01
+    TypeId: tree
+    Position: {x: -9.2, y: 0, z: 1.5}
+  - Id: tree_02
+    TypeId: tree
+    Position: {x: -9.2, y: 0, z: 6.5}
+  - Id: tree_03
+    TypeId: tree
+    Position: {x: -4, y: 0, z: 9.2}
+  - Id: rock_01
+    TypeId: rock
+    Position: {x: -9.2, y: 0, z: -8.2}
+  - Id: rock_02
+    TypeId: rock
+    Position: {x: -4.8, y: 0, z: -9.4}

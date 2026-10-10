@@ -16,11 +16,23 @@ namespace MagicIsland.Managers
         private SaveFileStore store;
         private GameConfig config;
         private ItemCatalog catalog;
+        private CropCatalog crops;
+        private TaskCatalog tasks;
+        private OrderCatalog orders;
+        private SeasonConfig seasons;
+        private GatheringCatalog gathering;
+        private ToolUpgradeCatalog toolUpgrades;
+        private StorageConfig storage;
 
-        public void Initialize(GameConfig gameConfig, ItemCatalog items, string directory = null)
+        public void Initialize(GameConfig gameConfig, ItemCatalog items, CropCatalog crops, string directory = null, TaskCatalog tasks = null, OrderCatalog orders = null, SeasonConfig seasons = null, GatheringCatalog gathering = null, ToolUpgradeCatalog toolUpgrades = null, StorageConfig storage = null)
         {
             config = gameConfig;
             catalog = items;
+            this.crops = crops;
+            this.tasks = tasks;
+            this.orders = orders;
+            this.seasons = seasons;
+            this.gathering = gathering; this.toolUpgrades = toolUpgrades; this.storage = storage;
             store = new SaveFileStore(directory ?? Path.Combine(Application.persistentDataPath, "Saves"));
             RefreshAvailability();
         }
@@ -33,7 +45,8 @@ namespace MagicIsland.Managers
             {
                 SaveData parsed = JsonUtility.FromJson<SaveData>(json);
                 if (parsed == null) throw new InvalidOperationException("Empty save");
-                parsed.Validate(config.FarmSize, config.CropGrowthDays, new InventoryState(config.InventorySlots, catalog.Definitions()));
+                parsed.Upgrade(config.InitialGold, config.MaxStamina, crops.FindBySeed(config.SeedItemId).Id, config.SeedItemId, tasks?.Definitions(), orders?.Definitions(crops), seasons?.DaysPerSeason ?? 28, gathering?.Definitions(), toolUpgrades?.Definitions(), storage?.Slots ?? 0);
+                parsed.Validate(config.FarmSize, config.CropGrowthDays, new InventoryState(config.InventorySlots, catalog.Definitions()), config.MaxStamina, crops.Definitions(), crops.FindBySeed(config.SeedItemId).Id, tasks?.Definitions(), orders?.Definitions(crops), seasons?.DaysPerSeason ?? 28, gathering?.Definitions(), toolUpgrades?.Definitions(), storage?.Slots ?? 0);
                 return parsed;
             }, out data, out string error, out bool recovered);
             LastError = error;
@@ -41,13 +54,14 @@ namespace MagicIsland.Managers
             return HasSave;
         }
 
-        public bool TrySave(FarmManager farm, InventoryManager inventory, PlayerManager players)
+        public bool TrySave(FarmManager farm, InventoryManager inventory, PlayerManager players, EconomyManager economy, TimeManager time, StaminaManager stamina, WeatherManager weather, TaskManager taskManager = null, OrderManager orderManager = null, GatheringManager gatheringManager = null, ToolUpgradeManager toolUpgradeManager = null, StorageManager storageManager = null)
         {
             try
             {
                 Vector3 position = players.Player.transform.position;
-                SaveData data = SaveData.Capture(farm.State, inventory.State, position.x, position.y, position.z);
-                data.Validate(config.FarmSize, config.CropGrowthDays, new InventoryState(config.InventorySlots, catalog.Definitions()));
+                SaveData data = SaveData.Capture(farm.State, inventory.State, position.x, position.y, position.z, economy.Gold, time.Clock.Minute, stamina.State.Current, farm.SeedItemId,
+                    weather.State.Seed, weather.State.Kind, taskManager?.State, orderManager?.State, gatheringManager?.State, toolUpgradeManager?.State, storageManager?.State);
+                data.Validate(config.FarmSize, config.CropGrowthDays, new InventoryState(config.InventorySlots, catalog.Definitions()), config.MaxStamina, crops.Definitions(), crops.FindBySeed(config.SeedItemId).Id, tasks?.Definitions(), orders?.Definitions(crops), seasons?.DaysPerSeason ?? 28, gathering?.Definitions(), toolUpgrades?.Definitions(), storage?.Slots ?? 0);
                 store.Write(JsonUtility.ToJson(data, true));
                 LastError = null;
                 HasSave = true;

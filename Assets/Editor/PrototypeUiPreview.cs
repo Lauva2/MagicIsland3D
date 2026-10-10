@@ -21,7 +21,7 @@ namespace MagicIsland.EditorTools
             RenderTexture previous = RenderTexture.active;
             try
             {
-                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/MainMenuUI.prefab");
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/MainMenuPanel.prefab");
                 GameObject menu = (GameObject)PrefabUtility.InstantiatePrefab(prefab, scene);
                 var cameraObject = new GameObject("Preview Camera", typeof(Camera));
                 SceneManager.MoveGameObjectToScene(cameraObject, scene);
@@ -44,7 +44,7 @@ namespace MagicIsland.EditorTools
                 output.Apply();
                 Directory.CreateDirectory("Logs");
                 File.WriteAllBytes("Logs/MainMenuPreview.png", output.EncodeToPNG());
-                Debug.Log("MainMenuUI prefab preview rendered to Logs/MainMenuPreview.png");
+                Debug.Log("MainMenuPanel prefab preview rendered to Logs/MainMenuPreview.png");
             }
             finally
             {

@@ -18,8 +18,11 @@ namespace MagicIsland.Prototype
         public CameraController CameraController { get; private set; }
         public InteractionController Interaction { get; private set; }
         public bool IsCreated { get; private set; }
+        public Transform Bed { get; private set; }
+        public Transform ShopCounter { get; private set; }
+        public Light Sun { get; private set; }
 
-        public void CreateWorld()
+        public void CreateWorld(int farmSize = 5)
         {
             if (IsCreated) return;
             IsCreated = true;
@@ -76,15 +79,18 @@ namespace MagicIsland.Prototype
             player.ViewCamera = view;
             player.Visual = visual;
 
-            RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.7f, 0.73f, 0.7f);
             Light sun = null;
             foreach (GameObject root in gameObject.scene.GetRootGameObjects())
             {
                 sun = root.GetComponentInChildren<Light>(true);
                 if (sun != null) break;
             }
-            if (sun == null) sun = new GameObject("Sun").AddComponent<Light>();
+            if (sun == null)
+            {
+                sun = new GameObject("Sun").AddComponent<Light>();
+                sun.transform.SetParent(transform, false);
+            }
+            Sun = sun;
             sun.type = LightType.Directional;
             sun.transform.rotation = Quaternion.Euler(55f, -35f, 0f);
             sun.intensity = 1.1f;
@@ -100,6 +106,23 @@ namespace MagicIsland.Prototype
             interaction.ViewCamera = view;
             interaction.Player = player;
             interaction.Farm = farm;
+            GameObject counter = Primitive("Island Shop", PrimitiveType.Cube,
+                new Vector3(farmSize * 0.6f + 1.5f, 0.6f, -4.6f), new Vector3(1.4f, 1.2f, 1f), wood, true);
+            counter.AddComponent<MagicIsland.Interaction.ShopCounter>();
+            ShopCounter = counter.transform;
+            GameObject roof = Primitive("Shop Canopy", PrimitiveType.Cube, counter.transform.position + Vector3.up * 1f,
+                new Vector3(1.8f, 0.2f, 1.4f), hat, true);
+            roof.transform.SetParent(counter.transform, true);
+            // Keep canopy world dimensions when attaching to the scaled counter.
+            GameObject bed = Primitive("Sleep Bed", PrimitiveType.Cube,
+                new Vector3(-farmSize * 0.6f - 1.5f, 0.3f, -4.6f), new Vector3(1.3f, 0.6f, 2f), wood, true);
+            bed.AddComponent<SleepBed>(); Bed = bed.transform;
+            GameObject blanket = Primitive("Bed Blanket", PrimitiveType.Cube, bed.transform.position + Vector3.up * 0.35f,
+                new Vector3(1.25f, 0.12f, 1.9f), Material(new Color(0.65f, 0.75f, 0.87f)), true);
+            blanket.transform.SetParent(bed.transform, true);
+            GameObject pillow = Primitive("Bed Pillow", PrimitiveType.Cube, bed.transform.position + new Vector3(0, 0.47f, 0.62f),
+                new Vector3(1f, 0.15f, 0.5f), Material(new Color(0.98f, 0.96f, 0.88f)), true);
+            pillow.transform.SetParent(bed.transform, true);
         }
 
         private Material Material(Color color)

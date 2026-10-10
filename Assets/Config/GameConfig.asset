@@ -15,6 +15,14 @@ MonoBehaviour:
   GameSceneAddress: Scenes/MainGame
   FarmSize: 5
   InitialSeeds: 50
+  InitialGold: 100
+  SecondsPerGameMinute: 1
+  ToolActionDuration: 0.55
+  MaxStamina: 100
+  HoeStaminaCost: 3
+  SeedStaminaCost: 1
+  WaterStaminaCost: 2
+  HarvestStaminaCost: 0
   CropGrowthDays: 3
   PlayerSpeed: 4
   InteractionReach: 2.25

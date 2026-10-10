@@ -32,9 +32,11 @@ namespace MagicIsland.Inventory
     {
         private readonly Dictionary<string, ItemDefinition> definitions = new Dictionary<string, ItemDefinition>(StringComparer.Ordinal);
         private readonly InventorySlot[] slots;
+        private bool transferring;
         public IReadOnlyList<InventorySlot> Slots { get; }
         public int Capacity => slots.Length;
         public event Action Changed;
+        public InventoryState CreateEmpty(int capacity) => new InventoryState(capacity, definitions.Values);
 
         public InventoryState(int capacity, IEnumerable<ItemDefinition> items)
         {
@@ -68,7 +70,7 @@ namespace MagicIsland.Inventory
             return space >= quantity;
         }
 
-        public bool TryAdd(string id, int quantity)
+        public bool TryAdd(string id, int quantity, bool notify = true)
         {
             if (!CanAdd(id, quantity)) return false;
             int remaining = quantity, maxStack = definitions[id].MaxStack;
@@ -82,11 +84,30 @@ namespace MagicIsland.Inventory
                     slots[i] = new InventorySlot(id, slot.Quantity + added);
                     remaining -= added;
                 }
-            Changed?.Invoke();
+            if (notify) NotifyChanged();
             return true;
         }
 
-        public bool TryRemove(string id, int quantity)
+        public bool CanTransferSlotTo(int index, int quantity, InventoryState target) => !transferring && target != null && target != this
+            && !target.transferring && index >= 0 && index < Capacity && quantity > 0 && quantity <= slots[index].Quantity
+            && target.CanAdd(slots[index].ItemId, quantity);
+
+        public bool TryTransferSlotTo(int index, int quantity, InventoryState target)
+        {
+            if (!CanTransferSlotTo(index, quantity, target)) return false;
+            transferring = target.transferring = true;
+            try
+            {
+                var slot = slots[index];
+                target.TryAdd(slot.ItemId, quantity, false);
+                slots[index] = quantity == slot.Quantity ? default : new InventorySlot(slot.ItemId, slot.Quantity - quantity);
+                // Both inventories commit before either observer runs.
+                NotifyChanged(); target.NotifyChanged(); return true;
+            }
+            finally { transferring = target.transferring = false; }
+        }
+
+        public bool TryRemove(string id, int quantity, bool notify = true)
         {
             if (id == null || quantity < 1 || !definitions.ContainsKey(id) || GetCount(id) < quantity) return false;
             int remaining = quantity;
@@ -98,9 +119,11 @@ namespace MagicIsland.Inventory
                 slots[i] = left == 0 ? default : new InventorySlot(id, left);
                 remaining -= removed;
             }
-            Changed?.Invoke();
+            if (notify) NotifyChanged();
             return true;
         }
+
+        public void NotifyChanged() => Changed?.Invoke();
 
         public void Restore(IReadOnlyList<InventorySlot> saved)
         {

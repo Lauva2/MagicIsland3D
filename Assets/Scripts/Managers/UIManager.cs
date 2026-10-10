@@ -17,6 +17,11 @@ namespace MagicIsland.Managers
         public string LastError { get; private set; }
         public bool HasFarmHud => instances.ContainsKey(RuntimeUi.HudAddress);
         public bool HasInventory => instances.ContainsKey(RuntimeUi.InventoryAddress);
+        public bool HasSleep => instances.ContainsKey("SleepPanel");
+        public bool HasShop => instances.ContainsKey("ShopPanel");
+        public bool HasToolUpgrade => instances.ContainsKey("ToolUpgradePanel");
+        public bool HasStorage => instances.ContainsKey("StoragePanel");
+        public bool HasOrder => instances.ContainsKey("OrderPanel");
         public bool IsInventoryVisible => instances.TryGetValue(RuntimeUi.InventoryAddress, out Entry entry)
             && entry.Handle.IsValid() && entry.Handle.IsDone && entry.Handle.Status == AsyncOperationStatus.Succeeded
             && entry.Handle.Result.activeSelf;
@@ -76,51 +81,105 @@ namespace MagicIsland.Managers
             yield return Load(RuntimeUi.MenuAddress, root =>
             {
                 MainMenuView view = root.GetComponent<MainMenuView>();
-                if (view == null) throw new InvalidOperationException("MainMenuUI has no MainMenuView");
+                if (view == null) throw new InvalidOperationException("MainMenuPanel has no MainMenuView");
                 menuController = new MainMenuController(view, enterGame, continueGame, openSettings, quitGame, hasSave);
                 return menuController;
             });
             SetMainMenuVisible(true);
         }
 
-        public IEnumerator ShowFarmHud(FarmManager farm, InteractionManager interaction, Action nextDay, Action returnMenu, Action toggleInventory)
+        public IEnumerator ShowFarmHud(FarmManager farm, InteractionManager interaction, EconomyManager economy, TimeManager time, StaminaManager stamina, WeatherManager weather, Action nextDay, Action returnMenu, Action toggleInventory)
         {
             yield return Load(RuntimeUi.HudAddress, root =>
             {
                 PrototypeHud view = root.GetComponent<PrototypeHud>();
-                if (view == null) throw new InvalidOperationException("FarmHUD has no PrototypeHud view");
-                return new FarmHudController(view, farm, interaction, nextDay, returnMenu, toggleInventory);
+                if (view == null) throw new InvalidOperationException("FarmHudPanel has no PrototypeHud view");
+                return new FarmHudController(view, farm, interaction, economy, time, stamina, weather, nextDay, returnMenu, toggleInventory);
             });
         }
 
-        public IEnumerator PrepareInventory(InventoryManager inventory, Action closeInventory)
+        public IEnumerator PrepareInventory(InventoryManager inventory, FarmManager farm, Func<string, bool> chooseSeed, Action closeInventory)
         {
             yield return Load(RuntimeUi.InventoryAddress, root =>
             {
                 InventoryView view = root.GetComponent<InventoryView>();
-                if (view == null) throw new InvalidOperationException("InventoryUI has no InventoryView");
-                return new InventoryController(view, inventory, closeInventory);
+                if (view == null) throw new InvalidOperationException("InventoryPanel has no InventoryView");
+                return new InventoryController(view, inventory, farm, chooseSeed, closeInventory);
             });
             SetInventoryVisible(false);
         }
 
+        public IEnumerator ShowFeedback(ToolManager tools)
+        {
+            yield return Load("FeedbackPanel", root => new FeedbackController(root.GetComponent<FeedbackView>(), tools));
+        }
+        public IEnumerator ShowCropInfo(FarmManager farm, InteractionManager interaction)
+        {
+            yield return Load("CropInfoPanel", root => new CropInfoController(root.GetComponent<CropInfoView>(), farm, interaction));
+        }
+        public IEnumerator ShowTasks(TaskManager tasks, Action claim)
+        {
+            yield return Load("TaskPanel", root => new TaskController(root.GetComponent<TaskView>(), tasks, claim));
+        }
         public IEnumerator ShowSettings(SettingsManager settings, Action close)
         {
-            yield return Load("SettingsUI", root =>
+            yield return Load("SettingsPanel", root =>
             {
                 SettingsView view = root.GetComponent<SettingsView>();
-                if (view == null) throw new InvalidOperationException("SettingsUI has no SettingsView");
+                if (view == null) throw new InvalidOperationException("SettingsPanel has no SettingsView");
                 return new SettingsController(view, settings, close);
             });
         }
 
-        public void CloseSettings() => Close("SettingsUI");
+        public void CloseSettings() => Close("SettingsPanel");
+        public IEnumerator ShowShop(ShopManager shop, Action close)
+        {
+            yield return Load("ShopPanel", root =>
+            {
+                ShopView view = root.GetComponent<ShopView>();
+                if (view == null) throw new InvalidOperationException("ShopPanel has no ShopView");
+                return new ShopController(view, shop, close);
+            });
+        }
+        public void CloseShop() => Close("ShopPanel");
+        public IEnumerator ShowOrder(OrderManager orders, Action deliver, Action close)
+        {
+            yield return Load("OrderPanel", root => new OrderController(root.GetComponent<OrderView>(), orders, deliver, close));
+        }
+        public void CloseOrder() => Close("OrderPanel");
+        public IEnumerator ShowToolUpgrade(ToolUpgradeManager upgrades, Action<MagicIsland.Farming.FarmTool> upgrade, Action close, Action save)
+        {
+            yield return Load("ToolUpgradePanel", root => new ToolUpgradeController(root.GetComponent<ToolUpgradeView>(), upgrades, upgrade, close, save));
+        }
+        public void CloseToolUpgrade() => Close("ToolUpgradePanel");
+        public IEnumerator ShowStorage(StorageManager storage, Action<bool, int, int> transfer, Action close, Action save)
+        {
+            yield return Load("StoragePanel", root => new StorageController(root.GetComponent<StorageView>(), storage, transfer, close, save));
+        }
+        public void CloseStorage() => Close("StoragePanel");
+        public IEnumerator ShowSleep(Action confirm, Action cancel)
+        {
+            yield return Load("SleepPanel", root => new SleepController(root.GetComponent<SleepView>(), confirm, cancel));
+        }
+        public void CloseSleep() => Close("SleepPanel");
 
         public void SetInventoryVisible(bool visible)
         {
+            if (visible) DismissFeedback();
             if (instances.TryGetValue(RuntimeUi.InventoryAddress, out Entry entry) && entry.Handle.IsValid()
                 && entry.Handle.IsDone && entry.Handle.Status == AsyncOperationStatus.Succeeded)
                 entry.Handle.Result.SetActive(visible);
+        }
+
+        private void DismissFeedback()
+        {
+            if (instances.TryGetValue("FeedbackPanel", out Entry entry))
+                (entry.Controller as FeedbackController)?.Dismiss();
+        }
+
+        private void PreparePanel(GameObject panel)
+        {
+            if (panel.GetComponent<UIView>().Layer == UILayer.PopUp) DismissFeedback();
         }
 
         private IEnumerator Load(string address, Func<GameObject, IUIController> createController)
@@ -129,7 +188,10 @@ namespace MagicIsland.Managers
             if (instances.TryGetValue(address, out Entry loaded))
             {
                 if (loaded.Handle.IsDone && loaded.Handle.Status == AsyncOperationStatus.Succeeded)
+                {
+                    PreparePanel(loaded.Handle.Result);
                     loaded.Handle.Result.SetActive(true);
+                }
                 yield break;
             }
             Entry entry = new Entry { Handle = Addressables.InstantiateAsync(address, transform) };
@@ -145,6 +207,7 @@ namespace MagicIsland.Managers
             try
             {
                 PlacePanel(entry.Handle.Result);
+                PreparePanel(entry.Handle.Result);
                 entry.Controller = createController(entry.Handle.Result);
             }
             catch (Exception error)
@@ -190,7 +253,8 @@ namespace MagicIsland.Managers
             };
         }
 
-        private void Update() { foreach (Entry entry in instances.Values) entry.Controller?.Tick(); }
+        public void RefreshViews() { foreach (Entry entry in instances.Values) entry.Controller?.Tick(); }
+        private void Update() => RefreshViews();
 
         private void OnDestroy()
         {
