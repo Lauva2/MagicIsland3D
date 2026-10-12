@@ -33,7 +33,7 @@ namespace MagicIsland.EditorTools
         private static void Require(bool value, string message) { if (!value) throw new Exception(message); }
         private static PrototypeHud Hud => UnityEngine.Object.FindObjectOfType<PrototypeHud>();
         private static void SaveDirectory(GameManager game, string directory) => game.Saves.Initialize(game.Configuration.Config, game.Configuration.Items,
-            game.Configuration.Crops, directory, game.Configuration.Tasks, game.Configuration.Orders, game.Configuration.Seasons, game.Configuration.Gathering, game.Configuration.ToolUpgrades, game.Configuration.Storage);
+            game.Configuration.Crops, directory, game.Configuration.Tasks, game.Configuration.Orders, game.Configuration.Seasons, game.Configuration.Gathering, game.Configuration.ToolUpgrades, game.Configuration.Storage, game.Configuration.NPCs, game.Configuration.Relationships, game.Configuration.Stories, game.Configuration.NPCSchedules, game.Configuration.Fishing);
         private static void Capture(GameManager game, string name)
         {
             if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null) return;
@@ -74,7 +74,7 @@ namespace MagicIsland.EditorTools
                 {
                     Require(game.Gathering.Nodes.Count == 5 && UnityEngine.Object.FindObjectsOfType<GatheringNode>().Length == 5
                         && game.Gathering.Nodes.All(node => node.WholeVisual.activeSelf && !node.DepletedVisual.activeSelf), "Five AA resource instances initialized once");
-                    Require(Hud.ToolButtons.Length == 5 && game.Tools.Presentation.Grip.Find("Axe") != null && game.Tools.Presentation.Grip.Find("Pickaxe") != null, "HUD and held gathering tools");
+                    Require(Hud.ToolButtons.Length == 6 && game.Tools.Presentation.Grip.Find("Axe") != null && game.Tools.Presentation.Grip.Find("Pickaxe") != null, "HUD and held gathering tools");
                     var point = game.Gathering.Nodes[0].transform.position; var ray = new Ray(point + Vector3.up * 6, Vector3.down); Physics.SyncTransforms();
                     Require(game.Interactions.Controller.RefreshGatheringHover(ray, false) && game.Interactions.Controller.GatheringHoverIndex == 0
                         && game.Interactions.Controller.HoverIndex == -1 && game.Interactions.Controller.Hint.Contains("太远"), "Tree ray captures hover without farm input");

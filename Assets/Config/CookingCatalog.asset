@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31903ab964094ea0a685d874857e2671, type: 3}
+  m_Name: CookingCatalog
+  m_EditorClassIdentifier: 
+  StationAddress: CookingStation
+  Recipes:
+  - Id: turnip_soup
+    DisplayName: "\u829C\u83C1\u6C64"
+    IngredientId: turnip
+    FoodId: turnip_soup
+    IngredientQuantity: 2
+    OutputQuantity: 1
+    StaminaRecovery: 30
+    RequiredEventId: 
+    AdditionalIngredients: []
+  - Id: roasted_corn
+    DisplayName: "\u70E4\u7389\u7C73"
+    IngredientId: corn
+    FoodId: roasted_corn
+    IngredientQuantity: 1
+    OutputQuantity: 1
+    StaminaRecovery: 20
+    RequiredEventId: 
+    AdditionalIngredients: []
+  - Id: vegetable_soup
+    DisplayName: "\u852C\u83DC\u6D53\u6C64"
+    IngredientId: turnip
+    FoodId: vegetable_soup
+    IngredientQuantity: 1
+    OutputQuantity: 1
+    StaminaRecovery: 50
+    RequiredEventId: steward_recipe
+    AdditionalIngredients:
+    - ItemId: tomato
+      Quantity: 1
+    - ItemId: corn
+      Quantity: 1
+  - Id: grilled_sardine
+    DisplayName: "\u70E4\u6C99\u4E01\u9C7C"
+    IngredientId: sardine
+    FoodId: grilled_sardine
+    IngredientQuantity: 1
+    OutputQuantity: 1
+    StaminaRecovery: 35
+    RequiredEventId: 
+    AdditionalIngredients: []
+  - Id: bass_vegetable_soup
+    DisplayName: "\u9C88\u9C7C\u852C\u83DC\u6C64"
+    IngredientId: sea_bass
+    FoodId: bass_vegetable_soup
+    IngredientQuantity: 1
+    OutputQuantity: 1
+    StaminaRecovery: 50
+    RequiredEventId: 
+    AdditionalIngredients:
+    - ItemId: turnip
+      Quantity: 1
+    - ItemId: tomato
+      Quantity: 1

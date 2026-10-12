@@ -44,8 +44,22 @@ namespace MagicIsland.EditorTools
             OrderPanelPrefabBuilder.CreateMissing();
             ToolUpgradeSetup.CreatePanel();
             StorageSetup.CreatePanel();
+            CookingSetup.CreatePanel();
+            NPCSetup.CreatePanel();
+            RelationshipSetup.CreatePanel();
+            RelationshipSetup.UpgradeDialogue();
+            StoryEventSetup.UpgradeDialogue();
+            StoryEventSetup.UpgradeCooking();
+            FishCookingSetup.UpgradePanel();
             EnsureMvcControls();
             CropUiUpgrade.Apply();
+            CookingSetup.UpgradeInventory();
+            FishingSetup.CreatePanel();
+            FishingSetup.UpgradeShop();
+            CraftingSetup.CreatePanels(); CraftingSetup.UpgradePanels();
+            FurnitureSetup.UpgradePanel();
+            HousingSetup.CreatePanel(); HousingSetup.UpgradeHud();
+            HouseUpgradeSetup.CreatePanel();
             UiPrefabMigration.UpgradeAll();
         }
 

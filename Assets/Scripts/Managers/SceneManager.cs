@@ -11,10 +11,34 @@ namespace MagicIsland.Managers
     public sealed class SceneManager : MonoBehaviour
     {
         public Scene GameScene { get; private set; }
+        public Scene HomeScene { get; private set; }
         public bool IsBusy { get; private set; }
         public string LastError { get; private set; }
         private AsyncOperationHandle<SceneInstance> handle;
         private bool ownsScene;
+        private AsyncOperationHandle<SceneInstance> homeHandle;
+
+        public IEnumerator LoadHomeScene(string address)
+        {
+            LastError = null;
+            if (HomeScene.IsValid() && HomeScene.isLoaded) yield break;
+            if (IsBusy) { LastError = "正在切换场景，请稍候"; yield break; }
+            IsBusy = true; homeHandle = Addressables.LoadSceneAsync(address, LoadSceneMode.Additive); yield return homeHandle;
+            if (homeHandle.Status == AsyncOperationStatus.Succeeded) HomeScene = homeHandle.Result.Scene;
+            else { LastError = "小屋场景暂时无法加载，请重试"; if (homeHandle.IsValid()) Addressables.Release(homeHandle); homeHandle = default; }
+            IsBusy = false;
+        }
+        public IEnumerator UnloadHomeScene()
+        {
+            LastError = null;
+            if (!homeHandle.IsValid()) { HomeScene = default; yield break; }
+            if (IsBusy) { LastError = "正在切换场景，请稍候"; yield break; }
+            IsBusy = true; var unload = Addressables.UnloadSceneAsync(homeHandle, false); yield return unload;
+            if (unload.Status != AsyncOperationStatus.Succeeded) LastError = "小屋场景暂时无法卸载，请重试";
+            Addressables.Release(unload);
+            if (LastError == null) { HomeScene = default; homeHandle = default; }
+            IsBusy = false;
+        }
 
         public void UseEditorScene(Scene scene) => GameScene = scene;
 
@@ -42,6 +66,8 @@ namespace MagicIsland.Managers
         public IEnumerator UnloadGameScene()
         {
             if (IsBusy) yield break;
+            yield return UnloadHomeScene();
+            if (LastError != null) yield break;
             IsBusy = true;
             LastError = null;
             if (ownsScene && handle.IsValid())
@@ -66,6 +92,11 @@ namespace MagicIsland.Managers
 
         private void OnDestroy()
         {
+            if (homeHandle.IsValid())
+            {
+                if (!homeHandle.IsDone) homeHandle.Completed += h => { if (h.Status == AsyncOperationStatus.Succeeded) Addressables.UnloadSceneAsync(h); else if (h.IsValid()) Addressables.Release(h); };
+                else Addressables.UnloadSceneAsync(homeHandle);
+            }
             if (!handle.IsValid()) return;
             if (!handle.IsDone)
                 handle.Completed += operation =>

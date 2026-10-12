@@ -41,6 +41,7 @@ namespace MagicIsland.EditorTools
         {
             game.Farm.State.Restore(day, game.Farm.State.Cells);
             while (game.Orders.State.Day < day) game.Orders.State.NextDay(game.Orders.State.Day + 1);
+            while (game.Relationships.State.Day < day) game.Relationships.State.NextDay(game.Relationships.State.Day + 1);
             while (game.Gathering.State.Day < day) game.Gathering.NextDay(game.Gathering.State.Day + 1);
             var world = UnityEngine.Object.FindObjectOfType<FarmPrototype>();
             game.Weather.Initialize(game.Configuration.Weather, game.Farm, world.Sun, world.Player.ViewCamera,
@@ -86,7 +87,7 @@ namespace MagicIsland.EditorTools
                         && crops.Find("corn").PlantingSeasons == (SeasonMask.Summer | SeasonMask.Autumn), "Default crop seasons serialized");
                     var savedMask = crops.Find("turnip").PlantingSeasons; crops.Find("turnip").PlantingSeasons = (SeasonMask)16;
                     Require(!crops.Validate(game.Configuration.Config, game.Configuration.Items), "Invalid crop season mask rejected"); crops.Find("turnip").PlantingSeasons = savedMask;
-                    game.Saves.Initialize(game.Configuration.Config, game.Configuration.Items, crops, Path.GetFullPath("Logs/CalendarSaves/" + Guid.NewGuid().ToString("N")), tasks: game.Configuration.Tasks, orders: game.Configuration.Orders, seasons: game.Configuration.Seasons, gathering: game.Configuration.Gathering, toolUpgrades: game.Configuration.ToolUpgrades, storage: game.Configuration.Storage);
+                    game.Saves.Initialize(game.Configuration.Config, game.Configuration.Items, crops, Path.GetFullPath("Logs/CalendarSaves/" + Guid.NewGuid().ToString("N")), tasks: game.Configuration.Tasks, orders: game.Configuration.Orders, seasons: game.Configuration.Seasons, gathering: game.Configuration.Gathering, toolUpgrades: game.Configuration.ToolUpgrades, storage: game.Configuration.Storage, npcs: game.Configuration.NPCs, relationships: game.Configuration.Relationships, stories: game.Configuration.Stories, schedules: game.Configuration.NPCSchedules, fishing: game.Configuration.Fishing, crafting: game.Configuration.Crafting);
                     game.EnterGame(); Phase(1);
                 }
                 else if (phase == 1 && game.State == GameFlowState.Playing)

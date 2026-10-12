@@ -9,7 +9,8 @@ namespace MagicIsland.Tools
         public Transform Grip { get; }
         public Transform EffectRoot { get; }
         public int ActiveEffectCount => particles.Count;
-        private readonly GameObject[] models = new GameObject[6];
+        private readonly GameObject[] models = new GameObject[7];
+        public Transform FishingRodRoot => models[(int)ToolActionKind.FishingRod].transform;
         private readonly List<Material> materials = new List<Material>();
         private readonly List<Particle> particles = new List<Particle>();
         private readonly Material earth, seed, water, sparkle;

@@ -20,7 +20,14 @@ namespace MagicIsland.Managers
         public bool HasSleep => instances.ContainsKey("SleepPanel");
         public bool HasShop => instances.ContainsKey("ShopPanel");
         public bool HasToolUpgrade => instances.ContainsKey("ToolUpgradePanel");
+        public bool HasGift => instances.ContainsKey("GiftPanel");
+        public bool HasFishing => instances.ContainsKey("FishingPanel");
+        public bool HasDialogue => instances.ContainsKey("DialoguePanel");
+        public bool HasCrafting => instances.ContainsKey("CraftingPanel");
+        public bool HasPlacement => instances.ContainsKey("PlacementPanel");
+        public bool HasCooking => instances.ContainsKey("CookingPanel");
         public bool HasStorage => instances.ContainsKey("StoragePanel");
+        public bool HasHouseUpgrade => instances.ContainsKey("HouseUpgradePanel");
         public bool HasOrder => instances.ContainsKey("OrderPanel");
         public bool IsInventoryVisible => instances.TryGetValue(RuntimeUi.InventoryAddress, out Entry entry)
             && entry.Handle.IsValid() && entry.Handle.IsDone && entry.Handle.Status == AsyncOperationStatus.Succeeded
@@ -52,6 +59,7 @@ namespace MagicIsland.Managers
 
         private void PlacePanel(GameObject panel)
         {
+            foreach (var child in panel.GetComponentsInChildren<Transform>(true)) child.gameObject.layer = 5;
             UIView view = panel.GetComponent<UIView>();
             Canvas canvas = panel.GetComponent<Canvas>();
             if (view == null || canvas == null) throw new InvalidOperationException("UI panel requires UIView and Canvas: " + panel.name);
@@ -98,13 +106,13 @@ namespace MagicIsland.Managers
             });
         }
 
-        public IEnumerator PrepareInventory(InventoryManager inventory, FarmManager farm, Func<string, bool> chooseSeed, Action closeInventory)
+        public IEnumerator PrepareInventory(InventoryManager inventory, FarmManager farm, Func<string, bool> chooseSeed, Action closeInventory, FoodManager food, Action<int> eatFood, Action saveFood, PlacementManager placement = null, Action<int> startPlacement = null)
         {
             yield return Load(RuntimeUi.InventoryAddress, root =>
             {
                 InventoryView view = root.GetComponent<InventoryView>();
                 if (view == null) throw new InvalidOperationException("InventoryPanel has no InventoryView");
-                return new InventoryController(view, inventory, farm, chooseSeed, closeInventory);
+                return new InventoryController(view, inventory, farm, chooseSeed, closeInventory, food, eatFood, saveFood, placement, startPlacement);
             });
             SetInventoryVisible(false);
         }
@@ -132,24 +140,27 @@ namespace MagicIsland.Managers
         }
 
         public void CloseSettings() => Close("SettingsPanel");
-        public IEnumerator ShowShop(ShopManager shop, Action close)
+        public IEnumerator ShowShop(ShopManager shop, Action close, Func<bool, MagicIsland.Economy.TradeResult> trade, Action save)
         {
             yield return Load("ShopPanel", root =>
             {
                 ShopView view = root.GetComponent<ShopView>();
                 if (view == null) throw new InvalidOperationException("ShopPanel has no ShopView");
-                return new ShopController(view, shop, close);
+                return new ShopController(view, shop, close, trade, save);
             });
         }
         public void CloseShop() => Close("ShopPanel");
-        public IEnumerator ShowOrder(OrderManager orders, Action deliver, Action close)
+        public IEnumerator ShowOrder(OrderManager orders, Action deliver, Action close, Action houseUpgrade = null)
         {
-            yield return Load("OrderPanel", root => new OrderController(root.GetComponent<OrderView>(), orders, deliver, close));
+            yield return Load("OrderPanel", root => new OrderController(root.GetComponent<OrderView>(), orders, deliver, close, houseUpgrade));
         }
+        public IEnumerator ShowHouseUpgrade(HousingManager housing, FarmManager farm, InventoryManager inventory, EconomyManager economy, Action apply, Action close, Action save)
+        { yield return Load("HouseUpgradePanel", root => new HouseUpgradeController(root.GetComponent<HouseUpgradeView>(), housing, farm, inventory, economy, apply, close, save)); }
+        public void CloseHouseUpgrade() => Close("HouseUpgradePanel");
         public void CloseOrder() => Close("OrderPanel");
-        public IEnumerator ShowToolUpgrade(ToolUpgradeManager upgrades, Action<MagicIsland.Farming.FarmTool> upgrade, Action close, Action save)
+        public IEnumerator ShowToolUpgrade(ToolUpgradeManager upgrades, Action<MagicIsland.Farming.FarmTool> upgrade, Action close, Action save, Action crafting = null)
         {
-            yield return Load("ToolUpgradePanel", root => new ToolUpgradeController(root.GetComponent<ToolUpgradeView>(), upgrades, upgrade, close, save));
+            yield return Load("ToolUpgradePanel", root => new ToolUpgradeController(root.GetComponent<ToolUpgradeView>(), upgrades, upgrade, close, save, crafting));
         }
         public void CloseToolUpgrade() => Close("ToolUpgradePanel");
         public IEnumerator ShowStorage(StorageManager storage, Action<bool, int, int> transfer, Action close, Action save)
@@ -157,6 +168,27 @@ namespace MagicIsland.Managers
             yield return Load("StoragePanel", root => new StorageController(root.GetComponent<StorageView>(), storage, transfer, close, save));
         }
         public void CloseStorage() => Close("StoragePanel");
+        public IEnumerator ShowCooking(CookingManager cooking, Action<int> cook, Action close, Action save)
+        { yield return Load("CookingPanel", root => new CookingController(root.GetComponent<CookingView>(), cooking, cook, close, save)); }
+        public void CloseCooking() => Close("CookingPanel");
+        public IEnumerator ShowDialogue(DialogueManager dialogue, Action next, Action close, Action gift, Action story)
+        { yield return Load("DialoguePanel", root => new DialogueController(root.GetComponent<DialogueView>(), dialogue, next, close, gift, story)); }
+        public void CloseDialogue() => Close("DialoguePanel");
+        public IEnumerator ShowGift(RelationshipManager relationships, Action<int> give, Action close, Action save)
+        { yield return Load("GiftPanel", root => new GiftController(root.GetComponent<GiftView>(), relationships, give, close, save)); }
+        public void CloseGift() => Close("GiftPanel");
+        public IEnumerator ShowFishing(FishingManager fishing, Action cast, Action reel, Action save, Action close)
+        { yield return Load("FishingPanel", root => new FishingController(root.GetComponent<FishingView>(), fishing, cast, reel, save, close)); }
+        public void CloseFishing() => Close("FishingPanel");
+        public IEnumerator ShowCrafting(CraftingManager crafting, Action<int> craft, Action close, Action save, Action upgrade)
+        { yield return Load("CraftingPanel", root => new CraftingController(root.GetComponent<CraftingView>(), crafting, craft, close, save, upgrade)); }
+        public void CloseCrafting() => Close("CraftingPanel");
+        public IEnumerator ShowPlacement(PlacementManager placement, Action confirm, Action rotate, Action cancel, Action save)
+        { yield return Load("PlacementPanel", root => new PlacementController(root.GetComponent<PlacementView>(), placement, confirm, rotate, cancel, save)); }
+        public void ClosePlacement() => Close("PlacementPanel");
+        public IEnumerator ShowSceneTransition(string text)
+        { yield return Load("SceneTransitionPanel", root => new SceneTransitionController(root.GetComponent<SceneTransitionView>(), text)); }
+        public void CloseSceneTransition() => Close("SceneTransitionPanel");
         public IEnumerator ShowSleep(Action confirm, Action cancel)
         {
             yield return Load("SleepPanel", root => new SleepController(root.GetComponent<SleepView>(), confirm, cancel));

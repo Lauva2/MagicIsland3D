@@ -5,7 +5,7 @@ namespace MagicIsland.UI.Views
 {
     public sealed class ShopView : UIView
     {
-        public Button CloseButton, BuyButton, SellButton;
+        public Button CloseButton, BuyButton, SellButton, SaveButton;
         public Button[] CropButtons;
         public TMP_Text BalanceText, BuyText, SellText, StockText, FeedbackText;
         public void Render(ShopModel model)

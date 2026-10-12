@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MagicIsland.Farming
 {
-    public enum FarmTool { Hoe, Seeds, WateringCan, Axe, Pickaxe }
+    public enum FarmTool { Hoe, Seeds, WateringCan, Axe, Pickaxe, FishingRod }
 
     [Serializable]
     public sealed class FarmCell

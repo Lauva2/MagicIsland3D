@@ -32,6 +32,61 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59900ee3adfb0fc4ab832e425755500e
+    m_Address: CookingStation
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b97e9edddffaf940a8d51c097579ddd
+    m_Address: WoodFence
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95b1a699caaaf4e4788c70363eb01341
+    m_Address: StonePath
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f782b9c8fa8295a49a97d9c3ae3e0858
+    m_Address: GardenLamp
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9735156ecebc84942b2a4ed515133d0e
+    m_Address: PlayerHouse
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f2b97fce79575104396282d5e1bc758a
+    m_Address: PlayerHomeInterior
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5b4f96202487fb4190931474b514e58
+    m_Address: WoodTable
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 391cd747bc12e4342b47a46dc9f2dba6
+    m_Address: WoodChair
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d9d56c70340e9d44c9dcb0af76508b79
+    m_Address: SmallLamp
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7a10d716a7fd7534cbab54558ebc69da
+    m_Address: PlayerHouseExpansion
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 936c957cc74568544b32928f46a61f6b
+    m_Address: PlayerHomeExpansion
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: ac955b8fe83d22d4a85c3b3fc30e9c11, type: 2}
   m_SchemaSet:

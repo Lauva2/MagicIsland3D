@@ -73,7 +73,7 @@ namespace MagicIsland.EditorTools
                     task.Required = 0; Require(!game.Configuration.Tasks.IsValid, "Invalid task count rejected"); task.Required = amount;
                     game.Configuration.Seasons.SpringRainChance = 0;
                     string directory = Path.GetFullPath("Logs/TaskSaves/" + Guid.NewGuid().ToString("N"));
-                    game.Saves.Initialize(game.Configuration.Config, game.Configuration.Items, game.Configuration.Crops, directory, game.Configuration.Tasks, orders: game.Configuration.Orders, seasons: game.Configuration.Seasons, gathering: game.Configuration.Gathering, toolUpgrades: game.Configuration.ToolUpgrades, storage: game.Configuration.Storage);
+                    game.Saves.Initialize(game.Configuration.Config, game.Configuration.Items, game.Configuration.Crops, directory, game.Configuration.Tasks, orders: game.Configuration.Orders, seasons: game.Configuration.Seasons, gathering: game.Configuration.Gathering, toolUpgrades: game.Configuration.ToolUpgrades, storage: game.Configuration.Storage, npcs: game.Configuration.NPCs, relationships: game.Configuration.Relationships, stories: game.Configuration.Stories, schedules: game.Configuration.NPCSchedules, fishing: game.Configuration.Fishing, crafting: game.Configuration.Crafting);
                     SessionState.SetString(Running + ".Directory", directory); game.EnterGame(); Phase(1);
                 }
                 else if (phase == 1 && game.State == GameFlowState.Playing)
@@ -118,12 +118,15 @@ namespace MagicIsland.EditorTools
                     Require(game.Tasks.State.CurrentIndex == 3 && !game.Tasks.State.Ready && game.Economy.Gold == 115, "Plant/water rewards unlock sleep");
                     game.ToggleInventory(); game.AdvanceDay(); game.ClaimTaskReward();
                     Require(game.Tasks.State.GetProgress(3) == 0 && game.Economy.Gold == 115, "Modal blocks day advance and task claim");
-                    game.CloseInventory(); game.Players.RestorePosition(game.Time.Bed.position + Vector3.forward); game.OpenSleep(); Phase(4);
+                    game.CloseInventory(); game.Players.RestorePosition(game.Housing.Entrance.Position + new Vector3(0, .1f, -1.4f)); game.EnterHome(); Phase(13);
                 }
+                else if (phase == 13 && game.State == GameFlowState.Playing && game.Housing.Inside)
+                { game.Players.RestorePosition(game.Time.Bed.position + new Vector3(1.5f, .1f, 0)); game.OpenSleep(); Phase(4); }
                 else if (phase == 4 && UnityEngine.Object.FindObjectOfType<SleepView>() != null)
                 {
-                    SleepView sleep = UnityEngine.Object.FindObjectOfType<SleepView>(); sleep.ConfirmButton.onClick.Invoke(); Phase(5);
+                    SleepView sleep = UnityEngine.Object.FindObjectOfType<SleepView>(); sleep.ConfirmButton.onClick.Invoke(); game.Players.RestorePosition(game.Housing.Interior.Exit.Position + new Vector3(0, .1f, 1.5f)); game.ExitHome(); Phase(14);
                 }
+                else if (phase == 14 && game.State == GameFlowState.Playing && !game.Housing.Inside) { Phase(5); }
                 else if (phase == 5 && game.State == GameFlowState.Playing && !game.UI.HasSleep)
                 {
                     Require(game.Tasks.State.Ready && game.Tasks.State.GetProgress(3) == 1 && game.Farm.State.Day == 2

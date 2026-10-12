@@ -29,7 +29,7 @@ namespace MagicIsland.EditorTools
         static void Phase(int value) => SessionState.SetInt(Key + ".Phase", value);
         static void Require(bool ok, string message) { if (!ok) throw new Exception(message); }
         static void SaveDirectory(GameManager g, string directory) => g.Saves.Initialize(g.Configuration.Config, g.Configuration.Items, g.Configuration.Crops, directory,
-            g.Configuration.Tasks, g.Configuration.Orders, g.Configuration.Seasons, g.Configuration.Gathering, g.Configuration.ToolUpgrades, g.Configuration.Storage);
+            g.Configuration.Tasks, g.Configuration.Orders, g.Configuration.Seasons, g.Configuration.Gathering, g.Configuration.ToolUpgrades, g.Configuration.Storage, g.Configuration.NPCs, g.Configuration.Relationships, g.Configuration.Stories, g.Configuration.NPCSchedules, g.Configuration.Fishing, g.Configuration.Crafting);
         static StorageView View => UnityEngine.Object.FindObjectOfType<StorageView>();
         static void Place(GameManager g) => g.Players.RestorePosition(g.Storage.Chest.transform.position + new Vector3(0, .1f, -1.4f));
         static void Capture(GameManager g, string name)
@@ -116,7 +116,7 @@ namespace MagicIsland.EditorTools
                 {
                     Require(g.Saves.TryLoad(out var data), "Read v10 migration fixture"); string upgrades = JsonUtility.ToJson(data.ToolUpgrades[0]); string resource = JsonUtility.ToJson(data.Gathering[0]);
                     data.Version = 10; data.Storage = null; File.WriteAllText(g.Saves.SavePath, JsonUtility.ToJson(data)); File.WriteAllText(g.Saves.SavePath + ".bak", JsonUtility.ToJson(data));
-                    Require(g.Saves.TryLoad(out var migrated) && migrated.Version == 11 && migrated.Storage.Length == 18 && migrated.Storage.All(s => s.Quantity == 0)
+                    Require(g.Saves.TryLoad(out var migrated) && migrated.Version == SaveData.CurrentVersion && migrated.Storage.Length == 18 && migrated.Storage.All(s => s.Quantity == 0)
                         && migrated.Slots.Sum(s => s.ItemId == "turnip_seed" ? s.Quantity : 0) == 50 && JsonUtility.ToJson(migrated.ToolUpgrades[0]) == upgrades && JsonUtility.ToJson(migrated.Gathering[0]) == resource,
                         "v10 migration empty chest preserves bag/upgrades/resources"); g.ContinueGame(); Phase(9);
                 }

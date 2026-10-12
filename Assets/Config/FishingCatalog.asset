@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24efe09ca1c142899611a00d4791d20e, type: 3}
+  m_Name: FishingCatalog
+  m_EditorClassIdentifier: 
+  RodAddress: FishingRod
+  SpotAddress: CoastalFishingSpot
+  SpotPosition: {x: 10.4, y: 0, z: -8.2}
+  WaitMin: 2
+  WaitMax: 5
+  BiteWindow: 2
+  StaminaCost: 5
+  Fish:
+  - ItemId: sardine
+    Weight: 70
+  - ItemId: sea_bass
+    Weight: 30

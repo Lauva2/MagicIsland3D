@@ -29,7 +29,7 @@ namespace MagicIsland.EditorTools
         static void Phase(int p) => SessionState.SetInt(Key + ".Phase", p);
         static void Require(bool condition, string message) { if (!condition) throw new Exception(message); }
         static void DirectoryFor(GameManager g, string dir) => g.Saves.Initialize(g.Configuration.Config, g.Configuration.Items, g.Configuration.Crops, dir,
-            g.Configuration.Tasks, g.Configuration.Orders, g.Configuration.Seasons, g.Configuration.Gathering, g.Configuration.ToolUpgrades, g.Configuration.Storage);
+            g.Configuration.Tasks, g.Configuration.Orders, g.Configuration.Seasons, g.Configuration.Gathering, g.Configuration.ToolUpgrades, g.Configuration.Storage, g.Configuration.NPCs, g.Configuration.Relationships, g.Configuration.Stories, g.Configuration.NPCSchedules, g.Configuration.Fishing, g.Configuration.Crafting);
         static void Place(GameManager g, Vector3 target) => g.Players.RestorePosition(target + new Vector3(0, .1f, -1.5f));
         static void Capture(GameManager g, string name)
         {

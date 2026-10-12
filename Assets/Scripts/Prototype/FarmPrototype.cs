@@ -114,15 +114,7 @@ namespace MagicIsland.Prototype
                 new Vector3(1.8f, 0.2f, 1.4f), hat, true);
             roof.transform.SetParent(counter.transform, true);
             // Keep canopy world dimensions when attaching to the scaled counter.
-            GameObject bed = Primitive("Sleep Bed", PrimitiveType.Cube,
-                new Vector3(-farmSize * 0.6f - 1.5f, 0.3f, -4.6f), new Vector3(1.3f, 0.6f, 2f), wood, true);
-            bed.AddComponent<SleepBed>(); Bed = bed.transform;
-            GameObject blanket = Primitive("Bed Blanket", PrimitiveType.Cube, bed.transform.position + Vector3.up * 0.35f,
-                new Vector3(1.25f, 0.12f, 1.9f), Material(new Color(0.65f, 0.75f, 0.87f)), true);
-            blanket.transform.SetParent(bed.transform, true);
-            GameObject pillow = Primitive("Bed Pillow", PrimitiveType.Cube, bed.transform.position + new Vector3(0, 0.47f, 0.62f),
-                new Vector3(1f, 0.15f, 0.5f), Material(new Color(0.98f, 0.96f, 0.88f)), true);
-            pillow.transform.SetParent(bed.transform, true);
+
         }
 
         private Material Material(Color color)

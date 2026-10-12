@@ -18,6 +18,15 @@ namespace MagicIsland.Managers
         public GatheringCatalog Gathering { get; private set; }
         public ToolUpgradeCatalog ToolUpgrades { get; private set; }
         public StorageConfig Storage { get; private set; }
+        public CookingCatalog Cooking { get; private set; }
+        public NPCCatalog NPCs { get; private set; }
+        public DialogueCatalog Dialogues { get; private set; }
+        public RelationshipCatalog Relationships { get; private set; }
+        public StoryEventCatalog Stories { get; private set; }
+        public FishingCatalog Fishing { get; private set; }
+        public NPCScheduleCatalog NPCSchedules { get; private set; }
+        public CraftingCatalog Crafting { get; private set; }
+        public HousingConfig Housing { get; private set; }
         public string LastError { get; private set; }
         private AsyncOperationHandle<GameConfig> handle;
         private AsyncOperationHandle<ItemCatalog> itemHandle;
@@ -29,11 +38,29 @@ namespace MagicIsland.Managers
         private AsyncOperationHandle<GatheringCatalog> gatheringHandle;
         private AsyncOperationHandle<ToolUpgradeCatalog> upgradeHandle;
         private AsyncOperationHandle<StorageConfig> storageHandle;
+        private AsyncOperationHandle<CookingCatalog> cookingHandle;
+        private AsyncOperationHandle<NPCCatalog> npcHandle;
+        private AsyncOperationHandle<DialogueCatalog> dialogueHandle;
+        private AsyncOperationHandle<RelationshipCatalog> relationshipHandle;
+        private AsyncOperationHandle<StoryEventCatalog> storyHandle;
+        private AsyncOperationHandle<FishingCatalog> fishingHandle;
+        private AsyncOperationHandle<NPCScheduleCatalog> scheduleHandle;
+        private AsyncOperationHandle<CraftingCatalog> craftingHandle;
+        private AsyncOperationHandle<HousingConfig> housingHandle;
 
         public IEnumerator LoadConfiguration()
         {
             LastError = null;
-            if (Config != null && Items != null && Crops != null && Weather != null && Seasons != null && Tasks != null && Orders != null && Gathering != null && ToolUpgrades != null && Storage != null) yield break;
+            if (Config != null && Items != null && Crops != null && Weather != null && Seasons != null && Tasks != null && Orders != null && Gathering != null && ToolUpgrades != null && Storage != null && Cooking != null && NPCs != null && Dialogues != null && Relationships != null && Stories != null && Fishing != null && NPCSchedules != null && Crafting != null && Housing != null) yield break;
+            if (housingHandle.IsValid()) Addressables.Release(housingHandle);
+            if (craftingHandle.IsValid()) Addressables.Release(craftingHandle);
+            if (scheduleHandle.IsValid()) Addressables.Release(scheduleHandle);
+            if (fishingHandle.IsValid()) Addressables.Release(fishingHandle);
+            if (storyHandle.IsValid()) Addressables.Release(storyHandle);
+            if (relationshipHandle.IsValid()) Addressables.Release(relationshipHandle);
+            if (dialogueHandle.IsValid()) Addressables.Release(dialogueHandle);
+            if (npcHandle.IsValid()) Addressables.Release(npcHandle);
+            if (cookingHandle.IsValid()) Addressables.Release(cookingHandle);
             if (storageHandle.IsValid()) Addressables.Release(storageHandle);
             if (upgradeHandle.IsValid()) Addressables.Release(upgradeHandle);
             if (gatheringHandle.IsValid()) Addressables.Release(gatheringHandle);
@@ -50,7 +77,7 @@ namespace MagicIsland.Managers
             Weather = null;
             Seasons = null;
             Tasks = null;
-            Orders = null; Gathering = null; ToolUpgrades = null; Storage = null;
+            Orders = null; Gathering = null; ToolUpgrades = null; Storage = null; Cooking = null; NPCs = null; Dialogues = null; Relationships = null; Stories = null; Fishing = null; NPCSchedules = null; Crafting = null; Housing = null;
             var initialize = Addressables.InitializeAsync(false);
             yield return initialize;
             bool ready = initialize.Status == AsyncOperationStatus.Succeeded;
@@ -149,6 +176,84 @@ namespace MagicIsland.Managers
                 Addressables.Release(seasonHandle); Addressables.Release(weatherHandle); Addressables.Release(cropHandle);
                 Addressables.Release(itemHandle); Addressables.Release(handle); yield break;
             }
+            cookingHandle = Addressables.LoadAssetAsync<CookingCatalog>(CookingCatalog.Address);
+            yield return cookingHandle;
+            if (cookingHandle.Status != AsyncOperationStatus.Succeeded || cookingHandle.Result == null || !cookingHandle.Result.Validate(itemHandle.Result))
+            {
+                LastError = cookingHandle.OperationException?.Message ?? "CookingCatalog has invalid values";
+                if (cookingHandle.IsValid()) Addressables.Release(cookingHandle);
+                Addressables.Release(storageHandle); Addressables.Release(upgradeHandle); Addressables.Release(gatheringHandle); Addressables.Release(orderHandle); Addressables.Release(taskHandle);
+                Addressables.Release(seasonHandle); Addressables.Release(weatherHandle); Addressables.Release(cropHandle); Addressables.Release(itemHandle); Addressables.Release(handle); yield break;
+            }
+            npcHandle = Addressables.LoadAssetAsync<NPCCatalog>(NPCCatalog.Address);
+            yield return npcHandle;
+            if (npcHandle.Status != AsyncOperationStatus.Succeeded || npcHandle.Result == null || !npcHandle.Result.Validate(handle.Result))
+            {
+                LastError = npcHandle.OperationException?.Message ?? "NPCCatalog has invalid values";
+                ReleaseNPCConfiguration(); yield break;
+            }
+            dialogueHandle = Addressables.LoadAssetAsync<DialogueCatalog>(DialogueCatalog.Address);
+            yield return dialogueHandle;
+            if (dialogueHandle.Status != AsyncOperationStatus.Succeeded || dialogueHandle.Result == null || !dialogueHandle.Result.Validate(npcHandle.Result))
+            {
+                LastError = dialogueHandle.OperationException?.Message ?? "DialogueCatalog has invalid values";
+                ReleaseNPCConfiguration(); yield break;
+            }
+            relationshipHandle = Addressables.LoadAssetAsync<RelationshipCatalog>(RelationshipCatalog.Address);
+            yield return relationshipHandle;
+            if (relationshipHandle.Status != AsyncOperationStatus.Succeeded || relationshipHandle.Result == null || !relationshipHandle.Result.Validate(npcHandle.Result, itemHandle.Result))
+            {
+                LastError = relationshipHandle.OperationException?.Message ?? "RelationshipCatalog has invalid values";
+                if (relationshipHandle.IsValid()) Addressables.Release(relationshipHandle); ReleaseNPCConfiguration(); yield break;
+            }
+            storyHandle = Addressables.LoadAssetAsync<StoryEventCatalog>(StoryEventCatalog.Address);
+            yield return storyHandle;
+            if (storyHandle.Status != AsyncOperationStatus.Succeeded || storyHandle.Result == null || !storyHandle.Result.Validate(npcHandle.Result, relationshipHandle.Result, cookingHandle.Result))
+            {
+                LastError = storyHandle.OperationException?.Message ?? "StoryEventCatalog has invalid events or recipe unlocks";
+                if (storyHandle.IsValid()) Addressables.Release(storyHandle);
+                if (relationshipHandle.IsValid()) Addressables.Release(relationshipHandle); ReleaseNPCConfiguration(); yield break;
+            }
+            fishingHandle = Addressables.LoadAssetAsync<FishingCatalog>(FishingCatalog.Address);
+            yield return fishingHandle;
+            if (fishingHandle.Status != AsyncOperationStatus.Succeeded || fishingHandle.Result == null || !fishingHandle.Result.Validate(itemHandle.Result, handle.Result))
+            {
+                LastError = fishingHandle.OperationException?.Message ?? "FishingCatalog has invalid fish or fishing values";
+                if (fishingHandle.IsValid()) Addressables.Release(fishingHandle);
+                Addressables.Release(storyHandle); Addressables.Release(relationshipHandle); ReleaseNPCConfiguration(); yield break;
+            }
+            scheduleHandle = Addressables.LoadAssetAsync<NPCScheduleCatalog>(NPCScheduleCatalog.Address);
+            yield return scheduleHandle;
+            if (scheduleHandle.Status != AsyncOperationStatus.Succeeded || scheduleHandle.Result == null || !scheduleHandle.Result.Validate(handle.Result, npcHandle.Result, fishingHandle.Result))
+            {
+                LastError = scheduleHandle.OperationException?.Message ?? "NPCScheduleCatalog has invalid routes or timing";
+                if (scheduleHandle.IsValid()) Addressables.Release(scheduleHandle);
+                Addressables.Release(fishingHandle); Addressables.Release(storyHandle); Addressables.Release(relationshipHandle); ReleaseNPCConfiguration(); yield break;
+            }
+            craftingHandle = Addressables.LoadAssetAsync<CraftingCatalog>(CraftingCatalog.Address);
+            yield return craftingHandle;
+            if (craftingHandle.Status != AsyncOperationStatus.Succeeded || craftingHandle.Result == null || !craftingHandle.Result.Validate(itemHandle.Result))
+            {
+                LastError = craftingHandle.OperationException?.Message ?? "CraftingCatalog has invalid recipes or placeables";
+                if (craftingHandle.IsValid()) Addressables.Release(craftingHandle);
+                Addressables.Release(scheduleHandle); Addressables.Release(fishingHandle); Addressables.Release(storyHandle); Addressables.Release(relationshipHandle); ReleaseNPCConfiguration(); yield break;
+            }
+            housingHandle = Addressables.LoadAssetAsync<HousingConfig>(HousingConfig.Address);
+            yield return housingHandle;
+            if (housingHandle.Status != AsyncOperationStatus.Succeeded || housingHandle.Result == null || !housingHandle.Result.Validate(itemHandle.Result))
+            {
+                LastError = housingHandle.OperationException?.Message ?? "HousingConfig has invalid area or AA definitions";
+                if (housingHandle.IsValid()) Addressables.Release(housingHandle);
+                Addressables.Release(craftingHandle); Addressables.Release(scheduleHandle); Addressables.Release(fishingHandle); Addressables.Release(storyHandle); Addressables.Release(relationshipHandle); ReleaseNPCConfiguration(); yield break;
+            }
+            Housing = housingHandle.Result;
+            Crafting = craftingHandle.Result;
+            NPCSchedules = scheduleHandle.Result;
+            Fishing = fishingHandle.Result;
+            Stories = storyHandle.Result;
+            Relationships = relationshipHandle.Result;
+            NPCs = npcHandle.Result; Dialogues = dialogueHandle.Result;
+            Cooking = cookingHandle.Result;
             Storage = storageHandle.Result;
             ToolUpgrades = upgradeHandle.Result;
             Gathering = gatheringHandle.Result;
@@ -161,8 +266,61 @@ namespace MagicIsland.Managers
             Items = itemHandle.Result;
         }
 
+        private void ReleaseNPCConfiguration()
+        {
+            if (dialogueHandle.IsValid()) Addressables.Release(dialogueHandle);
+            if (npcHandle.IsValid()) Addressables.Release(npcHandle);
+            Addressables.Release(cookingHandle); Addressables.Release(storageHandle); Addressables.Release(upgradeHandle);
+            Addressables.Release(gatheringHandle); Addressables.Release(orderHandle); Addressables.Release(taskHandle);
+            Addressables.Release(seasonHandle); Addressables.Release(weatherHandle); Addressables.Release(cropHandle); Addressables.Release(itemHandle); Addressables.Release(handle);
+        }
         private void OnDestroy()
         {
+            if (housingHandle.IsValid())
+            {
+                if (housingHandle.IsDone) Addressables.Release(housingHandle);
+                else housingHandle.Completed += h => { if (h.IsValid()) Addressables.Release(h); };
+            }
+            if (craftingHandle.IsValid())
+            {
+                if (craftingHandle.IsDone) Addressables.Release(craftingHandle);
+                else craftingHandle.Completed += value => { if (value.IsValid()) Addressables.Release(value); };
+            }
+            if (scheduleHandle.IsValid())
+            {
+                if (scheduleHandle.IsDone) Addressables.Release(scheduleHandle);
+                else scheduleHandle.Completed += value => { if (value.IsValid()) Addressables.Release(value); };
+            }
+            if (fishingHandle.IsValid())
+            {
+                if (fishingHandle.IsDone) Addressables.Release(fishingHandle);
+                else fishingHandle.Completed += value => { if (value.IsValid()) Addressables.Release(value); };
+            }
+            if (storyHandle.IsValid())
+            {
+                if (storyHandle.IsDone) Addressables.Release(storyHandle);
+                else storyHandle.Completed += value => { if (value.IsValid()) Addressables.Release(value); };
+            }
+            if (relationshipHandle.IsValid())
+            {
+                if (relationshipHandle.IsDone) Addressables.Release(relationshipHandle);
+                else relationshipHandle.Completed += value => { if (value.IsValid()) Addressables.Release(value); };
+            }
+            if (dialogueHandle.IsValid())
+            {
+                if (dialogueHandle.IsDone) Addressables.Release(dialogueHandle);
+                else dialogueHandle.Completed += value => { if (value.IsValid()) Addressables.Release(value); };
+            }
+            if (npcHandle.IsValid())
+            {
+                if (npcHandle.IsDone) Addressables.Release(npcHandle);
+                else npcHandle.Completed += value => { if (value.IsValid()) Addressables.Release(value); };
+            }
+            if (cookingHandle.IsValid())
+            {
+                if (cookingHandle.IsDone) Addressables.Release(cookingHandle);
+                else cookingHandle.Completed += value => { if (value.IsValid()) Addressables.Release(value); };
+            }
             if (storageHandle.IsValid())
             {
                 if (storageHandle.IsDone) Addressables.Release(storageHandle);

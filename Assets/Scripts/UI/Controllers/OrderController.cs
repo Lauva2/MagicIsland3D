@@ -10,12 +10,13 @@ namespace MagicIsland.UI.Controllers
     {
         private readonly OrderView view;
         private readonly OrderManager orders;
-        private readonly UnityAction deliver, close;
+        private readonly UnityAction deliver, close, houseUpgrade;
         public OrderModel Model { get; } = new OrderModel();
-        public OrderController(OrderView view, OrderManager orders, Action deliverOrder, Action closeOrder)
+        public OrderController(OrderView view, OrderManager orders, Action deliverOrder, Action closeOrder, Action openHouseUpgrade = null)
         {
             this.view = view; this.orders = orders;
             deliver = () => deliverOrder(); close = () => closeOrder();
+            houseUpgrade = () => openHouseUpgrade?.Invoke(); view.HouseUpgradeButton.onClick.AddListener(houseUpgrade);
             view.DeliverButton.onClick.AddListener(deliver); view.CloseButton.onClick.AddListener(close); Tick();
         }
         public void Tick()
@@ -36,6 +37,7 @@ namespace MagicIsland.UI.Controllers
         public void Dispose()
         {
             if (view == null) return;
+            view.HouseUpgradeButton.onClick.RemoveListener(houseUpgrade);
             view.DeliverButton.onClick.RemoveListener(deliver); view.CloseButton.onClick.RemoveListener(close);
         }
     }

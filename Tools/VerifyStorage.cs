@@ -42,7 +42,7 @@ class VerifyStorage
         }
         Reject(() => state.Restore(null)); Reject(() => state.Restore(new InventorySlot[2])); Reject(() => new StorageState(37, items, inventory));
         var farm = new FarmState(2, 3); var save = SaveData.Capture(farm, inventory, 0, 0, 0, 123, storage: state);
-        save.Validate(2, 3, inventory.CreateEmpty(3), storageSlots: 3); Check(save.Version == 11 && save.Storage[0].Quantity == 5 && save.Slots[0].Quantity == 5, "One snapshot for both inventories");
+        save.Validate(2, 3, inventory.CreateEmpty(3), storageSlots: 3); Check(save.Version == SaveData.CurrentVersion && save.Storage[0].Quantity == 5 && save.Slots[0].Quantity == 5, "One snapshot for both inventories");
         save.Storage[2].Quantity = 99; Reject(() => save.Validate(2, 3, inventory.CreateEmpty(3), storageSlots: 3));
         save = SaveData.Capture(farm, inventory, 0, 0, 0, 123, storage: state); save.Storage[0] = null; Reject(() => save.GetStorageSlots());
         var costs = new[] { new ToolUpgradeDefinition(FarmTool.Axe, 6, 2, 50), new ToolUpgradeDefinition(FarmTool.Pickaxe, 3, 4, 75) };
@@ -51,7 +51,7 @@ class VerifyStorage
         {
             save = SaveData.Capture(farm, inventory, 0, 0, 0, 123, toolUpgrades: upgrades); save.Version = version; save.Storage = null;
             save.Upgrade(123, toolUpgrades: costs, storageSlots: 18); save.Validate(2, 3, inventory.CreateEmpty(3), toolUpgrades: costs, storageSlots: 18);
-            Check(save.Version == 11 && save.Storage.Length == 18 && save.Storage.All(s => s.Quantity == 0 && s.ItemId == null) && save.Gold == 123 && save.Slots[0].Quantity == 5, "Legacy migration empty chest preserves bag/gold");
+            Check(save.Version == SaveData.CurrentVersion && save.Storage.Length == 18 && save.Storage.All(s => s.Quantity == 0 && s.ItemId == null) && save.Gold == 123 && save.Slots[0].Quantity == 5, "Legacy migration empty chest preserves bag/gold");
             Check(save.ToolUpgrades[0].Level == (version == 10 ? 1 : 0), "v10 preserves upgraded tool");
         }
         Console.WriteLine("PASS: " + count + " storage transfer/save assertions");

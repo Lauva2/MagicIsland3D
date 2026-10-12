@@ -84,7 +84,7 @@ namespace MagicIsland.EditorTools
                     Require(game.Farm.State == null, "World must not initialize before entry");
                     string directory = Path.GetFullPath("Logs/SaveVerification/" + Guid.NewGuid().ToString("N"));
                     SessionState.SetString(Running + ".SaveDirectory", directory);
-                    game.Saves.Initialize(game.Configuration.Config, game.Configuration.Items, game.Configuration.Crops, directory, tasks: game.Configuration.Tasks, orders: game.Configuration.Orders, seasons: game.Configuration.Seasons, gathering: game.Configuration.Gathering, toolUpgrades: game.Configuration.ToolUpgrades, storage: game.Configuration.Storage);
+                    game.Saves.Initialize(game.Configuration.Config, game.Configuration.Items, game.Configuration.Crops, directory, tasks: game.Configuration.Tasks, orders: game.Configuration.Orders, seasons: game.Configuration.Seasons, gathering: game.Configuration.Gathering, toolUpgrades: game.Configuration.ToolUpgrades, storage: game.Configuration.Storage, npcs: game.Configuration.NPCs, relationships: game.Configuration.Relationships, stories: game.Configuration.Stories, schedules: game.Configuration.NPCSchedules, fishing: game.Configuration.Fishing, crafting: game.Configuration.Crafting);
                     game.UI.SetSaveAvailable(game.Saves.HasSave);
                     Require(!UnityEngine.Object.FindObjectOfType<MainMenuView>().ContinueButton.interactable, "No save disables Continue");
                     MainMenuView menu = UnityEngine.Object.FindObjectOfType<MainMenuView>();
@@ -152,9 +152,12 @@ namespace MagicIsland.EditorTools
                         game.Farm.TryAct(1, FarmTool.WateringCan, out _);
                         game.Players.RestorePosition(new Vector3(2f, 0.1f, -4f));
                     }
+                    if (phase == 1) game.Players.RestorePosition(new Vector3(0, .1f, -4));
                     int previousDay = game.Farm.State.Day;
                     huds[0].NextDayButton.onClick.Invoke();
-                    Require(game.Farm.State.Day == previousDay + 1, "MVC day event fires exactly once through GameManager/FarmManager");
+                    Require(game.Farm.State.Day == previousDay, "HUD rest requires cottage/bed access");
+                    game.AdvanceDay();
+                    Require(game.Farm.State.Day == previousDay + 1, "Day settlement fires exactly once through GameManager/FarmManager");
                     Require(game.Saves.HasSave && File.Exists(game.Saves.SavePath), "Next day automatically saves to disk");
                     if (phase == 3) { game.Farm.TryAct(1, FarmTool.WateringCan, out _); game.Economy.TrySpend(7); game.Time.Clock.Restore(900); }
                     foreach (TMPro.TMP_Text label in UnityEngine.Object.FindObjectsOfType<TMPro.TMP_Text>())
@@ -229,7 +232,7 @@ namespace MagicIsland.EditorTools
                     Require(game.Economy.Gold == originalGold - game.Shop.Seed.BuyPrice + game.Shop.Crop.SellPrice && game.Inventory.GetCount(game.Shop.Crop.Id) == 0, "MVC sale exchanges crop for gold");
                     Require(!view.SellButton.interactable && view.BalanceText.text.Contains(game.Economy.Gold.ToString()), "Shop balances and buttons refresh");
                     Require(UnityEngine.Object.FindObjectOfType<PrototypeHud>().GoldText.text.Contains(game.Economy.Gold.ToString()), "HUD gold immediately refreshes");
-                    Require(view.CropButtons.Length == 3, "Three crop options wired");
+                    Require(view.CropButtons.Length == 5, "Three crop and two fish options wired");
                     view.CropButtons[1].onClick.Invoke();
                     Require(game.Shop.Seed.Id == "tomato_seed" && view.BuyText.text.Contains("番茄"), "Tomato option refreshes offer");
                     Action reentrant = () => Require(game.Shop.Trade(true, 1) == MagicIsland.Economy.TradeResult.Busy
@@ -255,8 +258,14 @@ namespace MagicIsland.EditorTools
                     view.CloseButton.onClick.Invoke();
                     Require(!game.UI.HasShop && game.Players.Player.enabled, "Shop closes and restores input");
                     game.OpenSleep(); Require(!game.UI.HasSleep, "Out-of-range sleep rejected");
+                    game.Players.RestorePosition(game.Housing.Entrance.Position + new Vector3(0, .1f, -1.4f)); game.EnterHome();
+                    SessionState.SetInt(PhaseKey, 19);
+                }
+                else if (phase == 19 && game.State == GameFlowState.Playing && game.Housing.Inside)
+                {
                     Vector3 bedside = game.Time.Bed.position + Vector3.right * 1.5f; bedside.y = 0.1f;
                     game.Players.RestorePosition(bedside);
+                    game.Players.Player.ViewCamera.GetComponent<MagicIsland.CameraSystem.CameraController>().SnapToTarget();
                     Camera camera = game.Players.Player.ViewCamera;
                     Vector3 projected = camera.WorldToScreenPoint(game.Time.Bed.position + Vector3.up * 0.5f);
                     Physics.SyncTransforms();
@@ -292,6 +301,11 @@ namespace MagicIsland.EditorTools
                     Require(morning.Stamina == game.Configuration.Config.MaxStamina, "Sleep saves refilled stamina");
                     if (SystemInfo.graphicsDeviceType != UnityEngine.Rendering.GraphicsDeviceType.Null)
                         GameUiPreview.CaptureInventory(game.Players.Player.ViewCamera);
+                    game.Players.RestorePosition(game.Housing.Interior.Exit.Position + new Vector3(0, .1f, 1.5f)); game.ExitHome();
+                    SessionState.SetInt(PhaseKey, 20);
+                }
+                else if (phase == 20 && game.State == GameFlowState.Playing && !game.Housing.Inside)
+                {
                     game.Time.Clock.Restore(900);
                     Vector3 nearPlot = game.Farm.Grid.CellCenter(2) + Vector3.back; nearPlot.y = 0.1f;
                     game.Players.RestorePosition(nearPlot); game.Players.Player.ViewCamera.GetComponent<MagicIsland.CameraSystem.CameraController>().SnapToTarget();
@@ -375,10 +389,10 @@ namespace MagicIsland.EditorTools
                     string directory = SessionState.GetString(Running + ".SaveDirectory", "");
                     string blocked = Path.Combine(directory, "blocked");
                     File.WriteAllText(blocked, "not a directory");
-                    game.Saves.Initialize(game.Configuration.Config, game.Configuration.Items, game.Configuration.Crops, blocked, tasks: game.Configuration.Tasks, orders: game.Configuration.Orders, seasons: game.Configuration.Seasons, gathering: game.Configuration.Gathering, toolUpgrades: game.Configuration.ToolUpgrades, storage: game.Configuration.Storage);
+                    game.Saves.Initialize(game.Configuration.Config, game.Configuration.Items, game.Configuration.Crops, blocked, tasks: game.Configuration.Tasks, orders: game.Configuration.Orders, seasons: game.Configuration.Seasons, gathering: game.Configuration.Gathering, toolUpgrades: game.Configuration.ToolUpgrades, storage: game.Configuration.Storage, npcs: game.Configuration.NPCs, relationships: game.Configuration.Relationships, stories: game.Configuration.Stories, schedules: game.Configuration.NPCSchedules, fishing: game.Configuration.Fishing, crafting: game.Configuration.Crafting);
                     game.ReturnToMainMenu();
                     Require(game.State == GameFlowState.Playing && game.Farm.State != null, "Failed save keeps active game");
-                    game.Saves.Initialize(game.Configuration.Config, game.Configuration.Items, game.Configuration.Crops, directory, tasks: game.Configuration.Tasks, orders: game.Configuration.Orders, seasons: game.Configuration.Seasons, gathering: game.Configuration.Gathering, toolUpgrades: game.Configuration.ToolUpgrades, storage: game.Configuration.Storage);
+                    game.Saves.Initialize(game.Configuration.Config, game.Configuration.Items, game.Configuration.Crops, directory, tasks: game.Configuration.Tasks, orders: game.Configuration.Orders, seasons: game.Configuration.Seasons, gathering: game.Configuration.Gathering, toolUpgrades: game.Configuration.ToolUpgrades, storage: game.Configuration.Storage, npcs: game.Configuration.NPCs, relationships: game.Configuration.Relationships, stories: game.Configuration.Stories, schedules: game.Configuration.NPCSchedules, fishing: game.Configuration.Fishing, crafting: game.Configuration.Crafting);
                     game.ReturnToMainMenu();
                     SessionState.SetInt(PhaseKey, 7);
                 }

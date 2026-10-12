@@ -65,11 +65,20 @@ namespace MagicIsland.EditorTools
             OrderCatalogSetup.Ensure(settings, configGroup);
             ToolUpgradeSetup.Ensure(settings, configGroup);
             StorageSetup.Ensure(settings, configGroup);
+            CookingSetup.Ensure(settings, configGroup, catalog);
+            NPCSetup.Ensure(settings, configGroup);
+            RelationshipSetup.Ensure(settings, configGroup);
+            StoryEventSetup.Ensure(settings, configGroup, catalog);
             CropVisualPrefabBuilder.Ensure(AssetDatabase.LoadAssetAtPath<CropCatalog>("Assets/Config/CropCatalog.asset"), settings);
             WeatherConfigSetup.Ensure(settings, configGroup);
             WeatherConfigSetup.UpgradeHud();
             SeasonConfigSetup.UpgradeUi();
             GatheringUiUpgrade.Apply();
+            FishingSetup.Ensure(settings, configGroup, catalog);
+            NPCScheduleSetup.Ensure(settings, configGroup);
+            CraftingSetup.Ensure(settings, configGroup, catalog);
+            FurnitureSetup.Ensure(settings, catalog);
+            FishCookingSetup.Ensure(catalog);
             var existing = settings.FindAssetEntry(AssetDatabase.AssetPathToGUID(GameScene));
             if (existing == null)
             {
@@ -87,6 +96,8 @@ namespace MagicIsland.EditorTools
                 existing.SetAddress(config.GameSceneAddress);
                 AssetDatabase.SaveAssets();
             }
+            HousingSetup.Ensure(settings, configGroup);
+            HouseUpgradeSetup.Ensure(settings);
             AddressableAssetGroup uiGroup = settings.FindGroup("UI");
             if (uiGroup == null)
                 uiGroup = settings.CreateGroup("UI", false, false, true, null,
@@ -148,7 +159,7 @@ namespace MagicIsland.EditorTools
         public static void ValidateUiPrefabs()
         {
             var settings = AddressableAssetSettingsDefaultObject.Settings;
-            foreach (string name in new[] { RuntimeUi.MenuAddress, RuntimeUi.HudAddress, RuntimeUi.InventoryAddress, "SettingsPanel", "ShopPanel", "SleepPanel", "FeedbackPanel", "CropInfoPanel", "TaskPanel", "OrderPanel", "ToolUpgradePanel", "StoragePanel" })
+            foreach (string name in new[] { RuntimeUi.MenuAddress, RuntimeUi.HudAddress, RuntimeUi.InventoryAddress, "SettingsPanel", "ShopPanel", "SleepPanel", "FeedbackPanel", "CropInfoPanel", "TaskPanel", "OrderPanel", "ToolUpgradePanel", "StoragePanel", "CookingPanel", "DialoguePanel", "GiftPanel", "FishingPanel", "CraftingPanel", "PlacementPanel", "SceneTransitionPanel", "HouseUpgradePanel" })
             {
                 string path = PrototypeUiPrefabBuilder.Folder + "/" + name + ".prefab";
                 GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
@@ -172,11 +183,11 @@ namespace MagicIsland.EditorTools
                 || menu.SettingsButton == null || menu.QuitButton == null
                 || hud == null || hud.WeatherText == null || hud.SeedText == null || hud.DayText == null || hud.StaminaText == null || hud.StaminaFill == null || hud.TimeText == null || hud.InventoryText == null || hud.GoldText == null
                 || hud.HintText == null || hud.FeedbackText == null || hud.NextDayButton == null || hud.ReturnMenuButton == null || hud.InventoryButton == null
-                || hud.ToolButtons == null || hud.ToolButtons.Length != 5 || hud.ToolButtons.Any(button => button == null))
+                || hud.ToolButtons == null || hud.ToolButtons.Length != 6 || hud.ToolButtons.Any(button => button == null))
                 throw new System.Exception("UI prefab component references are incomplete.");
             InventoryView inventory = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/InventoryPanel.prefab")
                 .GetComponent<InventoryView>();
-            if (inventory == null || inventory.UseSeedButton == null || inventory.CloseButton == null || inventory.CapacityText == null
+            if (inventory == null || inventory.UseSeedButton == null || inventory.UseFoodButton == null || inventory.SaveButton == null || inventory.FeedbackText == null || inventory.CloseButton == null || inventory.CapacityText == null
                 || inventory.DetailTitleText == null || inventory.DetailText == null || inventory.Slots == null || inventory.Slots.Length < 36
                 || inventory.Slots.Any(slot => slot == null || slot.Icon == null || slot.NameText == null || slot.QuantityText == null || slot.SelectButton == null))
                 throw new System.Exception("InventoryPanel component references are incomplete.");
@@ -194,6 +205,18 @@ namespace MagicIsland.EditorTools
             OrderView order = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/OrderPanel.prefab").GetComponent<OrderView>();
             var upgrade = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/ToolUpgradePanel.prefab").GetComponent<ToolUpgradeView>();
             var storage = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/StoragePanel.prefab").GetComponent<StorageView>();
+            var cooking = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/CookingPanel.prefab").GetComponent<CookingView>();
+            var dialogue = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/DialoguePanel.prefab").GetComponent<DialogueView>();
+            if (dialogue == null || dialogue.Layer != UILayer.PopUp || dialogue.SpeakerText == null || dialogue.BodyText == null || dialogue.ProgressText == null || dialogue.RelationshipText == null || dialogue.GiftButton == null || dialogue.StoryButton == null || dialogue.NextButton == null || dialogue.CloseButton == null)
+                throw new System.Exception("DialoguePanel needs wired TMP and buttons on PopUp layer");
+            var gift = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/GiftPanel.prefab").GetComponent<GiftView>();
+            if (gift == null || gift.Layer != UILayer.PopUp || gift.TitleText == null || gift.StatusText == null || gift.GuideText == null || gift.DetailText == null || gift.PreviewText == null || gift.FeedbackText == null
+                || gift.GiveButton == null || gift.SaveButton == null || gift.CloseButton == null || gift.Slots.Length < 36
+                || gift.Slots.Any(s => s == null || s.SelectButton == null || s.NameText == null || s.QuantityText == null || s.Icon == null)) throw new System.Exception("GiftPanel requires wired inventory grid, TMP and buttons on PopUp layer");
+            if (cooking == null || cooking.Layer != UILayer.PopUp || cooking.CloseButton == null || cooking.SaveButton == null || cooking.FeedbackText == null
+                || cooking.CookButtons.Length != 5 || cooking.TitleTexts.Length != 5 || cooking.IngredientTexts.Length != 5 || cooking.ResultTexts.Length != 5 || cooking.RecipeScroll == null
+                || cooking.CookButtons.Any(b => b == null) || cooking.TitleTexts.Concat(cooking.IngredientTexts).Concat(cooking.ResultTexts).Any(t => t == null))
+                throw new System.Exception("CookingPanel needs wired recipe TMP and buttons on PopUp layer");
             if (storage == null || storage.Layer != UILayer.PopUp || storage.CloseButton == null || storage.MoveOneButton == null || storage.MoveStackButton == null || storage.SaveButton == null
                 || storage.BagCapacityText == null || storage.ChestCapacityText == null || storage.DetailsText == null || storage.FeedbackText == null || storage.BagSlots == null || storage.ChestSlots == null
                 || storage.BagSlots.Length < 36 || storage.ChestSlots.Length < 36 || storage.BagSlots.Concat(storage.ChestSlots).Any(s => s == null || s.Icon == null || s.SelectButton == null || s.NameText == null || s.QuantityText == null))
@@ -218,11 +241,14 @@ namespace MagicIsland.EditorTools
             if (sleep == null || sleep.MessageText == null || sleep.ConfirmButton == null || sleep.CancelButton == null)
                 throw new System.Exception("SleepPanel component references are incomplete.");
             ShopView shop = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/ShopPanel.prefab").GetComponent<ShopView>();
-            if (shop == null || shop.CropButtons == null || shop.CropButtons.Length < 3 || shop.CropButtons.Any(button => button == null)
-                || shop.CloseButton == null || shop.BuyButton == null || shop.SellButton == null
+            if (shop == null || shop.CropButtons == null || shop.CropButtons.Length < 5 || shop.CropButtons.Any(button => button == null)
+                || shop.CloseButton == null || shop.BuyButton == null || shop.SellButton == null || shop.SaveButton == null
                 || shop.BalanceText == null || shop.StockText == null || shop.FeedbackText == null || shop.BuyText == null || shop.SellText == null)
                 throw new System.Exception("ShopPanel component references are incomplete.");
-            Debug.Log("UI prefab validation succeeded: MainMenuPanel, FarmHudPanel, InventoryPanel, SettingsPanel; AA addresses match names.");
+            var fishing = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/FishingPanel.prefab").GetComponent<FishingView>();
+            if (fishing == null || fishing.Layer != UILayer.PopUp || fishing.StatusText == null || fishing.HintText == null || fishing.TimerText == null || fishing.FeedbackText == null
+                || fishing.ProgressFill == null || fishing.CastButton == null || fishing.ReelButton == null || fishing.CloseButton == null || fishing.SaveButton == null) throw new System.Exception("FishingPanel needs TMP, progress and buttons on PopUp layer");
+            Debug.Log("UI prefab validation succeeded; AA addresses match names.");
         }
     }
 }

@@ -9,6 +9,7 @@ namespace MagicIsland.UI.Views
         public TMP_Text[] TitleTexts, CostTexts, EffectTexts;
         public Button[] UpgradeButtons;
         public Button CloseButton, SaveButton;
+        public Button CraftingButton;
         public void Render(ToolUpgradeModel model)
         {
             BalanceText.text = model.Balance; FeedbackText.text = model.Feedback;

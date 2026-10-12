@@ -9,7 +9,17 @@ Unity 2022.3.62f2，内置渲染管线，旧版 Input，Addressables 1.21.17。
 ### 游戏流程与系统管理
 
 - 整个游戏流程必须由 `GameManager` 统一控制，包括启动、配置加载、场景切换、进入游戏初始化和返回主菜单。
-- 每个系统必须由对应的 `Manager` 控制。现有配置、场景、UI、背包、农务、玩家、镜头、交互、存档、设置、经济、商店、时间、日期季节、天气、体力、工具、任务、订单、采集、工具升级和储物分别由对应 Manager 管理；新增其他系统时沿用这一规则。
+- NPC 与对话由 `NPCManager`、`DialogueManager` 管理，AA 加载角色、台词配置和 PopUp 层 `DialoguePanel`。完成首次对话才记录见面并保存，季节和天气决定日常台词；规则见 [NPC 与对话](Docs/NPCAndDialogue.md)。
+- NPC 日程由 `NPCScheduleManager` 管理，AA 加载 `NPCScheduleCatalog`。林舟上午在办事处、下午前往海岸、傍晚返回；挡路和模态交谈暂停行走，睡觉重置上午位置，存档恢复途中进度。规则见 [NPC 日程](Docs/NPCSchedules.md)。
+- 制作与摆放由 `CraftingManager`、`PlacementManager` 管理，AA 加载 `CraftingCatalog`、装饰模型、PopUp 层 `CraftingPanel` 和 Common 层 `PlacementPanel`。工作台制作木栅栏、石板路和庭院灯，背包选择后网格预览 / 旋转 / 确认，右键回收；库存与摆放记录一起保存。规则见 [制作与摆放](Docs/CraftingAndPlacement.md)。
+- 玩家小屋由 `HousingManager` 管理，`GameManager` 调度进出、睡觉、位置恢复和保存，`SceneManager` 通过 AA 加载室内场景。床移入室内，农场 / NPC / 装饰状态保留；Top 层 `SceneTransitionPanel` 显示切换进度。规则见 [玩家小屋](Docs/Housing.md)。
+- 小屋扩建由 `HousingManager` 管理，公告栏进入 PopUp 层 MVC 面板 `HouseUpgradePanel`，默认支付木材 20、石料 10、金币 300，次日完工。室内原位扩至 16×12，保留家具、床、出口和角色位置；参数沿用 AA 的 `HousingConfig`，施工状态与升级等级一起保存。规则见 [小屋扩建](Docs/HouseUpgrades.md)。
+- 室内家具由 `FurnitureManager` 管理，复用 `PlacementManager` 的 AA 预览和交互，独立保存室内占位。工作台分页制作木桌、木椅和小台灯，室内背包选择摆放，床边、出生点和出口通道保留。规则见 [室内家具](Docs/Furniture.md)。
+- 好感度与送礼由 `RelationshipManager` 管理，AA 加载 `RelationshipCatalog` 和 PopUp 层 `GiftPanel`。礼物、好感度与每日送礼日期一起提交和保存；规则见 [好感度与送礼](Docs/Relationships.md)。
+- 好感度事件由 `StoryEventManager` 管理，AA 加载 `StoryEventCatalog`，沿用 `DialoguePanel`。完整结束事件后记录完成和解锁食谱，由 `GameManager` 保存；规则见 [好感度事件](Docs/StoryEvents.md)。
+- 钓鱼由 `FishingManager` 管理，AA 加载 `FishingCatalog`、`FishingRod`、`CoastalFishingSpot` 和 PopUp 层 `FishingPanel`。鱼获与体力原子提交，捕获及售鱼成功后保存；规则见 [钓鱼](Docs/Fishing.md)。
+- 每个系统必须由对应的 `Manager` 控制。现有配置、场景、UI、背包、农务、玩家、镜头、交互、存档、设置、经济、商店、时间、日期季节、天气、体力、工具、任务、订单、采集、工具升级、储物、烹饪、食物使用、NPC、对话、好感度、事件、钓鱼、NPC 日程、制作、摆放、家具和玩家小屋分别由对应 Manager 管理；新增其他系统时沿用这一规则。
+- 烹饪与食物使用由 `CookingManager`、`FoodManager` 管理，AA 加载 `CookingCatalog`、`CookingStation` 和 PopUp 层 `CookingPanel`。制作原子扣料并加入产物，背包食用恢复体力，成功后自动保存；规则见 [烹饪与食物](Docs/CookingAndFood.md)。
 - 储物由 `StorageManager` 管理，AA 加载 `StorageConfig`、`StorageChest` 和 PopUp 层 `StoragePanel`。存取先检查目标容量，背包与箱子一起提交和保存；规则见 [储物箱](Docs/Storage.md)。
 - 工具升级由 `ToolUpgradeManager` 管理，AA 加载 `ToolUpgradeCatalog`、`ToolWorkbench` 和 PopUp 层 `ToolUpgradePanel`。费用与等级一起结算和保存，规则见 [工具升级](Docs/ToolUpgrades.md)。
 - 资源采集由 `GatheringManager` 控制，配置 `GatheringCatalog`、树木 `GatheringTree` 和石头 `GatheringRock` 均通过 AA 加载。采集协调体力、背包和资源状态，失败不扣除，按天恢复并随进度保存。
@@ -39,7 +49,7 @@ Unity 2022.3.62f2，内置渲染管线，旧版 Input，Addressables 1.21.17。
 
 ### 玩法与操作方向
 
-- 时钟由 `TimeManager` 控制；`CalendarManager` 根据农场总天数计算年份、季节和日期，`GameManager` 统一调度跨日。季节配置使用 AA 地址 `SeasonConfig`，默认每季 28 天。背包、商店、睡觉、订单、工具升级和储物弹窗打开及加载时暂停计时，睡觉结算后自动保存。
+- 时钟由 `TimeManager` 控制；`CalendarManager` 根据农场总天数计算年份、季节和日期，`GameManager` 统一调度跨日。季节配置使用 AA 地址 `SeasonConfig`，默认每季 28 天。背包、商店、睡觉、订单、工具升级、储物、烹饪、对话、送礼和钓鱼弹窗打开及加载时暂停计时，睡觉结算后自动保存。钓鱼会话自身计时继续。
 - 昼夜与晴雨由 `WeatherManager` 控制，天气参数通过 AA 地址 `WeatherConfig` 加载。雨天自动浇灌已种植的露天农田，跨日只成长一次；当天天气和随机种子随进度保存，读档不重新抽取。
 - 体力由 `StaminaManager` 控制；农务操作成功才消耗，失败不扣除，睡觉回满。体力不足时仍可移动、交易和休息。
 - 工具选择、动作锁、手持表现和操作反馈由 `ToolManager` 控制。动作先结算一次再播放，动画期间禁止重复操作和工具切换；提示使用 Top 层的 `FeedbackPanel`，通过 AA / MVC 管理且不拦截鼠标。
@@ -53,7 +63,7 @@ Unity 2022.3.62f2，内置渲染管线，旧版 Input，Addressables 1.21.17。
 ## 运行
 
 1. 打开工程，等待 Package Manager 安装 Addressables 和脚本编译完成。
-2. 编辑器自动创建 GameConfig、ItemCatalog、CropCatalog、WeatherConfig、SeasonConfig、TaskCatalog、OrderCatalog、GatheringCatalog、ToolUpgradeCatalog、StorageConfig 并注册配置、MainGame 和 UI；也可以执行 `Magic Island > Configure Prototype Addressables`。
+2. 编辑器自动创建 GameConfig、ItemCatalog、CropCatalog、WeatherConfig、SeasonConfig、TaskCatalog、OrderCatalog、GatheringCatalog、ToolUpgradeCatalog、StorageConfig、CookingCatalog、NPCCatalog、DialogueCatalog、RelationshipCatalog、StoryEventCatalog、FishingCatalog、NPCScheduleCatalog、CraftingCatalog、HousingConfig 共 19 份配置，并注册配置、MainGame、PlayerHome 和 UI；也可以执行 `Magic Island > Configure Prototype Addressables`。
 3. UI 预制体位于 `Assets/Art/Prefabs/UI`，自动创建缺失文件，也可以执行 `Magic Island > Create Missing UI Prefabs`。UI 使用 Canvas、Image、TextMeshProUGUI、Button，以奶油白、草绿和暖沙色搭配，带圆角与柔和阴影。
 4. 打开 `Assets/Scenes/MainMenu.unity`，进入 Play。主菜单包含“新游戏”“加载游戏”“设置”“退出”；没有有效存档时禁用加载按钮。设置弹窗可调整本次运行的音量和全屏显示；退出在编辑器中停止 Play，在构建版本中关闭程序。MainMenuPanel、FarmHudPanel、InventoryPanel、SettingsPanel、ShopPanel、SleepPanel 均通过 AA 实例化，AA 地址严格等于预制体名字。
 5. 编辑器使用 Addressables 的 **Use Asset Database (fastest)** Play Mode Script。
@@ -66,10 +76,11 @@ Unity 2022.3.62f2，内置渲染管线，旧版 Input，Addressables 1.21.17。
 - WASD：按画面方向移动。滚轮：镜头缩放。
 - 1 / 2 / 3 或底部按钮：锄头 / 种子 / 水壶。
 - 数字键 4／5 或工具栏斧头／镐子按钮：走近外围树木和石头，逐次点击采集。树木 3 次、每次 4 体力、产出 3 木材、3 天恢复；石头 2 次、每次 5 体力、产出 2 石料、2 天恢复。完整产出空间不足时不扣体力或资源进度。
+- 数字键 6 或工具栏鱼竿按钮：走近东南角海岸钓点，点击水面抛竿。等待 2–5 秒，咬钩后 2 秒内点击收竿。成功消耗 5 体力、获得 1 条沙丁鱼或鲈鱼；提前、超时或取消不消耗。鱼可储物或在商店出售，价格 35／65，捕获和售鱼自动保存，面板可重试保存。
 - 成功操作显示工具动作及泥土／种子／水滴／收获特效，提示体力消耗或获得作物。动作默认 0.55 秒，期间暂停移动；打开弹窗会暂停动作，关闭后继续。
 - B 或背包按钮：打开／收起背包；Esc 或关闭按钮也可收起。打开时暂停角色、镜头和工具输入。点击格子查看物品详情。
 - 靠近农田东南侧带黄色棚顶的商店，鼠标点击柜台或棚顶打开商店；购买种子、出售作物。Esc 或关闭按钮收起商店并恢复输入。
-- 靠近农田西南侧蓝色被子的床，鼠标点击后确认睡觉；取消或 Esc 继续当天。睡觉推进作物生长、重置浇水和时间到 06:00，并自动保存。HUD 显示时间，默认现实 1 秒为游戏 1 分钟，到 24:00 停表并提示睡觉。
+- 靠近农田西南侧的小屋，点击建筑进屋；室内点击床后确认睡觉，点击出口返回农场。HUD“回家休息”在门前进入小屋，室内“休息”需靠近床。睡觉推进作物生长、重置浇水和时间到 06:00，并自动保存室内位置和世界状态；取消或 Esc 继续当天。HUD 显示时间，默认现实 1 秒为游戏 1 分钟，到 24:00 停表并提示睡觉。
 - 左键：操作高亮农田；按住左键拖过相邻格子可连续劳动。
 - 黄色边框：操作范围内；红色边框：需要走近。
 - 成熟作物在任何工具下优先收获。每次按住鼠标只能对每格成功操作一次，松开后可以再操作。
@@ -80,6 +91,11 @@ Unity 2022.3.62f2，内置渲染管线，旧版 Input，Addressables 1.21.17。
 - HUD 显示年份、季节、日期和晴天／雨天；新游戏首日晴天，后续按新日期所属季节产生天气，默认春／夏／秋／冬降雨概率为 30%／20%／40%／15%。雨水免费浇灌新播种和已有作物，睡觉时结算成长。阳光、环境光和天空随时刻变化，弹窗暂停时钟和雨滴。
 - 默认芜菁适宜春、秋，番茄适宜夏，玉米适宜夏、秋；冬季暂不能新种这三种作物。跨季不枯萎，仍可浇水和收获。背包可选择任意种子，实际播种检查当季限制。
 - 作物按进度显示幼苗、成长植株或成熟果实。鼠标指向作物时，右侧显示名称、成长进度、浇水状态和操作提示；距离较远时仍可查看。
+- 农田前方偏右设料理台：2 个芜菁制作 1 碗芜菁汤（恢复 30 体力），1 个玉米制作 1 份烤玉米（恢复 20 体力）。背包选中食物后点击“食用一个”，满体力不消耗，恢复不超过上限。
+- 料理面板可向下滚动查看鱼类食谱：沙丁鱼 ×1 制作烤沙丁鱼，恢复 35 体力；鲈鱼、芜菁、番茄各 ×1 制作鲈鱼蔬菜汤，恢复 50 体力。两道默认开放，成品可作为普通料理送给林舟增加 10 好感度；规则见 [鱼类料理](Docs/FishCooking.md)。
+- 办事处旁的岛务员林舟可走近点击交谈，支持逐句推进和 ESC 退出。完整结束首次对话后记录已见面，后续台词包含当前季节和天气，对话期间暂停场景操作和时间。
+- 完成首次交谈后，对话面板可打开“送礼”：林舟每日收一份礼物，芜菁汤 +20，其他料理 +10，作物 +5。好感度最高 100，30 达到熟悉、70 达到友好并改变招呼；种子与材料不可送，满好感度不消耗礼物，读档保留当天限制。
+- 林舟好感度 30 时可从对话按钮听“小岛往事”；70 时完成“朋友的食谱”解锁蔬菜浓汤，需先听完往事。两段事件中途退出不完成，奖励不能重复领取。浓汤消耗芜菁、番茄、玉米各 1，恢复 50 体力，料理面板显示锁定条件。
 - 农田前方有固定储物箱，默认 18 格。点击左右两侧的格子，存入或取出一个 / 整组物品，按堆叠上限合并，成功存取自动保存。箱内物品需先取回背包再使用。
 - 办事处前方空地有工具工作台，走近点击升级：斧头消耗木材 6、石料 2、金币 50；镐子消耗木材 3、石料 4、金币 75。每把可强化一次，树木采集缩短至两次、岩石一次，自动保存。
 - 农场右后方的岛屿办事处门前右侧设公告栏，走近点击查看每日收购订单。一次交付 1–3 个作物，芜菁／番茄／玉米每个奖励 40／75／130 金币；交付后保存，睡觉后刷新，冬季收购库存作物。
@@ -114,12 +130,12 @@ Unity 2022.3.62f2，内置渲染管线，旧版 Input，Addressables 1.21.17。
 
 `Magic Island > Render Main Menu Preview` 在独立预览场景中渲染实际预制体，保存至 `Logs/MainMenuPreview.png`。`Apply Cozy UI Theme` 可重新生成当前主题的两个 UI 预制体，会覆盖手动布局修改；普通配置和创建缺失预制体的菜单会保留已有修改。
 
-地面、角色和工具占位表现在运行时生成，作物的九个阶段预制体、办事处公告栏建筑及采集树木／石头已通过 AA 管理，可替换正式美术。当前不包含自动寻路、正式动画或遮挡淡化。工具和反馈说明见 `Docs/ToolsAndFeedback.md`，作物模型及信息面板见 `Docs/CropVisuals.md`。
+地面、玩家角色和农务工具占位表现在运行时生成，作物的九个阶段预制体、办事处公告栏建筑、采集树木／石头、岛务员角色、鱼竿／海岸钓点和三种农场装饰已通过 AA 管理，可替换正式美术。当前不包含自动寻路、正式动画或遮挡淡化。工具和反馈说明见 `Docs/ToolsAndFeedback.md`，作物模型及信息面板见 `Docs/CropVisuals.md`。
 
 规则检查见 `Tools/VerifyFarmState.cs`，覆盖整片农田、重复操作、缺水、生长、收获及种子耗尽。
 
 背包说明见 `Docs/Inventory.md`；`Tools/VerifyInventory.cs` 验证跨堆叠、失败操作不丢物品、数量守恒及满背包保护。
 
-商店说明见 `Docs/Shop.md`，多作物见 `Docs/Crops.md`，时间和睡觉见 `Docs/TimeAndSleep.md`，体力见 `Docs/Stamina.md`，昼夜与天气见 `Docs/Weather.md`，日期和季节见 `Docs/CalendarAndSeasons.md`，任务见 `Docs/Tasks.md`，公告栏订单见 `Docs/Orders.md`，采集见 `Docs/Gathering.md`。ShopPanel、SleepPanel、OrderPanel、ToolUpgradePanel、StoragePanel 均由 AA 加载到 PopUp 层，TaskPanel 位于 Common 层，地址均为预制体名字；存档版本为 11，兼容迁移版本 1–10。
+商店说明见 `Docs/Shop.md`，多作物见 `Docs/Crops.md`，时间和睡觉见 `Docs/TimeAndSleep.md`，体力见 `Docs/Stamina.md`，昼夜与天气见 `Docs/Weather.md`，日期和季节见 `Docs/CalendarAndSeasons.md`，任务见 `Docs/Tasks.md`，公告栏订单见 `Docs/Orders.md`，采集见 `Docs/Gathering.md`，烹饪与食物见 `Docs/CookingAndFood.md`，NPC 与对话见 `Docs/NPCAndDialogue.md`，好感度与送礼见 `Docs/Relationships.md`，好感度事件见 `Docs/StoryEvents.md`，玩家小屋见 `Docs/Housing.md`，室内家具见 `Docs/Furniture.md`，扩建见 `Docs/HouseUpgrades.md`。ShopPanel、SleepPanel、OrderPanel、ToolUpgradePanel、StoragePanel、CookingPanel、DialoguePanel、GiftPanel、FishingPanel、CraftingPanel、HouseUpgradePanel 均由 AA 加载到 PopUp 层，TaskPanel、PlacementPanel 位于 Common 层，SceneTransitionPanel 位于 Top 层；共 20 个 UI 预制体，地址均为预制体名字。存档版本为 19，兼容迁移版本 1–18。
 
 完整流程和 MVC 约定见 `Docs/GameArchitecture.md`。`SaveManager` 保存日期、农田、背包及角色位置，推进日期和返回主菜单时自动保存；“加载游戏”恢复进度。存档路径、备份与版本规则见 `Docs/Saving.md`。`SettingsManager` 控制本次运行的音量和全屏选项，设置面板遵循 MVC 并挂在 PopUp 层。

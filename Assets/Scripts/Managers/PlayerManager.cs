@@ -16,6 +16,7 @@ namespace MagicIsland.Managers
             bool wasEnabled = character.enabled;
             character.enabled = false;
             Player.transform.position = position;
+            Player.ResetMotion();
             character.enabled = wasEnabled;
         }
     }

@@ -32,9 +32,10 @@ namespace MagicIsland.Managers
         }
         public bool SelectTool(FarmTool tool)
         {
-            if (Busy || !InputEnabled || tool < FarmTool.Hoe || tool > FarmTool.Pickaxe) return false;
-            SelectedTool = tool; Presentation.Show((ToolActionKind)tool); return true;
+            if (Busy || !InputEnabled || tool < FarmTool.Hoe || tool > FarmTool.FishingRod) return false;
+            SelectedTool = tool; Presentation.Show(ActionKind(tool)); return true;
         }
+        private static ToolActionKind ActionKind(FarmTool tool) => tool == FarmTool.FishingRod ? ToolActionKind.FishingRod : (ToolActionKind)tool;
         public void SetInputEnabled(bool enabled) => InputEnabled = enabled;
         public void ReportFailure(string message)
         {
@@ -46,6 +47,7 @@ namespace MagicIsland.Managers
         {
             message = "正在操作，请稍候";
             if (!InputEnabled || Busy || farm == null || index < 0 || index >= farm.State.Cells.Length) return false;
+            if (SelectedTool == FarmTool.FishingRod) { message = "鱼竿用于海岸垂钓，请切换农具"; ReportFailure(message); return false; }
             Vector3 target = farm.Grid.CellCenter(index);
             if (Vector3.ProjectOnPlane(target - player.transform.position, Vector3.up).sqrMagnitude > reach * reach)
             { message = "距离太远，请靠近"; ReportFailure(message); return false; }
@@ -77,7 +79,7 @@ namespace MagicIsland.Managers
                 player.Visual.rotation = facing * Quaternion.Euler(Mathf.Sin(progress * Mathf.PI) * 12f, 0, 0);
             }
             else if (wasBusy)
-            { player.ToolActionLocked = false; player.Visual.rotation = facing; Presentation.Show((ToolActionKind)SelectedTool); }
+            { player.ToolActionLocked = false; player.Visual.rotation = facing; Presentation.Show(ActionKind(SelectedTool)); }
         }
         public bool TryGather(int index, out string message)
         {

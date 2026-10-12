@@ -1,9 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MagicIsland.Inventory
 {
-    public enum ItemType { Seed, Crop, Material, Tool }
+    public sealed class IngredientCost
+    {
+        public string Id { get; }
+        public int Quantity { get; }
+        public IngredientCost(string id, int quantity)
+        { if (string.IsNullOrWhiteSpace(id) || quantity < 1) throw new ArgumentException("Invalid ingredient"); Id = id; Quantity = quantity; }
+    }
+    public enum ItemType { Seed, Crop, Material, Tool, Food, Fish, Placeable, Furniture }
 
     public sealed class ItemDefinition
     {
@@ -37,6 +45,7 @@ namespace MagicIsland.Inventory
         public int Capacity => slots.Length;
         public event Action Changed;
         public InventoryState CreateEmpty(int capacity) => new InventoryState(capacity, definitions.Values);
+        public ItemDefinition FindDefinition(string id) => id != null && definitions.TryGetValue(id, out var item) ? item : null;
 
         public InventoryState(int capacity, IEnumerable<ItemDefinition> items)
         {
@@ -124,6 +133,45 @@ namespace MagicIsland.Inventory
         }
 
         public void NotifyChanged() => Changed?.Invoke();
+
+        public bool TryRemoveSlot(int index, int quantity, bool notify = true)
+        {
+            if (index < 0 || index >= Capacity || quantity < 1 || slots[index].Quantity < quantity) return false;
+            var slot = slots[index]; slots[index] = quantity == slot.Quantity ? default : new InventorySlot(slot.ItemId, slot.Quantity - quantity);
+            if (notify) NotifyChanged(); return true;
+        }
+        private bool PrepareExchange(string ingredient, int cost, string output, int yield, out InventoryState result)
+        {
+            result = null; return !string.IsNullOrWhiteSpace(ingredient) && cost > 0
+                && PrepareExchange(new[] { new IngredientCost(ingredient, cost) }, output, yield, out result);
+        }
+        private bool PrepareExchange(IEnumerable<IngredientCost> ingredients, string output, int yield, out InventoryState result)
+        {
+            result = null;
+            var costs = ingredients?.ToArray();
+            if (transferring || yield < 1 || costs == null || costs.Length == 0 || costs.Any(c => c == null || c.Id == output || GetCount(c.Id) < c.Quantity)
+                || costs.Select(c => c.Id).Distinct().Count() != costs.Length) return false;
+            var copy = CreateEmpty(Capacity); copy.Restore(Slots);
+            foreach (var cost in costs) if (!copy.TryRemove(cost.Id, cost.Quantity, false)) return false;
+            if (!copy.TryAdd(output, yield, false)) return false;
+            result = copy; return true;
+        }
+        public bool CanExchange(string ingredient, int cost, string output, int yield) => PrepareExchange(ingredient, cost, output, yield, out _);
+        public bool CanExchange(IEnumerable<IngredientCost> ingredients, string output, int yield) => PrepareExchange(ingredients, output, yield, out _);
+        public bool TryExchange(string ingredient, int cost, string output, int yield)
+        {
+            if (!PrepareExchange(ingredient, cost, output, yield, out var result)) return false;
+            transferring = true;
+            try { Restore(result.Slots); return true; }
+            finally { transferring = false; }
+        }
+        public bool TryExchange(IEnumerable<IngredientCost> ingredients, string output, int yield)
+        {
+            if (!PrepareExchange(ingredients, output, yield, out var result)) return false;
+            transferring = true;
+            try { Restore(result.Slots); return true; }
+            finally { transferring = false; }
+        }
 
         public void Restore(IReadOnlyList<InventorySlot> saved)
         {

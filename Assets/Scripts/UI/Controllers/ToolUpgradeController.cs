@@ -13,12 +13,14 @@ namespace MagicIsland.UI.Controllers
         private readonly ToolUpgradeManager upgrades;
         private readonly UnityAction[] actions;
         private readonly UnityAction close, save;
+        private readonly UnityAction crafting;
         public ToolUpgradeModel Model { get; } = new ToolUpgradeModel();
-        public ToolUpgradeController(ToolUpgradeView view, ToolUpgradeManager upgrades, Action<FarmTool> upgrade, Action close, Action save)
+        public ToolUpgradeController(ToolUpgradeView view, ToolUpgradeManager upgrades, Action<FarmTool> upgrade, Action close, Action save, Action openCrafting = null)
         {
             this.view = view; this.upgrades = upgrades; this.close = () => close(); this.save = () => save(); actions = new UnityAction[2];
             for (int i = 0; i < 2; i++) { var tool = upgrades.Catalog.Upgrades[i].Tool; actions[i] = () => upgrade(tool); view.UpgradeButtons[i].onClick.AddListener(actions[i]); }
             view.CloseButton.onClick.AddListener(this.close); view.SaveButton.onClick.AddListener(this.save); Tick();
+            crafting = () => openCrafting?.Invoke(); view.CraftingButton.onClick.AddListener(crafting);
         }
         public void Tick()
         {
@@ -41,6 +43,7 @@ namespace MagicIsland.UI.Controllers
             if (view == null) return;
             for (int i = 0; i < 2; i++) view.UpgradeButtons[i].onClick.RemoveListener(actions[i]);
             view.CloseButton.onClick.RemoveListener(close); view.SaveButton.onClick.RemoveListener(save);
+            view.CraftingButton.onClick.RemoveListener(crafting);
         }
     }
 }

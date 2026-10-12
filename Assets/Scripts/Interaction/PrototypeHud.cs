@@ -10,6 +10,7 @@ namespace MagicIsland.Interaction
     public sealed class PrototypeHud : UIView
     {
         public TMP_Text DayText;
+        public TMP_Text LocationText;
         public TMP_Text TimeText;
         public TMP_Text WeatherText;
         public TMP_Text SeedText;
@@ -31,6 +32,8 @@ namespace MagicIsland.Interaction
         public void Render(FarmHudModel model)
         {
             DayText.text = model.Date;
+            if (LocationText != null) LocationText.text = model.Location;
+            NextDayButton.GetComponentInChildren<TMP_Text>().text = model.Inside ? "休息" : "回家休息";
             TimeText.text = model.Time;
             WeatherText.text = model.Weather;
             SeedText.text = "播种：" + model.SeedName;
@@ -45,6 +48,7 @@ namespace MagicIsland.Interaction
             for (int i = 0; i < ToolButtons.Length; i++)
             {
                 bool selected = (int)model.Tool == i;
+                ToolButtons[i].interactable = !model.Inside;
                 ToolButtons[i].GetComponent<Image>().color = selected ? SelectedToolColor : IdleToolColor;
                 ToolButtons[i].GetComponentInChildren<TMP_Text>().color = selected ? SelectedLabelColor : IdleLabelColor;
             }

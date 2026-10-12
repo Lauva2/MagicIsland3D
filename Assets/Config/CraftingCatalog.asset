@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 059b0290436049afbd765b2f95469579, type: 3}
+  m_Name: CraftingCatalog
+  m_EditorClassIdentifier: 
+  Recipes:
+  - Id: wood_fence
+    DisplayName: "\u6728\u6805\u680F"
+    OutputItemId: wood_fence
+    PrefabAddress: WoodFence
+    Yield: 1
+    IsFurniture: 0
+    Ingredients:
+    - ItemId: wood
+      Quantity: 2
+  - Id: stone_path
+    DisplayName: "\u77F3\u677F\u8DEF"
+    OutputItemId: stone_path
+    PrefabAddress: StonePath
+    Yield: 1
+    IsFurniture: 0
+    Ingredients:
+    - ItemId: stone
+      Quantity: 2
+  - Id: garden_lamp
+    DisplayName: "\u5EAD\u9662\u706F"
+    OutputItemId: garden_lamp
+    PrefabAddress: GardenLamp
+    Yield: 1
+    IsFurniture: 0
+    Ingredients:
+    - ItemId: wood
+      Quantity: 3
+    - ItemId: stone
+      Quantity: 2
+  - Id: wood_table
+    DisplayName: "\u6728\u684C"
+    OutputItemId: wood_table
+    PrefabAddress: WoodTable
+    Yield: 1
+    IsFurniture: 1
+    Ingredients:
+    - ItemId: wood
+      Quantity: 4
+  - Id: wood_chair
+    DisplayName: "\u6728\u6905"
+    OutputItemId: wood_chair
+    PrefabAddress: WoodChair
+    Yield: 1
+    IsFurniture: 1
+    Ingredients:
+    - ItemId: wood
+      Quantity: 3
+  - Id: small_lamp
+    DisplayName: "\u5C0F\u53F0\u706F"
+    OutputItemId: small_lamp
+    PrefabAddress: SmallLamp
+    Yield: 1
+    IsFurniture: 1
+    Ingredients:
+    - ItemId: wood
+      Quantity: 2
+    - ItemId: stone
+      Quantity: 1

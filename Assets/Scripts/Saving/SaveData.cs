@@ -8,6 +8,7 @@ using MagicIsland.Orders;
 using MagicIsland.Gathering;
 using MagicIsland.Tools;
 using System.Linq;
+using MagicIsland.Interaction;
 
 namespace MagicIsland.Saving
 {
@@ -21,7 +22,15 @@ namespace MagicIsland.Saving
     [Serializable]
     public sealed class SaveData
     {
-        public const int CurrentVersion = 11;
+        public const int CurrentVersion = 19;
+        public SavedHouseUpgrade HouseUpgrade = new SavedHouseUpgrade();
+        public SavedPlacedObject[] Furniture = Array.Empty<SavedPlacedObject>();
+        public string PlayerArea = HousingState.Island;
+        public SavedPlacedObject[] PlacedObjects = Array.Empty<SavedPlacedObject>();
+        public SavedNPCSchedule[] NPCSchedules = Array.Empty<SavedNPCSchedule>();
+        public SavedStoryEvent[] StoryEvents = Array.Empty<SavedStoryEvent>();
+        public SavedRelationship[] Relationships = Array.Empty<SavedRelationship>();
+        public SavedNPC[] NPCs = Array.Empty<SavedNPC>();
         public SavedSlot[] Storage = Array.Empty<SavedSlot>();
         public SavedToolUpgrade[] ToolUpgrades = Array.Empty<SavedToolUpgrade>();
         public SavedGatheringNode[] Gathering = Array.Empty<SavedGatheringNode>();
@@ -33,7 +42,7 @@ namespace MagicIsland.Saving
         public long Gold;
         public int Stamina = 100;
         public double ClockMinute = 360;
-        public void Upgrade(int initialGold, int maxStamina = 100, string defaultCropId = "turnip", string defaultSeedId = "turnip_seed", IEnumerable<TaskDefinition> tasks = null, IEnumerable<OrderDefinition> orders = null, int daysPerSeason = 28, IEnumerable<GatheringDefinition> gathering = null, IEnumerable<ToolUpgradeDefinition> toolUpgrades = null, int storageSlots = 0)
+        public void Upgrade(int initialGold, int maxStamina = 100, string defaultCropId = "turnip", string defaultSeedId = "turnip_seed", IEnumerable<TaskDefinition> tasks = null, IEnumerable<OrderDefinition> orders = null, int daysPerSeason = 28, IEnumerable<GatheringDefinition> gathering = null, IEnumerable<ToolUpgradeDefinition> toolUpgrades = null, int storageSlots = 0, IEnumerable<string> npcIds = null, IEnumerable<RelationshipDefinition> relationships = null, IEnumerable<StoryEventDefinition> stories = null, IEnumerable<NPCScheduleDefinition> schedules = null, IEnumerable<PlaceableDefinition> placeables = null)
         {
             if (Version == 1) { Gold = initialGold; Version = 2; }
             if (Version == 2) { ClockMinute = 360; Version = 3; }
@@ -50,7 +59,19 @@ namespace MagicIsland.Saving
             if (Version == 7) { Order = orders == null ? null : new OrderState(orders, daysPerSeason, 1, Day).Capture(); Version = 8; }
             if (Version == 8) { Gathering = gathering == null ? Array.Empty<SavedGatheringNode>() : new GatheringState(gathering, Day).Capture(); Version = 9; }
             if (Version == 9) { ToolUpgrades = toolUpgrades == null ? Array.Empty<SavedToolUpgrade>() : new ToolUpgradeState(toolUpgrades).Capture(); Version = 10; }
-            if (Version == 10) { Storage = Enumerable.Range(0, storageSlots).Select(i => new SavedSlot()).ToArray(); Version = CurrentVersion; }
+            if (Version == 10) { Storage = Enumerable.Range(0, storageSlots).Select(i => new SavedSlot()).ToArray(); Version = 11; }
+            if (Version == 11) { NPCs = npcIds == null ? Array.Empty<SavedNPC>() : new NPCState(npcIds).Capture(); Version = 12; }
+            if (Version == 12)
+            {
+                Relationships = relationships == null ? Array.Empty<SavedRelationship>() : new RelationshipState(relationships,
+                    new NPCState(relationships.Select(r => r.NpcId)), Day).Capture(); Version = 13;
+            }
+            if (Version == 13) { StoryEvents = stories?.Select(r => new SavedStoryEvent { Id = r.Id }).ToArray() ?? Array.Empty<SavedStoryEvent>(); Version = 14; }
+            if (Version == 14) { NPCSchedules = schedules == null ? Array.Empty<SavedNPCSchedule>() : new NPCScheduleState(schedules, ClockMinute).Capture(); Version = 15; }
+            if (Version == 15) { PlacedObjects = Array.Empty<SavedPlacedObject>(); Version = 16; }
+            if (Version == 16) { PlayerArea = HousingState.Island; Version = 17; }
+            if (Version == 17) { Furniture = Array.Empty<SavedPlacedObject>(); Version = 18; }
+            if (Version == 18) { HouseUpgrade = new SavedHouseUpgrade(); Version = CurrentVersion; }
         }
         public int Version;
         public string SavedUtc;
@@ -61,9 +82,19 @@ namespace MagicIsland.Saving
         public float PlayerX, PlayerY, PlayerZ;
 
         public void Validate(int farmSize, int growthDays, InventoryState inventory, int maxStamina = 100,
-            IEnumerable<CropDefinition> crops = null, string defaultCropId = "turnip", IEnumerable<TaskDefinition> tasks = null, IEnumerable<OrderDefinition> orders = null, int daysPerSeason = 28, IEnumerable<GatheringDefinition> gathering = null, IEnumerable<ToolUpgradeDefinition> toolUpgrades = null, int storageSlots = 0)
+            IEnumerable<CropDefinition> crops = null, string defaultCropId = "turnip", IEnumerable<TaskDefinition> tasks = null, IEnumerable<OrderDefinition> orders = null, int daysPerSeason = 28, IEnumerable<GatheringDefinition> gathering = null, IEnumerable<ToolUpgradeDefinition> toolUpgrades = null, int storageSlots = 0, IEnumerable<string> npcIds = null, IEnumerable<RelationshipDefinition> relationships = null, IEnumerable<StoryEventDefinition> stories = null, IEnumerable<NPCScheduleDefinition> schedules = null, IEnumerable<PlaceableDefinition> placeables = null, IEnumerable<PlaceableDefinition> furniture = null)
         {
             if (Version != CurrentVersion) throw new InvalidOperationException("Unsupported save version");
+            if (!HouseUpgradeState.Valid(HouseUpgrade, Day)) throw new InvalidOperationException("Invalid saved house upgrade");
+            if (schedules != null) new NPCScheduleState(schedules, ClockMinute).Restore(NPCSchedules);
+            if (placeables != null) new PlacementState(placeables, farmSize, schedules).Restore(PlacedObjects);
+            if (Furniture == null || Furniture.Length > PlacementState.Maximum) throw new InvalidOperationException("Invalid furniture records");
+            if (furniture != null) new PlacementState(furniture, farmSize, indoor: true, houseLevel: HouseUpgrade.Level).Restore(Furniture);
+            NPCState restoredNPCs = null;
+            if (npcIds != null || relationships != null) { restoredNPCs = new NPCState(npcIds ?? relationships.Select(r => r.NpcId)); restoredNPCs.Restore(NPCs); }
+            RelationshipState restoredRelationships = null;
+            if (relationships != null) { restoredRelationships = new RelationshipState(relationships, restoredNPCs, Day); restoredRelationships.Restore(Relationships); }
+            if (stories != null) new StoryEventState(stories, restoredRelationships).Restore(StoryEvents);
             if (storageSlots > 0) inventory.CreateEmpty(storageSlots).Restore(GetStorageSlots());
             if (tasks != null) new TaskState(tasks).Restore(Tasks);
             if (toolUpgrades != null) new ToolUpgradeState(toolUpgrades).Restore(ToolUpgrades);
@@ -95,9 +126,8 @@ namespace MagicIsland.Saving
                     || (!cell.Planted && (cell.Growth != 0 || !string.IsNullOrEmpty(cell.CropId))))
                     throw new InvalidOperationException("Invalid saved farm cell");
             }
-            if (!Finite(PlayerX) || !Finite(PlayerY) || !Finite(PlayerZ)
-                || Math.Abs(PlayerX) > 12f || Math.Abs(PlayerZ) > 12f || PlayerY < -1f || PlayerY > 10f)
-                throw new InvalidOperationException("Invalid saved player position");
+            if (!HousingState.ValidPosition(PlayerArea, PlayerX, PlayerY, PlayerZ, HouseUpgrade.Level))
+                throw new InvalidOperationException("Invalid saved player area or position");
             if (Slots == null || Slots.Length != inventory.Capacity) throw new InvalidOperationException("Saved inventory capacity changed");
             var restored = new InventorySlot[Slots.Length];
             for (int i = 0; i < Slots.Length; i++)
@@ -110,9 +140,9 @@ namespace MagicIsland.Saving
         }
 
         public static SaveData Capture(FarmState farm, InventoryState inventory, float x, float y, float z, long gold = 0, double clockMinute = 360, int stamina = 100, string selectedSeed = null,
-            int weatherSeed = 1, WeatherKind weather = WeatherKind.Sunny, TaskState tasks = null, OrderState orders = null, GatheringState gathering = null, ToolUpgradeState toolUpgrades = null, StorageState storage = null)
+            int weatherSeed = 1, WeatherKind weather = WeatherKind.Sunny, TaskState tasks = null, OrderState orders = null, GatheringState gathering = null, ToolUpgradeState toolUpgrades = null, StorageState storage = null, NPCState npcs = null, RelationshipState relationships = null, StoryEventState stories = null, NPCScheduleState schedules = null, PlacementState placements = null, string playerArea = HousingState.Island, PlacementState furniture = null, HouseUpgradeState houseUpgrade = null)
         {
-            var data = new SaveData { Version = CurrentVersion, Storage = storage?.Capture().Select(s => new SavedSlot { ItemId = s.ItemId, Quantity = s.Quantity }).ToArray() ?? Array.Empty<SavedSlot>(), ToolUpgrades = toolUpgrades?.Capture() ?? Array.Empty<SavedToolUpgrade>(), Gathering = gathering?.Capture() ?? Array.Empty<SavedGatheringNode>(), Order = orders?.Capture(), Tasks = tasks?.Capture() ?? Array.Empty<TaskProgress>(), WeatherSeed = weatherSeed, Weather = weather, Gold = gold, ClockMinute = clockMinute, Stamina = stamina, SelectedSeedItemId = selectedSeed, SavedUtc = DateTime.UtcNow.ToString("O"),
+            var data = new SaveData { Version = CurrentVersion, HouseUpgrade = houseUpgrade?.Capture() ?? new SavedHouseUpgrade(), PlayerArea = playerArea, Furniture = furniture?.Capture() ?? Array.Empty<SavedPlacedObject>(), PlacedObjects = placements?.Capture() ?? Array.Empty<SavedPlacedObject>(), NPCSchedules = schedules?.Capture() ?? Array.Empty<SavedNPCSchedule>(), StoryEvents = stories?.Capture() ?? Array.Empty<SavedStoryEvent>(), Relationships = relationships?.Capture() ?? Array.Empty<SavedRelationship>(), NPCs = npcs?.Capture() ?? Array.Empty<SavedNPC>(), Storage = storage?.Capture().Select(s => new SavedSlot { ItemId = s.ItemId, Quantity = s.Quantity }).ToArray() ?? Array.Empty<SavedSlot>(), ToolUpgrades = toolUpgrades?.Capture() ?? Array.Empty<SavedToolUpgrade>(), Gathering = gathering?.Capture() ?? Array.Empty<SavedGatheringNode>(), Order = orders?.Capture(), Tasks = tasks?.Capture() ?? Array.Empty<TaskProgress>(), WeatherSeed = weatherSeed, Weather = weather, Gold = gold, ClockMinute = clockMinute, Stamina = stamina, SelectedSeedItemId = selectedSeed, SavedUtc = DateTime.UtcNow.ToString("O"),
                 FarmSize = farm.Size, Day = farm.Day, PlayerX = x, PlayerY = y, PlayerZ = z,
                 Cells = new FarmCell[farm.Cells.Length], Slots = new SavedSlot[inventory.Capacity] };
             for (int i = 0; i < data.Cells.Length; i++)

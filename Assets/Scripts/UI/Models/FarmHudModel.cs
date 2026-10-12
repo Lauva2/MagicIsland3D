@@ -17,5 +17,7 @@ namespace MagicIsland.UI.Models
         public FarmTool Tool;
         public string Hint;
         public string Feedback;
+        public string Location;
+        public bool Inside;
     }
 }

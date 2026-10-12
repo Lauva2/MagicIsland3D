@@ -79,7 +79,7 @@ namespace MagicIsland.EditorTools
                     // This fixture isolates existing crop behaviors; CalendarFlowVerification covers season restrictions.
                     foreach (var fixtureCrop in game.Configuration.Crops.Crops) fixtureCrop.PlantingSeasons = MagicIsland.CalendarSystem.SeasonMask.All;
                     game.Saves.Initialize(game.Configuration.Config, game.Configuration.Items, game.Configuration.Crops,
-                        Path.GetFullPath("Logs/CropVisualSaves/" + Guid.NewGuid().ToString("N")), tasks: game.Configuration.Tasks, orders: game.Configuration.Orders, seasons: game.Configuration.Seasons, gathering: game.Configuration.Gathering, toolUpgrades: game.Configuration.ToolUpgrades, storage: game.Configuration.Storage);
+                        Path.GetFullPath("Logs/CropVisualSaves/" + Guid.NewGuid().ToString("N")), tasks: game.Configuration.Tasks, orders: game.Configuration.Orders, seasons: game.Configuration.Seasons, gathering: game.Configuration.Gathering, toolUpgrades: game.Configuration.ToolUpgrades, storage: game.Configuration.Storage, npcs: game.Configuration.NPCs, relationships: game.Configuration.Relationships, stories: game.Configuration.Stories, schedules: game.Configuration.NPCSchedules, fishing: game.Configuration.Fishing, crafting: game.Configuration.Crafting);
                     var crop = game.Configuration.Crops.Crops[0]; SessionState.SetString(Running + ".Address", crop.SeedlingPrefabAddress);
                     crop.SeedlingPrefabAddress = "MainMenuPanel"; // A valid AA object with no crop renderers exercises failure cleanup.
                     game.EnterGame(); Phase(1);

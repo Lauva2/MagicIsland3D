@@ -12,6 +12,7 @@ namespace MagicIsland.Managers
         public bool InRange(Vector3 position, float reach) => Bed != null
             && Vector3.ProjectOnPlane(Bed.position - position, Vector3.up).sqrMagnitude <= reach * reach;
         public void Tick(float seconds, bool paused) => Clock?.Tick(seconds, secondsPerMinute, paused);
+        public void SetBed(Transform bed) => Bed = bed;
         public void Clear() { Clock = null; Bed = null; }
     }
 }

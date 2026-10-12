@@ -66,6 +66,8 @@ namespace MagicIsland.UI.Controllers
             Model.Tool = interaction.Controller.Tool;
             Model.Hint = interaction.Controller.Hint;
             Model.Feedback = interaction.Controller.Feedback;
+            Model.Inside = GameManager.Instance?.Housing?.Inside ?? false;
+            Model.Location = Model.Inside ? (GameManager.Instance.Housing.Upgrade.Level == 1 ? "舒适小屋" : "我的小屋") : "岛屿农场";
             view.Render(Model);
         }
         public void Dispose()

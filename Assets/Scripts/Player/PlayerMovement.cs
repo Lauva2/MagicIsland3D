@@ -36,5 +36,6 @@ namespace MagicIsland.Player
             if (direction.sqrMagnitude > 0.001f) Visual.rotation = Quaternion.LookRotation(direction);
             ActionUntil = Time.time + 0.18f;
         }
+        public void ResetMotion() { verticalSpeed = -2; ActionUntil = 0; ToolActionLocked = false; }
     }
 }

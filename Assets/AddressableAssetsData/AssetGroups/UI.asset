@@ -77,6 +77,46 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 33613b2f308ac7d4597e8c2e84ca0832
+    m_Address: CookingPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5fdb88fd1b294bb499c933af0300addf
+    m_Address: DialoguePanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9efb969e55bbbd146910b703c18a0c55
+    m_Address: GiftPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7482c9c8732fd441b8a7b3fcd39cf5a
+    m_Address: FishingPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3cfd7894211666844934c6bef497b655
+    m_Address: CraftingPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b49af2118f541ff40a834ac34bcd3d62
+    m_Address: PlacementPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 458e4f7837044e44cbeaccd258e6f29c
+    m_Address: SceneTransitionPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1cbb543552c57cc4193d5b7849aae85b
+    m_Address: HouseUpgradePanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: ac955b8fe83d22d4a85c3b3fc30e9c11, type: 2}
   m_SchemaSet:

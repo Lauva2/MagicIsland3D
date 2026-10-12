@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Fishing
+  m_EditorClassIdentifier: 
+  m_GroupName: Fishing
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 2116a79b29d50ef4ca6a4bc23f1299ba
+  m_SerializeEntries:
+  - m_GUID: 73d25fb2f7d621244a652d49ce70c456
+    m_Address: FishingRod
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 18442045d58d24f41ac875a150c50d6c
+    m_Address: CoastalFishingSpot
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: ac955b8fe83d22d4a85c3b3fc30e9c11, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 5580ec40c01ebe1479dc1a8a9ab5abe8, type: 2}
+    - {fileID: 11400000, guid: 589a2f87145eec3459bed56f13fd3079, type: 2}

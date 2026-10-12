@@ -32,7 +32,7 @@ namespace MagicIsland.EditorTools
         private static void Phase(int value) => SessionState.SetInt(Running + ".Phase", value);
         private static OrderView View => UnityEngine.Object.FindObjectOfType<OrderView>();
         private static void SaveDirectory(GameManager game, string directory) => game.Saves.Initialize(game.Configuration.Config,
-            game.Configuration.Items, game.Configuration.Crops, directory, game.Configuration.Tasks, game.Configuration.Orders, game.Configuration.Seasons, gathering: game.Configuration.Gathering, toolUpgrades: game.Configuration.ToolUpgrades, storage: game.Configuration.Storage);
+            game.Configuration.Items, game.Configuration.Crops, directory, game.Configuration.Tasks, game.Configuration.Orders, game.Configuration.Seasons, gathering: game.Configuration.Gathering, toolUpgrades: game.Configuration.ToolUpgrades, storage: game.Configuration.Storage, npcs: game.Configuration.NPCs, relationships: game.Configuration.Relationships, stories: game.Configuration.Stories, schedules: game.Configuration.NPCSchedules, fishing: game.Configuration.Fishing, crafting: game.Configuration.Crafting);
         private static void Capture(GameManager game, string name)
         {
             if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null) return;

@@ -58,7 +58,7 @@ namespace MagicIsland.EditorTools
                     Require(game.Configuration.Weather != null && game.Configuration.Weather.IsValid, "WeatherConfig loads via packed AA");
                     game.Configuration.Seasons.SpringRainChance = 1; // Force next-day rain without changing the source asset.
                     string directory = Path.GetFullPath("Logs/WeatherSaves/" + Guid.NewGuid().ToString("N"));
-                    game.Saves.Initialize(game.Configuration.Config, game.Configuration.Items, game.Configuration.Crops, directory, tasks: game.Configuration.Tasks, orders: game.Configuration.Orders, seasons: game.Configuration.Seasons, gathering: game.Configuration.Gathering, toolUpgrades: game.Configuration.ToolUpgrades, storage: game.Configuration.Storage);
+                    game.Saves.Initialize(game.Configuration.Config, game.Configuration.Items, game.Configuration.Crops, directory, tasks: game.Configuration.Tasks, orders: game.Configuration.Orders, seasons: game.Configuration.Seasons, gathering: game.Configuration.Gathering, toolUpgrades: game.Configuration.ToolUpgrades, storage: game.Configuration.Storage, npcs: game.Configuration.NPCs, relationships: game.Configuration.Relationships, stories: game.Configuration.Stories, schedules: game.Configuration.NPCSchedules, fishing: game.Configuration.Fishing, crafting: game.Configuration.Crafting);
                     game.EnterGame(); Phase(1);
                 }
                 else if (phase == 1 && game.State == GameFlowState.Playing)

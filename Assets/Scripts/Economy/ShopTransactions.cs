@@ -2,7 +2,7 @@ using System;
 using MagicIsland.Inventory;
 namespace MagicIsland.Economy
 {
-    public enum TradeResult { Success, InvalidQuantity, InsufficientGold, BagFull, InsufficientItems, GoldLimit, Busy }
+    public enum TradeResult { Success, InvalidQuantity, InsufficientGold, BagFull, InsufficientItems, GoldLimit, Busy, NotForSale }
     public sealed class ShopTransactions
     {
         private readonly InventoryState inventory;
@@ -17,10 +17,16 @@ namespace MagicIsland.Economy
             this.inventory = inventory; this.economy = economy; this.seed = seed; this.crop = crop;
             this.buyPrice = buyPrice; this.sellPrice = sellPrice;
         }
+        public ShopTransactions(InventoryState inventory, EconomyState economy, string fish, int sellPrice)
+        {
+            if (inventory == null || economy == null || string.IsNullOrWhiteSpace(fish) || sellPrice <= 0) throw new ArgumentException("Invalid fish sale");
+            this.inventory = inventory; this.economy = economy; crop = fish; this.sellPrice = sellPrice;
+        }
         public TradeResult Check(bool buy, int quantity)
         {
             if (trading) return TradeResult.Busy;
             if (quantity <= 0) return TradeResult.InvalidQuantity;
+            if (buy && seed == null) return TradeResult.NotForSale;
             long total = (long)quantity * (buy ? buyPrice : sellPrice);
             if (buy)
             {

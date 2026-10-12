@@ -27,6 +27,11 @@ namespace MagicIsland.Stamina
             Current = current; NotifyChanged();
         }
         public void Refill() => Restore(Maximum);
+        public bool TryRecover(int amount, bool notify = true)
+        {
+            if (amount < 1 || Current == Maximum) return false;
+            Current = (int)Math.Min(Maximum, (long)Current + amount); if (notify) NotifyChanged(); return true;
+        }
         public void NotifyChanged() => Changed?.Invoke();
     }
 }
