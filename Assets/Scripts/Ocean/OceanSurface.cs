@@ -26,6 +26,19 @@ namespace MagicIsland.Ocean
         public CoastalCrab[] Crabs=System.Array.Empty<CoastalCrab>();
         private MaterialPropertyBlock properties;
         private MaterialPropertyBlock ecologyProperties;
+        private OceanFishWaterVolume fishWaterVolume;
+        public void ConfigureFishHabitat(OceanSchool school)
+        {
+            if(fishWaterVolume==null)
+            {
+                var mesh=Shore.GetComponent<MeshFilter>().sharedMesh;
+                fishWaterVolume=new OceanFishWaterVolume(mesh.vertices,mesh.triangles);
+            }
+            float waves=Water.sharedMaterial.GetFloat("_WaveHeight")*1.5f;
+            float floor=fishWaterVolume.HighestFloor(school.Center,school.HomeRadius);
+            if(float.IsNaN(floor)||float.IsInfinity(floor))throw new System.InvalidOperationException("Fish habitat lies outside the baked ocean floor");
+            school.ConfigureWater(floor+.07f,SeaLevel-Mathf.Max(.10f,waves+.025f),SwimObstacles);
+        }
         public float AnimationTime { get; private set; }
         public float Daylight { get; private set; }
         public float Rain { get; private set; }
@@ -62,7 +75,11 @@ namespace MagicIsland.Ocean
             foreach(var renderer in EcosystemRenderers)if(renderer!=null){renderer.GetPropertyBlock(ecologyProperties);ecologyProperties.SetFloat("_OceanTime",AnimationTime);renderer.SetPropertyBlock(ecologyProperties);}
             Vector3? player=playerPosition.HasValue?(Vector3?)transform.InverseTransformPoint(playerPosition.Value):null;
             Vector3? fishing=fishingPosition.HasValue?(Vector3?)transform.InverseTransformPoint(fishingPosition.Value):null;
-            foreach(var school in Schools)if(school!=null){school.React(seconds,fishing);school.Render(AnimationTime);}
+            foreach(var school in Schools)if(school!=null)
+            {
+                if(float.IsInfinity(school.WaterFloor)){ConfigureFishHabitat(school);school.ResetSteering();}
+                school.React(seconds,fishing);school.Render(AnimationTime);
+            }
             foreach(var bird in Birds)if(bird!=null){bird.React(seconds,player,AnimationTime,Daylight,raining);bird.Render(AnimationTime,Daylight,raining);}
             foreach(var crab in Crabs)if(crab!=null){crab.React(seconds,player);crab.Render(AnimationTime);}
             if(Effects!=null)Effects.Tick(seconds,this,playerPosition);

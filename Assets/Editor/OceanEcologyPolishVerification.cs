@@ -23,23 +23,26 @@ namespace MagicIsland.EditorTools
                 Require(water.GetFloat("_DepthRange")>4&&water.GetColor("_ShallowColor").grayscale>water.GetColor("_MidColor").grayscale&&water.GetColor("_MidColor").grayscale>water.GetColor("_DeepColor").grayscale,"Softer palette retains clear shallow / reef / deep value separation");
                 foreach(var school in surface.Schools)
                 {
+                    surface.ConfigureFishHabitat(school);
                     var mesh=school.GetComponent<MeshFilter>().sharedMesh;
                     var data=new System.Collections.Generic.List<Vector4>();mesh.GetUVs(1,data);
                     var pivots=data.Distinct().ToArray();Require(pivots.Length==school.Members,"Independent member metadata retained");
-                    school.Render(0);OceanFishMotion.Pose(pivots[0],school.Guide,0,0,out var first,out float yawA);
+                    school.Render(0);var first=school.Steering.RenderState(0).Position;
                     int other=Mathf.Min(1,pivots.Length-1);
-                    OceanFishMotion.Pose(pivots[other],school.Guide,0,0,out var second,out float yawB);
-                    float distance=Vector3.Distance(first,second);float changed=0;
+                    var second=school.Steering.RenderState(other).Position;
+                    float distance=Vector3.Distance(first,second);float changed=0,headingDifference=0;
                     for(int step=1;step<=25;step++)
                     {
                         float time=step*.3f;school.Render(time);
-                        OceanFishMotion.Pose(pivots[0],school.Guide,time,0,out first,out yawA);OceanFishMotion.Pose(pivots[other],school.Guide,time,0,out second,out yawB);
+                        var a=school.Steering.RenderState(0);var b=school.Steering.RenderState(other);
+                        first=a.Position;second=b.Position;
+                        headingDifference=Mathf.Max(headingDifference,Mathf.Abs(Mathf.DeltaAngle(a.Yaw*Mathf.Rad2Deg,b.Yaw*Mathf.Rad2Deg)));
                         changed=Mathf.Max(changed,Mathf.Abs(distance-Vector3.Distance(first,second)));
                     }
                     if(pivots.Length>1)
                     {
                         Require(changed>.015f,"Members change relative spacing during calm swimming: "+school.name);
-                        Require(Mathf.Abs(Mathf.DeltaAngle(yawA*Mathf.Rad2Deg,yawB*Mathf.Rad2Deg))>1,"Members turn at different headings: "+school.name);
+                        Require(headingDifference>1,"Members turn at different headings while flocking: "+school.name);
                     }
                     var block=new MaterialPropertyBlock();school.GetComponent<Renderer>().GetPropertyBlock(block);
                     Require(block.GetFloat("_FishEnabled")==1&&block.GetVector("_FishGuide")==school.Guide,"Member animation reaches renderer without material instances");

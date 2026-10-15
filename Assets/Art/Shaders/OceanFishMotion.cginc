@@ -1,5 +1,10 @@
 float _FishSteered;
 float4 _FishPoses[32];
+float4 _FishAttitudes[32];
+float3 FishPitch(float3 p,float pitch)
+{
+    float s,c;sincos(pitch,s,c);return float3(p.x,p.y*c+p.z*s,p.z*c-p.y*s);
+}
 // Keep body deformation identical to OceanFishMotion.cs (baked-volume validation).
 float2 FishRotate(float2 p,float yaw)
 {
@@ -25,15 +30,19 @@ void AnimateFish(inout appdata_full v,float4 guide,float time,float scatter)
     float beat=time*(shape.y>2.5?2.1:7.5+1.4*sin(pivot.w))+pivot.w*2;
     if(shape.y>2.5)relative.y+=sin(beat)*.012*saturate(abs(relative.x)/.45);
     else relative.x+=sin(beat+relative.z*6)*.035*saturate(-relative.z/.30);
-    float3 position;float yaw;FishPose(pivot,guide,time,scatter,position,yaw);
+    float3 position;float yaw;float pitch=0;FishPose(pivot,guide,time,scatter,position,yaw);
     position.xz-=float2(cos(guide.z),sin(guide.z)*guide.y)*guide.x;
     if(_FishSteered>.5)
     {
         int member=(int)round((pivot.w-1)/2.399963);
         float4 pose=_FishPoses[member];position=pose.xyz;yaw=pose.w;
+        pitch=_FishAttitudes[member].x;
     }
+    relative=FishPitch(relative,pitch);
     relative.xz=FishRotate(relative.xz,yaw);
     v.vertex.xyz=position+relative;
-    v.normal.xz=FishRotate(v.normal.xz,yaw-shape.x);
-    v.tangent.xz=FishRotate(v.tangent.xz,yaw-shape.x);
+    v.normal.xz=FishRotate(v.normal.xz,-shape.x);
+    v.normal=FishPitch(v.normal,pitch);v.normal.xz=FishRotate(v.normal.xz,yaw);
+    v.tangent.xz=FishRotate(v.tangent.xz,-shape.x);
+    v.tangent.xyz=FishPitch(v.tangent.xyz,pitch);v.tangent.xz=FishRotate(v.tangent.xz,yaw);
 }

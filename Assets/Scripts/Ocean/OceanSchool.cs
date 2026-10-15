@@ -9,6 +9,16 @@ namespace MagicIsland.Ocean
         public Vector3 Center;
         public float Radius=1,Speed=.24f,Phase;
         public float OrbitAspect=.55f,BobAmplitude=.025f;
+        [Header("Boids flocking")]
+        [Min(.01f)] public float NeighbourRadius=1.8f;
+        [Min(.01f)] public float SeparationRadius=.7f;
+        [Min(0)] public float SeparationWeight=1.8f,AlignmentWeight=.85f,CohesionWeight=.65f;
+        [Min(0)] public float CruiseWeight=.55f;
+        [Min(.01f)] public float Acceleration=1.5f;
+        [Header("Three dimensional swimming")]
+        [Min(0)] public float VerticalRange=.22f;
+        [Min(0)] public float VerticalSpeed=.12f;
+        [Range(0,25)] public float MaximumPitch=18;
         [Header("Disturbance response")]
         public const float MaxFleeDistance=.85f,MaxScatterDistance=.38f;
         [Min(0)] public float ReactionDistance=7;
@@ -24,13 +34,27 @@ namespace MagicIsland.Ocean
         public OceanFishMember[] Swimmers=System.Array.Empty<OceanFishMember>();
         public OceanSwimObstacle[] Obstacles=System.Array.Empty<OceanSwimObstacle>();
         public OceanFishSteering Steering { get; private set; }
+        public float WaterFloor { get; private set; }=float.NegativeInfinity;
+        public float WaterCeiling { get; private set; }=float.PositiveInfinity;
+        public OceanSwimObstacle[] WaterObstacles { get; private set; }
+        // OceanSurface owns these local-space AA bounds. Configure before ResetSteering / Render;
+        // this only prepares runtime navigation and never edits baked members or shared resources.
+        public void ConfigureWater(float floor,float ceiling,OceanSwimObstacle[] obstacles)
+        {
+            WaterFloor=floor;WaterCeiling=ceiling;
+            if(obstacles==null){WaterObstacles=null;return;}
+            var nearby=new System.Collections.Generic.List<OceanSwimObstacle>();
+            foreach(var obstacle in obstacles)
+                if(Vector2.Distance(obstacle.Center,new Vector2(Center.x,Center.z))<HomeRadius+obstacle.Radius+1)nearby.Add(obstacle);
+            WaterObstacles=nearby.ToArray();
+        }
         public Vector3 EscapeDirection=>escapeDirection;
         public Vector3 ActivityPosition=>Steering==null?transform.position:transform.parent.TransformPoint(Steering.States[0].Position);
         public Vector3 DeformedVertex(Vector3 vertex,Vector4 pivot,Vector4 shape)
         {
             if(Steering==null)return transform.localPosition+OceanFishMotion.Deform(vertex,pivot,shape,Guide,MotionTime,Mathf.Clamp(ScatterDistance,0,MaxScatterDistance)*Alarm);
-            int index=Mathf.RoundToInt((pivot.w-1)/2.399963f);var state=Steering.States[index];
-            return state.Position+OceanFishMotion.Body(vertex,pivot,shape,MotionTime,state.Yaw);
+            int index=Mathf.RoundToInt((pivot.w-1)/2.399963f);var state=Steering.RenderState(index);
+            return state.Position+OceanFishMotion.Body(vertex,pivot,shape,MotionTime,state.Yaw,state.Pitch);
         }
         public void ResetSteering(){Steering=null;MotionTime=0;}
         private readonly WildlifeAlarm alarm=new WildlifeAlarm();
@@ -60,7 +84,10 @@ namespace MagicIsland.Ocean
             float seconds=Mathf.Max(0,time-MotionTime);
             if(Swimmers.Length==Members&&Members>0&&Members<=32)
             {
-                if(Steering==null||time<MotionTime){Steering=new OceanFishSteering(this);seconds=Mathf.Max(0,time);}
+                if(Steering==null||time<MotionTime)
+                {
+                    Steering=new OceanFishSteering(this);seconds=Mathf.Max(0,time);
+                }
                 Steering.Advance(seconds);
             }
             float angle=Phase+time*Speed+extraAngle;
@@ -75,7 +102,22 @@ namespace MagicIsland.Ocean
                 body.GetPropertyBlock(properties);
                 properties.SetFloat("_FishEnabled",1);properties.SetVector("_FishGuide",Guide);
                 properties.SetFloat("_FishSteered",Steering==null?0:1);
-                if(Steering!=null){Steering.WritePoses(transform.localPosition);properties.SetVectorArray("_FishPoses",Steering.Poses);}
+                if(Steering!=null)
+                {
+                    Steering.WritePoses(transform.localPosition);properties.SetVectorArray("_FishPoses",Steering.Poses);
+                    properties.SetVectorArray("_FishAttitudes",Steering.Attitudes);
+                    // Per-renderer bounds include depth excursions without touching the shared AA mesh.
+                    float extent=HomeRadius+Radius+1;
+                    float height=Mathf.Abs(transform.localPosition.y-Center.y)+VerticalRange+1;
+                    Vector3 boundsCenter=Vector3.zero;
+                    if(!float.IsInfinity(WaterFloor)&&!float.IsInfinity(WaterCeiling))
+                    {
+                        boundsCenter=Center-transform.localPosition;
+                        boundsCenter.y=(WaterFloor+WaterCeiling)*.5f-transform.localPosition.y;
+                        height=(WaterCeiling-WaterFloor)*.5f+.05f;extent=HomeRadius+.1f;
+                    }
+                    body.localBounds=new Bounds(boundsCenter,new Vector3(extent*2,height*2,extent*2));
+                }
                 properties.SetFloat("_OceanTime",time);
                 properties.SetFloat("_FishScatter",Mathf.Clamp(ScatterDistance,0,MaxScatterDistance)*alarm.Level);body.SetPropertyBlock(properties);
             }

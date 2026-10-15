@@ -69,7 +69,12 @@ namespace MagicIsland.EditorTools
                 if(!found)throw new InvalidOperationException("No safe habitat for "+school.name+" ("+school.Species+")");
                 float extent=school.HomeRadius+school.Radius+maxRadius+.15f;
                 mesh.bounds=new Bounds(Vector3.zero,new Vector3(extent*2,2*(Mathf.Max(Mathf.Abs(bottom),Mathf.Abs(top))+.06f),extent*2));EditorUtility.SetDirty(mesh);
-                school.ResetSteering();school.Render(0);
+                surface.ConfigureFishHabitat(school);school.ResetSteering();school.Render(0);
+                // Explicit rebakes write the resolved, separated spawn poses; old AA data is only repaired in memory.
+                for(int i=0;i<school.Swimmers.Length;i++)
+                {
+                    var member=school.Swimmers[i];member.Spawn=school.Steering.States[i].Position;school.Swimmers[i]=member;
+                }
             }
         }
     }

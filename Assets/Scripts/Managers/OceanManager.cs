@@ -39,7 +39,13 @@ namespace MagicIsland.Managers
             weather = config;
             originalDepth = (view.depthTextureMode & DepthTextureMode.Depth) != 0;
             view.depthTextureMode |= DepthTextureMode.Depth;
-            Surface.Tick(0, 1, false);
+            try { Surface.Tick(0, 1, false); }
+            catch (System.Exception exception)
+            {
+                LastError = "海洋 AA 预制体或镜头配置不完整";
+                Debug.LogException(exception);
+                Clear();
+            }
         }
         private void Update()
         {

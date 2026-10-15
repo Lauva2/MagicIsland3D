@@ -55,6 +55,7 @@ namespace MagicIsland.EditorTools
                 Require(surface.Birds.Length==18&&surface.Birds.Select(b=>b.Activity).Distinct().Count()==3&&surface.Crabs.Length==16,"Flying, skimming and resting gulls plus shore crabs baked");
                 foreach(var school in surface.Schools)
                 {
+                    surface.ConfigureFishHabitat(school);
                     var mesh=school.GetComponent<MeshFilter>().sharedMesh;var vertices=mesh.vertices;
                     var pivots=new System.Collections.Generic.List<Vector4>();var shapes=new System.Collections.Generic.List<Vector4>();mesh.GetUVs(1,pivots);mesh.GetUVs(2,shapes);
                     for(int step=0;step<24;step++)
@@ -104,6 +105,7 @@ namespace MagicIsland.EditorTools
             }
             foreach(var school in surface.Schools)
             {
+                surface.ConfigureFishHabitat(school);
                 var mesh=school.GetComponent<MeshFilter>().sharedMesh;var data=new System.Collections.Generic.List<Vector4>();mesh.GetUVs(1,data);
                 var shapes=new System.Collections.Generic.List<Vector4>();mesh.GetUVs(2,shapes);
                 Require(data.Count==mesh.vertexCount&&data.Select(v=>v.w).Distinct().Count()==school.Members,"Every fish has an independent scatter pivot");
@@ -119,7 +121,7 @@ namespace MagicIsland.EditorTools
                     {
                         var p=school.DeformedVertex(vertices[v],data[v],shapes[v]);
                         Require(p.y>floor.Height(p.x,p.z)+.06f&&p.y<surface.SeaLevel-.09f,"Independently swimming and scattering vertices remain above floor and below waves");
-                        Require(mesh.bounds.Contains(p-school.transform.localPosition),"Animated members stay inside renderer culling bounds");
+                        Require(school.GetComponent<Renderer>().localBounds.Contains(p-school.transform.localPosition),"Animated members stay inside renderer culling bounds");
                     }
                 }
                 for(int i=0;i<70;i++){school.React(.1f,null);school.Render(20+i*.1f);}

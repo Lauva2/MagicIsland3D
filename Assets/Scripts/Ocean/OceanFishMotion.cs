@@ -28,13 +28,15 @@ namespace MagicIsland.Ocean
             Pose(pivot,guide,time,scatter,out var position,out float yaw);
             return position-new Vector3(Mathf.Cos(guide.z)*guide.x,0,Mathf.Sin(guide.z)*guide.x*guide.y)+Body(vertex,pivot,shape,time,yaw);
         }
-        public static Vector3 Body(Vector3 vertex,Vector4 pivot,Vector4 shape,float time,float yaw)
+        public static Vector3 Body(Vector3 vertex,Vector4 pivot,Vector4 shape,float time,float yaw,float pitch=0)
         {
             var xz=Rotate(new Vector2(vertex.x-pivot.x,vertex.z-pivot.z),-shape.x);
             var relative=new Vector3(xz.x,vertex.y-pivot.y,xz.y);
             float beat=time*(shape.y>2.5f?2.1f:7.5f+1.4f*Mathf.Sin(pivot.w))+pivot.w*2;
             if(shape.y>2.5f)relative.y+=Mathf.Sin(beat)*.012f*Mathf.Clamp01(Mathf.Abs(relative.x)/.45f);
             else relative.x+=Mathf.Sin(beat+relative.z*6)*.035f*Mathf.Clamp01(-relative.z/.30f);
+            float y=relative.y*Mathf.Cos(pitch)+relative.z*Mathf.Sin(pitch);
+            relative.z=relative.z*Mathf.Cos(pitch)-relative.y*Mathf.Sin(pitch);relative.y=y;
             xz=Rotate(new Vector2(relative.x,relative.z),yaw);
             return new Vector3(xz.x,relative.y,xz.y);
         }
