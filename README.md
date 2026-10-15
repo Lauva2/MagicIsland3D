@@ -4,89 +4,9 @@ Unity 2022.3.62f2，内置渲染管线，旧版 Input，Addressables 1.21.17。
 
 ## 开发约束
 
-以下约定适用于后续新增功能和现有代码修改。
+所有成员和 AI 编程助手在开发前请先阅读根目录的 [统一开发约束（AGENTS.md）](AGENTS.md)。该文件汇总架构、AA / UI、睡觉存档、玩法、资源维护、验证与多人协作要求，是团队共用规则的统一入口。
 
-昼夜光照由 WeatherManager 按 AA 的 WeatherConfig 控制：白天使用移动的暖色阳光与三色天空补光，日落后关闭阳光并保留微弱月光；夜间环境、反射与海水同步变暗，室内灯光独立。参数与验证见 [昼夜与天气](Docs/Weather.md)。
-
-室外风力由 WeatherManager 统一管理，WeatherConfig 配置晴雨风力、方向、阵风与过渡。椰叶、灌木、橡树及果树树冠在 GPU 中轻微摆动，云速和风声使用同一倍率；暂停与室内冻结，原碰撞、采集受击、场景布局和存档保持。风动材质随原有 AA 植被预制体加载，并支持遮挡淡化，见 [植被风动](Docs/VegetationWind.md)。
-
-### 统一存档规则
-
-- 游戏进度仅在每天小屋床边确认睡觉、完成结算后保存，存档点为次日清晨。白天交易、升级、存取、玩法操作及进出场景只更新运行状态。
-- 暂停菜单不提供保存，各玩法面板不提供手动保存。返回主菜单须确认丢弃当日未睡觉进度，返回不保存；新游戏第一次睡觉前不创建该局存档。
-- 睡觉写盘失败只允许在日报重试同一结算快照，不重新跨日或发钱。成功后确认日报不写盘，加载恢复最近一次成功睡觉的清晨。
-- SettingsManager 将音量和全屏单独持久化，设置可随时保存，与游戏进度文件分离。详见 [暂停与设置](Docs/PauseAndSettings.md) 和 [存档](Docs/Saving.md)。
-
-### 游戏流程与系统管理
-
-- 果树由 `OrchardManager` 管理，AA 加载 `OrchardCatalog`、`AppleTree` 和 `OrangeTree`。商店购买树苗，背包摆放于空地，睡觉成长与结果，左键采收；右键回收重置成长并清除未采果实。位置与模型复用 PlacementManager，果树状态仅睡觉保存。规则见 [果树](Docs/Orchard.md)。
-- 整个游戏流程必须由 `GameManager` 统一控制，包括启动、配置加载、场景切换、进入游戏初始化和返回主菜单。
-- NPC 与对话由 `NPCManager`、`DialogueManager` 管理，AA 加载角色、台词配置和 PopUp 层 `DialoguePanel`。完成首次对话才记录见面，睡觉时保存，季节和天气决定日常台词；规则见 [NPC 与对话](Docs/NPCAndDialogue.md)。
-- NPC 日程由 `NPCScheduleManager` 管理，AA 加载 `NPCScheduleCatalog`。林舟上午在办事处、下午前往海岸、傍晚返回；挡路和模态交谈暂停行走，睡觉重置上午位置，存档恢复途中进度。规则见 [NPC 日程](Docs/NPCSchedules.md)。
-- 制作与摆放由 `CraftingManager`、`PlacementManager` 管理，AA 加载 `CraftingCatalog`、装饰模型、PopUp 层 `CraftingPanel` 和 Common 层 `PlacementPanel`。工作台制作木栅栏、石板路和庭院灯，背包选择后网格预览 / 旋转 / 确认，右键回收；库存与摆放记录一起保存。规则见 [制作与摆放](Docs/CraftingAndPlacement.md)。
-- 玩家小屋由 `HousingManager` 管理，`GameManager` 调度进出、睡觉、位置恢复和保存，`SceneManager` 通过 AA 加载室内场景。床移入室内，农场 / NPC / 装饰状态保留；Top 层 `SceneTransitionPanel` 显示切换进度。规则见 [玩家小屋](Docs/Housing.md)。
-- 小屋扩建由 `HousingManager` 管理，公告栏进入 PopUp 层 MVC 面板 `HouseUpgradePanel`，默认支付木材 20、石料 10、金币 300，次日完工。室内原位扩至 16×12，保留家具、床、出口和角色位置；参数沿用 AA 的 `HousingConfig`，施工状态与升级等级一起保存。规则见 [小屋扩建](Docs/HouseUpgrades.md)。
-- 室内家具由 `FurnitureManager` 管理，复用 `PlacementManager` 的 AA 预览和交互，独立保存室内占位。工作台分页制作木桌、木椅和小台灯，室内背包选择摆放，床边、出生点和出口通道保留。规则见 [室内家具](Docs/Furniture.md)。
-- 养殖由 `AnimalManager` 管理。办事处申请建造鸡舍，商店“养殖用品”购买鸡与饲料、出售鸡蛋；每只鸡每天一份饲料，次日产蛋，最多两只。配置及鸡舍 / 鸡模型通过 AA 加载，CoopPanel、AnimalShopPanel 采用 PopUp 层 MVC；养殖与库存 / 金币一同保存。规则见 [鸡舍养殖](Docs/Animals.md)。
-- 好感度与送礼由 `RelationshipManager` 管理，AA 加载 `RelationshipCatalog` 和 PopUp 层 `GiftPanel`。礼物、好感度与每日送礼日期一起提交和保存；规则见 [好感度与送礼](Docs/Relationships.md)。
-- 好感度事件由 `StoryEventManager` 管理，AA 加载 `StoryEventCatalog`，沿用 `DialoguePanel`。完整结束事件后记录完成和解锁食谱，由 `GameManager` 保存；规则见 [好感度事件](Docs/StoryEvents.md)。
-- 钓鱼由 `FishingManager` 管理，AA 加载 `FishingCatalog`、`FishingRod`、`CoastalFishingSpot` 和 PopUp 层 `FishingPanel`。鱼获与体力原子提交，捕获及售鱼成功后更新状态，睡觉时保存；规则见 [钓鱼](Docs/Fishing.md)。
-- 每个系统必须由对应的 `Manager` 控制。现有配置、场景、UI、背包、农务、玩家、镜头、交互、存档、设置、经济、商店、时间、日期季节、天气、体力、工具、任务、订单、采集、工具升级、储物、烹饪、食物使用、NPC、对话、好感度、事件、钓鱼、NPC 日程、制作、摆放、果树、家具、玩家小屋、养殖和每日经营结算分别由对应 Manager 管理；新增其他系统时沿用这一规则。
-- 烹饪与食物使用由 `CookingManager`、`FoodManager` 管理，AA 加载 `CookingCatalog`、`CookingStation` 和 PopUp 层 `CookingPanel`。制作原子扣料并加入产物，背包食用恢复体力，成功后记录，睡觉时保存；规则见 [烹饪与食物](Docs/CookingAndFood.md)。
-- 出货由 `ShippingManager` 管理，AA 加载 `ShippingConfig`、小屋旁的 `ShippingBox` 和 PopUp 层 MVC `ShippingPanel`。农作物、鱼和两种蛋当天可存取，睡觉统一售卖，物品、金币、结算日期和日报明细一起保存；规则见 [出货箱与隔夜售卖](Docs/Shipping.md)。
-- 储物由 `StorageManager` 管理，AA 加载 `StorageConfig`、`StorageChest` 和 PopUp 层 `StoragePanel`。存取先检查目标容量，背包与箱子一起提交和保存；规则见 [储物箱](Docs/Storage.md)。
-- 工具升级由 `ToolUpgradeManager` 管理，AA 加载 `ToolUpgradeCatalog`、`ToolWorkbench` 和 PopUp 层 `ToolUpgradePanel`。费用与等级一起结算和保存，规则见 [工具升级](Docs/ToolUpgrades.md)。
-- 资源采集由 `GatheringManager` 控制，配置 `GatheringCatalog`、树木 `GatheringTree` 和石头 `GatheringRock` 均通过 AA 加载。采集协调体力、背包和资源状态，失败不扣除，按天恢复并随进度保存。
-- 每日订单由 `OrderManager` 控制；订单配置和办事处建筑通过 AA 地址 `OrderCatalog`、`OrderHall` 加载，门前公告栏打开 PopUp 层 `OrderPanel`。交付状态、作物和奖励一起保存，读档不能重复领奖。
-- 新手任务由 `TaskManager` 控制，任务配置按 AA 地址 `TaskCatalog` 加载；进度只由成功操作更新，领奖和金币一起保存，继续游戏不能重复支付奖励。
-- `GameManager` 负责流程调度和系统初始化顺序；具体系统规则放在对应的 Manager 及其内部模块中。
-- 启动顺序为：初始化 AA → 加载并校验配置 → 显示主菜单 → 加载游戏场景 → 初始化各系统 → 显示游戏 UI → 启用输入。
-- 场景内对象由对应系统初始化，不自行启动整套游戏流程。场景切换需防止重复请求，并在退出时清理系统引用和资源。
-
-### 资源加载
-
-- 项目使用 Addressables（AA）加载运行配置、游戏场景、UI 及后续正式美术资源。
-- 配置加载由 `ConfigurationManager` 负责，游戏场景加载和卸载由 `SceneManager` 负责，UI 加载和释放由 `UIManager` 负责，并由 `GameManager` 调度。
-- 声音由 `AudioManager` 管理，`ConfigurationManager` 通过 AA 加载 `AudioCatalog`，音效与三段循环配乐也通过 AA 加载。工具和交易成功才播放对应音效，UI 按钮 / 面板声音沿用预制体与 MVC；音乐按主菜单、农场、小屋平滑切换，并接入现有总音量设置，见 [音效与背景音乐](Docs/Audio.md)。
-- 海岸环境音复用 `AudioManager` 与 AA：海浪随离岸距离衰减，风雨随天气切换，海鸥间歇鸣叫并在真实惊飞时扑翼；实际贴地移动按草地、沙滩、木码头 / 小屋播放脚步。弹窗停止瞬时世界声音并压低环境循环，室内淡出、菜单清理，音频总量固定且不写进度，详见 [海岸环境音](Docs/CoastalAudio.md)。
-- 加载句柄由对应 Manager 持有并负责释放；失败路径也必须清理资源，避免重复加载和泄漏。
-- 当前启动场景 `MainMenu` 随 Player 构建，游戏场景通过 AA 加载；运行时生成的原型几何体作为占位内容保留。
-
-### UI 预制体与 MVC
-
-- UI 文本使用 TextMeshProUGUI，脚本通过 `TMP_Text` 引用。`Assets/Art/Fonts/IslandUI.asset` 为中文字体，已配置为 TMP 默认字体和全局回退字体。编辑器配置 UI 时自动补齐代码、配置和预制体文案的字形；运行时外部文案需预先补齐字形。
-- UI 从低到高分为 `Bottom`、`Common`、`PopUp`、`Top`。`UIView.Layer` 配置面板层级，`UIManager` 自动挂载并设置排序；同层后创建的面板显示在上方。主菜单为 Bottom、HUD 为 Common、背包为 PopUp。
-- UI 面板预制体统一使用 `Panel` 后缀，例如 `MainMenuPanel`、`InventoryPanel`，AA 地址与名字一致；MVC 的 Model、View、Controller 保留各自职责命名。
-- 所有 UI 必须创建为预制体，统一存放在 `Assets/Art/Prefabs/UI`，使用对应的 Unity UI 组件。
-- 所有 UI 预制体必须通过 `UIManager` 使用 AA 加载，AA 地址必须与预制体名字完全一致，不包含扩展名或路径前缀。例如 `FarmHudPanel.prefab` 的地址为 `FarmHudPanel`。
-- UI 框架统一使用 MVC：Model 保存界面数据；View 保存组件引用并负责显示；Controller 绑定交互事件、更新 Model、驱动 View，并调用对应 Manager。
-- View 不承担资源加载、场景切换或游戏规则；Controller 销毁时解除自身绑定的事件；UIManager 负责界面的加载、显示、隐藏、关闭和资源释放。
-- UI 初期以纯色组件建立布局，配色应适配休闲经营游戏的风格。当前采用奶油白、草绿、暖沙色及圆角、柔和阴影；主菜单使用背景图片。
-
-### 玩法与操作方向
-
-- 时钟由 `TimeManager` 控制；`CalendarManager` 根据农场总天数计算年份、季节和日期，`GameManager` 统一调度跨日。季节配置使用 AA 地址 `SeasonConfig`，默认每季 28 天。背包、商店、睡觉、订单、工具升级、储物、烹饪、对话、送礼和钓鱼弹窗打开及加载时暂停计时，睡觉结算后自动保存。钓鱼会话自身计时继续。
-- 昼夜与晴雨由 `WeatherManager` 控制，天气参数通过 AA 地址 `WeatherConfig` 加载。雨天自动浇灌已种植的露天农田，跨日只成长一次；当天天气和随机种子随进度保存，读档不重新抽取。
-- 体力由 `StaminaManager` 控制；农务操作成功才消耗，失败不扣除，睡觉回满。体力不足时仍可移动、交易和休息。
-- 工具选择、动作锁、手持表现和操作反馈由 `ToolManager` 控制。动作先结算一次再播放，动画期间禁止重复操作和工具切换；提示使用 Top 层的 `FeedbackPanel`，通过 AA / MVC 管理且不拦截鼠标。
-- 基础肥料与品质由 `FertilizerManager`、`FarmManager` 管理，AA 加载 `FertilizerConfig`。工作台用木材 ×2 制作肥料 ×5，按 7 走近点击耕地施肥；普通 / 优质两档分别堆叠和计价，料理与订单优先使用普通作物。品质固定，仍只在睡觉时保存，见 [肥料与作物品质](Docs/FertilizerAndCropQuality.md)。
-- 作物配置 `CropCatalog` 通过 AA 加载，FarmManager 管理种子选择与各地块独立生长，ShopManager 管理不同作物的买卖。收获物品按地块作物类型发放，不能由当前种子选择决定。
-- `CropCatalog` 配置适宜播种季节，`FarmManager` 在实际播种时检查；失败不扣种子和体力。商店全年出售种子，背包和商店显示季节说明，已播种作物跨季继续成长和收获。
-- 作物幼苗、生长中、成熟模型存放在 `Assets/Art/Prefabs/Crops`，在 CropCatalog 中配置阶段 AA 地址，由 FarmManager 统一加载和释放。阶段从已有生长进度推导，同阶段不重复创建模型。`CropInfoPanel` 使用 Common 层、AA 同名地址和 MVC 显示指向地块的信息，不拦截鼠标。
-- 商店与金币分别由 `ShopManager`、`EconomyManager` 控制；商店摊位使用 AA 地址 `IslandShop`，由 ShopManager 持有和释放实例，交易必须先检查资金、物品和背包容量，失败不改变双方状态；金币随进度保存。
-- 游戏以休闲经营成长为主，采用类似星露谷和动森的 3D 斜俯视镜头。
-- 玩家使用 WASD 按画面方向移动，使用鼠标点击目标进行操作；工具操作需检查距离，UI 点击需拦截，避免触发场景交互。
-- 角色由 `PlayerManager` 通过 AA 地址 `PlayerCharacter` 加载，预制体包含待机、行走和七种操作动画；行走按实际位移计算步频，工具按动作锁进度采样。模型与朝向 / 碰撞分开，进出小屋保留角色、退出释放句柄，见 [角色与动画](Docs/PlayerCharacterAndAnimation.md)。
-- 鼠标目标、提示与点击分发由 `InteractionManager` 统一控制，目标使用柔和脚下轮廓；`InteractionPromptPanel` 经 AA / MVC 加载到 Common 层，显示名称、操作及距离 / 工具准备状态。已种植地块沿用作物信息卡，UI 与弹窗遮挡时隐藏，见 [交互提示与目标高亮](Docs/InteractionPrompts.md)。
-- 岛屿地形由 `TerrainManager` 通过 AA 地址 `IslandTerrain` 加载，`GameManager` 在玩法系统初始化前准备地面和海岸边界。角色可走到沙滩和真实码头；钓鱼浮漂与海面使用同一波浪时间，鱼线接竿尖。统一轮廓约束行走、摆放和存档落点，兼容旧岛内坐标与 NPC 路线进度，见 [可行走海岸与码头](Docs/WalkableCoast.md)。
-- 玩家小屋、扩建外观与订单办事处已接入陶瓦、木框门窗及公告栏细节；AA `IslandPaths` 作为地形依赖由 `TerrainManager` 管理，`GameManager` 在初始化前配置连接小屋、办事处与码头的小路。保留原碰撞、交互点、家具和睡觉存档规则，见 [村落建筑与小路](Docs/VillageArt.md)。
-- 岛屿地图由 `MapManager` 管理，按 M 或 HUD 地图按钮打开 AA `MapPanel`。显示当前位置、设施、采集区和钓鱼点，点击查看用途，室内标记小屋；面板按 MVC 挂在 PopUp 层，打开时暂停世界，见 [岛屿地图与地点指引](Docs/Map.md)。
-- 可采集橡树与岩石增加枝干、树冠、年轮、矿物纹路和残迹细节；受击只摇晃独立美术层，原碰撞固定，斧头 / 镐子分别产生 AA 木屑 / 碎石，弹窗同步暂停，见 [树木、岩石与采集反馈](Docs/GatheringArt.md)。
-- 农田使用 AA `FarmPlot`，区分草地、翻耕田垄、湿土和施肥细节；九个作物阶段补充叶脉、根部、番茄支架和玉米穗粒。AA `FarmActionEffects` 由 ToolManager 管理，提供扬尘、水花和收获闪光，弹窗暂停，见 [农田与作物表现](Docs/FarmArt.md)。
-- 商店摊位、工具工作台、料理台和储物箱使用统一的木色、浅绿与黄铜材质，补充棚布、工具架、锅具和锁扣细节。保留交互与碰撞范围，接入 AA 管理和遮挡淡化，见 [商店与生产设施美术](Docs/FacilityArt.md)。
-- 海岸美术使用可编辑的椰树、灌木、贝壳、礁石、珊瑚和水草嵌套预制体，由地形 / 海洋 AA 实例携带依赖。岸线圆润化与地面、海床、碰撞同步，椰树支持遮挡淡化，读档时避让已有玩家建设，见 [海岸场景美术](Docs/CoastalArt.md)。
-- 海洋由 `OceanManager` 管理，`GameManager` 通过现有 AA `GameConfig.OceanPrefabAddress` 调度加载 `IslandOcean`。240×240 米海面包含固定种子生成的连续环岛浅滩，抬高近岛海床，以自然不规则外缘向外海沟槽与深海过渡，并保留离岸水下沙洲；浅水群落布置海草、多种珊瑚、海绵、海星与贝类。32 群环境鱼包含银色小鱼、小丑鱼、蝴蝶鱼与鳐鱼，海边有盘旋 / 掠水 / 停栖的海鸥和横移的小螃蟹。玩家靠近会惊飞海鸥、使螃蟹沿沙滩逃开；附近垂钓与成功抛竿会使鱼群加速散开，再逐渐恢复。浮漂落水有水滴与贴合波浪的涟漪，受惊鱼群产生细水纹，鳐鱼和螃蟹留下少量沙尘，特效由嵌套 AA 预制体中的固定槽位复用。水色、生物与特效接入昼夜和暂停，在室内随海洋隐藏。地貌烘焙和参数见 [风格化海洋](Docs/Ocean.md)。
-- 镜头遮挡由 `CameraManager` 管理，AA 模型通过 `CameraOccluder` 配置参与的 Renderer；树木、建筑和室内墙壁遮挡角色时平滑淡化，离开、切换场景或退出时恢复。参数沿用 AA `GameConfig`，见 [镜头遮挡淡化](Docs/CameraOcclusion.md)。
+各系统的详细设计与历史迁移保留在 `Docs/`，完整索引见 AGENTS.md。新增或修改规则时同步更新统一约束与相关专项文档；旧文档中的白天保存、面板手动保存、返回菜单保存等历史描述，以 AGENTS.md 的现行睡觉存档规则为准。
 
 ## 运行
 
