@@ -18,6 +18,8 @@ namespace MagicIsland.Managers
         public string LastError { get; protected set; }
         public string Feedback { get; private set; }
         public string ItemId { get; private set; }
+        public event System.Action<SavedPlacedObject> Placed;
+        public event System.Action<int> Recovered;
         public bool Active => previewHandle.IsValid();
         public bool Ready => Active && preview != null;
         public bool HasCandidate { get; private set; }
@@ -49,7 +51,7 @@ namespace MagicIsland.Managers
         public IEnumerator LoadAssets()
         {
             LastError = null; int current = generation;
-            foreach (var recipe in Catalog.Recipes.Where(r => r.IsFurniture == Indoor))
+            foreach (var recipe in Catalog.PlacementEntries.Where(r => r.IsPlaceable && r.IsFurniture == Indoor))
             {
                 var h = Addressables.LoadAssetAsync<GameObject>(recipe.PrefabAddress); assets.Add(h); yield return h;
                 if (current != generation) yield break;
@@ -57,6 +59,8 @@ namespace MagicIsland.Managers
                     || h.Result.GetComponent<BoxCollider>() == null || h.Result.GetComponentsInChildren<Renderer>(true).Length == 0)
                 { LastError = "Decoration prefab requires marker, box collider and renderers: " + recipe.PrefabAddress; yield break; }
                 var c = h.Result.GetComponent<BoxCollider>();
+                if (GameManager.Instance?.Configuration?.Orchards?.Find(recipe.OutputItemId) != null && (h.Result.GetComponent<OrchardActor>() == null || !h.Result.GetComponent<OrchardActor>().IsValid))
+                { LastError = "果树预制体缺少成长和果实节点: " + recipe.PrefabAddress; yield break; }
                 if (c.isTrigger || !c.enabled || c.size.x <= 0 || c.size.z <= 0 || c.size.y <= 0 || c.size.y > 1.8f
                     || c.size.x > .95f || c.size.z > .95f || Mathf.Abs(c.center.x) > .02f || Mathf.Abs(c.center.z) > .02f
                     || c.center.y - c.size.y * .5f < -.01f || c.center.y + c.size.y * .5f > 1.8f
@@ -86,7 +90,7 @@ namespace MagicIsland.Managers
         public IEnumerator Begin(string id)
         {
             Cancel(); LastError = null; Feedback = null; var config = Catalog?.FindItem(id);
-            if (config == null || config.IsFurniture != Indoor || world == null || !AreaAvailable || Inventory.State.GetCount(id) < 1) { LastError = "No placeable item in this area"; yield break; }
+            if (config == null || !config.IsPlaceable || config.IsFurniture != Indoor || world == null || !AreaAvailable || Inventory.State.GetCount(id) < 1) { LastError = "No placeable item in this area"; yield break; }
             ItemId = id; int current = generation;
             previewHandle = Addressables.InstantiateAsync(config.PrefabAddress, new Vector3(0, -100, 0), Quaternion.identity, world);
             yield return previewHandle;
@@ -127,13 +131,14 @@ namespace MagicIsland.Managers
             if (!Ready || !HasCandidate || !AreaAvailable) return PlacementResult.InvalidPosition;
             var result = State.CheckPlace(ItemId, GridX, GridZ, QuarterTurns, Inventory.State);
             if (result != PlacementResult.Success) return result;
+            if (!Indoor && (GameManager.Instance?.Animals?.ReservesTile(GridX, GridZ) ?? false)) return PlacementResult.Blocked;
             if (Reserved(GridX, GridZ)) return PlacementResult.RouteReserved;
             var point = world.TransformPoint(new Vector3(GridX, 0, GridZ));
             if (Vector3.ProjectOnPlane(point - players.Player.transform.position, Vector3.up).sqrMagnitude > reach * reach) return PlacementResult.TooFar;
             return PhysicalClear(GridX, GridZ, false) ? PlacementResult.Success : PlacementResult.Blocked;
         }
         protected virtual bool AreaAvailable => !(GameManager.Instance?.Housing?.Inside ?? false);
-        protected virtual bool Reserved(int x, int z) => GameManager.Instance?.Housing?.ReservesTile(x, z) ?? false;
+        protected virtual bool Reserved(int x, int z) => (GameManager.Instance?.Housing?.ReservesTile(x, z) ?? false) || (GameManager.Instance?.Terrain?.ReservesTile(x,z) ?? false);
         protected virtual void Present(GameObject go) { }
         protected bool PhysicalClear(int x, int z, bool restoring)
         {
@@ -158,10 +163,10 @@ namespace MagicIsland.Managers
             foreach (var light in preview.GetComponentsInChildren<Light>(true)) light.enabled = true;
             for (int i = 0; i < renderers.Length; i++) { renderers[i].SetPropertyBlock(null); renderers[i].shadowCastingMode = shadows[i]; }
             objects.Add(record.Id, actor); handles.Add(record.Id, previewHandle); previewHandle = default; preview = null;
-            HasCandidate = false; ItemId = null; Feedback = "摆放完成 · 右键已摆放物品可回收"; Inventory.State.NotifyChanged(); return true;
+            HasCandidate = false; ItemId = null; Feedback = "摆放完成 · 右键已摆放物品可回收"; Placed?.Invoke(record); Inventory.State.NotifyChanged(); return true;
         }
         private void SetTransform(GameObject go, int x, int z, int turns)
-        { go.transform.localPosition = new Vector3(x, 0, z); go.transform.localRotation = Quaternion.Euler(0, turns * 90, 0); }
+        { go.transform.localPosition = new Vector3(x, Indoor ? 0 : (GameManager.Instance?.Terrain?.GroundHeight(x,z) ?? 0), z); go.transform.localRotation = Quaternion.Euler(0, turns * 90, 0); }
         public bool Owns(PlacedDecoration actor) => actor != null && objects.TryGetValue(actor.Id, out var own) && own == actor;
         public bool InRange(PlacedDecoration actor) => AreaAvailable && Owns(actor) && Vector3.ProjectOnPlane(actor.transform.position - players.Player.transform.position, Vector3.up).sqrMagnitude <= reach * reach;
         public bool Recover(PlacedDecoration actor)
@@ -170,7 +175,7 @@ namespace MagicIsland.Managers
             var result = State.Recover(actor.Id, Inventory.State, false);
             if (result != PlacementResult.Success) { Feedback = Explain(result); return false; }
             int id = actor.Id; actor.gameObject.SetActive(false); ReleaseInstance(handles[id]); handles.Remove(id); objects.Remove(id);
-            Inventory.State.NotifyChanged(); Feedback = "已回收至背包"; return true;
+            Recovered?.Invoke(id); Inventory.State.NotifyChanged(); Feedback = "已回收至背包"; return true;
         }
         public static string Explain(PlacementResult result) => result == PlacementResult.Success ? "位置可用 · 点击确认摆放"
             : result == PlacementResult.FarmReserved ? "这里是农田，不能摆放" : result == PlacementResult.RouteReserved ? "请留出林舟的行走通道"
@@ -179,7 +184,8 @@ namespace MagicIsland.Managers
             : result == PlacementResult.Blocked ? "设施或角色挡住了位置" : result == PlacementResult.TooFar ? "距离太远，请靠近" : "请在岛内选择位置";
         public string Describe(PlacementResult result) => Indoor && result == PlacementResult.RouteReserved ? "请留出床边、出生点和出口通道"
             : Indoor && result == PlacementResult.InvalidPosition ? "请在小屋地板内选择位置"
-            : !Indoor && result == PlacementResult.RouteReserved && (GameManager.Instance?.Housing?.ReservesTile(GridX, GridZ) ?? false) ? "请留出小屋门前通道" : Explain(result);
+            : !Indoor && result == PlacementResult.RouteReserved && (GameManager.Instance?.Housing?.ReservesTile(GridX, GridZ) ?? false) ? "请留出小屋门前通道"
+            : !Indoor && result == PlacementResult.RouteReserved && IslandLayout.PierReserved(GridX,GridZ) ? "请留出码头通道" : Explain(result);
         public void SetSaveFailed() => Feedback = "操作已完成，保存失败，请重试保存进度";
         public void SetSaved() => Feedback = "建设进度已保存";
         public void Cancel()

@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
   m_Name: Gathering Models
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   m_GroupName: Gathering Models
   m_Data:
     m_SerializedData: []
@@ -24,6 +24,21 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: eb93ae7b1b104134d93aad7de0e7fc50
     m_Address: GatheringRock
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e57266a9a6e1ef429272eafe807d64a
+    m_Address: BeachShellPickup
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c876ee227962ae2428d2a1fcab1b4b43
+    m_Address: BeachDriftwood
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0770a030bb3f3c8409d48e1d14bb287b
+    m_Address: BeachSeaGlass
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

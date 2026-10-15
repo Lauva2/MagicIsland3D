@@ -48,6 +48,7 @@ namespace MagicIsland.EditorTools
                         }
                         finally { UnityEngine.Object.DestroyImmediate(root); }
                     }
+                    UpgradeArt(path, crop.Id, stage, bulb, stem, green, stalk);
                     string guid = AssetDatabase.AssetPathToGUID(path);
                     var entry = settings.FindAssetEntry(guid) ?? settings.CreateOrMoveEntry(guid, group);
                     if (entry.address != name) entry.SetAddress(name);
@@ -58,6 +59,93 @@ namespace MagicIsland.EditorTools
                     EditorUtility.SetDirty(catalog);
                 }
             }
+        }
+
+        private static void UpgradeArt(string path, string id, CropGrowthStage stage, Mesh bulb, Mesh stem, Material green, Material stalk)
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            if (prefab.GetComponent<CropArtVisual>()?.ArtVersion >= 1) return;
+            var root = PrefabUtility.LoadPrefabContents(path);
+            try
+            {
+                Mesh blade = MeshAsset("BotanicalLeaf", LeafBlade);
+                Material vein = MaterialAsset("LeafVeins", new Color(.52f, .69f, .30f));
+                foreach (var filter in root.GetComponentsInChildren<MeshFilter>())
+                {
+                    if (!filter.name.StartsWith("Leaf ") && !filter.name.StartsWith("Long leaf ") && !filter.name.StartsWith("Seed leaf ")) continue;
+                    filter.sharedMesh = blade;
+                    filter.transform.localScale = Vector3.Scale(filter.transform.localScale, new Vector3(1.3f, 1, 1));
+                    Part(filter.transform, "Leaf vein", stem, vein, new Vector3(0, -.38f, .11f), new Vector3(.055f, .76f, .045f));
+                }
+                var detail = new GameObject("Crop details").transform; detail.gameObject.layer = 2; detail.SetParent(root.transform, false);
+                if (stage != CropGrowthStage.Seedling && id == "turnip")
+                {
+                    bool mature = stage == CropGrowthStage.Mature; float height = mature ? .43f : .26f, width = mature ? .58f : .35f;
+                    var crown = MaterialAsset("TurnipCrown", new Color(.68f, .42f, .62f));
+                    Part(detail, "Purple shoulder", bulb, crown, new Vector3(0, height * .80f, 0), new Vector3(width * .86f, height * .30f, width * .86f));
+                    Part(detail, "Root tip", stem, AssetDatabase.LoadAssetAtPath<Material>(MaterialFolder + "/TurnipFruit.mat"),
+                        new Vector3(0, -.015f, 0), new Vector3(.055f, .10f, .055f));
+                }
+                else if (stage != CropGrowthStage.Seedling && id == "tomato")
+                {
+                    bool mature = stage == CropGrowthStage.Mature;
+                    Material support = MaterialAsset("TomatoSupport", new Color(.64f, .48f, .29f));
+                    Part(detail, "Garden support", stem, support, new Vector3(.10f, 0, .19f), new Vector3(.025f, mature ? .87f : .60f, .025f));
+                    Part(detail, "Vine tie", bulb, support, new Vector3(.05f, mature ? .54f : .34f, .08f), new Vector3(.14f, .026f, .12f));
+                    if (mature)
+                    {
+                        Material blush = MaterialAsset("TomatoBlush", new Color(.97f, .42f, .23f));
+                        foreach (Transform fruit in root.transform)
+                        {
+                            if (!fruit.name.StartsWith("Fruit ") || fruit.name.StartsWith("Fruit cap")) continue;
+                            Part(detail, "Fruit highlight", bulb, blush, fruit.localPosition + new Vector3(-.04f, .04f, -.07f), Vector3.one * .085f);
+                        }
+                    }
+                    else
+                    {
+                        Material flower = MaterialAsset("TomatoFlower", new Color(.98f, .84f, .32f));
+                        for (int i = 0; i < 3; i++)
+                            Part(detail, "Tomato blossom", bulb, flower, new Vector3(-.22f + i * .08f, .44f, -.12f), new Vector3(.07f, .035f, .07f));
+                    }
+                }
+                else if (stage == CropGrowthStage.Mature && id == "corn")
+                {
+                    Material kernel = MaterialAsset("CornKernels", new Color(1, .87f, .36f));
+                    foreach (Transform cob in root.transform)
+                    {
+                        if (!cob.name.StartsWith("Golden cob")) continue;
+                        for (int row = 0; row < 5; row++) for (int side = 0; side < 4; side++)
+                        {
+                            float angle = side * Mathf.PI * .5f;
+                            Vector3 offset = new Vector3(Mathf.Sin(angle) * .075f, -.14f + row * .069f, Mathf.Cos(angle) * .075f);
+                            Part(detail, "Golden kernel", bulb, kernel, cob.localPosition + cob.localRotation * offset,
+                                new Vector3(.048f, .060f, .035f), cob.localEulerAngles);
+                        }
+                    }
+                }
+                foreach (var child in root.GetComponentsInChildren<Transform>(true)) child.gameObject.layer = 2;
+                (root.GetComponent<CropArtVisual>() ?? root.AddComponent<CropArtVisual>()).ArtVersion = 1;
+                PrefabUtility.SaveAsPrefabAsset(root, path);
+            }
+            finally { PrefabUtility.UnloadPrefabContents(root); }
+        }
+
+        private static Mesh LeafBlade()
+        {
+            var vertices = new List<Vector3>();
+            for (int i = 0; i < 5; i++)
+            {
+                float a = i / 5f, b = (i + 1) / 5f;
+                Func<float, float, Vector3> point = (t, side) => new Vector3(side * Mathf.Sin(t * Mathf.PI) * .5f,
+                    t - .5f, Mathf.Sin(t * Mathf.PI) * (side == 0 ? .20f : -.10f));
+                foreach (int side in new[] { -1, 1 })
+                {
+                    Vector3 p = point(a, 0), q = point(b, 0), r = point(a, side), s = point(b, side);
+                    Triangle(vertices, p, r, q); Triangle(vertices, q, r, s);
+                    Triangle(vertices, q, r, p); Triangle(vertices, s, r, q);
+                }
+            }
+            return Finish(vertices);
         }
 
         private static void Build(Transform root, string id, CropGrowthStage stage, Mesh bulb, Mesh leaf, Mesh stem,

@@ -64,7 +64,7 @@ namespace MagicIsland.EditorTools
                 { Require(Talk.GiftButton.interactable && Talk.RelationshipText.text.Contains("初识"), "Dialogue shows relationship and gift entry"); TextCheck(Talk); Talk.GiftButton.onClick.Invoke(); Phase(5); }
                 else if (phase == 5 && g.UI.HasGift && Gift != null)
                 {
-                    Require(!g.UI.HasDialogue && !g.Dialogue.State.Active && Gift.transform.parent == g.UI.GetLayerRoot(UILayer.PopUp) && Gift.Slots.Count(s => s.gameObject.activeSelf) == 12, "Gift replaces dialogue with PopUp MVC");
+                    Require(!g.UI.HasDialogue && !g.Dialogue.State.Active && Gift.transform.parent == g.UI.GetLayerRoot(UILayer.PopUp) && Gift.Slots.Count(s => s.gameObject.activeSelf) == g.Inventory.State.Capacity, "Gift replaces dialogue with PopUp MVC");
                     Require(!Gift.Slots[0].SelectButton.interactable && !Gift.Slots[1].SelectButton.interactable && Gift.Slots[2].SelectButton.interactable, "Only crops and food selectable");
                     g.GiveGift(0); g.GiveGift(1); Require(g.Inventory.GetCount("turnip_seed") == 50 && g.Inventory.GetCount("wood") == 2 && g.Relationships.State.Points(Id) == 0, "Invalid gifts free");
                     Gift.Slots[5].SelectButton.onClick.Invoke(); Require(Gift.PreviewText.text.Contains("+20") && Gift.PreviewText.text.Contains("偏好"), "Favorite preview"); TextCheck(Gift); Capture(g, "GiftPanelPreview");
@@ -72,7 +72,7 @@ namespace MagicIsland.EditorTools
                 }
                 else if (phase == 6 && EditorApplication.timeSinceStartup - SessionState.GetFloat(Key + ".Pause", 0) > .2)
                 {
-                    int day = g.Farm.State.Day; g.AdvanceDay(); g.OpenCooking(); g.OpenStorage(); g.OpenOrder(); g.OpenShop(); g.OpenSleep(); g.OpenToolUpgrade(); g.ToggleInventory(); g.OpenDialogue(Id);
+                    int day = g.Farm.State.Day; g.AdvanceDay(); g.StartNewDayFromReport(); g.OpenCooking(); g.OpenStorage(); g.OpenOrder(); g.OpenShop(); g.OpenSleep(); g.OpenToolUpgrade(); g.ToggleInventory(); g.OpenDialogue(Id);
                     Require(Math.Abs(g.Time.Clock.Minute - SessionState.GetFloat(Key + ".Minute", 0)) < .001 && day == g.Farm.State.Day && !g.UI.HasDialogue && !g.UI.HasCooking && !g.UI.HasStorage
                         && !g.UI.HasOrder && !g.UI.HasShop && !g.UI.HasSleep && !g.UI.HasToolUpgrade && !g.UI.IsInventoryVisible && !g.TryGather(0, out _), "Gift modal pauses and excludes other systems");
                     g.Players.RestorePosition(new Vector3(0, .1f, -10)); g.GiveGift(5); Require(g.Relationships.State.Points(Id) == 0, "Distance recheck protects gift"); Place(g);
@@ -95,7 +95,7 @@ namespace MagicIsland.EditorTools
                 else if (phase == 9 && g.UI.HasGift && Gift != null)
                 {
                     Gift.Slots[4].SelectButton.onClick.Invoke(); Require(!Gift.GiveButton.interactable && Gift.StatusText.text.Contains("今日已送礼"), "Reload cannot gift again today"); g.GiveGift(4); Require(g.Inventory.GetCount("turnip_soup") == 104, "Reload duplicate free");
-                    g.CloseGift(); g.AdvanceDay(); Require(g.Relationships.State.Day == 2, "Day sync"); g.OpenGift(Id); Phase(10);
+                    g.CloseGift(); g.AdvanceDay(); g.StartNewDayFromReport(); Require(g.Relationships.State.Day == 2, "Day sync"); g.OpenGift(Id); Phase(10);
                 }
                 else if (phase == 10 && g.UI.HasGift && Gift != null)
                 {
@@ -103,16 +103,16 @@ namespace MagicIsland.EditorTools
                     g.CloseGift(); g.OpenDialogue(Id); Phase(11);
                 }
                 else if (phase == 11 && g.UI.HasDialogue && Talk != null)
-                { Require(g.Dialogue.State.Text == g.Configuration.Relationships.Find(Id).FamiliarGreeting, "Familiar greeting"); TextCheck(Talk); Capture(g, "FamiliarDialoguePreview"); g.CloseDialogue(); g.AdvanceDay(); g.OpenGift(Id); Phase(12); }
+                { Require(g.Dialogue.State.Text == g.Configuration.Relationships.Find(Id).FamiliarGreeting, "Familiar greeting"); TextCheck(Talk); Capture(g, "FamiliarDialoguePreview"); g.CloseDialogue(); g.AdvanceDay(); g.StartNewDayFromReport(); g.OpenGift(Id); Phase(12); }
                 else if (phase == 12 && g.UI.HasGift && Gift != null)
                 {
                     int expected = g.Farm.State.Day == 3 ? 50 : g.Farm.State.Day == 4 ? 70 : g.Farm.State.Day == 5 ? 90 : 100;
                     Gift.Slots[Slot(g, "turnip_soup")].SelectButton.onClick.Invoke(); Gift.GiveButton.onClick.Invoke(); Require(g.Relationships.State.Points(Id) == expected && g.Relationships.State.LastGiftDay(Id) == g.Farm.State.Day, "Daily favorite gifts reach thresholds");
                     if (g.Farm.State.Day == 6)
                     {
-                        Require(g.Relationships.State.LastGain == 10, "Near-cap actual gain clamped"); g.CloseGift(); g.AdvanceDay(); g.OpenGift(Id); Phase(13);
+                        Require(g.Relationships.State.LastGain == 10, "Near-cap actual gain clamped"); g.CloseGift(); g.AdvanceDay(); g.StartNewDayFromReport(); g.OpenGift(Id); Phase(13);
                     }
-                    else { g.CloseGift(); g.AdvanceDay(); g.OpenGift(Id); }
+                    else { g.CloseGift(); g.AdvanceDay(); g.StartNewDayFromReport(); g.OpenGift(Id); }
                 }
                 else if (phase == 13 && g.UI.HasGift && Gift != null)
                 {

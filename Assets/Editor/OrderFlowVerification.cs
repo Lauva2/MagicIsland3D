@@ -92,7 +92,7 @@ namespace MagicIsland.EditorTools
                         && UnityEngine.Object.FindObjectsOfType<OrderView>().Length == 1, "OrderPanel AA, layer and duplicate-load guard");
                     Require(!game.Players.Player.enabled && !game.Interactions.Controller.enabled && !View.DeliverButton.interactable, "Order modal locks movement/world and missing stock");
                     CheckText(View); Capture(game, "OrderPanelPreview");
-                    double minute = game.Time.Clock.Minute; game.Time.Tick(10, game.UI.HasOrder); game.AdvanceDay(); game.ToggleInventory(); game.OpenShop(); game.OpenSleep(); game.ClaimTaskReward();
+                    double minute = game.Time.Clock.Minute; game.Time.Tick(10, game.UI.HasOrder); game.AdvanceDay(); game.StartNewDayFromReport(); game.ToggleInventory(); game.OpenShop(); game.OpenSleep(); game.ClaimTaskReward();
                     Require(game.Time.Clock.Minute == minute && game.Farm.State.Day == 1 && !game.UI.IsInventoryVisible && !game.UI.HasShop && !game.UI.HasSleep
                         && game.Economy.Gold == 105, "Order modal freezes time/day and blocks other actions");
                     game.DeliverOrder(); Require(!game.Orders.State.Fulfilled && game.Economy.Gold == 105, "Insufficient-stock delivery unchanged");
@@ -127,7 +127,7 @@ namespace MagicIsland.EditorTools
                 else if (phase == 5 && View != null)
                 {
                     game.DeliverOrder(); Require(game.Economy.Gold == long.Parse(SessionState.GetString(Running + ".Gold", "0")), "Delivery after reload pays nothing");
-                    game.CloseOrder(); var previous = game.Orders.State.Capture(); game.AdvanceDay();
+                    game.CloseOrder(); var previous = game.Orders.State.Capture(); game.AdvanceDay(); game.StartNewDayFromReport();
                     var expected = new OrderState(game.Configuration.Orders.Definitions(game.Configuration.Crops), game.Calendar.Config.DaysPerSeason, previous.Seed, 2);
                     Require(!game.Orders.State.Fulfilled && game.Orders.State.Day == 2 && JsonUtility.ToJson(expected.Capture()) == JsonUtility.ToJson(game.Orders.State.Capture())
                         && game.Saves.TryLoad(out SaveData data) && data.Order.Day == 2 && !data.Order.Fulfilled, "Sleep refreshes deterministic order and autosaves");

@@ -29,6 +29,9 @@ namespace MagicIsland.Configuration
         public const string Address = "GatheringCatalog";
         public List<GatheringTypeConfig> Types = new List<GatheringTypeConfig>();
         public List<GatheringNodeConfig> Nodes = new List<GatheringNodeConfig>();
+        [Range(3, 64)] public int BeachSites = 24;
+        [Min(1)] public int BeachInitialCount = 10, BeachDailyCount = 5, BeachMaximumActive = 16;
+        public BeachForageDefinition BeachDefinition() => new BeachForageDefinition(BeachSites, BeachInitialCount, BeachDailyCount, BeachMaximumActive);
         public GatheringTypeConfig Find(string id) => Types.Find(value => value != null && value.Id == id);
         public IEnumerable<GatheringDefinition> Definitions() => Nodes.Select(node =>
         {
@@ -36,6 +39,9 @@ namespace MagicIsland.Configuration
         });
         public bool Validate(ItemCatalog items, GameConfig game)
         {
+            try { BeachDefinition(); } catch (ArgumentException) { return false; }
+            foreach (string id in new[] { BeachForageState.ShellItemId, BeachForageState.DriftwoodItemId, BeachForageState.GlassItemId })
+                if (items.Find(id)?.Type != ItemType.Material) return false;
             if (Types == null || Types.Count == 0 || Nodes == null || Nodes.Count == 0 || Nodes.Count > 64) return false;
             var ids = new HashSet<string>();
             foreach (var type in Types)

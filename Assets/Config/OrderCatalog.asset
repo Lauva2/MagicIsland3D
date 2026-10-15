@@ -16,19 +16,49 @@ MonoBehaviour:
   Offers:
   - Id: turnip_daily
     CropId: turnip
+    ItemId:
+    RequiresCoop: 0
     Seasons: 13
     MinQuantity: 1
     MaxQuantity: 3
     GoldPerItem: 40
   - Id: tomato_daily
     CropId: tomato
+    ItemId:
+    RequiresCoop: 0
     Seasons: 10
     MinQuantity: 1
     MaxQuantity: 3
     GoldPerItem: 75
   - Id: corn_daily
     CropId: corn
+    ItemId:
+    RequiresCoop: 0
     Seasons: 14
     MinQuantity: 1
     MaxQuantity: 3
     GoldPerItem: 130
+  - Id: egg_daily
+    CropId:
+    ItemId: egg
+    RequiresCoop: 1
+    Seasons: 15
+    MinQuantity: 2
+    MaxQuantity: 2
+    GoldPerItem: 35
+  - Id: fried_egg_daily
+    CropId:
+    ItemId: fried_egg
+    RequiresCoop: 1
+    Seasons: 15
+    MinQuantity: 1
+    MaxQuantity: 1
+    GoldPerItem: 50
+  - Id: egg_vegetable_soup_daily
+    CropId:
+    ItemId: egg_vegetable_soup
+    RequiresCoop: 1
+    Seasons: 15
+    MinQuantity: 1
+    MaxQuantity: 1
+    GoldPerItem: 90

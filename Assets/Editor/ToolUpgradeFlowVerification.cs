@@ -74,7 +74,7 @@ namespace MagicIsland.EditorTools
                 else if (phase == 3 && EditorApplication.timeSinceStartup - SessionState.GetFloat(Key + ".Pause", 0) > .2)
                 {
                     Require(Math.Abs(g.Time.Clock.Minute - SessionState.GetFloat(Key + ".Minute", 0)) < .001 && !g.TryGather(0, out _), "Modal pauses time and gathering");
-                    int day = g.Farm.State.Day; g.AdvanceDay(); g.ToggleInventory(); g.OpenOrder(); g.OpenShop(); g.OpenSleep();
+                    int day = g.Farm.State.Day; g.AdvanceDay(); g.StartNewDayFromReport(); g.ToggleInventory(); g.OpenOrder(); g.OpenShop(); g.OpenSleep();
                     Require(g.Farm.State.Day == day && !g.UI.IsInventoryVisible && !g.UI.HasOrder && !g.UI.HasShop && !g.UI.HasSleep, "Modal excludes other actions");
                     UnityEngine.Object.FindObjectOfType<ToolUpgradeView>().UpgradeButtons[0].onClick.Invoke();
                     Require(g.ToolUpgrades.State.Level(FarmTool.Axe) == 1 && g.Inventory.GetCount("wood") == 3 && g.Inventory.GetCount("stone") == 4 && g.Economy.Gold == 75

@@ -24,6 +24,7 @@ namespace MagicIsland.Managers
         private void Record(TaskAction action) { if (State.Record(action)) Feedback = null; }
         private void Sold(int quantity) { if (State.Record(TaskAction.Sell, quantity)) Feedback = null; }
         public void RecordSleep() => Record(TaskAction.Sleep);
+        public void RecordCropSale(long quantity) { if (quantity > 0) Sold((int)System.Math.Min(int.MaxValue, quantity)); }
         public bool ClaimReward()
         {
             int index = State.CurrentIndex;

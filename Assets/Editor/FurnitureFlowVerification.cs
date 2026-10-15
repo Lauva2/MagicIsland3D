@@ -52,7 +52,7 @@ namespace MagicIsland.EditorTools
                 if (!EditorApplication.isPlaying) return; var g = GameManager.Instance; if (g == null) return; Require(g.State != GameFlowState.Failed, "Furniture configuration failed");
                 if (phase == 0 && g.State == GameFlowState.MainMenu)
                 {
-                    Require(g.Configuration.Crafting.Recipes.Count == 6 && g.Configuration.Crafting.Recipes.Count(r => r.IsFurniture) == 3, "Three outdoor recipes and three indoor recipes");
+                    Require(g.Configuration.Crafting.Recipes.Count == 7 && g.Configuration.Crafting.Recipes.Count(r => r.IsFurniture) == 3, "Three outdoor recipes, three indoor recipes and feed");
                     string dir = Path.GetFullPath("Logs/FurnitureSaves/" + Guid.NewGuid().ToString("N")); Directory.CreateDirectory(dir); SessionState.SetString(Key + ".Dir", dir); SaveDirectory(g, dir); g.EnterGame(); Phase(1);
                 }
                 else if (phase == 1 && g.State == GameFlowState.Playing)
@@ -65,7 +65,7 @@ namespace MagicIsland.EditorTools
                 {
                     Require(!Craft.PreviousButton.interactable && Craft.NextButton.interactable, "Crafting first page"); Craft.NextButton.onClick.Invoke();
                     Require(Craft.NameTexts[0].text == "木桌" && Craft.NameTexts[1].text == "木椅" && Craft.NameTexts[2].text == "小台灯", "Second page furniture mapping");
-                    Require(Craft.PreviousButton.interactable && !Craft.NextButton.interactable, "Crafting page bounds"); TextCheck(Craft); Capture(g, "FurnitureCraftingPreview");
+                    Require(Craft.PreviousButton.interactable && Craft.NextButton.interactable && Craft.PageText.text.Contains("室内家具"), "Furniture page precedes supplies"); TextCheck(Craft); Capture(g, "FurnitureCraftingPreview");
                     foreach (var button in Craft.CraftButtons) button.onClick.Invoke();
                     Require(g.Inventory.GetCount("wood") == 21 && g.Inventory.GetCount("stone") == 9 && g.Inventory.GetCount("wood_table") == 1 && g.Inventory.GetCount("wood_chair") == 1 && g.Inventory.GetCount("small_lamp") == 1, "Furniture recipe costs and yields");
                     Craft.PreviousButton.onClick.Invoke(); Require(Craft.NameTexts[0].text == "木栅栏", "Outdoor page preserved"); g.CloseCrafting();
@@ -107,7 +107,7 @@ namespace MagicIsland.EditorTools
                     Capture(g, "FurnishedHomePreview"); At(g, -1.5f, 2); g.RequestRest(); Phase(8);
                 }
                 else if (phase == 8 && UnityEngine.Object.FindObjectOfType<SleepView>() != null)
-                { UnityEngine.Object.FindObjectOfType<SleepView>().ConfirmButton.onClick.Invoke(); Require(g.Farm.State.Day == 2 && g.Furniture.State.Count == 3, "Bed remains accessible and sleep preserves furniture"); At(g, 0, -3); g.ExitHome(); Phase(9); }
+                { UnityEngine.Object.FindObjectOfType<SleepView>().ConfirmButton.onClick.Invoke(); g.StartNewDayFromReport(); Require(g.Farm.State.Day == 2 && g.Furniture.State.Count == 3, "Bed remains accessible and sleep preserves furniture"); At(g, 0, -3); g.ExitHome(); Phase(9); }
                 else if (phase == 9 && g.State == GameFlowState.Playing && !g.Housing.Inside)
                 { Require(g.Furniture.Bound && g.Furniture.Objects.Count == 3 && g.Placements.State.Count == 0, "Exit retains indoor objects and independent outdoor state"); g.ReturnToMainMenu(); Phase(10); }
                 else if (phase == 10 && g.State == GameFlowState.MainMenu)

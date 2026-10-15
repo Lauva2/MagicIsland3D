@@ -11,7 +11,7 @@ namespace MagicIsland.Configuration
     [Serializable]
     public sealed class CropConfig
     {
-        public string Id, SeedItemId, HarvestItemId;
+        public string Id, SeedItemId, HarvestItemId, QualityHarvestItemId;
         [Min(1)] public int GrowthDays = 3;
         public CropShape Shape;
         public Color MatureColor = Color.white;
@@ -27,7 +27,7 @@ namespace MagicIsland.Configuration
                 default: throw new ArgumentOutOfRangeException(nameof(stage));
             }
         }
-        public CropDefinition Definition() => new CropDefinition(Id, SeedItemId, HarvestItemId, GrowthDays);
+        public CropDefinition Definition() => new CropDefinition(Id, SeedItemId, HarvestItemId, GrowthDays, QualityHarvestItemId);
     }
     [CreateAssetMenu(menuName = "Magic Island/Crop Catalog")]
     public sealed class CropCatalog : ScriptableObject
@@ -37,6 +37,12 @@ namespace MagicIsland.Configuration
         public CropConfig Find(string id) => Crops.Find(crop => crop != null && crop.Id == id);
         public CropConfig FindBySeed(string id) => Crops.Find(crop => crop != null && crop.SeedItemId == id);
         public IEnumerable<CropDefinition> Definitions() => Crops.Select(crop => crop.Definition());
+        public IngredientResolver Ingredients(AnimalConfig animals = null)
+        {
+            var pairs = Crops.Where(c => !string.IsNullOrWhiteSpace(c.QualityHarvestItemId)).Select(c => new KeyValuePair<string, string>(c.HarvestItemId, c.QualityHarvestItemId)).ToList();
+            if (animals != null) pairs.Add(new KeyValuePair<string, string>(animals.EggItemId, animals.QualityEggItemId));
+            return new IngredientResolver(pairs);
+        }
         public bool Validate(GameConfig game, ItemCatalog items)
         {
             var ids = new HashSet<string>(); var seeds = new HashSet<string>(); var harvests = new HashSet<string>();
@@ -48,6 +54,7 @@ namespace MagicIsland.Configuration
                     || string.IsNullOrWhiteSpace(crop.MaturePrefabAddress) || !Seasons.ValidMask(crop.PlantingSeasons)) return false;
                 ItemConfig seed = items.Find(crop.SeedItemId), harvest = items.Find(crop.HarvestItemId);
                 if (seed?.Type != ItemType.Seed || harvest?.Type != ItemType.Crop || seed.BuyPrice < 1 || harvest.SellPrice < 1) return false;
+                if (string.IsNullOrWhiteSpace(crop.QualityHarvestItemId) || !harvests.Add(crop.QualityHarvestItemId) || items.Find(crop.QualityHarvestItemId)?.Type != ItemType.Crop || items.Find(crop.QualityHarvestItemId).SellPrice <= harvest.SellPrice) return false;
             }
             CropConfig initial = FindBySeed(game.SeedItemId);
             return initial != null && initial.HarvestItemId == game.HarvestItemId && initial.GrowthDays == game.CropGrowthDays;

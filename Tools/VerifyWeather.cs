@@ -44,6 +44,13 @@ internal static class VerifyWeather
         Reject(() => DaylightCycle.Evaluate(double.NaN)); Reject(() => DaylightCycle.Evaluate(-1));
         Reject(() => DaylightCycle.Evaluate(1441)); Reject(() => DaylightCycle.Evaluate(360, 480, 480, 1020, 1200));
 
+        Check(DaylightCycle.SolarProgress(0, 300, 1200) == 0 && DaylightCycle.SolarProgress(1440, 300, 1200) == 1, "Solar path clamps while below horizon");
+        Check(DaylightCycle.SolarProgress(750, 300, 1200) == .5, "Solar peak at the daylight midpoint");
+        Check(DaylightCycle.SolarProgress(480, 300, 1200) < DaylightCycle.SolarProgress(1020, 300, 1200) && DaylightCycle.Evaluate(480) == DaylightCycle.Evaluate(1020), "Sun traverses sky during equal daylight intensity");
+        for (int minute = 301; minute <= 1200; minute++) Check(DaylightCycle.SolarProgress(minute, 300, 1200) > DaylightCycle.SolarProgress(minute - 1, 300, 1200), "Solar path has no daytime stalls or reversals");
+        Reject(() => DaylightCycle.SolarProgress(double.NaN, 300, 1200)); Reject(() => DaylightCycle.SolarProgress(480, double.NaN, 1200));
+        Reject(() => DaylightCycle.SolarProgress(480, 300, double.PositiveInfinity)); Reject(() => DaylightCycle.SolarProgress(480, 1200, 300));
+
         var farm = new FarmState(2); var bag = Bag(); bag.TryAdd("turnip_seed", 5); var stamina = new StaminaState(100);
         var actions = new FarmActions(farm, bag, "turnip_seed", "turnip", stamina);
         actions.TryAct(0, FarmTool.Hoe, out _); actions.TryAct(0, FarmTool.Seeds, out _); actions.TryAct(1, FarmTool.Hoe, out _);

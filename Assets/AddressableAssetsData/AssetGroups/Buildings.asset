@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
   m_Name: Buildings
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   m_GroupName: Buildings
   m_Data:
     m_SerializedData: []
@@ -84,6 +84,36 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 936c957cc74568544b32928f46a61f6b
     m_Address: PlayerHomeExpansion
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 41d703a2a26aacb48bed2c026b3f9c90
+    m_Address: ChickenCoop
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f5f79f9929e412a44ac8618ece955311
+    m_Address: Chicken
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9825c0bd945dcc24c89b54643413d848
+    m_Address: ShippingBox
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e770f34c0a9efc042a02cc5f4e168530
+    m_Address: IslandShop
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0c1ee47e33e7a64ba75cefdefa3534f
+    m_Address: AppleTree
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 090070eb285052a4d96c1e6122174c5f
+    m_Address: OrangeTree
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -23,11 +23,11 @@ namespace MagicIsland.UI.Controllers
             {
                 FarmCell cell = farm.State.Cells[index];
                 var crop = farm.Crops.Find(cell.CropId);
-                Model.Name = farm.Inventory.Catalog.Find(crop.HarvestItemId).DisplayName;
+                Model.Name = farm.Inventory.Catalog.Find(cell.Mature ? farm.State.HarvestId(index) : crop.HarvestItemId).DisplayName;
                 CropGrowthStage stage = CropStages.FromGrowth(cell.Growth, cell.RequiredGrowthDays);
                 string label = stage == CropGrowthStage.Mature ? "已成熟" : stage == CropGrowthStage.Growing ? "生长中" : "幼苗";
                 Model.Details = label + "  ·  成长 " + cell.Growth + " / " + cell.RequiredGrowthDays + "\n"
-                    + (cell.Watered ? "今天已浇水" : "今天未浇水");
+                    + (cell.Watered ? "今天已浇水" : "今天未浇水") + " · " + (cell.Fertilized ? "本轮已施肥" : "本轮未施肥");
                 Model.Hint = pointer.HoverInRange ? farm.Describe(index, pointer.Tool) : "距离太远，请靠近";
             }
             view.Render(Model);

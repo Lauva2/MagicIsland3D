@@ -1,6 +1,6 @@
 # 作物阶段模型与农田信息
 
-FarmManager 负责作物模型的 AA 加载、句柄持有和释放。GameManager 在进入游戏的 InitializingGame 阶段等待所有阶段模型加载成功，再初始化农田和恢复存档。FarmGrid 根据地块 CropId 和生长进度显示模型，不自行加载资源。加载失败时卸载游戏场景、释放已加载模型并返回主菜单，可再次进入重试。
+FarmManager 负责地块和作物模型的 AA 加载、句柄持有和释放。地块状态、美术细节和特效见 [农田与作物表现](FarmArt.md)。GameManager 在进入游戏的 InitializingGame 阶段等待所有阶段模型加载成功，再初始化农田和恢复存档。FarmGrid 根据地块 CropId 和生长进度显示模型，不自行加载资源。加载失败时卸载游戏场景、释放已加载模型并返回主菜单，可再次进入重试。
 
 ## 阶段与资源
 
@@ -8,7 +8,7 @@ FarmManager 负责作物模型的 AA 加载、句柄持有和释放。GameManage
 - 生长中：Growth 大于 0 且小于 RequiredGrowthDays。
 - 成熟：Growth 等于 RequiredGrowthDays，可以收获。生长天数为 1 的作物跨日后直接进入成熟阶段。
 
-阶段由已有进度推导，存档当前为版本 9，不新增表现字段。未浇水不会切换阶段，浇水或同一阶段内成长不会重建模型；仅在种植、阶段切换、收获或改变地块作物时替换实例。旧实例先隐藏再销毁，避免同帧显示重叠。收获后清空模型，再次播种从幼苗开始。
+阶段由已有进度推导，存档当前为版本 27，不新增表现字段。未浇水不会切换阶段，浇水或同一阶段内成长不会重建模型；仅在种植、阶段切换、收获或改变地块作物时替换实例。旧实例先隐藏再销毁，避免同帧显示重叠。收获后清空模型，再次播种从幼苗开始。
 
 九个低多边形预制体位于 `Assets/Art/Prefabs/Crops`，AA 地址与文件名一致，在 Crop Models 分组注册：
 
@@ -24,7 +24,7 @@ CropCatalog 的 SeedlingPrefabAddress、GrowingPrefabAddress、MaturePrefabAddre
 
 FarmManager 使用 `Addressables.LoadAssetAsync<GameObject>` 预加载模型并保留句柄，同一地址只加载一次；地块实例通过已加载预制体创建，所有实例存续期间保留资源引用。离开场景后清除实例并释放句柄，加载中清理也会在操作完成后释放。
 
-编辑器的 CropVisualPrefabBuilder 只创建缺失的默认预制体、网格和材质，只补空的默认阶段地址，保留已有编辑。Shape 保留用于旧配置兼容，MatureColor 用于首次生成果实材质，运行时外观以阶段预制体为准。替换正式美术时注册新预制体并调整三个地址即可；无需改变种植、成长、交易或存档逻辑。
+编辑器的 CropVisualPrefabBuilder 创建缺失资源，并为默认九个阶段执行一次叶形和作物细节迁移，以 CropArtVisual 标记版本；同版本再次配置保留已有编辑，默认阶段地址只补空值。Shape 保留用于旧配置兼容，MatureColor 用于首次生成果实材质，运行时外观以阶段预制体为准。替换正式美术时注册新预制体并调整三个地址即可；无需改变种植、成长、交易或存档逻辑。
 
 ## 指向农田的信息
 

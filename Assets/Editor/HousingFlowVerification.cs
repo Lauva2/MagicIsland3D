@@ -101,7 +101,7 @@ namespace MagicIsland.EditorTools
                     Capture(g, "PlayerHomeInteriorPreview"); g.RequestRest(); Phase(6);
                 }
                 else if (phase == 6 && UnityEngine.Object.FindObjectOfType<SleepView>() != null)
-                { TextCheck(UnityEngine.Object.FindObjectOfType<SleepView>()); UnityEngine.Object.FindObjectOfType<SleepView>().ConfirmButton.onClick.Invoke(); Phase(7); }
+                { TextCheck(UnityEngine.Object.FindObjectOfType<SleepView>()); UnityEngine.Object.FindObjectOfType<SleepView>().ConfirmButton.onClick.Invoke(); g.StartNewDayFromReport(); Phase(7); }
                 else if (phase == 7 && g.State == GameFlowState.Playing && !g.UI.HasSleep)
                 {
                     Require(g.Housing.Inside && g.Farm.State.Day == 2 && g.Time.Clock.Minute >= 360 && g.Time.Clock.Minute < 365 && g.Stamina.State.Current == 100 && g.Farm.State.Cells[0].Growth == 1

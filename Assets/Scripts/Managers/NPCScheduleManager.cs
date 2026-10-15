@@ -55,7 +55,7 @@ namespace MagicIsland.Managers
                 var id = before[i].Id; if (npcs.IsFocused(id)) continue;
                 var actor = npcs.Actors[id]; var d = State.Definitions[i];
                 var previous = d.Position(before[i].Distance); var point = State.Position(id);
-                actor.transform.localPosition = new Vector3((float)point.X, 0, (float)point.Z);
+                actor.transform.localPosition = new Vector3((float)point.X, (float)IslandLayout.Height(point.X,point.Z), (float)point.Z);
                 var direction = new Vector3((float)(point.X - previous.X), 0, (float)(point.Z - previous.Z));
                 if (!State.Moving(id)) SetRestRotation(id);
                 else if (direction.sqrMagnitude > .000001f) SetTravelRotation(d);
@@ -67,7 +67,7 @@ namespace MagicIsland.Managers
         {
             foreach (var d in State.Definitions)
             {
-                var p = State.Position(d.Id); npcs.Actors[d.Id].transform.localPosition = new Vector3((float)p.X, 0, (float)p.Z);
+                var p = State.Position(d.Id); npcs.Actors[d.Id].transform.localPosition = new Vector3((float)p.X, (float)IslandLayout.Height(p.X,p.Z), (float)p.Z);
                 if (rotate) { if (State.Moving(d.Id)) SetTravelRotation(d); else SetRestRotation(d.Id); }
             }
             Physics.SyncTransforms();

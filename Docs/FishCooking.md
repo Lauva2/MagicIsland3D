@@ -1,6 +1,8 @@
 # 鱼类料理
 
-海岸鱼获可在料理台加工为食物。料理面板共五张食谱卡片，向下滚动可查看两道鱼类料理；显示全部食材库存、产出、恢复量及缺料 / 容量提示。新面板默认从顶部开始，关闭后重新打开也回到顶部。
+当前进度统一在每天睡觉结算后保存；白天操作仅修改运行状态，面板手动保存和返回菜单保存已取消，设置单独持久化。睡觉失败只重试该次固定快照。规则见 [暂停与睡觉存档](PauseAndSettings.md)。
+
+海岸鱼获可在料理台加工为食物。料理面板现共七张食谱卡片，向下滚动可查看两道鱼类料理和两道鸡蛋料理；显示全部食材库存、产出、恢复量及缺料 / 容量提示。新面板默认从顶部开始，关闭后重新打开也回到顶部。
 
 | 料理 | 食材 | 产出 | 体力恢复 | 解锁 |
 | --- | --- | --- | ---: | --- |
@@ -11,7 +13,7 @@
 
 ## 制作、食用与送礼
 
-- `CookingCatalog` 支持 Crop 和 Fish 作为主食材或附加食材，Seed、Material 和 Food 不作为食材；产物仍必须是 Food。
+- `CookingCatalog` 支持 Crop、Fish 和 AnimalProduct 作为主食材或附加食材，Seed、Material 和 Food 不作为食材；产物仍必须是 Food。
 - `CookingManager` 沿用原子制作：先检查全部食材，模拟全部扣除后的容量，再一起提交背包并通知。缺料、背包满或食谱锁定不扣除任何物品。制作不消耗体力或金币。
 - 两种成品进入随身背包，每格最多 99 份。`FoodManager` 按选中格子扣除一份并恢复体力，上限截断，满体力不消耗；箱内料理需先取出。
 - `RelationshipManager` 将成品视为普通料理，林舟每次增加 10 好感度，沿用每日一次、指定格子扣除和好感度上限。芜菁汤仍为偏好礼物，增加 20。原鱼不能直接食用、播种或送礼。
@@ -19,9 +21,9 @@
 
 ## 资源与存档
 
-使用已有 CookingCatalog / ItemCatalog AA 配置，成品 ID 为 `grilled_sardine` 和 `bass_vegetable_soup`。未新增系统 Manager、AA 地址或面板，沿用 CookingPanel、InventoryPanel 和 GiftPanel 的 MVC / 中文 TMP / PopUp 层。CookingPanel 增加 ScrollRect、RectMask2D 和三列食谱网格，保留原有三张卡片和事件按钮规则，完整五卡布局不重复覆盖。
+使用已有 CookingCatalog / ItemCatalog AA 配置，成品 ID 为 `grilled_sardine` 和 `bass_vegetable_soup`。未新增系统 Manager、AA 地址或面板，沿用 CookingPanel、InventoryPanel 和 GiftPanel 的 MVC / 中文 TMP / PopUp 层。CookingPanel 使用 ScrollRect、RectMask2D 和三列食谱网格，保留原有卡片和事件按钮规则，完整布局不重复覆盖。后来追加的两道料理见 [鸡蛋料理](EggCooking.md)。
 
-当前版本 19，料理、体力和送礼记录沿用现有字段。成功操作立即保存完整结果，保存失败保留运行状态，相关面板“保存进度”可重试，不再重复操作。旧档读取不赠送食物、不重置库存或关系；两道食谱默认可用。
+当前版本 22，料理、体力和送礼记录沿用现有字段。成功操作在睡觉时统一保存完整结果，保存失败保留运行状态，相关面板“保存进度”可重试，不再重复操作。旧档读取不赠送食物、不重置库存或关系；两道食谱默认可用。
 
 编辑器仅补缺失的食物和食谱，保留已经调整的配方、恢复量、原有台词与资源 GUID。UI 预制体继续位于 `Assets/Art/Prefabs/UI`，地址为名字。
 
@@ -29,4 +31,4 @@
 
 `Tools/VerifyFishCooking.cs` 覆盖单鱼与鱼 / 作物组合的数量和容量边界、原子通知与重入、35 / 50 恢复及满体力保护、指定格子送礼 / 每日限制、原鱼排除、储物和存档。
 
-`FishCookingFlowVerification.Run` 在隔离 Unity 项目构建 AA，验证五食谱及类型校验、滚动和中文排版、实际制作按钮、缺料 / 满背包、保存失败重试、食用 / 送礼、储物 / 读档、原有事件锁定、重开滚动重置、新游戏和资源清理。
+`FishCookingFlowVerification.Run` 在隔离 Unity 项目构建 AA，验证七食谱及类型校验、滚动和中文排版、实际鱼类制作按钮、缺料 / 满背包、保存失败重试、食用 / 送礼、储物 / 读档、原有事件锁定、重开滚动重置、新游戏和资源清理。

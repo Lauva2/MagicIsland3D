@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57da85902d6a87748943fde560933940, type: 3}
+  m_Name: AnimalConfig
+  m_EditorClassIdentifier: 
+  CoopAddress: ChickenCoop
+  ChickenAddress: Chicken
+  FeedItemId: animal_feed
+  EggItemId: egg
+  Position: {x: -10, y: 0, z: -1.8}
+  BuildWood: 15
+  BuildStone: 5
+  BuildGold: 200
+  ChickenPrice: 50
+  FeedPrice: 10
+  EggPrice: 25
+  PetAffinity: 5
+  FeedAffinity: 2
+  QualityEggItemId: quality_egg
+  QualityEggPrice: 40
+  QualityAffinity: 70
+  QualityChance: 25
+  ChickenNames:
+  - "\u5C0F\u767D"
+  - "\u56E2\u56E2"

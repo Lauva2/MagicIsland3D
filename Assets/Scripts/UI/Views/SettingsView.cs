@@ -11,11 +11,13 @@ namespace MagicIsland.UI.Views
         public Slider VolumeSlider;
         public Toggle FullscreenToggle;
         public TMP_Text VolumeText;
+        public TMP_Text FeedbackText;
         public void Render(SettingsModel model)
         {
             VolumeSlider.SetValueWithoutNotify(model.Volume);
             FullscreenToggle.SetIsOnWithoutNotify(model.Fullscreen);
             VolumeText.text = Mathf.RoundToInt(model.Volume * 100) + "%";
+            FeedbackText.text = model.Feedback;
         }
     }
 }

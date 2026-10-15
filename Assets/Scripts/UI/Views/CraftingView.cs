@@ -11,8 +11,8 @@ namespace MagicIsland.UI.Views
         public Button CloseButton, SaveButton, UpgradeButton;
         public Button PreviousButton, NextButton;
         public TMP_Text PageText;
-        public void RenderPage(int page, int total)
-        { PageText.text = "第 " + (page + 1) + " / " + total + " 页"; PreviousButton.interactable = page > 0; NextButton.interactable = page + 1 < total; }
+        public void RenderPage(int page, int total, string category)
+        { PageText.text = category + " " + (page + 1) + " / " + total; PreviousButton.interactable = page > 0; NextButton.interactable = page + 1 < total; }
         public void Render(CraftingModel model)
         {
             FeedbackText.text = model.Feedback;

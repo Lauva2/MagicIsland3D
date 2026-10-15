@@ -24,7 +24,7 @@ class VerifyHousing
         Reject(() => new HousingState("unknown")); Reject(() => state.Begin("unknown"));
         for (int x = -13; x <= 13; x++) for (int z = -13; z <= 13; z++)
         {
-            Check(HousingState.ValidPosition(HousingState.Island, x, .1, z) == (Math.Abs(x) <= 12 && Math.Abs(z) <= 12), "Island bounds unchanged");
+            if(Math.Abs(x)<=12&&Math.Abs(z)<=12) Check(HousingState.ValidPosition(HousingState.Island,x,.1,z),"Legacy island positions stay valid on expanded terrain");
             Check(HousingState.ValidPosition(HousingState.Home, x, .1, z) == (Math.Abs(x) <= 5.8 && Math.Abs(z) <= 4.8), "Interior local bounds");
         }
         foreach (var area in new[] { HousingState.Home, HousingState.Island }) foreach (double invalid in new[] { double.NaN, double.PositiveInfinity, double.NegativeInfinity })

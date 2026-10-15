@@ -41,7 +41,7 @@ namespace MagicIsland.UI.Controllers
             Model.Preview = gain == 0 ? "种子和材料不能作为礼物" : "赠送 1 个 · 好感度 +" + Math.Min(rule.Maximum - relationships.State.Points(id), gain) + (chosen.ItemId == rule.FavoriteId ? " · 偏好礼物" : "");
             var check = relationships.Check(selected); Model.CanGive = check == GiftResult.Success;
             Model.ButtonLabel = check == GiftResult.AlreadyGiven ? "今日已送礼" : check == GiftResult.AtMaximum ? "好感度已满" : "赠送一个";
-            Model.Feedback = relationships.Feedback ?? (selected < 0 ? "选择礼物后确认赠送，成功后自动保存" : Model.CanGive ? "礼物已准备好" : RelationshipManager.Explain(check)); view.Render(Model);
+            Model.Feedback = relationships.Feedback ?? (selected < 0 ? "选择礼物后确认赠送，进度仅在睡觉时保存" : Model.CanGive ? "礼物已准备好" : RelationshipManager.Explain(check)); view.Render(Model);
         }
         public void Dispose()
         {

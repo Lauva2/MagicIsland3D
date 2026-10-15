@@ -130,7 +130,7 @@ namespace MagicIsland.EditorTools
                         && g.NPCSchedules.State.Moving(Id) && UnityEngine.Object.FindObjectsOfType<NPCActor>().Length == 1, "Reload restores exact mid-route progress without duplicate actor");
                     UnityEngine.Time.timeScale = 1; g.Players.RestorePosition(new Vector3(0, .1f, -4)); g.NPCSchedules.Tick(1080, 100, false);
                     Require(g.NPCSchedules.State.Distance(Id) == 0 && !g.NPCSchedules.State.Moving(Id), "Return arrives at office");
-                    g.Time.Clock.Restore(900); g.NPCSchedules.Tick(900, 100, false); g.AdvanceDay();
+                    g.Time.Clock.Restore(900); g.NPCSchedules.Tick(900, 100, false); g.AdvanceDay(); g.StartNewDayFromReport();
                     Require(g.Time.Clock.Minute == 360 && g.NPCSchedules.State.Distance(Id) == 0 && g.Saves.TryLoad(out var morning) && morning.NPCSchedules[0].Distance == 0, "Sleep resets and saves morning position");
                     g.ReturnToMainMenu(); Phase(8);
                 }

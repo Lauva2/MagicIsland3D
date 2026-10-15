@@ -45,7 +45,7 @@ namespace MagicIsland.EditorTools
                 if (!EditorApplication.isPlaying) return; var g = GameManager.Instance; if (g == null) return; Require(g.State != GameFlowState.Failed, "Fish cooking configuration failure");
                 if (phase == 0 && g.State == GameFlowState.MainMenu)
                 {
-                    var cooking = g.Configuration.Cooking; Require(cooking.Validate(g.Configuration.Items) && cooking.Recipes.Count == 5 && cooking.Recipes[3].Id == Grilled && cooking.Recipes[4].Id == Soup && cooking.Recipes[2].RequiredEventId == "steward_recipe", "Five AA recipes retain legacy ordering and event lock");
+                    var cooking = g.Configuration.Cooking; Require(cooking.Validate(g.Configuration.Items) && cooking.Recipes.Count == 7 && cooking.Recipes[3].Id == Grilled && cooking.Recipes[4].Id == Soup && cooking.Recipes[2].RequiredEventId == "steward_recipe", "Seven AA recipes retain legacy ordering and event lock");
                     string original = cooking.Recipes[3].IngredientId;
                     foreach (string invalid in new[] { "turnip_seed", "wood", "roasted_corn" }) { cooking.Recipes[3].IngredientId = invalid; Require(!cooking.Validate(g.Configuration.Items), "Seeds/materials/food rejected as ingredients"); } cooking.Recipes[3].IngredientId = original;
                     var additional = cooking.Recipes[4].AdditionalIngredients[0]; string old = additional.ItemId; additional.ItemId = "sardine"; Require(cooking.Validate(g.Configuration.Items), "Additional fish ingredient supported"); additional.ItemId = old;
@@ -55,7 +55,7 @@ namespace MagicIsland.EditorTools
                 { g.Inventory.TryAdd("sardine", 3); g.Inventory.TryAdd("sea_bass", 3); g.Inventory.TryAdd("turnip", 3); g.Inventory.TryAdd("tomato", 3); Place(g); g.OpenCooking(); Phase(2); }
                 else if (phase == 2 && Kitchen != null)
                 {
-                    Require(Kitchen.CookButtons.Length == 5 && Kitchen.RecipeScroll != null && Kitchen.RecipeScroll.vertical && !Kitchen.RecipeScroll.horizontal && Kitchen.RecipeScroll.verticalNormalizedPosition > .99f, "Scrollable five-recipe MVC opens at top");
+                    Require(Kitchen.CookButtons.Length == 7 && Kitchen.RecipeScroll != null && Kitchen.RecipeScroll.vertical && !Kitchen.RecipeScroll.horizontal && Kitchen.RecipeScroll.verticalNormalizedPosition > .99f, "Scrollable seven-recipe MVC opens at top");
                     Require(!Kitchen.CookButtons[2].interactable && Kitchen.ResultTexts[2].text.Contains("朋友的食谱"), "Vegetable soup keeps event lock"); TextCheck(Kitchen); Capture(g, "FiveRecipePanelPreview");
                     Kitchen.RecipeScroll.verticalNormalizedPosition = 0; Canvas.ForceUpdateCanvases(); g.UI.RefreshViews(); Require(Kitchen.CookButtons[3].interactable && Kitchen.CookButtons[4].interactable && Kitchen.IngredientTexts[4].text.Contains("鲈鱼") && Kitchen.IngredientTexts[4].text.Contains("番茄"), "Fish cards show all ingredients and stocks");
                     TextCheck(Kitchen); Capture(g, "FishCookingPanelPreview");
@@ -66,7 +66,7 @@ namespace MagicIsland.EditorTools
                     SaveDirectory(g, dir); Kitchen.SaveButton.onClick.Invoke(); Require(g.Saves.TryLoad(out var saved) && saved.Slots.Sum(s => s.ItemId == Grilled ? s.Quantity : 0) == 1, "Craft save retry once");
                     Kitchen.CookButtons[3].onClick.Invoke(); Kitchen.CookButtons[4].onClick.Invoke(); Kitchen.CookButtons[4].onClick.Invoke();
                     Require(g.Inventory.GetCount(Grilled) == 2 && g.Inventory.GetCount(Soup) == 2 && g.Inventory.GetCount("sardine") == 1 && g.Inventory.GetCount("sea_bass") == 1 && g.Inventory.GetCount("turnip") == 1 && g.Inventory.GetCount("tomato") == 1, "Both fish recipes consume exact ingredients");
-                    var bag = g.Inventory.State.Slots.ToArray(); var full = Enumerable.Repeat(new InventorySlot("wood", 99), 12).ToArray(); full[0] = new InventorySlot("sea_bass", 99); full[1] = new InventorySlot("turnip", 99); full[2] = new InventorySlot("tomato", 99);
+                    var bag = g.Inventory.State.Slots.ToArray(); var full = Enumerable.Repeat(new InventorySlot("wood", 99), g.Inventory.State.Capacity).ToArray(); full[0] = new InventorySlot("sea_bass", 99); full[1] = new InventorySlot("turnip", 99); full[2] = new InventorySlot("tomato", 99);
                     g.Inventory.State.Restore(full); g.CookRecipe(4); Require(g.Inventory.GetCount("sea_bass") == 99 && g.Inventory.GetCount("turnip") == 99 && g.Inventory.GetCount("tomato") == 99 && g.Inventory.GetCount(Soup) == 0 && g.Cooking.Feedback.Contains("放不下"), "Full bag consumes no fish or crops");
                     full[2] = new InventorySlot("wood", 99); g.Inventory.State.Restore(full); g.CookRecipe(4); Require(g.Inventory.GetCount("sea_bass") == 99 && g.Inventory.GetCount("turnip") == 99 && g.Cooking.Feedback.Contains("不足"), "Missing crop consumes no fish");
                     g.Inventory.State.Restore(bag); Require(g.Stamina.State.Current == 100 && g.Economy.Gold == 100 && g.Tasks.State.Capture().All(t => t.Progress == 0), "Cooking no stamina/gold/crop task side effects");
@@ -90,7 +90,7 @@ namespace MagicIsland.EditorTools
                 {
                     int grilled = Slot(g, Grilled); Gift.Slots[grilled].SelectButton.onClick.Invoke(); Require(Gift.PreviewText.text.Contains("+10") && !Gift.Slots[Slot(g, "sardine")].SelectButton.interactable, "Prepared fish normal gift, raw fish not gift"); TextCheck(Gift); Capture(g, "FishFoodGiftPreview"); Gift.GiveButton.onClick.Invoke();
                     Require(g.Relationships.State.Points(Npc) == 10 && g.Inventory.GetCount(Grilled) == 0 && g.Stamina.State.Current == 100, "Fish food gift consumes one and adds 10");
-                    g.GiveGift(Slot(g, Soup)); Require(g.Inventory.GetCount(Soup) == 1 && g.Relationships.State.Points(Npc) == 10, "Daily limit shared with new foods"); g.CloseGift(); g.AdvanceDay(); g.OpenGift(Npc); Phase(6);
+                    g.GiveGift(Slot(g, Soup)); Require(g.Inventory.GetCount(Soup) == 1 && g.Relationships.State.Points(Npc) == 10, "Daily limit shared with new foods"); g.CloseGift(); g.AdvanceDay(); g.StartNewDayFromReport(); g.OpenGift(Npc); Phase(6);
                 }
                 else if (phase == 6 && Gift != null)
                 {
@@ -115,7 +115,7 @@ namespace MagicIsland.EditorTools
                 else if (phase == 13 && g.State == GameFlowState.Playing)
                 {
                     Require(g.Inventory.GetCount(Grilled) == 0 && g.Storage.State.Contents.GetCount(Soup) == 0 && g.Relationships.State.Points(Npc) == 0, "New game resets old fish food and gifts");
-                    File.WriteAllText("Logs/FishCookingFlowVerification.txt", "PASS: five AA recipes and fish/crop validation, scrollable MVC/Chinese layout, exact atomic cooking and reentry/save failure/retry, no loss on missing ingredients/full bag, 35/50 food and clamp, normal +10 gifts/daily limit/raw exclusion, storage/reload/legacy event lock/new game/cleanup.\n");
+                    File.WriteAllText("Logs/FishCookingFlowVerification.txt", "PASS: seven AA recipes and fish/crop validation, scrollable MVC/Chinese layout, exact atomic cooking and reentry/save failure/retry, no loss on missing ingredients/full bag, 35/50 food and clamp, normal +10 gifts/daily limit/raw exclusion, storage/reload/legacy event lock/new game/cleanup.\n");
                     Debug.Log("Fish cooking flow verification PASSED."); Phase(14); EditorApplication.isPlaying = false;
                 }
             }

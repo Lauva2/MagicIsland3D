@@ -17,14 +17,24 @@ internal static class VerifyFarmState
         var inventory = new InventoryState(12, new[] { new ItemDefinition("seed", "Seed", ItemType.Seed, 99), new ItemDefinition("crop", "Crop", ItemType.Crop, 99) });
         inventory.TryAdd("seed", 50);
         var actions = new FarmActions(farm, inventory, "seed", "crop");
+        int notifications = 0;
+        inventory.Changed += () => notifications++;
+        for (int i = 0; i < 100; i++)
+        {
+            Check(actions.CanPerform(0, FarmTool.Hoe) && !actions.CanPerform(0, FarmTool.Seeds), "Hover readiness follows actual farm rules");
+            Check(!actions.CanPerform(-1, FarmTool.Hoe) && !actions.CanPerform(25, FarmTool.Hoe), "Invalid hover indices are rejected");
+        }
+        Check(!farm.Cells[0].Tilled && inventory.GetCount("seed") == 50 && notifications == 0, "Repeated readiness checks do not settle or notify");
         Check(farm.Cells.Length == 25 && farm.Day == 1 && inventory.GetCount("seed") == 50, "Initial state");
         for (int i = 0; i < 25; i++)
         {
             Check(!actions.TryAct(i, FarmTool.Seeds, out _), "Cannot seed until tilled");
             Check(!actions.TryAct(i, FarmTool.WateringCan, out _), "Cannot water empty plot");
             Check(actions.TryAct(i, FarmTool.Hoe, out _), "Till entire field");
+            Check(!actions.CanPerform(i, FarmTool.Hoe) && actions.CanPerform(i, FarmTool.Seeds), "Readiness updates immediately after tilling");
             Check(!actions.TryAct(i, FarmTool.Hoe, out _), "Repeated till is rejected");
             Check(actions.TryAct(i, FarmTool.Seeds, out _), "Plant entire field");
+            Check(!actions.CanPerform(i, FarmTool.Seeds) && actions.CanPerform(i, FarmTool.WateringCan), "Readiness updates after planting");
             Check(!actions.TryAct(i, FarmTool.Seeds, out _), "Repeated seeding is rejected");
         }
         Check(inventory.GetCount("seed") == 25, "Only successful planting consumes seeds");

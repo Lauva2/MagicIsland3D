@@ -9,13 +9,13 @@ namespace MagicIsland.Managers
         public CraftingCatalog Catalog { get; private set; }
         public InventoryManager Inventory { get; private set; }
         public string Feedback { get; private set; }
-        public void Initialize(CraftingCatalog catalog, InventoryManager inventory)
-        { Clear(); Catalog = catalog; Inventory = inventory; State = new CraftingState(catalog.Definitions()); }
+        public void Initialize(CraftingCatalog catalog, InventoryManager inventory, CropCatalog crops = null)
+        { Clear(); Catalog = catalog; Inventory = inventory; State = new CraftingState(catalog.Definitions(), crops?.Ingredients()); }
         public CraftingResult Check(int index) => State.Check(index, Inventory.State);
         public bool Craft(int index)
         {
             var result = State.Craft(index, Inventory.State);
-            Feedback = result == CraftingResult.Success ? "制作完成，打开背包选择成品进行摆放" : result == CraftingResult.MaterialsMissing ? "木材或石料不足"
+            Feedback = result == CraftingResult.Success ? (Catalog.Recipes[index].IsSupply ? "制作完成，用品已放入背包" : "制作完成，打开背包选择成品进行摆放") : result == CraftingResult.MaterialsMissing ? "制作材料不足"
                 : result == CraftingResult.BagFull ? "背包放不下成品，未消耗材料" : "暂时无法制作";
             return result == CraftingResult.Success;
         }

@@ -8,6 +8,7 @@ namespace MagicIsland.UI.Views
     {
         [SerializeField] private UILayer layer = UILayer.Common;
         public UILayer Layer { get => layer; set => layer = value; }
+        [HideInInspector] public bool SleepOnlyLayout;
         public void SetVisible(bool visible) => gameObject.SetActive(visible);
     }
 }

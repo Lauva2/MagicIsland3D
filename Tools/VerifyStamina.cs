@@ -31,13 +31,16 @@ internal static class VerifyStamina
         bag.Changed -= observer;
         Check(!actions.TryAct(0, FarmTool.Seeds, out _) && state.Current == 6 && bag.GetCount("seed") == 1, "Duplicate plant is free");
         state.Restore(1);
+        Check(!actions.CanPerform(0, FarmTool.WateringCan) && state.Current == 1 && !farm.Cells[0].Watered, "Low stamina readiness is read-only");
         Check(!actions.TryAct(0, FarmTool.WateringCan, out string low) && !farm.Cells[0].Watered && state.Current == 1 && low.Contains("体力不足"), "Low stamina preserves crop and explains failure");
         Check(actions.Describe(0, FarmTool.WateringCan).Contains("体力不足"), "Hover describes low stamina");
         state.Refill(); Check(actions.TryAct(0, FarmTool.WateringCan, out _) && state.Current == 8, "Water cost");
         Check(!actions.TryAct(0, FarmTool.WateringCan, out _) && state.Current == 8, "Duplicate watering is free");
         farm.AdvanceDay(); state.Restore(0);
+        Check(!actions.CanPerform(0, FarmTool.Hoe) && farm.Cells[0].Mature, "Readiness rejects harvest into full bag");
         Check(!actions.TryAct(0, FarmTool.Hoe, out _) && farm.Cells[0].Mature && state.Current == 0, "Full bag preserves crop and stamina");
         bag.TryRemove("seed", 1);
+        Check(actions.CanPerform(0, FarmTool.Hoe) && state.Current == 0 && farm.Cells[0].Mature, "Free harvest readiness works at zero stamina without settlement");
         Check(actions.TryAct(0, FarmTool.Hoe, out _) && bag.GetCount("crop") == 1 && state.Current == 0, "Free harvest works at zero stamina");
         state.Refill();
         Check(!actions.TryAct(0, FarmTool.Seeds, out _) && !farm.Cells[0].Planted && state.Current == 10, "No seed costs no stamina");

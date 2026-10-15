@@ -23,5 +23,18 @@ namespace MagicIsland.EditorTools
             if (entry.address != OrderCatalog.Address) entry.SetAddress(OrderCatalog.Address);
             OrderHallPrefabBuilder.Ensure(settings);
         }
+        public static void EnsureAnimalOffers()
+        {
+            var catalog = AssetDatabase.LoadAssetAtPath<OrderCatalog>("Assets/Config/OrderCatalog.asset");
+            AddOffer(catalog, "egg_daily", "egg", 2, 35);
+            AddOffer(catalog, "fried_egg_daily", "fried_egg", 1, 50);
+            AddOffer(catalog, "egg_vegetable_soup_daily", "egg_vegetable_soup", 1, 90);
+        }
+        private static void AddOffer(OrderCatalog catalog, string id, string itemId, int quantity, int goldPerItem)
+        {
+            if (catalog.Offers.Exists(offer => offer.Id == id)) return;
+            catalog.Offers.Add(new OrderConfig { Id = id, ItemId = itemId, RequiresCoop = true, Seasons = SeasonMask.All,
+                MinQuantity = quantity, MaxQuantity = quantity, GoldPerItem = goldPerItem }); EditorUtility.SetDirty(catalog);
+        }
     }
 }

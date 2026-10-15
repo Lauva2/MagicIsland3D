@@ -11,7 +11,7 @@ namespace MagicIsland.EditorTools
         public static void CreateMissing()
         {
             string path = Factory.Folder + "/OrderPanel.prefab";
-            if (File.Exists(path)) return;
+            if (File.Exists(path)) { UpgradeWording(path); return; }
             GameObject root = Factory.CanvasRoot("OrderPanel");
             try
             {
@@ -31,11 +31,25 @@ namespace MagicIsland.EditorTools
                 view.StockText = Factory.Label("Owned", request, new Vector2(104, -57), new Vector2(452, 24), "背包持有 0 / 3", 18);
                 view.RewardText = Factory.Label("Reward", request, new Vector2(104, -86), new Vector2(452, 26), "交付奖励 120 金币", 19);
                 view.StatusText = Factory.Label("Status", panel, new Vector2(32, -254), new Vector2(576, 28), "有效至今天结束 · 睡觉后刷新", 18);
-                view.DeliverButton = Factory.Button("Deliver", panel, new Vector2(32, -296), new Vector2(576, 48), "交付全部作物", new Color(0.7f, 0.81f, 0.62f));
-                view.FeedbackText = Factory.Label("Feedback", panel, new Vector2(32, -362), new Vector2(576, 32), "作物数量不足，请先准备好全部作物", 18);
+                view.DeliverButton = Factory.Button("Deliver", panel, new Vector2(32, -296), new Vector2(576, 48), "交付全部物品", new Color(0.7f, 0.81f, 0.62f));
+                view.FeedbackText = Factory.Label("Feedback", panel, new Vector2(32, -362), new Vector2(576, 32), "物品数量不足，请先准备好全部物品", 18);
                 PrefabUtility.SaveAsPrefabAsset(root, path);
             }
             finally { Object.DestroyImmediate(root); }
+        }
+        private static void UpgradeWording(string path)
+        {
+            var root = PrefabUtility.LoadPrefabContents(path);
+            try
+            {
+                var view = root.GetComponent<OrderView>(); bool changed = false;
+                var label = view.DeliverButton.GetComponentInChildren<TMPro.TMP_Text>();
+                if (label.text == "交付全部作物") { label.text = "交付全部物品"; changed = true; }
+                if (view.FeedbackText.text == "作物数量不足，请先准备好全部作物")
+                { view.FeedbackText.text = "物品数量不足，请先准备好全部物品"; changed = true; }
+                if (changed) PrefabUtility.SaveAsPrefabAsset(root, path);
+            }
+            finally { PrefabUtility.UnloadPrefabContents(root); }
         }
     }
 }

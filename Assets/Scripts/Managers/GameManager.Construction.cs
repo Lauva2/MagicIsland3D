@@ -10,10 +10,11 @@ namespace MagicIsland.Managers
         public PlacementManager Placements { get; private set; }
         public FurnitureManager Furniture { get; private set; }
         public PlacementManager ActivePlacement => Housing.Inside ? Furniture : Placements;
-        public bool CanPlaceItem(string id) => Crafting.Catalog.FindItem(id)?.IsFurniture == Housing.Inside;
+        public bool CanPlaceItem(string id)
+        { var recipe = Crafting?.Catalog?.FindItem(id); return recipe != null && recipe.IsPlaceable && recipe.IsFurniture == Housing.Inside; }
         private bool craftingOpening, craftingCommitting, placementOpening, placementCommitting;
         private int constructionGeneration;
-        private bool ConstructionBusy => HouseUpgradeBusy || craftingOpening || craftingCommitting || UI.HasCrafting || placementOpening || placementCommitting || Placements.Active || Furniture.Active;
+        private bool ConstructionBusy => MapBusy || advancingDay || DailyReportBusy || InventoryUpgradeBusy || AnimalBusy || HouseUpgradeBusy || craftingOpening || craftingCommitting || UI.HasCrafting || placementOpening || placementCommitting || Placements.Active || Furniture.Active;
         public void OpenCrafting()
         {
             if (State != GameFlowState.Playing || ModalOpen || Tools.Busy || !ToolUpgrades.InRange(Players.Player.transform.position, Configuration.Config.InteractionReach)) return;
@@ -38,16 +39,18 @@ namespace MagicIsland.Managers
             if (State != GameFlowState.Playing || !UI.HasCrafting || craftingOpening || craftingCommitting || Tools.Busy
                 || !ToolUpgrades.InRange(Players.Player.transform.position, Configuration.Config.InteractionReach)) return;
             craftingCommitting = true;
-            try { if (Crafting.Craft(index)) { if (!SaveProgress()) Crafting.SetSaveFailed(); else Interactions.SetFeedback(Crafting.Feedback); } UI.RefreshViews(); }
+            try { if (Crafting.Craft(index)) Interactions.SetFeedback(Crafting.Feedback); UI.RefreshViews(); }
             finally { craftingCommitting = false; }
         }
         public void SaveCrafting()
-        { if (State != GameFlowState.Playing || !UI.HasCrafting || craftingOpening || craftingCommitting) return; if (SaveProgress()) Crafting.SetSaved(); else Crafting.SetSaveFailed(); UI.RefreshViews(); }
+        {
+            Interactions.SetFeedback("进度只在每天睡觉结算后保存");
+        }
         private void SwitchToUpgrades() { if (craftingOpening || craftingCommitting) return; CloseCrafting(); OpenToolUpgrade(); }
         private void SwitchToCrafting() { if (upgradeOpening || upgradeCommitting) return; CloseToolUpgrade(); OpenCrafting(); }
         public void BeginPlacementFromBag(int index)
         {
-            if (State != GameFlowState.Playing || ConstructionBusy || !UI.IsInventoryVisible || Tools.Busy || index < 0 || index >= Inventory.State.Capacity) return;
+            if (State != GameFlowState.Playing || ConstructionBusy || consumableCommitting || Inventory.IsDragging || !UI.IsInventoryVisible || Tools.Busy || index < 0 || index >= Inventory.State.Capacity) return;
             var slot = Inventory.State.Slots[index]; if (slot.Empty || !CanPlaceItem(slot.ItemId)) return;
             UI.SetInventoryVisible(false); placementOpening = true; SetInputEnabled(false); StartCoroutine(LoadPlacement(slot.ItemId, ++constructionGeneration));
         }
@@ -76,7 +79,7 @@ namespace MagicIsland.Managers
             try
             {
                 placed = ActivePlacement.Confirm();
-                if (placed) { if (!SaveProgress()) ActivePlacement.SetSaveFailed(); Interactions.SetFeedback(ActivePlacement.Feedback); }
+                if (placed) Interactions.SetFeedback(ActivePlacement.Feedback);
                 UI.RefreshViews();
             }
             finally { placementCommitting = false; }
@@ -86,11 +89,11 @@ namespace MagicIsland.Managers
         {
             if (State != GameFlowState.Playing || ModalOpen || Tools.Busy || !ActivePlacement.Owns(actor)) return;
             placementCommitting = true;
-            try { if (ActivePlacement.Recover(actor) && !SaveProgress()) ActivePlacement.SetSaveFailed(); Interactions.SetFeedback(ActivePlacement.Feedback); UI.RefreshViews(); }
+            try { ActivePlacement.Recover(actor); Interactions.SetFeedback(ActivePlacement.Feedback); UI.RefreshViews(); }
             finally { placementCommitting = false; }
         }
         public void SaveConstruction()
-        { if (State != GameFlowState.Playing || placementOpening || placementCommitting) return; if (SaveProgress()) ActivePlacement.SetSaved(); else ActivePlacement.SetSaveFailed(); UI.RefreshViews(); }
+        { Interactions.SetFeedback("进度只在每天睡觉结算后保存"); }
         private void UpdateConstruction()
         {
             if (placementOpening || !ActivePlacement.Ready) return;

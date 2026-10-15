@@ -30,13 +30,13 @@ namespace MagicIsland.UI.Controllers
             {
                 var recipe = cooking.Catalog.Recipes[i]; var rule = cooking.State.Definitions[i];
                 Model.Titles[i] = recipe.DisplayName;
-                Model.Ingredients[i] = string.Join("\n", rule.Ingredients.Select(c => cooking.Inventory.Catalog.Find(c.Id).DisplayName + " × " + c.Quantity + " · 持有 " + cooking.Inventory.GetCount(c.Id)));
+                Model.Ingredients[i] = string.Join("\n", rule.Ingredients.Select(c => cooking.Inventory.Catalog.Find(c.Id).DisplayName + " × " + c.Quantity + " · 持有 " + cooking.State.Ingredients.Count(cooking.Inventory.State, c.Id)));
                 Model.Results[i] = "制作 " + recipe.OutputQuantity + " 份 · 恢复 " + recipe.StaminaRecovery + " 体力";
                 var check = cooking.Check(i); Model.CanCook[i] = check == CookingResult.Success;
                 if (check == CookingResult.Locked) Model.Results[i] += "\n" + (cooking.Stories?.UnlockHint(rule.RequiredEventId) ?? "食谱未解锁");
                 Model.Labels[i] = check == CookingResult.Locked ? "尚未解锁" : Model.CanCook[i] ? "制作一份" : check == CookingResult.InsufficientIngredients ? "食材不足" : "背包空间不足";
             }
-            Model.Feedback = cooking.Feedback ?? "使用背包中的作物和鱼类制作 · 料理可食用或送礼"; view.Render(Model);
+            Model.Feedback = cooking.Feedback ?? "两种品质的作物和鸡蛋均可制作 · 优先使用普通品质"; view.Render(Model);
         }
         public void Dispose()
         {

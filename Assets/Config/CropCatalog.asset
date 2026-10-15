@@ -16,30 +16,33 @@ MonoBehaviour:
   - Id: turnip
     SeedItemId: turnip_seed
     HarvestItemId: turnip
+    QualityHarvestItemId: quality_turnip
     GrowthDays: 3
-    PlantingSeasons: 5
     Shape: 0
     MatureColor: {r: 0.94, g: 0.87, b: 0.74, a: 1}
+    PlantingSeasons: 5
     SeedlingPrefabAddress: TurnipSeedling
     GrowingPrefabAddress: TurnipGrowing
     MaturePrefabAddress: TurnipMature
   - Id: tomato
     SeedItemId: tomato_seed
     HarvestItemId: tomato
+    QualityHarvestItemId: quality_tomato
     GrowthDays: 5
-    PlantingSeasons: 2
     Shape: 1
     MatureColor: {r: 0.88, g: 0.28, b: 0.19, a: 1}
+    PlantingSeasons: 2
     SeedlingPrefabAddress: TomatoSeedling
     GrowingPrefabAddress: TomatoGrowing
     MaturePrefabAddress: TomatoMature
   - Id: corn
     SeedItemId: corn_seed
     HarvestItemId: corn
+    QualityHarvestItemId: quality_corn
     GrowthDays: 7
-    PlantingSeasons: 6
     Shape: 2
     MatureColor: {r: 0.98, g: 0.78, b: 0.2, a: 1}
+    PlantingSeasons: 6
     SeedlingPrefabAddress: CornSeedling
     GrowingPrefabAddress: CornGrowing
     MaturePrefabAddress: CornMature

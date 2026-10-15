@@ -11,10 +11,10 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 24efe09ca1c142899611a00d4791d20e, type: 3}
   m_Name: FishingCatalog
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   RodAddress: FishingRod
   SpotAddress: CoastalFishingSpot
-  SpotPosition: {x: 10.4, y: 0, z: -8.2}
+  SpotPosition: {x: 14.8, y: 0, z: -8.2}
   WaitMin: 2
   WaitMax: 5
   BiteWindow: 2

@@ -11,7 +11,8 @@ namespace MagicIsland.Inventory
         public IngredientCost(string id, int quantity)
         { if (string.IsNullOrWhiteSpace(id) || quantity < 1) throw new ArgumentException("Invalid ingredient"); Id = id; Quantity = quantity; }
     }
-    public enum ItemType { Seed, Crop, Material, Tool, Food, Fish, Placeable, Furniture }
+    public enum ItemType { Seed, Crop, Material, Tool, Food, Fish, Placeable, Furniture, AnimalProduct }
+    public enum InventoryEditResult { Success, Busy, InvalidSlot, EmptySource, SameSlot, StackFull, CannotSplit, NoEmptySlot }
 
     public sealed class ItemDefinition
     {
@@ -38,12 +39,92 @@ namespace MagicIsland.Inventory
     // Pure state. Add/remove are all-or-nothing, including additions across multiple stacks.
     public sealed class InventoryState
     {
+        public IEnumerable<ItemDefinition> ItemDefinitions => definitions.Values;
         private readonly Dictionary<string, ItemDefinition> definitions = new Dictionary<string, ItemDefinition>(StringComparer.Ordinal);
-        private readonly InventorySlot[] slots;
+        private InventorySlot[] slots;
         private bool transferring;
-        public IReadOnlyList<InventorySlot> Slots { get; }
+        public IReadOnlyList<InventorySlot> Slots { get; private set; }
         public int Capacity => slots.Length;
+        public uint ReorderVersion { get; private set; }
+        public bool CanSort => !transferring;
         public event Action Changed;
+        private InventoryEditResult CheckEditSource(int index)
+        {
+            if (transferring) return InventoryEditResult.Busy;
+            if (index < 0 || index >= Capacity) return InventoryEditResult.InvalidSlot;
+            return slots[index].Empty ? InventoryEditResult.EmptySource : InventoryEditResult.Success;
+        }
+        private InventoryEditResult CommitSlotEdit(int source, int target, InventorySlot from, InventorySlot to)
+        {
+            transferring = true;
+            try
+            {
+                slots[source] = from; slots[target] = to;
+                unchecked { ReorderVersion++; }
+                NotifyChanged(); return InventoryEditResult.Success;
+            }
+            finally { transferring = false; }
+        }
+        public InventoryEditResult MoveSlot(int source, int target)
+        {
+            var check = CheckEditSource(source); if (check != InventoryEditResult.Success) return check;
+            if (target < 0 || target >= Capacity) return InventoryEditResult.InvalidSlot;
+            if (source == target) return InventoryEditResult.SameSlot;
+            var from = slots[source]; var to = slots[target];
+            if (to.Empty) return CommitSlotEdit(source, target, default, from);
+            if (from.ItemId != to.ItemId) return CommitSlotEdit(source, target, to, from);
+            int moved = Math.Min(from.Quantity, definitions[from.ItemId].MaxStack - to.Quantity);
+            if (moved == 0) return InventoryEditResult.StackFull;
+            return CommitSlotEdit(source, target, moved == from.Quantity ? default : new InventorySlot(from.ItemId, from.Quantity - moved),
+                new InventorySlot(to.ItemId, to.Quantity + moved));
+        }
+        public InventoryEditResult SplitSlot(int source)
+        {
+            var check = CheckEditSource(source); if (check != InventoryEditResult.Success) return check;
+            var from = slots[source]; if (from.Quantity < 2) return InventoryEditResult.CannotSplit;
+            int target = Array.FindIndex(slots, slot => slot.Empty);
+            if (target < 0) return InventoryEditResult.NoEmptySlot;
+            int moved = from.Quantity / 2;
+            return CommitSlotEdit(source, target, new InventorySlot(from.ItemId, from.Quantity - moved), new InventorySlot(from.ItemId, moved));
+        }
+        public bool TrySort()
+        {
+            if (!CanSort) return false;
+            var totals = new Dictionary<string, long>(StringComparer.Ordinal);
+            foreach (var slot in slots)
+                if (!slot.Empty) totals[slot.ItemId] = (totals.TryGetValue(slot.ItemId, out long count) ? count : 0) + slot.Quantity;
+            var sorted = new InventorySlot[Capacity];
+            int index = 0;
+            foreach (string id in totals.Keys.OrderBy(id => definitions[id].Type).ThenBy(id => id, StringComparer.Ordinal))
+            {
+                long remaining = totals[id];
+                while (remaining > 0)
+                {
+                    int quantity = (int)Math.Min(remaining, definitions[id].MaxStack);
+                    sorted[index++] = new InventorySlot(id, quantity);
+                    remaining -= quantity;
+                }
+            }
+            transferring = true;
+            try
+            {
+                Array.Copy(sorted, slots, Capacity);
+                // Controllers invalidate slot selection before rendering the new order.
+                unchecked { ReorderVersion++; }
+                NotifyChanged();
+                return true;
+            }
+            finally { transferring = false; }
+        }
+        public bool CanExpand(int capacity) => !transferring && capacity > Capacity;
+        internal bool TryExpand(int capacity, bool notify = true)
+        {
+            if (!CanExpand(capacity)) return false;
+            var expanded = new InventorySlot[capacity]; Array.Copy(slots, expanded, slots.Length);
+            transferring = true;
+            try { slots = expanded; Slots = Array.AsReadOnly(slots); if (notify) NotifyChanged(); return true; }
+            finally { transferring = false; }
+        }
         public InventoryState CreateEmpty(int capacity) => new InventoryState(capacity, definitions.Values);
         public ItemDefinition FindDefinition(string id) => id != null && definitions.TryGetValue(id, out var item) ? item : null;
 
@@ -101,6 +182,59 @@ namespace MagicIsland.Inventory
             && !target.transferring && index >= 0 && index < Capacity && quantity > 0 && quantity <= slots[index].Quantity
             && target.CanAdd(slots[index].ItemId, quantity);
 
+        private long FreeSpace(string id)
+        {
+            var item = FindDefinition(id); if (item == null) return 0;
+            long space = 0;
+            foreach (var slot in slots) if (slot.Empty) space += item.MaxStack; else if (slot.ItemId == id) space += item.MaxStack - slot.Quantity;
+            return space;
+        }
+        private bool CommitTransfer(InventoryState target, InventoryState sourceCopy, InventoryState targetCopy)
+        {
+            transferring = target.transferring = true;
+            try
+            {
+                Array.Copy(sourceCopy.slots, slots, Capacity); Array.Copy(targetCopy.slots, target.slots, target.Capacity);
+                unchecked { ReorderVersion++; target.ReorderVersion++; }
+                NotifyChanged(); target.NotifyChanged(); return true;
+            }
+            finally { transferring = target.transferring = false; }
+        }
+        public bool TryTransferAvailableSlotTo(int index, InventoryState target, out int moved, int targetIndex = -1)
+        {
+            moved = 0;
+            if (transferring || target == null || target == this || target.transferring || index < 0 || index >= Capacity || slots[index].Empty || targetIndex < -1 || targetIndex >= target.Capacity) return false;
+            var source = slots[index]; var item = target.FindDefinition(source.ItemId); if (item == null) return false;
+            long room = targetIndex < 0 ? target.FreeSpace(source.ItemId)
+                : target.slots[targetIndex].Empty ? item.MaxStack : target.slots[targetIndex].ItemId == source.ItemId ? item.MaxStack - target.slots[targetIndex].Quantity : 0;
+            int quantity = (int)Math.Min(room, source.Quantity); if (quantity < 1) return false;
+            var from = CreateEmpty(Capacity); from.Restore(Slots); var to = target.CreateEmpty(target.Capacity); to.Restore(target.Slots);
+            from.TryRemoveSlot(index, quantity, false);
+            if (targetIndex < 0) to.TryAdd(source.ItemId, quantity, false);
+            else to.slots[targetIndex] = new InventorySlot(source.ItemId, to.slots[targetIndex].Quantity + quantity);
+            moved = quantity; return CommitTransfer(target, from, to);
+        }
+        public bool CanTransferMatchingTo(InventoryState target)
+        {
+            if (transferring || target == null || target == this || target.transferring) return false;
+            var ids = new HashSet<string>(target.slots.Where(s => !s.Empty).Select(s => s.ItemId), StringComparer.Ordinal);
+            return slots.Any(slot => !slot.Empty && ids.Contains(slot.ItemId) && target.CanAdd(slot.ItemId, 1));
+        }
+        public bool TryTransferMatchingTo(InventoryState target, out long moved)
+        {
+            moved = 0;
+            if (transferring || target == null || target == this || target.transferring) return false;
+            var ids = new HashSet<string>(target.slots.Where(s => !s.Empty).Select(s => s.ItemId), StringComparer.Ordinal);
+            var from = CreateEmpty(Capacity); from.Restore(Slots); var to = target.CreateEmpty(target.Capacity); to.Restore(target.Slots);
+            for (int i = 0; i < Capacity; i++)
+            {
+                var slot = from.slots[i]; if (slot.Empty || !ids.Contains(slot.ItemId)) continue;
+                int quantity = (int)Math.Min(slot.Quantity, to.FreeSpace(slot.ItemId)); if (quantity < 1) continue;
+                to.TryAdd(slot.ItemId, quantity, false); from.TryRemoveSlot(i, quantity, false); moved += quantity;
+            }
+            return moved > 0 && CommitTransfer(target, from, to);
+        }
+
         public bool TryTransferSlotTo(int index, int quantity, InventoryState target)
         {
             if (!CanTransferSlotTo(index, quantity, target)) return false;
@@ -133,6 +267,23 @@ namespace MagicIsland.Inventory
         }
 
         public void NotifyChanged() => Changed?.Invoke();
+
+        private bool PrepareAdd(IEnumerable<IngredientCost> products, out InventoryState result)
+        {
+            result = null; var values = products?.ToArray();
+            if (transferring || values == null || values.Length == 0 || values.Any(v => v == null)) return false;
+            var copy = CreateEmpty(Capacity); copy.Restore(Slots);
+            foreach (var value in values) if (!copy.TryAdd(value.Id, value.Quantity, false)) return false;
+            result = copy; return true;
+        }
+        public bool CanAddAll(IEnumerable<IngredientCost> products) => PrepareAdd(products, out _);
+        public bool TryAddAll(IEnumerable<IngredientCost> products, bool notify = true)
+        {
+            if (!PrepareAdd(products, out var result)) return false;
+            transferring = true;
+            try { for (int i = 0; i < Capacity; i++) slots[i] = result.slots[i]; if (notify) NotifyChanged(); return true; }
+            finally { transferring = false; }
+        }
 
         public bool TryRemoveSlot(int index, int quantity, bool notify = true)
         {

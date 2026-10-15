@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
   m_Name: Crop Models
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   m_GroupName: Crop Models
   m_Data:
     m_SerializedData: []
@@ -59,6 +59,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7547942986d6abf4e921aa34e1182d89
     m_Address: CornMature
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 450e43ab593ccef48954927de1641f9d
+    m_Address: FarmPlot
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

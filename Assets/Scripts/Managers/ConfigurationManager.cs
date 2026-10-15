@@ -27,6 +27,16 @@ namespace MagicIsland.Managers
         public NPCScheduleCatalog NPCSchedules { get; private set; }
         public CraftingCatalog Crafting { get; private set; }
         public HousingConfig Housing { get; private set; }
+        public AnimalConfig Animals { get; private set; }
+        public InventoryUpgradeConfig InventoryUpgrades { get; private set; }
+        public ShippingConfig Shipping { get; private set; }
+        public FertilizerConfig Fertilizer { get; private set; }
+        public AudioCatalog Audio { get; private set; }
+        public OrchardCatalog Orchards { get; private set; }
+        private AsyncOperationHandle<OrchardCatalog> orchardHandle;
+        private AsyncOperationHandle<AudioCatalog> audioHandle;
+        private AsyncOperationHandle<FertilizerConfig> fertilizerHandle;
+        private AsyncOperationHandle<ShippingConfig> shippingHandle;
         public string LastError { get; private set; }
         private AsyncOperationHandle<GameConfig> handle;
         private AsyncOperationHandle<ItemCatalog> itemHandle;
@@ -47,11 +57,18 @@ namespace MagicIsland.Managers
         private AsyncOperationHandle<NPCScheduleCatalog> scheduleHandle;
         private AsyncOperationHandle<CraftingCatalog> craftingHandle;
         private AsyncOperationHandle<HousingConfig> housingHandle;
+        private AsyncOperationHandle<AnimalConfig> animalHandle;
+        private AsyncOperationHandle<InventoryUpgradeConfig> inventoryUpgradeHandle;
 
         public IEnumerator LoadConfiguration()
         {
             LastError = null;
-            if (Config != null && Items != null && Crops != null && Weather != null && Seasons != null && Tasks != null && Orders != null && Gathering != null && ToolUpgrades != null && Storage != null && Cooking != null && NPCs != null && Dialogues != null && Relationships != null && Stories != null && Fishing != null && NPCSchedules != null && Crafting != null && Housing != null) yield break;
+            if (Config != null && Items != null && Crops != null && Weather != null && Seasons != null && Tasks != null && Orders != null && Gathering != null && ToolUpgrades != null && Storage != null && Cooking != null && NPCs != null && Dialogues != null && Relationships != null && Stories != null && Fishing != null && NPCSchedules != null && Crafting != null && Housing != null && Animals != null && InventoryUpgrades != null && Shipping != null && Fertilizer != null && Audio != null && Orchards != null) yield break;
+            if (orchardHandle.IsValid()) Addressables.Release(orchardHandle); Orchards = null;
+            if (audioHandle.IsValid()) Addressables.Release(audioHandle); Audio = null;
+            if (fertilizerHandle.IsValid()) Addressables.Release(fertilizerHandle); Fertilizer = null;
+            if (shippingHandle.IsValid()) Addressables.Release(shippingHandle); Shipping = null;
+            if (inventoryUpgradeHandle.IsValid()) Addressables.Release(inventoryUpgradeHandle);
             if (housingHandle.IsValid()) Addressables.Release(housingHandle);
             if (craftingHandle.IsValid()) Addressables.Release(craftingHandle);
             if (scheduleHandle.IsValid()) Addressables.Release(scheduleHandle);
@@ -65,6 +82,9 @@ namespace MagicIsland.Managers
             if (upgradeHandle.IsValid()) Addressables.Release(upgradeHandle);
             if (gatheringHandle.IsValid()) Addressables.Release(gatheringHandle);
             if (orderHandle.IsValid()) Addressables.Release(orderHandle);
+            if (animalHandle.IsValid()) Addressables.Release(animalHandle);
+            if (inventoryUpgradeHandle.IsValid()) Addressables.Release(inventoryUpgradeHandle);
+            if (housingHandle.IsValid()) Addressables.Release(housingHandle);
             if (handle.IsValid()) Addressables.Release(handle);
             if (itemHandle.IsValid()) Addressables.Release(itemHandle);
             if (cropHandle.IsValid()) Addressables.Release(cropHandle);
@@ -77,7 +97,7 @@ namespace MagicIsland.Managers
             Weather = null;
             Seasons = null;
             Tasks = null;
-            Orders = null; Gathering = null; ToolUpgrades = null; Storage = null; Cooking = null; NPCs = null; Dialogues = null; Relationships = null; Stories = null; Fishing = null; NPCSchedules = null; Crafting = null; Housing = null;
+            Orders = null; Gathering = null; ToolUpgrades = null; Storage = null; Cooking = null; NPCs = null; Dialogues = null; Relationships = null; Stories = null; Fishing = null; NPCSchedules = null; Crafting = null; Housing = null; Animals = null; InventoryUpgrades = null;
             var initialize = Addressables.InitializeAsync(false);
             yield return initialize;
             bool ready = initialize.Status == AsyncOperationStatus.Succeeded;
@@ -243,9 +263,57 @@ namespace MagicIsland.Managers
             if (housingHandle.Status != AsyncOperationStatus.Succeeded || housingHandle.Result == null || !housingHandle.Result.Validate(itemHandle.Result))
             {
                 LastError = housingHandle.OperationException?.Message ?? "HousingConfig has invalid area or AA definitions";
-                if (housingHandle.IsValid()) Addressables.Release(housingHandle);
+                if (inventoryUpgradeHandle.IsValid()) Addressables.Release(inventoryUpgradeHandle);
+            if (housingHandle.IsValid()) Addressables.Release(housingHandle);
                 Addressables.Release(craftingHandle); Addressables.Release(scheduleHandle); Addressables.Release(fishingHandle); Addressables.Release(storyHandle); Addressables.Release(relationshipHandle); ReleaseNPCConfiguration(); yield break;
             }
+            animalHandle = Addressables.LoadAssetAsync<AnimalConfig>(AnimalConfig.Address);
+            yield return animalHandle;
+            if (animalHandle.Status != AsyncOperationStatus.Succeeded || animalHandle.Result == null || !animalHandle.Result.Validate(itemHandle.Result, handle.Result))
+            {
+                LastError = animalHandle.OperationException?.Message ?? "AnimalConfig has invalid items, prices or location";
+                if (animalHandle.IsValid()) Addressables.Release(animalHandle);
+                Addressables.Release(housingHandle); Addressables.Release(craftingHandle); Addressables.Release(scheduleHandle); Addressables.Release(fishingHandle); Addressables.Release(storyHandle); Addressables.Release(relationshipHandle); ReleaseNPCConfiguration(); yield break;
+            }
+            inventoryUpgradeHandle = Addressables.LoadAssetAsync<InventoryUpgradeConfig>(InventoryUpgradeConfig.Address);
+            yield return inventoryUpgradeHandle;
+            if (inventoryUpgradeHandle.Status != AsyncOperationStatus.Succeeded || inventoryUpgradeHandle.Result == null || !inventoryUpgradeHandle.Result.IsValid)
+            {
+                LastError = inventoryUpgradeHandle.OperationException?.Message ?? "InventoryUpgradeConfig has invalid prices";
+                if (inventoryUpgradeHandle.IsValid()) Addressables.Release(inventoryUpgradeHandle);
+                Addressables.Release(animalHandle); Addressables.Release(housingHandle); Addressables.Release(craftingHandle); Addressables.Release(scheduleHandle); Addressables.Release(fishingHandle); Addressables.Release(storyHandle); Addressables.Release(relationshipHandle); ReleaseNPCConfiguration(); yield break;
+            }
+            shippingHandle = Addressables.LoadAssetAsync<ShippingConfig>(ShippingConfig.Address); yield return shippingHandle;
+            if (shippingHandle.Status != AsyncOperationStatus.Succeeded || shippingHandle.Result == null || !shippingHandle.Result.IsValid)
+            {
+                LastError = shippingHandle.OperationException?.Message ?? "ShippingConfig has invalid values";
+                if (shippingHandle.IsValid()) Addressables.Release(shippingHandle);
+                Addressables.Release(inventoryUpgradeHandle); Addressables.Release(animalHandle); Addressables.Release(housingHandle); Addressables.Release(craftingHandle);
+                Addressables.Release(scheduleHandle); Addressables.Release(fishingHandle); Addressables.Release(storyHandle); Addressables.Release(relationshipHandle); ReleaseNPCConfiguration(); yield break;
+            }
+            fertilizerHandle = Addressables.LoadAssetAsync<FertilizerConfig>(FertilizerConfig.Address); yield return fertilizerHandle;
+            if (fertilizerHandle.Status != AsyncOperationStatus.Succeeded || fertilizerHandle.Result == null || !fertilizerHandle.Result.Validate(itemHandle.Result))
+            {
+                LastError = fertilizerHandle.OperationException?.Message ?? "FertilizerConfig has invalid rules";
+                if (fertilizerHandle.IsValid()) Addressables.Release(fertilizerHandle); Addressables.Release(shippingHandle);
+                Addressables.Release(inventoryUpgradeHandle); Addressables.Release(animalHandle); Addressables.Release(housingHandle); Addressables.Release(craftingHandle); Addressables.Release(scheduleHandle); Addressables.Release(fishingHandle); Addressables.Release(storyHandle); Addressables.Release(relationshipHandle); ReleaseNPCConfiguration(); yield break;
+            }
+            audioHandle = Addressables.LoadAssetAsync<AudioCatalog>(AudioCatalog.Address); yield return audioHandle;
+            if (audioHandle.Status != AsyncOperationStatus.Succeeded || audioHandle.Result == null || !audioHandle.Result.IsValid)
+            {
+                LastError = audioHandle.OperationException?.Message ?? "AudioCatalog has invalid cues or volumes";
+                if (audioHandle.IsValid()) Addressables.Release(audioHandle); Addressables.Release(fertilizerHandle); Addressables.Release(shippingHandle);
+                Addressables.Release(inventoryUpgradeHandle); Addressables.Release(animalHandle); Addressables.Release(housingHandle); Addressables.Release(craftingHandle); Addressables.Release(scheduleHandle); Addressables.Release(fishingHandle); Addressables.Release(storyHandle); Addressables.Release(relationshipHandle); ReleaseNPCConfiguration(); yield break;
+            }
+            orchardHandle = Addressables.LoadAssetAsync<OrchardCatalog>(OrchardCatalog.Address); yield return orchardHandle;
+            if (orchardHandle.Status != AsyncOperationStatus.Succeeded || orchardHandle.Result == null || !orchardHandle.Result.Validate(itemHandle.Result, craftingHandle.Result))
+            { LastError = "OrchardCatalog has invalid fruit trees"; ReleaseConfiguration(); yield break; }
+            Orchards = orchardHandle.Result;
+            Audio = audioHandle.Result;
+            Fertilizer = fertilizerHandle.Result;
+            Shipping = shippingHandle.Result;
+            InventoryUpgrades = inventoryUpgradeHandle.Result;
+            Animals = animalHandle.Result;
             Housing = housingHandle.Result;
             Crafting = craftingHandle.Result;
             NPCSchedules = scheduleHandle.Result;
@@ -268,14 +336,22 @@ namespace MagicIsland.Managers
 
         private void ReleaseNPCConfiguration()
         {
+            if (orchardHandle.IsValid()) { if (orchardHandle.IsDone) Addressables.Release(orchardHandle); else orchardHandle.Completed += value => { if (value.IsValid()) Addressables.Release(value); }; } orchardHandle = default; Orchards = null;
             if (dialogueHandle.IsValid()) Addressables.Release(dialogueHandle);
             if (npcHandle.IsValid()) Addressables.Release(npcHandle);
             Addressables.Release(cookingHandle); Addressables.Release(storageHandle); Addressables.Release(upgradeHandle);
             Addressables.Release(gatheringHandle); Addressables.Release(orderHandle); Addressables.Release(taskHandle);
             Addressables.Release(seasonHandle); Addressables.Release(weatherHandle); Addressables.Release(cropHandle); Addressables.Release(itemHandle); Addressables.Release(handle);
         }
-        private void OnDestroy()
+        private void OnDestroy() => ReleaseConfiguration();
+        private void ReleaseConfiguration()
         {
+            if (orchardHandle.IsValid()) { if (orchardHandle.IsDone) Addressables.Release(orchardHandle); else orchardHandle.Completed += h => { if (h.IsValid()) Addressables.Release(h); }; }
+            if (audioHandle.IsValid()) { if (audioHandle.IsDone) Addressables.Release(audioHandle); else audioHandle.Completed += h => { if (h.IsValid()) Addressables.Release(h); }; }
+            if (fertilizerHandle.IsValid()) { if (fertilizerHandle.IsDone) Addressables.Release(fertilizerHandle); else fertilizerHandle.Completed += h => { if (h.IsValid()) Addressables.Release(h); }; }
+            if (shippingHandle.IsValid()) { if (shippingHandle.IsDone) Addressables.Release(shippingHandle); else shippingHandle.Completed += h => { if (h.IsValid()) Addressables.Release(h); }; }
+            if (inventoryUpgradeHandle.IsValid()) { if (inventoryUpgradeHandle.IsDone) Addressables.Release(inventoryUpgradeHandle); else inventoryUpgradeHandle.Completed += value => { if (value.IsValid()) Addressables.Release(value); }; }
+            if (animalHandle.IsValid()) { if (animalHandle.IsDone) Addressables.Release(animalHandle); else animalHandle.Completed += h => { if (h.IsValid()) Addressables.Release(h); }; }
             if (housingHandle.IsValid())
             {
                 if (housingHandle.IsDone) Addressables.Release(housingHandle);

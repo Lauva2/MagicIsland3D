@@ -62,7 +62,7 @@ namespace MagicIsland.EditorTools
                 Require(g.State != GameFlowState.Failed, "Construction config failure");
                 if (phase == 0 && g.State == GameFlowState.MainMenu)
                 {
-                    Require(g.Configuration.Crafting.Validate(g.Configuration.Items) && g.Configuration.Crafting.Recipes.Count(r => !r.IsFurniture) == 3, "18th AA config has three recipes/placeables");
+                    Require(g.Configuration.Crafting.Validate(g.Configuration.Items) && g.Configuration.Crafting.Recipes.Count(r => r.IsPlaceable && !r.IsFurniture) == 3, "18th AA config has three outdoor placeables");
                     var r = g.Configuration.Crafting.Recipes[0]; string material = r.Ingredients[0].ItemId;
                     r.Ingredients[0].ItemId = "sardine"; Require(!g.Configuration.Crafting.Validate(g.Configuration.Items), "Fish cannot replace material recipe"); r.Ingredients[0].ItemId = material;
                     string dir = Path.GetFullPath("Logs/ConstructionSaves/" + Guid.NewGuid().ToString("N")); Directory.CreateDirectory(dir); SessionState.SetString(Key + ".Dir", dir); SaveDirectory(g, dir); g.EnterGame(); Phase(1);
@@ -195,7 +195,9 @@ namespace MagicIsland.EditorTools
                 { g.Inventory.TryAdd("wood_fence", 1); Begin(g, "wood_fence"); Phase(18); }
                 else if (phase == 18 && PlaceView != null && g.Placements.Ready)
                 {
-                    AtCell(g, -10, -3); g.Placements.SetCandidate(-10, -3); Require(g.Placements.CheckCandidate() == PlacementResult.Success, "Maximum farm has usable construction area: " + g.Placements.CheckCandidate()); g.ConfirmPlacement();
+                    AtCell(g, -10, -3); g.Placements.SetCandidate(-10, -3);
+                    Require(g.Animals.ReservesTile(-10, -3) && g.Placements.CheckCandidate() == PlacementResult.Blocked, "Coop reservation remains protected beside maximum farm");
+                    AtCell(g, -10, -5); g.Placements.SetCandidate(-10, -5); Require(g.Placements.CheckCandidate() == PlacementResult.Success, "Maximum farm has usable construction area: " + g.Placements.CheckCandidate()); g.ConfirmPlacement();
                     Require(g.Placements.State.Count == 1 && g.Farm.State.Size == 12 && g.NPCSchedules.Bound, "Construction coexists with maximum farm and NPC routes"); g.ReturnToMainMenu(); Phase(19);
                 }
                 else if (phase == 19 && g.State == GameFlowState.MainMenu)

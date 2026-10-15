@@ -129,7 +129,8 @@ namespace MagicIsland.EditorTools
                     Require(game.UI.IsInventoryVisible && !game.Players.Player.enabled && !game.Interactions.Controller.enabled,
                         "Inventory MVC open pauses world input");
                     InventoryView bag = UnityEngine.Object.FindObjectOfType<InventoryView>();
-                    Require(bag != null && bag.Slots.Count(slot => slot.gameObject.activeSelf) == game.Configuration.Config.InventorySlots,
+                    Require(bag != null && bag.Slots.Count(slot => slot.gameObject.activeSelf) == InventoryView.DisplaySlots
+                        && bag.Slots.Count(slot => slot.gameObject.activeSelf && slot.SelectButton.interactable) == game.Configuration.Config.InventorySlots,
                         "InventoryPanel uses configured capacity");
                     Require(bag.transform.parent == game.UI.GetLayerRoot(UILayer.PopUp)
                         && bag.GetComponent<Canvas>().sortingOrder > huds[0].GetComponent<Canvas>().sortingOrder,
@@ -156,7 +157,7 @@ namespace MagicIsland.EditorTools
                     int previousDay = game.Farm.State.Day;
                     huds[0].NextDayButton.onClick.Invoke();
                     Require(game.Farm.State.Day == previousDay, "HUD rest requires cottage/bed access");
-                    game.AdvanceDay();
+                    game.AdvanceDay(); game.StartNewDayFromReport();
                     Require(game.Farm.State.Day == previousDay + 1, "Day settlement fires exactly once through GameManager/FarmManager");
                     Require(game.Saves.HasSave && File.Exists(game.Saves.SavePath), "Next day automatically saves to disk");
                     if (phase == 3) { game.Farm.TryAct(1, FarmTool.WateringCan, out _); game.Economy.TrySpend(7); game.Time.Clock.Restore(900); }
@@ -293,7 +294,7 @@ namespace MagicIsland.EditorTools
                 else if (phase == 11 && game.State == GameFlowState.Playing)
                 {
                     SleepView view = UnityEngine.Object.FindObjectOfType<SleepView>(); if (view == null) return;
-                    view.ConfirmButton.onClick.Invoke(); game.ConfirmSleep();
+                    view.ConfirmButton.onClick.Invoke(); game.ConfirmSleep(); game.StartNewDayFromReport();
                     Require(game.Farm.State.Day == 3 && game.Time.Clock.Minute == 360, "Sleep advances exactly one day to morning");
                     Require(game.Stamina.State.Current == game.Configuration.Config.MaxStamina && game.Players.Player.enabled, "Sleep refills stamina and restores movement");
                     Require(game.Farm.State.Cells[1].Growth == 2 && !game.Farm.State.Cells[1].Watered, "Sleep grows watered crop and clears watering");
@@ -322,7 +323,7 @@ namespace MagicIsland.EditorTools
                     Require(!game.Tools.TryAct(3, out _) && game.Stamina.State.Current == staminaAfter
                         && !game.Farm.State.Cells[3].Tilled && !game.Tools.SelectTool(FarmTool.Seeds), "Busy rejects double action and tool switch without debit");
                     int dayBeforeAction = game.Farm.State.Day;
-                    game.AdvanceDay();
+                    game.AdvanceDay(); game.StartNewDayFromReport();
                     Require(game.Farm.State.Day == dayBeforeAction, "Busy action cannot cross day");
                     SessionState.SetInt(PhaseKey, 12);
                 }
@@ -489,7 +490,7 @@ namespace MagicIsland.EditorTools
             for (int i = 0; i < game.Configuration.Config.CropGrowthDays; i++)
             {
                 game.Farm.TryAct(0, FarmTool.WateringCan, out _);
-                game.AdvanceDay();
+                game.AdvanceDay(); game.StartNewDayFromReport();
             }
             Require(game.Farm.State.Cells[0].Mature, "Crop matured");
             int space = game.Configuration.Config.InventorySlots * game.Inventory.Catalog.Find(seed).MaxStack

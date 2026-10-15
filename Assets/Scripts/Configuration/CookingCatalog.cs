@@ -31,6 +31,6 @@ namespace MagicIsland.Configuration
                 && items.Find(r.FoodId)?.Type == ItemType.Food && r.OutputQuantity <= items.Find(r.FoodId).MaxStack) && new CookingState(Definitions()) != null; }
             catch (ArgumentException) { return false; }
         }
-        private static bool IsIngredient(ItemConfig item) => item != null && (item.Type == ItemType.Crop || item.Type == ItemType.Fish);
+        private static bool IsIngredient(ItemConfig item) => item != null && (item.Type == ItemType.Crop || item.Type == ItemType.Fish || item.Type == ItemType.AnimalProduct);
     }
 }

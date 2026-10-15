@@ -13,10 +13,12 @@ namespace MagicIsland.Farming
         private readonly Dictionary<string, CropDefinition> definitions = new Dictionary<string, CropDefinition>();
         public CropDefinition SelectedCrop { get; private set; }
         private string SeedId => SelectedCrop.SeedId;
-        private string HarvestId(FarmCell cell) => definitions[cell.CropId].HarvestId;
+        private string HarvestId(FarmCell cell) => cell.Quality == CropQuality.Quality ? definitions[cell.CropId].QualityHarvestId : definitions[cell.CropId].HarvestId;
         private readonly StaminaState stamina;
         private readonly int hoeCost, seedCost, waterCost, harvestCost;
         private bool acting;
+        private Action harvestRecorder;
+        internal void SetHarvestRecorder(Action recorder) => harvestRecorder = recorder;
         private readonly Func<CropDefinition, bool> canPlant;
         public FarmActions(FarmState farm, InventoryState inventory, string seedId, string cropId,
             StaminaState stamina = null, int hoeCost = 3, int seedCost = 1, int waterCost = 2, int harvestCost = 0,
@@ -54,6 +56,12 @@ namespace MagicIsland.Farming
             return tool == FarmTool.WateringCan && cell.Planted && !cell.Watered;
         }
 
+        public bool CanPerform(int index, FarmTool tool)
+        {
+            if (acting || index < 0 || index >= farm.Cells.Length || tool == FarmTool.Fertilizer || tool == FarmTool.FishingRod) return false;
+            var cell = farm.Cells[index];
+            return CanAct(cell, tool) && (stamina == null || stamina.CanSpend(Cost(cell, tool)));
+        }
         public string Describe(int index, FarmTool tool)
         {
             FarmCell cell = farm.Cells[index];
@@ -68,6 +76,7 @@ namespace MagicIsland.Farming
 
         public bool TryAct(int index, FarmTool tool, out string message)
         {
+            if (tool == FarmTool.Fertilizer) { message = "使用施肥系统操作农田"; return false; }
             message = Describe(index, tool);
             FarmCell cell = farm.Cells[index];
             int cost = Cost(cell, tool);
@@ -81,7 +90,7 @@ namespace MagicIsland.Farming
                 if (!farm.TryAct(index, tool, out message, SelectedCrop.Id)) return false;
                 // All preflight checks passed. Commit stamina before inventory observers run.
                 stamina?.TrySpend(cost, false);
-                if (harvest) inventory.TryAdd(harvestedId, 1);
+                if (harvest) { harvestRecorder?.Invoke(); inventory.TryAdd(harvestedId, 1); }
                 else if (tool == FarmTool.Seeds) inventory.TryRemove(usedSeed, 1);
                 if (cost > 0) stamina?.NotifyChanged();
                 return true;

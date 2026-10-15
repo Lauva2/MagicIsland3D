@@ -9,7 +9,7 @@ namespace MagicIsland.Saving
     {
         public string FilePath { get; }
         public string BackupPath => FilePath + ".bak";
-        public SaveFileStore(string directory) { FilePath = Path.Combine(directory, "save.json"); }
+        public SaveFileStore(string directory, string filename = "save.json") { FilePath = Path.Combine(directory, filename); }
         public void Write(string json)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(FilePath));

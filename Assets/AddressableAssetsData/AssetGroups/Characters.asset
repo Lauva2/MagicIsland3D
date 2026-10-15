@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
   m_Name: Characters
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   m_GroupName: Characters
   m_Data:
     m_SerializedData: []
@@ -19,6 +19,11 @@ MonoBehaviour:
   m_SerializeEntries:
   - m_GUID: 00a237697f93bb643bdc857918cb1737
     m_Address: IslandSteward
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e5f4b5aa5e70dc4d9bd25a4b99b2793
+    m_Address: PlayerCharacter
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

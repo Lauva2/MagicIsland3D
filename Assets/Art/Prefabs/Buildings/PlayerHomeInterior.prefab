@@ -387,6 +387,7 @@ GameObject:
   - component: {fileID: 6377687786460426362}
   - component: {fileID: 5014765048355959478}
   - component: {fileID: 3732776585335753573}
+  - component: {fileID: 6971454279524054125}
   m_Layer: 8
   m_Name: Window Cross
   m_TagString: Untagged
@@ -459,6 +460,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6971454279524054125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 811442498639507311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 240cbffd6adc4b9299c47b4239ee119b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  Renderers:
+  - {fileID: 3732776585335753573}
+  AllowFade: 1
 --- !u!1 &884735464427993643
 GameObject:
   m_ObjectHideFlags: 0
@@ -470,6 +486,7 @@ GameObject:
   - component: {fileID: 6188840651936923339}
   - component: {fileID: 4895703842264668163}
   - component: {fileID: 8643163945228780483}
+  - component: {fileID: 3747693134872798402}
   m_Layer: 8
   m_Name: Back Skirting
   m_TagString: Untagged
@@ -542,6 +559,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3747693134872798402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 884735464427993643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 240cbffd6adc4b9299c47b4239ee119b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  Renderers:
+  - {fileID: 8643163945228780483}
+  AllowFade: 1
 --- !u!1 &992372156626946625
 GameObject:
   m_ObjectHideFlags: 0
@@ -1168,6 +1200,7 @@ GameObject:
   - component: {fileID: 3251425671477771955}
   - component: {fileID: 4595573778123561371}
   - component: {fileID: 7997751711031321220}
+  - component: {fileID: 6556401067141056550}
   m_Layer: 8
   m_Name: Reading Shelf
   m_TagString: Untagged
@@ -1261,6 +1294,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6556401067141056550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3023184590954020214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 240cbffd6adc4b9299c47b4239ee119b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  Renderers:
+  - {fileID: 7997751711031321220}
+  AllowFade: 1
 --- !u!1 &3205319790845430474
 GameObject:
   m_ObjectHideFlags: 0
@@ -1337,8 +1385,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71b513780e59d7f4f9f1879c70637784, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   SpawnPoint: {fileID: 1118874733426532088}
   Bed: {fileID: 7299189532101428350}
   Exit: {fileID: 9212319081906074195}
@@ -1481,8 +1529,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 86b07e2c91246c84f9b0228f2c594da2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   IsExit: 1
   ArrivalPoint: {fileID: 0}
   ReachPoint: {fileID: 0}
@@ -1886,8 +1934,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 63f2f1a6bf3e447690f382f136ae3c80, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!1 &5850767669598096320
 GameObject:
   m_ObjectHideFlags: 0
@@ -1977,8 +2025,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -2320,6 +2368,7 @@ GameObject:
   - component: {fileID: 6761378841309990874}
   - component: {fileID: 6279955613243298308}
   - component: {fileID: 8702785491659251862}
+  - component: {fileID: 4395347719388881307}
   m_Layer: 8
   m_Name: Back Wall
   m_TagString: Untagged
@@ -2413,6 +2462,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &4395347719388881307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6345364747281674554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 240cbffd6adc4b9299c47b4239ee119b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  Renderers:
+  - {fileID: 8702785491659251862}
+  AllowFade: 1
 --- !u!1 &6381874554942654160
 GameObject:
   m_ObjectHideFlags: 0
@@ -2424,6 +2488,7 @@ GameObject:
   - component: {fileID: 7205962698446137005}
   - component: {fileID: 7394770673378740794}
   - component: {fileID: 8003191797801165384}
+  - component: {fileID: 8311404739458303310}
   m_Layer: 8
   m_Name: Window Light
   m_TagString: Untagged
@@ -2496,6 +2561,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8311404739458303310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6381874554942654160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 240cbffd6adc4b9299c47b4239ee119b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  Renderers:
+  - {fileID: 8003191797801165384}
+  AllowFade: 1
 --- !u!1 &6461624801025750515
 GameObject:
   m_ObjectHideFlags: 0
@@ -2507,6 +2587,7 @@ GameObject:
   - component: {fileID: 1914268519715134681}
   - component: {fileID: 3003596881234510424}
   - component: {fileID: 4481186375009009615}
+  - component: {fileID: 7509159245068484864}
   m_Layer: 8
   m_Name: Window Frame
   m_TagString: Untagged
@@ -2579,6 +2660,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7509159245068484864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6461624801025750515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 240cbffd6adc4b9299c47b4239ee119b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  Renderers:
+  - {fileID: 4481186375009009615}
+  AllowFade: 1
 --- !u!1 &7025244353837987998
 GameObject:
   m_ObjectHideFlags: 0
@@ -3313,6 +3409,7 @@ GameObject:
   - component: {fileID: 7208476300790360593}
   - component: {fileID: 7635003372783393566}
   - component: {fileID: 4373381219088110697}
+  - component: {fileID: 3644177834832585758}
   m_Layer: 8
   m_Name: Right Wall
   m_TagString: Untagged
@@ -3406,6 +3503,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3644177834832585758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8574235336311747250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 240cbffd6adc4b9299c47b4239ee119b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  Renderers:
+  - {fileID: 4373381219088110697}
+  AllowFade: 1
 --- !u!1 &8796090476435965595
 GameObject:
   m_ObjectHideFlags: 0
@@ -3418,6 +3530,7 @@ GameObject:
   - component: {fileID: 5211902607437676289}
   - component: {fileID: 319801198194642396}
   - component: {fileID: 4193898140409209171}
+  - component: {fileID: 319176141483137917}
   m_Layer: 8
   m_Name: Left Wall
   m_TagString: Untagged
@@ -3511,6 +3624,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &319176141483137917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8796090476435965595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 240cbffd6adc4b9299c47b4239ee119b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  Renderers:
+  - {fileID: 4193898140409209171}
+  AllowFade: 1
 --- !u!1 &8974504445747145930
 GameObject:
   m_ObjectHideFlags: 0
@@ -3605,6 +3733,7 @@ GameObject:
   - component: {fileID: 3873727193898862053}
   - component: {fileID: 5966650314340186841}
   - component: {fileID: 120727216439699198}
+  - component: {fileID: 3015134873392994864}
   m_Layer: 8
   m_Name: Window Bar
   m_TagString: Untagged
@@ -3677,3 +3806,18 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3015134873392994864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9221423620338959911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 240cbffd6adc4b9299c47b4239ee119b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  Renderers:
+  - {fileID: 120727216439699198}
+  AllowFade: 1

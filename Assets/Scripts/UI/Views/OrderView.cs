@@ -6,7 +6,7 @@ namespace MagicIsland.UI.Views
     public sealed class OrderView : UIView
     {
         public TMP_Text DateText, RequestText, StockText, RewardText, StatusText, FeedbackText;
-        public Button DeliverButton, CloseButton, HouseUpgradeButton;
+        public Button DeliverButton, CloseButton, HouseUpgradeButton, CoopButton;
         public Image CropIcon;
         public void Render(OrderModel model)
         {

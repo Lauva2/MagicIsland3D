@@ -82,7 +82,7 @@ namespace MagicIsland.EditorTools
                     Require(world.Sun.intensity > 0 && world.Sun.intensity < SessionState.GetFloat(Running + ".DayIntensity", 0), "Night darkens sun while retaining visibility");
                     Require(RenderSettings.ambientLight.b > RenderSettings.ambientLight.r, "Night uses blue ambient"); Capture(game, "Night");
                     Require(game.Farm.TryAct(0, FarmTool.Hoe, out _) && game.Farm.TryAct(0, FarmTool.Seeds, out _), "Plant unwatered sunny crop");
-                    game.Farm.TryAct(1, FarmTool.Hoe, out _); game.AdvanceDay();
+                    game.Farm.TryAct(1, FarmTool.Hoe, out _); game.AdvanceDay(); game.StartNewDayFromReport();
                     Require(game.Farm.State.Day == 2 && game.Weather.State.Day == 2 && game.Weather.State.Kind == WeatherKind.Rainy, "Morning advances farm/weather together");
                     Require(game.Farm.State.Cells[0].Growth == 0 && game.Farm.State.Cells[0].Watered && !game.Farm.State.Cells[1].Watered,
                         "Previous dry crop did not grow; new rainy morning waters only crops");
@@ -105,7 +105,7 @@ namespace MagicIsland.EditorTools
                     Require(game.Farm.State.Cells[2].Watered && game.Farm.State.Cells[2].Growth == 0
                         && game.Stamina.State.Current == stamina - game.Configuration.Config.HoeStaminaCost - game.Configuration.Config.SeedStaminaCost,
                         "Rain waters new plant without stamina cost or immediate growth");
-                    game.AdvanceDay(); Require(game.Farm.State.Cells[0].Growth == 1 && game.Farm.State.Cells[2].Growth == 1 && game.Farm.State.Cells[2].Watered,
+                    game.AdvanceDay(); game.StartNewDayFromReport(); Require(game.Farm.State.Cells[0].Growth == 1 && game.Farm.State.Cells[2].Growth == 1 && game.Farm.State.Cells[2].Watered,
                         "Rainy sleep grows once and next rain waters again");
                     game.Time.Clock.Restore(900.5); game.ReturnToMainMenu(); Phase(6);
                 }
@@ -132,7 +132,7 @@ namespace MagicIsland.EditorTools
                         Require(label.text.Where(c => !char.IsControl(c)).All(c => label.font.HasCharacter(c)), "All UI glyphs supported");
                     var world = UnityEngine.Object.FindObjectOfType<FarmPrototype>(); game.Configuration.Seasons.SpringRainChance = 0;
                     game.Weather.Initialize(game.Configuration.Weather, game.Farm, world.Sun, world.Player.ViewCamera, world.transform, game.Weather.State.Seed, WeatherKind.Rainy, game.Calendar);
-                    game.AdvanceDay(); Phase(8);
+                    game.AdvanceDay(); game.StartNewDayFromReport(); Phase(8);
                 }
                 else if (phase == 8 && game.State == GameFlowState.Playing)
                 {

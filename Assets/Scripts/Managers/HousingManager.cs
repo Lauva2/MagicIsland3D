@@ -118,7 +118,7 @@ namespace MagicIsland.Managers
             }
             else if (area == HousingState.Island)
             {
-                if (savedPosition.HasValue && Free(savedPosition.Value, true)) point = savedPosition.Value;
+                if (savedPosition.HasValue && GameManager.Instance.Terrain.TryResolve(savedPosition.Value,out var safe) && Free(safe, true)) point = safe;
                 else if (!FindOutsidePoint(out point)) { LastError = "小屋门口没有安全落脚位置"; return false; }
             }
             else { LastError = "未知的玩家区域"; return false; }

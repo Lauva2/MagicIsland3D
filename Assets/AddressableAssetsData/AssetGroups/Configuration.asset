@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
   m_Name: Configuration
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   m_GroupName: Configuration
   m_Data:
     m_SerializedData: []
@@ -109,6 +109,36 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 59cba515080648946b0395535e12d26d
     m_Address: HousingConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d56dc83f1c3f5534f83f9ab4d845664f
+    m_Address: AnimalConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7bd6d06da1bc67d44b96ed3e4aa5966f
+    m_Address: InventoryUpgradeConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b259f1121b6929149a2cd0fe7f45c961
+    m_Address: ShippingConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e7d017a22ec5c084ba0065106d2dcb4c
+    m_Address: FertilizerConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 15d286453813cd348a539c4ce840b973
+    m_Address: AudioCatalog
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fab83217d1947064396b7f1c7d3d893d
+    m_Address: OrchardCatalog
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

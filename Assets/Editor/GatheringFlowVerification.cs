@@ -160,10 +160,10 @@ namespace MagicIsland.EditorTools
                 {
                     Require(game.Gathering.Nodes[0].DepletedVisual.activeSelf && game.Gathering.Nodes[3].DepletedVisual.activeSelf
                         && game.Inventory.GetCount("wood") == 3 && game.Inventory.GetCount("stone") == 2 && game.Stamina.State.Current == 78, "Depleted resources and materials resume unchanged");
-                    var tree = game.Gathering.Nodes[0]; var rock = game.Gathering.Nodes[3]; game.AdvanceDay();
+                    var tree = game.Gathering.Nodes[0]; var rock = game.Gathering.Nodes[3]; game.AdvanceDay(); game.StartNewDayFromReport();
                     Require(game.Gathering.State.IsDepleted(0) && game.Gathering.State.IsDepleted(3) && game.Stamina.State.Current == 100, "Day 2 waiting with stamina refill");
-                    game.AdvanceDay(); Require(game.Gathering.State.IsDepleted(0) && !game.Gathering.State.IsDepleted(3) && rock.WholeVisual.activeSelf, "Day 3 rock respawn");
-                    game.AdvanceDay(); Require(!game.Gathering.State.IsDepleted(0) && tree.WholeVisual.activeSelf && game.Gathering.Nodes[0] == tree && game.Gathering.Nodes[3] == rock
+                    game.AdvanceDay(); game.StartNewDayFromReport(); Require(game.Gathering.State.IsDepleted(0) && !game.Gathering.State.IsDepleted(3) && rock.WholeVisual.activeSelf, "Day 3 rock respawn");
+                    game.AdvanceDay(); game.StartNewDayFromReport(); Require(!game.Gathering.State.IsDepleted(0) && tree.WholeVisual.activeSelf && game.Gathering.Nodes[0] == tree && game.Gathering.Nodes[3] == rock
                         && UnityEngine.Object.FindObjectsOfType<GatheringNode>().Length == 5 && game.Inventory.GetCount("wood") == 3, "Day 4 tree respawn reuses instances and no free material");
                     game.Tasks.State.Record(TaskAction.Hoe); game.ClaimTaskReward(); Require(game.Economy.Gold == 105, "Tutorial still functional");
                     game.ReturnToMainMenu(); Phase(13);

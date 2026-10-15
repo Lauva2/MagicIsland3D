@@ -65,7 +65,7 @@ namespace MagicIsland.EditorTools
                 }
                 else if (phase == 3 && g.UI.HasStorage && View != null)
                 {
-                    Require(View.transform.parent == g.UI.GetLayerRoot(UILayer.PopUp) && View.BagSlots.Count(s => s.gameObject.activeSelf) == 12 && View.ChestSlots.Count(s => s.gameObject.activeSelf) == 18,
+                    Require(View.transform.parent == g.UI.GetLayerRoot(UILayer.PopUp) && View.BagSlots.Count(s => s.gameObject.activeSelf) == 30 && View.BagSlots.Count(s => s.SelectButton.interactable) == g.Inventory.State.Capacity && View.ChestSlots.Count(s => s.gameObject.activeSelf) == 18,
                         "PopUp MVC grid sizes"); View.BagSlots[0].SelectButton.onClick.Invoke(); View.MoveOneButton.onClick.Invoke();
                     Require(g.Inventory.GetCount("turnip_seed") == 49 && g.Storage.State.Contents.GetCount("turnip_seed") == 1 && g.Saves.TryLoad(out var data)
                         && data.Storage[0].Quantity == 1 && data.Slots[0].Quantity == 49, "Single deposit button autosaves both sides");
@@ -79,13 +79,13 @@ namespace MagicIsland.EditorTools
                 }
                 else if (phase == 4 && EditorApplication.timeSinceStartup - SessionState.GetFloat(Key + ".Pause", 0) > .2)
                 {
-                    int day = g.Farm.State.Day; g.AdvanceDay(); g.OpenShop(); g.OpenOrder(); g.OpenSleep(); g.OpenToolUpgrade(); g.ToggleInventory();
+                    int day = g.Farm.State.Day; g.AdvanceDay(); g.StartNewDayFromReport(); g.OpenShop(); g.OpenOrder(); g.OpenSleep(); g.OpenToolUpgrade(); g.ToggleInventory();
                     Require(Math.Abs(g.Time.Clock.Minute - SessionState.GetFloat(Key + ".Minute", 0)) < .001 && g.Farm.State.Day == day && !g.UI.HasShop && !g.UI.HasOrder
                         && !g.UI.HasSleep && !g.UI.HasToolUpgrade && !g.UI.IsInventoryVisible && !g.TryGather(0, out _), "Storage modal pauses time and blocks all other actions");
                     var bag = g.Inventory.State.Slots.ToArray(); var box = g.Storage.State.Capture();
                     g.Storage.State.Restore(Enumerable.Repeat(new InventorySlot("stone", 99), 18).ToArray()); g.TransferStorage(true, 0, 1);
                     Require(g.Inventory.GetCount("wood") == 1 && g.Storage.State.Contents.GetCount("wood") == 0 && g.Storage.Feedback.Contains("空间不足"), "Full chest no partial move"); g.Storage.State.Restore(box);
-                    g.Inventory.State.Restore(Enumerable.Repeat(new InventorySlot("stone", 99), 12).ToArray()); g.TransferStorage(false, 0, 1);
+                    g.Inventory.State.Restore(Enumerable.Repeat(new InventorySlot("stone", 99), g.Inventory.State.Capacity).ToArray()); g.TransferStorage(false, 0, 1);
                     Require(g.Storage.State.Contents.GetCount("turnip_seed") == 50 && g.Inventory.GetCount("turnip_seed") == 0, "Full bag withdrawal free"); g.Inventory.State.Restore(bag);
                     string directory = SessionState.GetString(Key + ".Directory", ""); string blocked = Path.Combine(directory, "blocked"); File.WriteAllText(blocked, "file"); SaveDirectory(g, blocked);
                     View.ChestSlots[0].SelectButton.onClick.Invoke(); View.MoveOneButton.onClick.Invoke();

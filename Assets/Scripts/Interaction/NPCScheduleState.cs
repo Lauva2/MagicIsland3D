@@ -30,7 +30,7 @@ namespace MagicIsland.Interaction
             var list = new List<SchedulePoint>();
             foreach (var point in route)
             {
-                if (!Finite(point.X) || !Finite(point.Z) || Math.Abs(point.X) > 11.5 || Math.Abs(point.Z) > 11.5)
+                if (!Finite(point.X) || !Finite(point.Z) || !IslandLayout.ContainsLand(point.X,point.Z,.4))
                     throw new ArgumentException("Schedule point outside island");
                 if (list.Count == 0 || SchedulePoint.Distance(list[list.Count - 1], point) > .00001) list.Add(point);
             }

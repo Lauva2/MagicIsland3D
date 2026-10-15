@@ -67,3 +67,23 @@ MonoBehaviour:
       Quantity: 1
     - ItemId: tomato
       Quantity: 1
+  - Id: fried_egg
+    DisplayName: "\u714E\u86CB"
+    IngredientId: egg
+    FoodId: fried_egg
+    IngredientQuantity: 1
+    OutputQuantity: 1
+    StaminaRecovery: 25
+    RequiredEventId:
+    AdditionalIngredients: []
+  - Id: egg_vegetable_soup
+    DisplayName: "\u852C\u83DC\u86CB\u6C64"
+    IngredientId: egg
+    FoodId: egg_vegetable_soup
+    IngredientQuantity: 1
+    OutputQuantity: 1
+    StaminaRecovery: 45
+    RequiredEventId:
+    AdditionalIngredients:
+    - ItemId: turnip
+      Quantity: 1

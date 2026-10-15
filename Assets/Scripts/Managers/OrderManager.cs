@@ -22,12 +22,12 @@ namespace MagicIsland.Managers
         private OrderCatalog catalog;
         private AsyncOperationHandle<GameObject> hallHandle;
         private int loadGeneration;
-        public void Initialize(OrderCatalog catalog, FarmManager farm, InventoryManager inventory, EconomyManager economy, CalendarManager calendar, SavedOrder saved = null)
+        public void Initialize(OrderCatalog catalog, FarmManager farm, InventoryManager inventory, EconomyManager economy, CalendarManager calendar, SavedOrder saved = null, AnimalConfig animals = null)
         {
             Clear();
             this.catalog = catalog; this.farm = farm; Inventory = inventory; Economy = economy; Calendar = calendar;
             State = new OrderState(catalog.Definitions(farm.Crops), calendar.Config.DaysPerSeason,
-                saved?.Seed ?? Random.Range(1, int.MaxValue), farm.State.Day);
+                saved?.Seed ?? Random.Range(1, int.MaxValue), farm.State.Day, ingredients: farm.Crops.Ingredients(animals));
             if (saved != null) State.Restore(saved, farm.State.Day);
         }
         public IEnumerator LoadHall(Transform world, int farmSize)
@@ -46,7 +46,7 @@ namespace MagicIsland.Managers
         }
         public bool InRange(Vector3 position, float reach) => Board != null
             && Vector3.ProjectOnPlane(Board.transform.position - position, Vector3.up).sqrMagnitude <= reach * reach;
-        public void NextDay() { State.NextDay(farm.State.Day); Feedback = null; }
+        public void NextDay(bool coopBuilt = false) { State.NextDay(farm.State.Day, coopBuilt); Feedback = null; }
         public DeliveryResult Check() => State.Check(Inventory.State, Economy.State);
         public bool Deliver()
         {
@@ -55,7 +55,7 @@ namespace MagicIsland.Managers
             return result == DeliveryResult.Success;
         }
         public static string Explain(DeliveryResult result) => result == DeliveryResult.Success ? "交付成功，奖励已到账"
-            : result == DeliveryResult.InsufficientItems ? "作物数量不足，请先准备好全部作物"
+            : result == DeliveryResult.InsufficientItems ? "物品数量不足，请先准备好全部物品"
             : result == DeliveryResult.AlreadyFulfilled ? "今日订单已交付，明天再来看看"
             : result == DeliveryResult.GoldLimit ? "金币已达上限，暂时无法交付" : "正在交付，请稍候";
         public void SetSaveFailed() => Feedback = "订单已交付，保存失败，请重试保存";

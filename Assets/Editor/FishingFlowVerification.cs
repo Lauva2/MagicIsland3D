@@ -57,7 +57,7 @@ namespace MagicIsland.EditorTools
                     Require(g.Interactions.Controller.RefreshFishingHover(ray, false) && g.Interactions.Controller.HoverIndex == -1 && !g.Interactions.Controller.RefreshFishingHover(ray, true), "Water ray owns click and UI blocks hover");
                     g.OpenFishing(); Require(!g.UI.HasFishing, "Far cast blocked"); Place(g); g.OpenFishing(); Require(!g.UI.HasFishing, "Wrong tool blocked");
                     g.Tools.SelectTool(FarmTool.FishingRod); g.Stamina.Restore(4); g.OpenFishing(); Require(!g.UI.HasFishing, "Low stamina cast blocked"); g.Stamina.Refill();
-                    var bag = g.Inventory.State.Slots.ToArray(); g.Inventory.State.Restore(Enumerable.Repeat(new InventorySlot("turnip_seed", 99), 12).ToArray()); g.OpenFishing(); Require(!g.UI.HasFishing && g.Stamina.State.Current == 100, "Full bag cast blocked free"); g.Inventory.State.Restore(bag);
+                    var bag = g.Inventory.State.Slots.ToArray(); g.Inventory.State.Restore(Enumerable.Repeat(new InventorySlot("turnip_seed", 99), g.Inventory.State.Capacity).ToArray()); g.OpenFishing(); Require(!g.UI.HasFishing && g.Stamina.State.Current == 100, "Full bag cast blocked free"); g.Inventory.State.Restore(bag);
                     g.Tools.SelectTool(FarmTool.Axe); var node = g.Gathering.Nodes[0]; g.Players.RestorePosition(node.transform.position + new Vector3(1.5f, .1f, 0)); Require(g.TryGather(0, out _), "Start tool swing"); Place(g); g.OpenFishing(); Require(!g.UI.HasFishing && !g.Tools.SelectTool(FarmTool.FishingRod), "Busy swing prevents rod and casting"); Phase(2);
                 }
                 else if (phase == 2 && !g.Tools.Busy)
@@ -74,7 +74,7 @@ namespace MagicIsland.EditorTools
                 }
                 else if (phase == 4 && EditorApplication.timeSinceStartup - SessionState.GetFloat(Key + ".Pause", 0) > .2)
                 {
-                    int day = g.Farm.State.Day; g.AdvanceDay(); g.ToggleInventory(); g.OpenShop(); g.OpenStorage(); g.OpenCooking(); g.OpenSleep(); g.OpenDialogue("island_steward");
+                    int day = g.Farm.State.Day; g.AdvanceDay(); g.StartNewDayFromReport(); g.ToggleInventory(); g.OpenShop(); g.OpenStorage(); g.OpenCooking(); g.OpenSleep(); g.OpenDialogue("island_steward");
                     Require(day == g.Farm.State.Day && Math.Abs(g.Time.Clock.Minute - SessionState.GetFloat(Key + ".Minute", 0)) < .001 && !g.UI.IsInventoryVisible && !g.UI.HasShop && !g.UI.HasStorage && !g.UI.HasCooking && !g.UI.HasSleep && !g.UI.HasDialogue, "Fishing modal excludes systems and pauses world time");
                     View.ReelButton.onClick.Invoke(); Require(g.Fishing.State.Phase == FishingPhase.Missed && g.Stamina.State.Current == 100 && FishCount(g) == 0, "Early reel free");
                     View.CastButton.onClick.Invoke(); g.Fishing.Tick(8); g.UI.RefreshViews(); Require(g.Fishing.State.Phase == FishingPhase.Missed && g.Stamina.State.Current == 100 && FishCount(g) == 0, "Missed bite free");
@@ -126,7 +126,7 @@ namespace MagicIsland.EditorTools
                 }
                 else if (phase == 12 && View != null)
                 {
-                    var bag = g.Inventory.State.Slots.ToArray(); g.Inventory.State.Restore(Enumerable.Repeat(new InventorySlot("turnip_seed", 99), 12).ToArray()); g.Fishing.Tick((float)g.Fishing.State.Remaining + .001f); g.ReelFishing();
+                    var bag = g.Inventory.State.Slots.ToArray(); g.Inventory.State.Restore(Enumerable.Repeat(new InventorySlot("turnip_seed", 99), g.Inventory.State.Capacity).ToArray()); g.Fishing.Tick((float)g.Fishing.State.Remaining + .001f); g.ReelFishing();
                     Require(g.Stamina.State.Current == 90 && g.Inventory.GetCount("turnip_seed") == 1188 && g.Fishing.State.Phase == FishingPhase.Missed, "Capacity rechecked at catch, no cost"); g.Inventory.State.Restore(bag); g.CloseFishing();
                     Require(g.Saves.TryLoad(out var saved) && saved.Version == SaveData.CurrentVersion, "Existing save schema remains valid");
                     var stored = g.Inventory.State.CreateEmpty(18); int fishSlot = Enumerable.Range(0, g.Inventory.State.Capacity).First(i => g.Inventory.State.FindDefinition(g.Inventory.State.Slots[i].ItemId)?.Type == ItemType.Fish);

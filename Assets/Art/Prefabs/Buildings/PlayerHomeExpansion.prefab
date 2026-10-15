@@ -584,6 +584,7 @@ GameObject:
   - component: {fileID: 3539637771380804368}
   - component: {fileID: 3533433208288723582}
   - component: {fileID: 8810418216894450979}
+  - component: {fileID: 6915785271003158868}
   m_Layer: 8
   m_Name: Expanded Left Wall
   m_TagString: Untagged
@@ -677,6 +678,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6915785271003158868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3655795141234142068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 240cbffd6adc4b9299c47b4239ee119b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  Renderers:
+  - {fileID: 8810418216894450979}
+  AllowFade: 1
 --- !u!1 &3989060614522000473
 GameObject:
   m_ObjectHideFlags: 0
@@ -689,6 +705,7 @@ GameObject:
   - component: {fileID: 8337666776583693041}
   - component: {fileID: 5651614435613680234}
   - component: {fileID: 7163953394947375198}
+  - component: {fileID: 1757381036775640362}
   m_Layer: 8
   m_Name: Expanded Right Wall
   m_TagString: Untagged
@@ -782,6 +799,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1757381036775640362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3989060614522000473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 240cbffd6adc4b9299c47b4239ee119b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  Renderers:
+  - {fileID: 7163953394947375198}
+  AllowFade: 1
 --- !u!1 &4005288950088137726
 GameObject:
   m_ObjectHideFlags: 0
@@ -982,6 +1014,7 @@ GameObject:
   - component: {fileID: 3122292886866300313}
   - component: {fileID: 9086605579652725286}
   - component: {fileID: 3636079960639289703}
+  - component: {fileID: 8461422382434607203}
   m_Layer: 8
   m_Name: Expanded Back Wall
   m_TagString: Untagged
@@ -1075,6 +1108,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8461422382434607203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4469522353006403629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 240cbffd6adc4b9299c47b4239ee119b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  Renderers:
+  - {fileID: 3636079960639289703}
+  AllowFade: 1
 --- !u!1 &4788514485623029738
 GameObject:
   m_ObjectHideFlags: 0

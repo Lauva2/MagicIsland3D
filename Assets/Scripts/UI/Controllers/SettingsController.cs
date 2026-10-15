@@ -30,6 +30,7 @@ namespace MagicIsland.UI.Controllers
         {
             model.Volume = settings.Volume;
             model.Fullscreen = settings.Fullscreen;
+            model.Feedback = settings.Feedback;
             view.Render(model);
         }
         public void Dispose()

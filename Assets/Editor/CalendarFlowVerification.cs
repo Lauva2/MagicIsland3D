@@ -40,6 +40,7 @@ namespace MagicIsland.EditorTools
         private static void SetDay(GameManager game, int day)
         {
             game.Farm.State.Restore(day, game.Farm.State.Cells);
+            game.DailyReports.Initialize(game.Farm, game.Economy);
             while (game.Orders.State.Day < day) game.Orders.State.NextDay(game.Orders.State.Day + 1);
             while (game.Relationships.State.Day < day) game.Relationships.State.NextDay(game.Relationships.State.Day + 1);
             while (game.Gathering.State.Day < day) game.Gathering.NextDay(game.Gathering.State.Day + 1);
@@ -117,7 +118,7 @@ namespace MagicIsland.EditorTools
                     CheckText(shop.StockText); shop.BuyButton.onClick.Invoke(); Require(game.Inventory.GetCount("tomato_seed") == 3, "Out-of-season purchase works");
                     Capture(game, "SeasonShopPreview"); game.CloseShop(); SetDay(game, 28); game.Farm.SelectSeed("turnip_seed");
                     Require(game.Farm.TryAct(0, FarmTool.Seeds, out _) && game.Farm.TryAct(0, FarmTool.WateringCan, out _), "Plant turnip on last spring day");
-                    game.AdvanceDay(); game.Farm.TryAct(1, FarmTool.Hoe, out _); int stamina = game.Stamina.State.Current;
+                    game.AdvanceDay(); game.StartNewDayFromReport(); game.Farm.TryAct(1, FarmTool.Hoe, out _); int stamina = game.Stamina.State.Current;
                     Require(!game.Farm.TryAct(1, FarmTool.Seeds, out _) && game.Stamina.State.Current == stamina, "Summer blocks new turnip planting");
                     game.Farm.SelectSeed("tomato_seed"); Require(game.Farm.TryAct(1, FarmTool.Seeds, out _), "Summer allows tomato");
                     game.Weather.ApplyRain(); game.Players.RestorePosition(new Vector3(0, 0.1f, -4.6f)); Phase(4);
@@ -141,18 +142,18 @@ namespace MagicIsland.EditorTools
                 {
                     Require(game.Calendar.Date.DisplayName == "第 1 年 夏季 1 日" && game.Weather.State.Kind == WeatherKind.Rainy
                         && game.Weather.State.Seed == SessionState.GetInt(Running + ".Seed", 0) && game.Farm.State.Cells[0].Growth == 1, "Load restores season and weather without duplicate growth");
-                    game.AdvanceDay(); game.AdvanceDay(); game.Farm.SelectSeed("turnip_seed");
+                    game.AdvanceDay(); game.StartNewDayFromReport(); game.AdvanceDay(); game.StartNewDayFromReport(); game.Farm.SelectSeed("turnip_seed");
                     Require(game.Farm.State.Cells[0].Mature && game.Farm.TryAct(0, FarmTool.Seeds, out _) && game.Inventory.GetCount("turnip") == 1, "Cross-season crop matures and harvests despite unsuitable selected seed");
                     SetDay(game, 56); game.Farm.SelectSeed("corn_seed"); game.Farm.TryAct(2, FarmTool.Hoe, out _);
                     Require(game.Farm.TryAct(2, FarmTool.Seeds, out _) && game.Farm.TryAct(2, FarmTool.WateringCan, out _), "Plant corn at summer end");
-                    game.AdvanceDay(); Require(game.Calendar.Date.Season == Season.Autumn && game.Calendar.Date.Day == 1
+                    game.AdvanceDay(); game.StartNewDayFromReport(); Require(game.Calendar.Date.Season == Season.Autumn && game.Calendar.Date.Day == 1
                         && game.Weather.State.Kind == WeatherKind.Sunny && game.Farm.State.Cells[2].Growth == 1, "Autumn uses autumn rain probability and preserves crops");
                     game.Farm.TryAct(3, FarmTool.Hoe, out _); Require(game.Farm.TryAct(3, FarmTool.Seeds, out _), "Autumn still allows corn");
-                    SetDay(game, 84); game.AdvanceDay(); game.Farm.TryAct(4, FarmTool.Hoe, out _);
+                    SetDay(game, 84); game.AdvanceDay(); game.StartNewDayFromReport(); game.Farm.TryAct(4, FarmTool.Hoe, out _);
                     foreach (var crop in game.Farm.Crops.Crops)
                     { game.Farm.SelectSeed(crop.SeedItemId, false); Require(!game.Farm.TryAct(4, FarmTool.Seeds, out _), "Default winter disallows new crop: " + crop.Id); }
                     Require(game.Calendar.Date.Season == Season.Winter && game.Weather.State.Kind == WeatherKind.Sunny && game.Farm.State.Cells[2].Planted, "Winter leaves existing crop intact");
-                    SetDay(game, 112); game.AdvanceDay(); Require(game.Calendar.Date.DisplayName == "第 2 年 春季 1 日", "Winter-to-spring increments year");
+                    SetDay(game, 112); game.AdvanceDay(); game.StartNewDayFromReport(); Require(game.Calendar.Date.DisplayName == "第 2 年 春季 1 日", "Winter-to-spring increments year");
                     game.Farm.SelectSeed("turnip_seed"); Require(game.Farm.TryAct(4, FarmTool.Seeds, out _), "New spring permits turnip again");
                     game.UI.RefreshViews(); CheckText(Hud.DayText); game.ReturnToMainMenu(); Phase(7);
                 }

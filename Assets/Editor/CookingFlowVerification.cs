@@ -72,13 +72,13 @@ namespace MagicIsland.EditorTools
                     Require(g.Inventory.GetCount("turnip") == 4 && g.Inventory.GetCount("corn") == 1 && g.Inventory.GetCount("turnip_soup") == 1 && g.Inventory.GetCount("roasted_corn") == 1
                         && g.Saves.TryLoad(out var saved) && saved.Slots.Sum(s => s.ItemId == "turnip_soup" ? s.Quantity : 0) == 1, "Recipe buttons and atomic autosave");
                     Capture(g, "CookingPanelPreview");
-                    var bag = g.Inventory.State.Slots.ToArray(); g.Inventory.State.Restore(Enumerable.Repeat(new InventorySlot("turnip", 99), 12).ToArray()); g.CookRecipe(0);
+                    var bag = g.Inventory.State.Slots.ToArray(); g.Inventory.State.Restore(Enumerable.Repeat(new InventorySlot("turnip", 99), g.Inventory.State.Capacity).ToArray()); g.CookRecipe(0);
                     Require(g.Inventory.GetCount("turnip") == 1188 && g.Inventory.GetCount("turnip_soup") == 0 && g.Cooking.Feedback.Contains("放不下"), "Full bag does not consume ingredients"); g.Inventory.State.Restore(bag);
                     SessionState.SetFloat(Key + ".Minute", (float)g.Time.Clock.Minute); SessionState.SetFloat(Key + ".Pause", (float)EditorApplication.timeSinceStartup); Phase(4);
                 }
                 else if (phase == 4 && EditorApplication.timeSinceStartup - SessionState.GetFloat(Key + ".Pause", 0) > .2)
                 {
-                    int day = g.Farm.State.Day; g.AdvanceDay(); g.OpenStorage(); g.OpenOrder(); g.OpenShop(); g.OpenSleep(); g.OpenToolUpgrade(); g.ToggleInventory();
+                    int day = g.Farm.State.Day; g.AdvanceDay(); g.StartNewDayFromReport(); g.OpenStorage(); g.OpenOrder(); g.OpenShop(); g.OpenSleep(); g.OpenToolUpgrade(); g.ToggleInventory();
                     Require(Math.Abs(g.Time.Clock.Minute - SessionState.GetFloat(Key + ".Minute", 0)) < .001 && g.Farm.State.Day == day && !g.UI.HasStorage && !g.UI.HasOrder && !g.UI.HasShop
                         && !g.UI.HasSleep && !g.UI.HasToolUpgrade && !g.UI.IsInventoryVisible && !g.TryGather(0, out _), "Cooking modal pauses time and excludes all other operations");
                     string dir = SessionState.GetString(Key + ".Dir", ""), blocked = Path.Combine(dir, "blocked"); File.WriteAllText(blocked, "file"); SaveDirectory(g, blocked);

@@ -38,8 +38,10 @@ namespace MagicIsland.EditorTools
             SettingsUiPrefabBuilder.CreateMissing();
             ShopUiPrefabBuilder.CreateMissing();
             SleepUiPrefabBuilder.CreateMissing();
+            DailyReportUiPrefabBuilder.CreateMissing();
             FeedbackPanelPrefabBuilder.CreateMissing();
             CropInfoPanelPrefabBuilder.CreateMissing();
+            InteractionPromptSetup.CreatePanel();
             TaskPanelPrefabBuilder.CreateMissing();
             OrderPanelPrefabBuilder.CreateMissing();
             ToolUpgradeSetup.CreatePanel();
@@ -51,6 +53,7 @@ namespace MagicIsland.EditorTools
             StoryEventSetup.UpgradeDialogue();
             StoryEventSetup.UpgradeCooking();
             FishCookingSetup.UpgradePanel();
+            EggCookingSetup.UpgradePanel();
             EnsureMvcControls();
             CropUiUpgrade.Apply();
             CookingSetup.UpgradeInventory();
@@ -58,8 +61,23 @@ namespace MagicIsland.EditorTools
             FishingSetup.UpgradeShop();
             CraftingSetup.CreatePanels(); CraftingSetup.UpgradePanels();
             FurnitureSetup.UpgradePanel();
+            FeedCraftingSetup.UpgradePanel();
             HousingSetup.CreatePanel(); HousingSetup.UpgradeHud();
             HouseUpgradeSetup.CreatePanel();
+            AnimalSetup.CreatePanels();
+            AnimalFriendshipSetup.UpgradePanel();
+            QualityEggSetup.UpgradePanels();
+            InventoryUpgradeSetup.CreatePanels();
+            InventorySortSetup.UpgradePanel();
+            InventoryInteractionSetup.UpgradePanel();
+            InventoryGridSetup.UpgradePanel();
+            StorageShortcutSetup.UpgradePanel();
+            ShippingSetup.CreatePanel();
+            FertilizerSetup.UpgradeUi();
+            PauseSleepUiSetup.CreateAndUpgrade();
+            MapPanelSetup.CreateAndUpgrade();
+            OrchardSetup.UpgradeShop();
+            BeachForageSetup.UpgradeShop();
             UiPrefabMigration.UpgradeAll();
         }
 

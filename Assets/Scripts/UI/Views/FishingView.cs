@@ -6,6 +6,7 @@ namespace MagicIsland.UI.Views
 {
     public sealed class FishingView : UIView
     {
+        [UnityEngine.HideInInspector] public bool CoastLayout;
         public TMP_Text StatusText, HintText, TimerText, FeedbackText;
         public Image ProgressFill;
         public Button CastButton, ReelButton, SaveButton, CloseButton;

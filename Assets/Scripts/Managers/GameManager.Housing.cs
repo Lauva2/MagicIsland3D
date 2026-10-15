@@ -8,7 +8,6 @@ namespace MagicIsland.Managers
         public HousingManager Housing { get; private set; }
         private string loadedPlayerArea = HousingState.Island;
         private Vector3? loadedPlayerPosition;
-        private bool housingSaveCommitting;
         public void EnterHome() => ChangeResidence(Housing.Entrance, HousingState.Home);
         public void ExitHome() => ChangeResidence(Housing.Interior?.Exit, HousingState.Island);
         private void ChangeResidence(HomePortal portal, string destination)
@@ -36,9 +35,7 @@ namespace MagicIsland.Managers
             {
                 Time.SetBed(Housing.Inside ? Housing.Interior.Bed.transform : null);
                 Weather.Tick(Time.Clock.Minute, true); Housing.UpdatePresentation();
-                housingSaveCommitting = true;
-                try { if (SaveProgress()) Interactions.SetFeedback(Housing.Inside ? "回到小屋，走近床边可以休息" : "已返回农场"); }
-                finally { housingSaveCommitting = false; }
+                Interactions.SetFeedback(Housing.Inside ? "回到小屋，走近床边可以休息" : "已返回农场");
             }
             UI.CloseSceneTransition(); SetState(GameFlowState.Playing); SetInputEnabled(!ModalOpen); UI.RefreshViews();
         }

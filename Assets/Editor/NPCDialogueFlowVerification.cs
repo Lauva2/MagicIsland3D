@@ -80,7 +80,7 @@ namespace MagicIsland.EditorTools
                 }
                 else if (phase == 4 && EditorApplication.timeSinceStartup - SessionState.GetFloat(Key + ".Pause", 0) > .2)
                 {
-                    int day = g.Farm.State.Day; g.AdvanceDay(); g.OpenCooking(); g.OpenStorage(); g.OpenOrder(); g.OpenShop(); g.OpenSleep(); g.OpenToolUpgrade(); g.ToggleInventory();
+                    int day = g.Farm.State.Day; g.AdvanceDay(); g.StartNewDayFromReport(); g.OpenCooking(); g.OpenStorage(); g.OpenOrder(); g.OpenShop(); g.OpenSleep(); g.OpenToolUpgrade(); g.ToggleInventory();
                     Require(Math.Abs(g.Time.Clock.Minute - SessionState.GetFloat(Key + ".Minute", 0)) < .001 && day == g.Farm.State.Day && !g.UI.HasCooking && !g.UI.HasStorage && !g.UI.HasOrder
                         && !g.UI.HasShop && !g.UI.HasSleep && !g.UI.HasToolUpgrade && !g.UI.IsInventoryVisible && !g.TryGather(0, out _), "Dialogue modal pauses time and blocks other actions");
                     while (!g.Dialogue.State.LastLine) { View.NextButton.onClick.Invoke(); CheckText(); }

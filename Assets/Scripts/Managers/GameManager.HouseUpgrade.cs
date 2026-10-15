@@ -36,15 +36,14 @@ namespace MagicIsland.Managers
             try
             {
                 if (Housing.ApplyUpgrade(Farm.State.Day, Inventory, Economy) == HouseUpgradeResult.Success)
-                { if (!SaveProgress()) Housing.SetUpgradeSaveFailed(); else Interactions.SetFeedback(Housing.UpgradeFeedback); }
+                { Interactions.SetFeedback(Housing.UpgradeFeedback); }
                 UI.RefreshViews();
             }
             finally { houseUpgradeCommitting = false; }
         }
         public void SaveHouseUpgrade()
         {
-            if (State != GameFlowState.Playing || !UI.HasHouseUpgrade || houseUpgradeOpening || houseUpgradeCommitting) return;
-            if (SaveProgress()) Housing.SetUpgradeSaved(); else Housing.SetUpgradeSaveFailed(); UI.RefreshViews();
+            Interactions.SetFeedback("进度只在每天睡觉结算后保存");
         }
     }
 }

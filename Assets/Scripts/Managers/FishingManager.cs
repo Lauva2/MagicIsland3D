@@ -34,13 +34,13 @@ namespace MagicIsland.Managers
             { LastError = "Fishing rod requires tip: " + Catalog.RodAddress; yield break; }
             spotHandle = Addressables.InstantiateAsync(Catalog.SpotAddress, world); yield return spotHandle;
             if (current != generation) yield break;
-            if (spotHandle.Status != AsyncOperationStatus.Succeeded || spotHandle.Result == null || (Spot = spotHandle.Result.GetComponent<FishingSpot>()) == null || Spot.Bobber == null || Spot.GetComponentsInChildren<Collider>().Length == 0)
+            if (spotHandle.Status != AsyncOperationStatus.Succeeded || spotHandle.Result == null || (Spot = spotHandle.Result.GetComponent<FishingSpot>()) == null || Spot.Bobber == null || Spot.ReachPoint == null || Spot.Deck == null || Spot.GetComponentsInChildren<Collider>().Length == 0)
             { LastError = "Fishing spot requires bobber and collider: " + Catalog.SpotAddress; yield break; }
             Spot.transform.localPosition = Catalog.SpotPosition; Spot.Bobber.gameObject.SetActive(false);
             line = new GameObject("Fishing Line").AddComponent<LineRenderer>(); line.transform.SetParent(Spot.transform, false); line.useWorldSpace = true; line.positionCount = 3;
             line.startWidth = line.endWidth = .018f; lineMaterial = new Material(Shader.Find("Sprites/Default")); lineMaterial.color = new Color(.95f, .93f, .82f); line.sharedMaterial = lineMaterial; line.enabled = false;
         }
-        public bool InRange(Vector3 position, float reach) => Spot != null && Vector3.ProjectOnPlane(Spot.transform.position - position, Vector3.up).sqrMagnitude <= reach * reach;
+        public bool InRange(Vector3 position, float reach) => Spot != null && Vector3.ProjectOnPlane(Spot.Position - position, Vector3.up).sqrMagnitude <= reach * reach;
         public void Focus(Transform visual)
         { Unfocus(); focusedVisual = visual; oldRotation = visual.rotation; Vector3 direction = Vector3.ProjectOnPlane(Spot.Bobber.position - visual.position, Vector3.up); if (direction.sqrMagnitude > .001f) visual.rotation = Quaternion.LookRotation(direction); }
         public void Unfocus() { if (focusedVisual != null) focusedVisual.rotation = oldRotation; focusedVisual = null; }
@@ -48,7 +48,9 @@ namespace MagicIsland.Managers
         public bool Cast()
         {
             var result = State.Cast(State.Pick(Random.value * .999999), Random.Range(Catalog.WaitMin, Catalog.WaitMax), Inventory.State, Stamina.State);
-            Feedback = result == FishingResult.Success ? "浮漂已入水，等它下沉再收竿" : Explain(result); RefreshVisual(); return result == FishingResult.Success;
+            Feedback = result == FishingResult.Success ? "浮漂已入水，等它下沉再收竿" : Explain(result); RefreshVisual();
+            if(result==FishingResult.Success&&Spot!=null)GameManager.Instance?.Ocean?.DisturbWater(Spot.Bobber.position);
+            return result == FishingResult.Success;
         }
         public void Tick(float seconds)
         {
@@ -66,10 +68,17 @@ namespace MagicIsland.Managers
         private void RefreshVisual()
         {
             bool active = State != null && State.Active;
-            if (Spot != null && Spot.Bobber != null) { Spot.Bobber.gameObject.SetActive(active); var local = Spot.Bobber.localPosition; local.y = State != null && State.Phase == FishingPhase.Bite ? .02f : .16f; Spot.Bobber.localPosition = local; }
+            if (Spot != null && Spot.Bobber != null)
+            {
+                Spot.Bobber.gameObject.SetActive(active); var point = Spot.Bobber.position;
+                var ocean=GameManager.Instance?.Ocean?.Surface;
+                point.y=(ocean!=null?ocean.HeightAt(point):-.22f)+(State!=null&&State.Phase==FishingPhase.Bite?-.045f:.055f);Spot.Bobber.position=point;
+            }
             if (line != null) { line.enabled = active; if (active && Rod != null) { line.SetPosition(0, Rod.Tip.position); line.SetPosition(1, (Rod.Tip.position + Spot.Bobber.position) * .5f + Vector3.down * .18f); line.SetPosition(2, Spot.Bobber.position); } }
         }
         public void SetFeedback(string value) => Feedback = value;
+        // Follow OceanManager's completed wave update and the rig's animated rod tip.
+        private void LateUpdate() { if(State!=null&&State.Active)RefreshVisual(); }
         public void SetSaveFailed() => Feedback = "鱼已入背包，保存失败，请点击保存进度重试";
         public void SetSaved() => Feedback = "钓鱼进度已保存";
         public static string Explain(FishingResult result) => result == FishingResult.StaminaLow ? "体力不足，成功钓鱼需要体力" : result == FishingResult.BagFull ? "背包需要能放下一条任意鱼，请先整理" : result == FishingResult.TooEarly ? "收竿太早了，未消耗体力" : result == FishingResult.TooLate ? "错过了咬钩，未消耗体力" : "暂时无法钓鱼";

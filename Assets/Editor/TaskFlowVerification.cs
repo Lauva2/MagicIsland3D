@@ -116,7 +116,7 @@ namespace MagicIsland.EditorTools
                         "Continue retains claim flags and early progress, with no repeated gold");
                     game.UI.RefreshViews(); View.ClaimButton.onClick.Invoke(); View.ClaimButton.onClick.Invoke();
                     Require(game.Tasks.State.CurrentIndex == 3 && !game.Tasks.State.Ready && game.Economy.Gold == 115, "Plant/water rewards unlock sleep");
-                    game.ToggleInventory(); game.AdvanceDay(); game.ClaimTaskReward();
+                    game.ToggleInventory(); game.AdvanceDay(); game.StartNewDayFromReport(); game.ClaimTaskReward();
                     Require(game.Tasks.State.GetProgress(3) == 0 && game.Economy.Gold == 115, "Modal blocks day advance and task claim");
                     game.CloseInventory(); game.Players.RestorePosition(game.Housing.Entrance.Position + new Vector3(0, .1f, -1.4f)); game.EnterHome(); Phase(13);
                 }
@@ -124,7 +124,7 @@ namespace MagicIsland.EditorTools
                 { game.Players.RestorePosition(game.Time.Bed.position + new Vector3(1.5f, .1f, 0)); game.OpenSleep(); Phase(4); }
                 else if (phase == 4 && UnityEngine.Object.FindObjectOfType<SleepView>() != null)
                 {
-                    SleepView sleep = UnityEngine.Object.FindObjectOfType<SleepView>(); sleep.ConfirmButton.onClick.Invoke(); game.Players.RestorePosition(game.Housing.Interior.Exit.Position + new Vector3(0, .1f, 1.5f)); game.ExitHome(); Phase(14);
+                    SleepView sleep = UnityEngine.Object.FindObjectOfType<SleepView>(); sleep.ConfirmButton.onClick.Invoke(); game.StartNewDayFromReport(); game.Players.RestorePosition(game.Housing.Interior.Exit.Position + new Vector3(0, .1f, 1.5f)); game.ExitHome(); Phase(14);
                 }
                 else if (phase == 14 && game.State == GameFlowState.Playing && !game.Housing.Inside) { Phase(5); }
                 else if (phase == 5 && game.State == GameFlowState.Playing && !game.UI.HasSleep)
@@ -132,8 +132,8 @@ namespace MagicIsland.EditorTools
                     Require(game.Tasks.State.Ready && game.Tasks.State.GetProgress(3) == 1 && game.Farm.State.Day == 2
                         && game.Saves.TryLoad(out SaveData data) && data.Tasks[3].Progress == 1, "Actual bed sleep counts once before daily autosave");
                     game.ClaimTaskReward(); Require(game.Tasks.State.CurrentIndex == 4 && game.Economy.Gold == 130, "Sleep reward");
-                    game.Farm.TryAct(0, FarmTool.WateringCan, out _); game.AdvanceDay();
-                    game.Farm.TryAct(0, FarmTool.WateringCan, out _); game.AdvanceDay();
+                    game.Farm.TryAct(0, FarmTool.WateringCan, out _); game.AdvanceDay(); game.StartNewDayFromReport();
+                    game.Farm.TryAct(0, FarmTool.WateringCan, out _); game.AdvanceDay(); game.StartNewDayFromReport();
                     Require(game.Farm.State.Cells[0].Mature && game.Tasks.State.GetProgress(4) == 0, "Maturity alone is not harvest");
                     Require(game.Farm.TryAct(0, FarmTool.Hoe, out _) && game.Tasks.State.GetProgress(4) == 1, "Mature crop operation records harvest, not hoe");
                     Require(!game.Farm.TryAct(0, FarmTool.Hoe, out _) && game.Tasks.State.GetProgress(4) == 1, "Failed repeated harvest does not count");

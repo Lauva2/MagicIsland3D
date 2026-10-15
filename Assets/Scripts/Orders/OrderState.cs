@@ -16,12 +16,13 @@ namespace MagicIsland.Orders
         public int MinQuantity { get; }
         public int MaxQuantity { get; }
         public int GoldPerItem { get; }
-        public OrderDefinition(string id, string itemId, SeasonMask seasons, int minQuantity, int maxQuantity, int goldPerItem)
+        public bool RequiresCoop { get; }
+        public OrderDefinition(string id, string itemId, SeasonMask seasons, int minQuantity, int maxQuantity, int goldPerItem, bool requiresCoop = false)
         {
             if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(itemId) || !CalendarSystem.Seasons.ValidMask(seasons)
                 || minQuantity < 1 || maxQuantity < minQuantity || maxQuantity > 99 || goldPerItem < 1)
                 throw new ArgumentException("Invalid order definition");
-            Id = id; ItemId = itemId; Seasons = seasons; MinQuantity = minQuantity; MaxQuantity = maxQuantity; GoldPerItem = goldPerItem;
+            Id = id; ItemId = itemId; Seasons = seasons; MinQuantity = minQuantity; MaxQuantity = maxQuantity; GoldPerItem = goldPerItem; RequiresCoop = requiresCoop;
         }
     }
     [Serializable]
@@ -31,6 +32,7 @@ namespace MagicIsland.Orders
         public string DefinitionId, ItemId;
         public long Reward;
         public bool Fulfilled;
+        public bool CoopOffersUnlocked;
     }
     public sealed class OrderState
     {
@@ -38,45 +40,48 @@ namespace MagicIsland.Orders
         private readonly int daysPerSeason;
         private SavedOrder current;
         private bool delivering;
+        public IngredientResolver Ingredients { get; }
         public event Action Changed;
         public int Day => current.Day;
         public string ItemId => current.ItemId;
         public int Quantity => current.Quantity;
         public long Reward => current.Reward;
         public bool Fulfilled => current.Fulfilled;
-        public OrderState(IEnumerable<OrderDefinition> definitions, int daysPerSeason, int seed, int day)
+        public bool CoopOffersUnlocked => current.CoopOffersUnlocked;
+        public OrderState(IEnumerable<OrderDefinition> definitions, int daysPerSeason, int seed, int day, bool coopOffersUnlocked = false, IngredientResolver ingredients = null)
         {
+            Ingredients = ingredients ?? new IngredientResolver();
             this.definitions = definitions?.ToArray() ?? throw new ArgumentNullException(nameof(definitions));
             if (this.definitions.Length == 0 || this.definitions.Any(value => value == null)
                 || this.definitions.Select(value => value.Id).Distinct().Count() != this.definitions.Length)
                 throw new ArgumentException("Missing or duplicate order definitions");
-            for (int i = 0; i < 4; i++) if (!this.definitions.Any(value => CalendarSystem.Seasons.Includes(value.Seasons, (Season)i)))
+            for (int i = 0; i < 4; i++) if (!this.definitions.Any(value => !value.RequiresCoop && CalendarSystem.Seasons.Includes(value.Seasons, (Season)i)))
                 throw new ArgumentException("Each season needs an order offer");
             this.daysPerSeason = daysPerSeason;
-            current = Generate(seed, day);
+            current = Generate(seed, day, coopOffersUnlocked);
         }
-        private SavedOrder Generate(int seed, int day)
+        private SavedOrder Generate(int seed, int day, bool coopOffersUnlocked)
         {
-            if (seed < 1) throw new ArgumentException("Invalid order seed");
+            if (seed < 1 || (coopOffersUnlocked && day == 1)) throw new ArgumentException("Invalid order seed or unlock day");
             Season season = new CalendarDate(day, daysPerSeason).Season;
-            var offers = definitions.Where(value => CalendarSystem.Seasons.Includes(value.Seasons, season)).ToArray();
+            var offers = definitions.Where(value => (!value.RequiresCoop || coopOffersUnlocked) && CalendarSystem.Seasons.Includes(value.Seasons, season)).ToArray();
             uint hash = Hash((uint)seed ^ ((uint)day * 0x9e3779b9u));
             OrderDefinition offer = offers[hash % (uint)offers.Length];
             int quantity = offer.MinQuantity + (int)(Hash(hash ^ 0x85ebca6bu) % (uint)(offer.MaxQuantity - offer.MinQuantity + 1));
-            return new SavedOrder { Seed = seed, Day = day, DefinitionId = offer.Id, ItemId = offer.ItemId, Quantity = quantity, Reward = (long)quantity * offer.GoldPerItem };
+            return new SavedOrder { Seed = seed, Day = day, DefinitionId = offer.Id, ItemId = offer.ItemId, Quantity = quantity, Reward = (long)quantity * offer.GoldPerItem, CoopOffersUnlocked = coopOffersUnlocked };
         }
         private static uint Hash(uint value)
         { unchecked { value ^= value >> 16; value *= 0x7feb352du; value ^= value >> 15; value *= 0x846ca68bu; return value ^ (value >> 16); } }
-        public void NextDay(int day)
+        public void NextDay(int day, bool coopBuilt = false)
         {
             if (delivering || day != Day + 1) throw new ArgumentException("Orders must advance with the farm");
-            current = Generate(current.Seed, day); Changed?.Invoke();
+            current = Generate(current.Seed, day, coopBuilt || CoopOffersUnlocked); Changed?.Invoke();
         }
         public DeliveryResult Check(InventoryState inventory, EconomyState economy)
         {
             if (delivering) return DeliveryResult.Busy;
             if (Fulfilled) return DeliveryResult.AlreadyFulfilled;
-            if (inventory.GetCount(ItemId) < Quantity) return DeliveryResult.InsufficientItems;
+            if (Ingredients.Count(inventory, ItemId) < Quantity) return DeliveryResult.InsufficientItems;
             return economy.CanEarn(Reward) ? DeliveryResult.Success : DeliveryResult.GoldLimit;
         }
         public DeliveryResult Deliver(InventoryState inventory, EconomyState economy)
@@ -88,17 +93,24 @@ namespace MagicIsland.Orders
             {
                 economy.TryEarn(Reward, false); current.Fulfilled = true;
                 // Inventory observers see the reward and fulfilled flag already committed.
-                inventory.TryRemove(ItemId, Quantity); economy.NotifyChanged(); Changed?.Invoke();
+                Ingredients.Resolve(inventory, new[] { new IngredientCost(ItemId, Quantity) }, out var costs);
+                foreach (var cost in costs) inventory.TryRemove(cost.Id, cost.Quantity, false);
+                inventory.NotifyChanged(); economy.NotifyChanged(); Changed?.Invoke();
                 return DeliveryResult.Success;
             }
             finally { delivering = false; }
         }
-        public SavedOrder Capture() => new SavedOrder { Seed = current.Seed, Day = Day, DefinitionId = current.DefinitionId,
-            ItemId = ItemId, Quantity = Quantity, Reward = Reward, Fulfilled = Fulfilled };
+
+        public SavedOrder Capture() => new SavedOrder
+        {
+            Seed = current.Seed, Day = Day, DefinitionId = current.DefinitionId,
+            ItemId = ItemId, Quantity = Quantity, Reward = Reward, Fulfilled = Fulfilled,
+            CoopOffersUnlocked = CoopOffersUnlocked
+        };
         public void Restore(SavedOrder saved, int farmDay)
         {
             if (delivering || saved == null || saved.Day != farmDay) throw new ArgumentException("Invalid saved order day");
-            SavedOrder expected = Generate(saved.Seed, saved.Day);
+            SavedOrder expected = Generate(saved.Seed, saved.Day, saved.CoopOffersUnlocked);
             if (saved.DefinitionId != expected.DefinitionId || saved.ItemId != expected.ItemId || saved.Quantity != expected.Quantity || saved.Reward != expected.Reward)
                 throw new ArgumentException("Invalid saved order parameters");
             expected.Fulfilled = saved.Fulfilled; current = expected; Changed?.Invoke();

@@ -10,7 +10,7 @@ namespace MagicIsland.Configuration
     {
         public string NpcId;
         public float WalkSpeed = 1.4f, CorridorX = 11.2f;
-        public Vector3 CoastOffset = new Vector3(-1.25f, 0, 1.4f);
+        public Vector3 CoastOffset = new Vector3(-.65f, 0, 2f);
         public int CoastStartMinute = 720, ReturnMinute = 1080;
         public float HomeYaw = 180, CoastYaw = 90;
     }
@@ -19,6 +19,7 @@ namespace MagicIsland.Configuration
     {
         public const string Address = "NPCScheduleCatalog";
         public List<NPCScheduleConfig> Schedules = new List<NPCScheduleConfig>();
+        [HideInInspector] public bool CoastTerrainReady;
         public NPCScheduleConfig Find(string id) => Schedules.Find(s => s.NpcId == id);
         public IEnumerable<NPCScheduleDefinition> Definitions(GameConfig game, NPCCatalog npcs, FishingCatalog fishing)
         {

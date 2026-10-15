@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Environment
+  m_EditorClassIdentifier:
+  m_GroupName: Environment
+  m_Data:
+    m_SerializedData: []
+  m_GUID: b3070405cb50969458162639e226bbb0
+  m_SerializeEntries:
+  - m_GUID: 30096359a843671458ff8f6c083e1c50
+    m_Address: IslandOcean
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1c8e488607f20245890a90279c73827
+    m_Address: IslandTerrain
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 615fb8a87311f4e43bb631fad5a91474
+    m_Address: CoastalPalm
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68fd233487579d942b3bec3afaed7a2f
+    m_Address: CoastalShrub
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 46b812db743ca1a40b822916c734e97d
+    m_Address: BeachShell
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35e429e9b3867e34cab3b5fa820d1bd2
+    m_Address: ReefRock
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 33cc996947961804086320e933a62429
+    m_Address: ReefCoral
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d2437583f3abd2342bbaee8ddf4445a3
+    m_Address: ReefSeagrass
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f4ada016d533d724ca8cfd2af79f180b
+    m_Address: IslandPaths
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d90c649a29aad149889626f56296498
+    m_Address: IslandClouds
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: ac955b8fe83d22d4a85c3b3fc30e9c11, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: db2731598c138e24bb6a6e9c5bd72246, type: 2}
+    - {fileID: 11400000, guid: 07493e93d54c594478ee09ac3497fea0, type: 2}

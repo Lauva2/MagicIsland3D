@@ -31,7 +31,7 @@ class VerifyConstruction
         for (int farm = 1; farm <= 12; farm++) for (int x = -12; x <= 12; x++) for (int z = -12; z <= 12; z++)
         {
             var state = new PlacementState(Placeables, farm); var result = state.CheckLocation("fence", x, z, 0); double half = farm * .6 + .5;
-            bool valid = Math.Abs(x) <= 11 && Math.Abs(z) <= 11 && !(x + .5 > -half && x - .5 < half && z + .5 > -half && z - .5 < half);
+            bool valid = IslandLayout.CanPlace(x,z) && !IslandLayout.PierReserved(x,z) && !(x + .5 > -half && x - .5 < half && z + .5 > -half && z - .5 < half);
             Check((result == PlacementResult.Success) == valid, "All island/farm grid positions");
         }
         var route = new NPCScheduleDefinition("npc", 1.4, 720, 1080, new[] { new SchedulePoint(7.4, .95), new SchedulePoint(11.2, .95), new SchedulePoint(11.2, -6.8), new SchedulePoint(9.15, -6.8) });

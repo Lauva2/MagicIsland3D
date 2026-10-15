@@ -7,8 +7,9 @@ namespace MagicIsland.Interaction
     public sealed class PlaceableDefinition
     {
         public string ItemId { get; }
-        public PlaceableDefinition(string id)
-        { if (string.IsNullOrWhiteSpace(id)) throw new ArgumentException("Invalid placeable ID"); ItemId = id; }
+        public int Clearance { get; }
+        public PlaceableDefinition(string id, int clearance = 0)
+        { if (string.IsNullOrWhiteSpace(id) || clearance < 0 || clearance > 1) throw new ArgumentException("Invalid placeable ID/clearance"); ItemId = id; Clearance = clearance; }
     }
     [Serializable] public sealed class SavedPlacedObject
     { public int Id; public string ItemId; public int GridX, GridZ, QuarterTurns; }
@@ -17,6 +18,7 @@ namespace MagicIsland.Interaction
     {
         public const int Maximum = 128;
         private readonly HashSet<string> items;
+        private readonly Dictionary<string, int> clearances;
         private readonly List<SavedPlacedObject> placed = new List<SavedPlacedObject>();
         private readonly NPCScheduleDefinition[] routes;
         private readonly int farmSize;
@@ -33,6 +35,7 @@ namespace MagicIsland.Interaction
                 || values.Select(d => d.ItemId).Distinct().Count() != values.Length || farmSize < 1 || farmSize > 12 || houseLevel < 0 || houseLevel > 1 || (!indoor && houseLevel != 0))
                 throw new ArgumentException("Invalid placement definitions");
             items = new HashSet<string>(values.Select(d => d.ItemId), StringComparer.Ordinal);
+            clearances = values.ToDictionary(d => d.ItemId, d => d.Clearance);
             this.farmSize = farmSize; this.routes = routes?.ToArray() ?? Array.Empty<NPCScheduleDefinition>();
             Indoor = indoor; HouseLevel = houseLevel;
             if (this.routes.Any(r => r == null)) throw new ArgumentException("Invalid reserved routes");
@@ -46,9 +49,10 @@ namespace MagicIsland.Interaction
             {
                 if (x < -5 || x > 5 + HouseLevel * 4 || z < -4 || z > 4 + HouseLevel * 2 || turns < 0 || turns > 3) return PlacementResult.InvalidPosition;
                 if (FurnitureLayout.Reserved(x, z)) return PlacementResult.RouteReserved;
-                return placed.Any(p => p.GridX == x && p.GridZ == z) ? PlacementResult.Occupied : PlacementResult.Success;
+                return placed.Any(p => Math.Max(Math.Abs((long)p.GridX - x), Math.Abs((long)p.GridZ - z)) <= Math.Max(clearances[item], clearances[p.ItemId])) ? PlacementResult.Occupied : PlacementResult.Success;
             }
-            if (Math.Abs((long)x) > 11 || Math.Abs((long)z) > 11 || turns < 0 || turns > 3) return PlacementResult.InvalidPosition;
+            if (!IslandLayout.CanPlace(x,z) || turns < 0 || turns > 3) return PlacementResult.InvalidPosition;
+            if (IslandLayout.PierReserved(x,z)) return PlacementResult.RouteReserved;
             double half = farmSize * .6 + .5;
             if (Overlaps(x, z, -half, half, -half, half)) return PlacementResult.FarmReserved;
             foreach (var route in routes) for (int i = 1; i < route.Points.Count; i++)
@@ -57,7 +61,7 @@ namespace MagicIsland.Interaction
                 if (Overlaps(x, z, Math.Min(a.X, b.X) - .4, Math.Max(a.X, b.X) + .4,
                     Math.Min(a.Z, b.Z) - .4, Math.Max(a.Z, b.Z) + .4)) return PlacementResult.RouteReserved;
             }
-            return placed.Any(p => p.GridX == x && p.GridZ == z) ? PlacementResult.Occupied : PlacementResult.Success;
+            return placed.Any(p => Math.Max(Math.Abs((long)p.GridX - x), Math.Abs((long)p.GridZ - z)) <= Math.Max(clearances[item], clearances[p.ItemId])) ? PlacementResult.Occupied : PlacementResult.Success;
         }
         public PlacementResult CheckPlace(string item, int x, int z, int turns, InventoryState bag)
         {
@@ -93,7 +97,7 @@ namespace MagicIsland.Interaction
         public void Restore(SavedPlacedObject[] saved)
         {
             if (saved == null || saved.Length > Maximum) throw new ArgumentException("Invalid placed object count");
-            var check = new PlacementState(items.Select(i => new PlaceableDefinition(i)), farmSize, routes, Indoor, HouseLevel);
+            var check = new PlacementState(items.Select(i => new PlaceableDefinition(i, clearances[i])), farmSize, routes, Indoor, HouseLevel);
             foreach (var p in saved)
             {
                 if (p == null || p.Id < 1 || p.Id > Maximum || check.placed.Any(v => v.Id == p.Id)

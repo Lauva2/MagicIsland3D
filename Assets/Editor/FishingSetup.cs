@@ -42,9 +42,9 @@ namespace MagicIsland.EditorTools
             string path = Factory.Folder + "/FishingPanel.prefab"; if (File.Exists(path)) return; var root = Factory.CanvasRoot("FishingPanel");
             try
             {
-                var view = root.AddComponent<FishingView>(); view.Layer = UILayer.PopUp;
+                var view = root.AddComponent<FishingView>(); view.Layer = UILayer.PopUp; view.CoastLayout = true;
                 var shade = Factory.Panel("Backdrop", root.transform, Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero, new Color(.12f, .2f, .15f, .22f)); shade.anchorMax = Vector2.one; shade.GetComponent<Image>().sprite = null;
-                var card = Factory.Panel("Fishing Card", root.transform, Vector2.one, Vector2.one, new Vector2(-20, -92), new Vector2(540, 364), Factory.Cream); Factory.SoftShadow(card);
+                var card = Factory.Panel("Fishing Card", root.transform, new Vector2(0,1), new Vector2(0,1), new Vector2(20, -350), new Vector2(540, 364), Factory.Cream); Factory.SoftShadow(card);
                 Factory.Label("Title", card, new Vector2(24, -18), new Vector2(420, 36), "海岸垂钓", 28);
                 view.CloseButton = Factory.Button("Close", card, new Vector2(470, -18), new Vector2(46, 36), "×", Factory.Sand);
                 view.StatusText = Factory.Label("Status", card, new Vector2(24, -68), new Vector2(492, 36), "等待鱼儿靠近", 25);

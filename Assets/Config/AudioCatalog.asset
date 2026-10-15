@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98d3f6da7a664eceb68c4b2162f5a235, type: 3}
+  m_Name: AudioCatalog
+  m_EditorClassIdentifier:
+  MusicVolume: 0.35
+  EffectsVolume: 0.65
+  CrossfadeDuration: 0.8
+  WavesVolume: 0.28
+  WindVolume: 0.1
+  RainVolume: 0.24
+  BirdVolume: 0.45
+  FootstepVolume: 0.45
+  ShoreHearingDistance: 16
+  BirdHearingDistance: 26
+  AmbientFadeSeconds: 1.3
+  FootstepStride: 1.65
+  BirdMinInterval: 9
+  BirdMaxInterval: 20
+  Clips:
+  - Cue: 0
+    Address: Audio_MenuMusic
+    Gain: 1
+  - Cue: 1
+    Address: Audio_IslandMusic
+    Gain: 1
+  - Cue: 2
+    Address: Audio_HomeMusic
+    Gain: 1
+  - Cue: 3
+    Address: Audio_UiClick
+    Gain: 1
+  - Cue: 4
+    Address: Audio_UiOpen
+    Gain: 1
+  - Cue: 5
+    Address: Audio_UiClose
+    Gain: 1
+  - Cue: 6
+    Address: Audio_Hoe
+    Gain: 1
+  - Cue: 7
+    Address: Audio_Plant
+    Gain: 1
+  - Cue: 8
+    Address: Audio_Water
+    Gain: 1
+  - Cue: 9
+    Address: Audio_Harvest
+    Gain: 1
+  - Cue: 10
+    Address: Audio_Axe
+    Gain: 1
+  - Cue: 11
+    Address: Audio_Pickaxe
+    Gain: 1
+  - Cue: 12
+    Address: Audio_Fertilize
+    Gain: 1
+  - Cue: 13
+    Address: Audio_Trade
+    Gain: 1
+  - Cue: 14
+    Address: Audio_Waves
+    Gain: 1
+  - Cue: 15
+    Address: Audio_Wind
+    Gain: 1
+  - Cue: 16
+    Address: Audio_Rain
+    Gain: 1
+  - Cue: 17
+    Address: Audio_SeagullCall
+    Gain: 1
+  - Cue: 18
+    Address: Audio_WingFlap
+    Gain: 1
+  - Cue: 19
+    Address: Audio_StepGrass
+    Gain: 1
+  - Cue: 20
+    Address: Audio_StepSand
+    Gain: 1
+  - Cue: 21
+    Address: Audio_StepWood
+    Gain: 1

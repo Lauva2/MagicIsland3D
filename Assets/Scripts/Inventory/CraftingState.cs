@@ -23,27 +23,29 @@ namespace MagicIsland.Inventory
     {
         public IReadOnlyList<CraftingDefinition> Definitions { get; }
         private bool committing;
-        public CraftingState(IEnumerable<CraftingDefinition> definitions)
+        public IngredientResolver Ingredients { get; }
+        public CraftingState(IEnumerable<CraftingDefinition> definitions, IngredientResolver ingredients = null)
         {
             var values = definitions?.ToArray();
             if (values == null || values.Length < 1 || values.Length > 12 || values.Any(d => d == null)
                 || values.Select(d => d.Id).Distinct().Count() != values.Length || values.Select(d => d.Output).Distinct().Count() != values.Length)
                 throw new ArgumentException("Invalid crafting catalog");
             Definitions = Array.AsReadOnly(values);
+            Ingredients = ingredients ?? new IngredientResolver(Array.Empty<KeyValuePair<string, string>>());
         }
         public CraftingResult Check(int index, InventoryState bag)
         {
             if (committing) return CraftingResult.Busy;
             if (index < 0 || index >= Definitions.Count) return CraftingResult.InvalidRecipe;
             var d = Definitions[index];
-            if (d.Ingredients.Any(c => bag.GetCount(c.Id) < c.Quantity)) return CraftingResult.MaterialsMissing;
-            return bag.CanExchange(d.Ingredients, d.Output, d.Yield) ? CraftingResult.Success : CraftingResult.BagFull;
+            if (!Ingredients.Resolve(bag, d.Ingredients, out var costs)) return CraftingResult.MaterialsMissing;
+            return bag.CanExchange(costs, d.Output, d.Yield) ? CraftingResult.Success : CraftingResult.BagFull;
         }
         public CraftingResult Craft(int index, InventoryState bag)
         {
             var result = Check(index, bag); if (result != CraftingResult.Success) return result;
             committing = true;
-            try { var d = Definitions[index]; return bag.TryExchange(d.Ingredients, d.Output, d.Yield) ? CraftingResult.Success : CraftingResult.BagFull; }
+            try { var d = Definitions[index]; Ingredients.Resolve(bag, d.Ingredients, out var costs); return bag.TryExchange(costs, d.Output, d.Yield) ? CraftingResult.Success : CraftingResult.BagFull; }
             finally { committing = false; }
         }
     }

@@ -82,7 +82,7 @@ namespace MagicIsland.EditorTools
                 }
                 else if (phase == 8 && EditorApplication.timeSinceStartup - SessionState.GetFloat(Key + ".Pause", 0) > .2)
                 {
-                    int day = g.Farm.State.Day; g.AdvanceDay(); g.ToggleInventory(); g.OpenCooking(); Require(day == g.Farm.State.Day && !g.UI.IsInventoryVisible && !g.UI.HasCooking
+                    int day = g.Farm.State.Day; g.AdvanceDay(); g.StartNewDayFromReport(); g.ToggleInventory(); g.OpenCooking(); Require(day == g.Farm.State.Day && !g.UI.IsInventoryVisible && !g.UI.HasCooking
                         && Math.Abs(g.Time.Clock.Minute - SessionState.GetFloat(Key + ".Minute", 0)) < .001, "Story modal pauses time and excludes other panels");
                     Finish(g); Require(g.Stories.State.Completed(History) && !g.Stories.State.RecipeUnlocked("vegetable_soup") && g.Saves.TryLoad(out var saved) && saved.StoryEvents[0].Completed, "History completed and saved without reward");
                     Points(g, 70); g.OpenDialogue(Id); Phase(9);

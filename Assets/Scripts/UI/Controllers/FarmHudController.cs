@@ -17,11 +17,11 @@ namespace MagicIsland.UI.Controllers
         private readonly TimeManager time;
         private readonly StaminaManager stamina;
         private readonly WeatherManager weather;
-        private readonly UnityAction nextDay, returnMenu, inventory;
+        private readonly UnityAction nextDay, returnMenu, inventory, map;
         private readonly UnityAction[] tools;
 
         public FarmHudController(PrototypeHud view, FarmManager farm, InteractionManager interaction, EconomyManager economy, TimeManager time, StaminaManager stamina, WeatherManager weather,
-            Action advanceDay, Action returnToMenu, Action toggleInventory)
+            Action advanceDay, Action returnToMenu, Action toggleInventory, Action toggleMap = null)
         {
             this.view = view;
             this.farm = farm;
@@ -40,6 +40,7 @@ namespace MagicIsland.UI.Controllers
             view.ReturnMenuButton.onClick.AddListener(returnMenu);
             inventory = () => toggleInventory();
             view.InventoryButton.onClick.AddListener(inventory);
+            map = () => toggleMap?.Invoke(); view.MapButton.onClick.AddListener(map);
             tools = new UnityAction[view.ToolButtons.Length];
             for (int i = 0; i < tools.Length; i++)
             {
@@ -64,7 +65,8 @@ namespace MagicIsland.UI.Controllers
             Model.Gold = economy.Gold;
             Model.Stamina = stamina.State.Current; Model.MaxStamina = stamina.State.Maximum;
             Model.Tool = interaction.Controller.Tool;
-            Model.Hint = interaction.Controller.Hint;
+            Model.Hint = interaction.Current.Visible
+                ? (interaction.Current.InRange ? interaction.Current.Operation : "距离太远，请靠近") : interaction.Controller.Hint;
             Model.Feedback = interaction.Controller.Feedback;
             Model.Inside = GameManager.Instance?.Housing?.Inside ?? false;
             Model.Location = Model.Inside ? (GameManager.Instance.Housing.Upgrade.Level == 1 ? "舒适小屋" : "我的小屋") : "岛屿农场";
@@ -80,6 +82,7 @@ namespace MagicIsland.UI.Controllers
             view.NextDayButton.onClick.RemoveListener(nextDay);
             view.ReturnMenuButton.onClick.RemoveListener(returnMenu);
             view.InventoryButton.onClick.RemoveListener(inventory);
+            view.MapButton.onClick.RemoveListener(map);
             for (int i = 0; i < tools.Length; i++) view.ToolButtons[i].onClick.RemoveListener(tools[i]);
         }
     }

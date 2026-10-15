@@ -30,10 +30,11 @@ namespace MagicIsland.Inventory
     {
         public IReadOnlyList<CookingDefinition> Definitions { get; }
         private bool cooking;
+        public IngredientResolver Ingredients { get; }
         private readonly Func<string, bool> eventCompleted;
-        public CookingState(IEnumerable<CookingDefinition> definitions, Func<string, bool> eventCompleted = null)
+        public CookingState(IEnumerable<CookingDefinition> definitions, Func<string, bool> eventCompleted = null, IngredientResolver ingredients = null)
         {
-            this.eventCompleted = eventCompleted;
+            this.eventCompleted = eventCompleted; Ingredients = ingredients ?? new IngredientResolver();
             var values = definitions?.ToArray() ?? throw new ArgumentNullException(nameof(definitions));
             if (values.Length == 0 || values.Any(d => d == null) || values.Select(d => d.Id).Distinct().Count() != values.Length
                 || values.Select(d => d.Food).Distinct().Count() != values.Length) throw new ArgumentException("Invalid recipes");
@@ -45,14 +46,14 @@ namespace MagicIsland.Inventory
             if (index < 0 || index >= Definitions.Count) return CookingResult.InvalidRecipe;
             var recipe = Definitions[index];
             if (!string.IsNullOrEmpty(recipe.RequiredEventId) && !(eventCompleted?.Invoke(recipe.RequiredEventId) ?? false)) return CookingResult.Locked;
-            if (recipe.Ingredients.Any(c => bag.GetCount(c.Id) < c.Quantity)) return CookingResult.InsufficientIngredients;
-            return bag.CanExchange(recipe.Ingredients, recipe.Food, recipe.Yield) ? CookingResult.Success : CookingResult.BagFull;
+            if (!Ingredients.Resolve(bag, recipe.Ingredients, out var costs)) return CookingResult.InsufficientIngredients;
+            return bag.CanExchange(costs, recipe.Food, recipe.Yield) ? CookingResult.Success : CookingResult.BagFull;
         }
         public CookingResult Cook(int index, InventoryState bag)
         {
             var check = Check(index, bag); if (check != CookingResult.Success) return check;
             cooking = true;
-            try { var recipe = Definitions[index]; return bag.TryExchange(recipe.Ingredients, recipe.Food, recipe.Yield) ? CookingResult.Success : CookingResult.BagFull; }
+            try { var recipe = Definitions[index]; Ingredients.Resolve(bag, recipe.Ingredients, out var costs); return bag.TryExchange(costs, recipe.Food, recipe.Yield) ? CookingResult.Success : CookingResult.BagFull; }
             finally { cooking = false; }
         }
     }

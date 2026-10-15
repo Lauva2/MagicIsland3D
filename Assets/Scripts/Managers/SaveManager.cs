@@ -29,16 +29,22 @@ namespace MagicIsland.Managers
         private NPCScheduleCatalog schedules;
         private FishingCatalog fishing;
         private CraftingCatalog crafting;
+        private AnimalConfig animals;
+        private OrchardCatalog orchards;
+        private string sleepCheckpointJson;
+        public bool SleepSavePending => sleepCheckpointJson != null;
+        public void ClearSleepCheckpoint() { sleepCheckpointJson = null; }
 
-        public void Initialize(GameConfig gameConfig, ItemCatalog items, CropCatalog crops, string directory = null, TaskCatalog tasks = null, OrderCatalog orders = null, SeasonConfig seasons = null, GatheringCatalog gathering = null, ToolUpgradeCatalog toolUpgrades = null, StorageConfig storage = null, NPCCatalog npcs = null, RelationshipCatalog relationships = null, StoryEventCatalog stories = null, NPCScheduleCatalog schedules = null, FishingCatalog fishing = null, CraftingCatalog crafting = null)
+        public void Initialize(GameConfig gameConfig, ItemCatalog items, CropCatalog crops, string directory = null, TaskCatalog tasks = null, OrderCatalog orders = null, SeasonConfig seasons = null, GatheringCatalog gathering = null, ToolUpgradeCatalog toolUpgrades = null, StorageConfig storage = null, NPCCatalog npcs = null, RelationshipCatalog relationships = null, StoryEventCatalog stories = null, NPCScheduleCatalog schedules = null, FishingCatalog fishing = null, CraftingCatalog crafting = null, AnimalConfig animals = null, OrchardCatalog orchards = null)
         {
+            this.orchards = orchards ?? GameManager.Instance?.Configuration?.Orchards;
             config = gameConfig;
             catalog = items;
             this.crops = crops;
             this.tasks = tasks;
             this.orders = orders;
             this.seasons = seasons;
-            this.gathering = gathering; this.toolUpgrades = toolUpgrades; this.storage = storage; this.npcs = npcs; this.relationships = relationships; this.stories = stories; this.schedules = schedules; this.fishing = fishing; this.crafting = crafting;
+            this.gathering = gathering; this.toolUpgrades = toolUpgrades; this.storage = storage; this.npcs = npcs; this.relationships = relationships; this.stories = stories; this.schedules = schedules; this.fishing = fishing; this.crafting = crafting; this.animals = animals ?? GameManager.Instance?.Configuration?.Animals;
             store = new SaveFileStore(directory ?? Path.Combine(Application.persistentDataPath, "Saves"));
             RefreshAvailability();
         }
@@ -51,8 +57,8 @@ namespace MagicIsland.Managers
             {
                 SaveData parsed = JsonUtility.FromJson<SaveData>(json);
                 if (parsed == null) throw new InvalidOperationException("Empty save");
-                parsed.Upgrade(config.InitialGold, config.MaxStamina, crops.FindBySeed(config.SeedItemId).Id, config.SeedItemId, tasks?.Definitions(), orders?.Definitions(crops), seasons?.DaysPerSeason ?? 28, gathering?.Definitions(), toolUpgrades?.Definitions(), storage?.Slots ?? 0, npcs?.Ids(), relationships?.Definitions(npcs), stories?.Definitions(), schedules?.Definitions(config, npcs, fishing), crafting?.Placeables());
-                parsed.Validate(config.FarmSize, config.CropGrowthDays, new InventoryState(config.InventorySlots, catalog.Definitions()), config.MaxStamina, crops.Definitions(), crops.FindBySeed(config.SeedItemId).Id, tasks?.Definitions(), orders?.Definitions(crops), seasons?.DaysPerSeason ?? 28, gathering?.Definitions(), toolUpgrades?.Definitions(), storage?.Slots ?? 0, npcs?.Ids(), relationships?.Definitions(npcs), stories?.Definitions(), schedules?.Definitions(config, npcs, fishing), crafting?.Placeables(), crafting?.Placeables(true));
+                parsed.Upgrade(config.InitialGold, config.MaxStamina, crops.FindBySeed(config.SeedItemId).Id, config.SeedItemId, tasks?.Definitions(), orders?.Definitions(crops), seasons?.DaysPerSeason ?? 28, gathering?.Definitions(), toolUpgrades?.Definitions(), storage?.Slots ?? 0, npcs?.Ids(), relationships?.Definitions(npcs), stories?.Definitions(), schedules?.Definitions(config, npcs, fishing), crafting?.Placeables(), gathering?.BeachDefinition());
+                parsed.Validate(config.FarmSize, config.CropGrowthDays, new InventoryState(InventoryUpgradeState.SavedCapacity(parsed.InventoryUpgrade), catalog.Definitions()), config.MaxStamina, crops.Definitions(), crops.FindBySeed(config.SeedItemId).Id, tasks?.Definitions(), orders?.Definitions(crops), seasons?.DaysPerSeason ?? 28, gathering?.Definitions(), toolUpgrades?.Definitions(), storage?.Slots ?? 0, npcs?.Ids(), relationships?.Definitions(npcs), stories?.Definitions(), schedules?.Definitions(config, npcs, fishing), crafting?.Placeables(), crafting?.Placeables(true), ShippingConfig.Prices(catalog, animals), orchards?.Definitions(), gathering?.BeachDefinition());
                 return parsed;
             }, out data, out string error, out bool recovered);
             LastError = error;
@@ -60,15 +66,30 @@ namespace MagicIsland.Managers
             return HasSave;
         }
 
-        public bool TrySave(FarmManager farm, InventoryManager inventory, PlayerManager players, EconomyManager economy, TimeManager time, StaminaManager stamina, WeatherManager weather, TaskManager taskManager = null, OrderManager orderManager = null, GatheringManager gatheringManager = null, ToolUpgradeManager toolUpgradeManager = null, StorageManager storageManager = null, NPCManager npcManager = null, RelationshipManager relationshipManager = null, StoryEventManager storyManager = null, NPCScheduleManager scheduleManager = null, PlacementManager placementManager = null, HousingManager housingManager = null, FurnitureManager furnitureManager = null)
+        internal bool SaveSleep(FarmManager farm, InventoryManager inventory, PlayerManager players, EconomyManager economy, TimeManager time, StaminaManager stamina, WeatherManager weather, TaskManager taskManager = null, OrderManager orderManager = null, GatheringManager gatheringManager = null, ToolUpgradeManager toolUpgradeManager = null, StorageManager storageManager = null, NPCManager npcManager = null, RelationshipManager relationshipManager = null, StoryEventManager storyManager = null, NPCScheduleManager scheduleManager = null, PlacementManager placementManager = null, HousingManager housingManager = null, FurnitureManager furnitureManager = null, AnimalManager animalManager = null, DailyReportManager reportManager = null, ShippingManager shippingManager = null)
         {
+            if (GameManager.Instance == null || !GameManager.Instance.IsSleepSettlement || SleepSavePending) return false;
             try
             {
                 Vector3 position = housingManager != null ? housingManager.SavedPosition : players.Player.transform.position;
                 SaveData data = SaveData.Capture(farm.State, inventory.State, position.x, position.y, position.z, economy.Gold, time.Clock.Minute, stamina.State.Current, farm.SeedItemId,
-                    weather.State.Seed, weather.State.Kind, taskManager?.State, orderManager?.State, gatheringManager?.State, toolUpgradeManager?.State, storageManager?.State, npcManager?.State, relationshipManager?.State, storyManager?.State, scheduleManager?.State, placementManager?.State, housingManager?.State?.Area ?? MagicIsland.Interaction.HousingState.Island, furnitureManager?.State, housingManager?.Upgrade);
-                data.Validate(config.FarmSize, config.CropGrowthDays, new InventoryState(config.InventorySlots, catalog.Definitions()), config.MaxStamina, crops.Definitions(), crops.FindBySeed(config.SeedItemId).Id, tasks?.Definitions(), orders?.Definitions(crops), seasons?.DaysPerSeason ?? 28, gathering?.Definitions(), toolUpgrades?.Definitions(), storage?.Slots ?? 0, npcs?.Ids(), relationships?.Definitions(npcs), stories?.Definitions(), schedules?.Definitions(config, npcs, fishing), crafting?.Placeables(), crafting?.Placeables(true));
-                store.Write(JsonUtility.ToJson(data, true));
+                    weather.State.Seed, weather.State.Kind, taskManager?.State, orderManager?.State, gatheringManager?.State, toolUpgradeManager?.State, storageManager?.State, npcManager?.State, relationshipManager?.State, storyManager?.State, scheduleManager?.State, placementManager?.State, housingManager?.State?.Area ?? MagicIsland.Interaction.HousingState.Island, furnitureManager?.State, housingManager?.Upgrade, animalManager?.State, reportManager?.State, inventory.UpgradeState, shippingManager?.State, gatheringManager?.BeachState);
+                data.Orchard = GameManager.Instance.Orchard.State.Capture();
+                // The runtime report remains open; loading this checkpoint starts the saved morning.
+                data.DailyReport.Pending = false;
+                data.Validate(config.FarmSize, config.CropGrowthDays, new InventoryState(InventoryUpgradeState.SavedCapacity(data.InventoryUpgrade), catalog.Definitions()), config.MaxStamina, crops.Definitions(), crops.FindBySeed(config.SeedItemId).Id, tasks?.Definitions(), orders?.Definitions(crops), seasons?.DaysPerSeason ?? 28, gathering?.Definitions(), toolUpgrades?.Definitions(), storage?.Slots ?? 0, npcs?.Ids(), relationships?.Definitions(npcs), stories?.Definitions(), schedules?.Definitions(config, npcs, fishing), crafting?.Placeables(), crafting?.Placeables(true), ShippingConfig.Prices(catalog, animals), orchards?.Definitions(), gathering?.BeachDefinition());
+                sleepCheckpointJson = JsonUtility.ToJson(data, true);
+                return RetrySleepSave();
+            }
+            catch (Exception error) { LastError = error.Message; return false; }
+        }
+        internal bool RetrySleepSave()
+        {
+            if (!SleepSavePending) return false;
+            try
+            {
+                store.Write(sleepCheckpointJson);
+                ClearSleepCheckpoint();
                 LastError = null;
                 HasSave = true;
                 RecoveredBackup = false;

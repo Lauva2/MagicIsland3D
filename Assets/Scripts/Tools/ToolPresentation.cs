@@ -3,22 +3,21 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 namespace MagicIsland.Tools
 {
-    // Procedural placeholder art. The manager owns all objects and materials.
+    // ToolManager owns the held-tool models and the AA effect prefab dependency.
     public sealed class ToolPresentation
     {
         public Transform Grip { get; }
-        public Transform EffectRoot { get; }
-        public int ActiveEffectCount => particles.Count;
-        private readonly GameObject[] models = new GameObject[7];
+        public Transform EffectRoot { get; private set; }
+        public int ActiveEffectCount => effects != null ? effects.ActiveCount : 0;
+        private readonly GameObject[] models = new GameObject[8];
         public Transform FishingRodRoot => models[(int)ToolActionKind.FishingRod].transform;
         private readonly List<Material> materials = new List<Material>();
-        private readonly List<Particle> particles = new List<Particle>();
+        private FarmActionEffects effects;
         private readonly Material earth, seed, water, sparkle;
-        private sealed class Particle { public Transform Transform; public Vector3 Velocity; public float Age; }
-        public ToolPresentation(Transform visual, Transform world)
+        public ToolPresentation(Transform visual, Transform world, Transform toolSocket = null)
         {
-            Grip = new GameObject("Tool Grip").transform; Grip.SetParent(visual, false);
-            Grip.localPosition = new Vector3(0.55f, 0.95f, 0.15f);
+            Grip = new GameObject("Tool Grip").transform; Grip.SetParent(toolSocket != null ? toolSocket : visual, false);
+            Grip.localPosition = toolSocket != null ? Vector3.zero : new Vector3(0.55f, 0.95f, 0.15f);
             EffectRoot = new GameObject("Tool Effects").transform; EffectRoot.SetParent(world, false);
             Material wood = Material(new Color(0.53f, 0.33f, 0.18f));
             Material metal = Material(new Color(0.35f, 0.4f, 0.38f));
@@ -39,6 +38,8 @@ namespace MagicIsland.Tools
             Part("Pickaxe Head", models[4].transform, PrimitiveType.Cube, new Vector3(0, 0.25f, 0), new Vector3(0.62f, 0.09f, 0.09f), metal);
             Part("Harvest Basket", models[5].transform, PrimitiveType.Cylinder, Vector3.zero, new Vector3(0.4f, 0.15f, 0.4f), wood);
             Part("Harvest", models[5].transform, PrimitiveType.Sphere, Vector3.up * 0.14f, Vector3.one * 0.25f, sparkle);
+            Part("Fertilizer Bag", models[7].transform, PrimitiveType.Cube, Vector3.zero, new Vector3(.30f, .40f, .22f), earth);
+            Part("Fertilizer Tie", models[7].transform, PrimitiveType.Sphere, Vector3.up * .23f, new Vector3(.14f, .08f, .14f), seed);
             Show(ToolActionKind.Hoe);
         }
         private Material Material(Color color)
@@ -58,37 +59,21 @@ namespace MagicIsland.Tools
             float angle = kind == ToolActionKind.Hoe || kind == ToolActionKind.Axe || kind == ToolActionKind.Pickaxe ? -110f : kind == ToolActionKind.Water ? 65f : 35f;
             Grip.localRotation = Quaternion.Euler(angle * motion, 0, kind == ToolActionKind.Seed ? -25f * motion : 0);
         }
-        public void Burst(ToolActionKind kind, Vector3 target)
+        public void BindEffects(GameObject prefab)
         {
-            Material material = kind == ToolActionKind.Hoe || kind == ToolActionKind.Axe || kind == ToolActionKind.Pickaxe ? earth : kind == ToolActionKind.Seed ? seed : kind == ToolActionKind.Water ? water : sparkle;
-            for (int i = 0; i < 8; i++)
-            {
-                if (particles.Count >= 32) { Object.Destroy(particles[0].Transform.gameObject); particles.RemoveAt(0); }
-                float angle = i * Mathf.PI / 4;
-                GameObject part = Part("Action Particle", EffectRoot, PrimitiveType.Sphere, Vector3.zero,
-                    Vector3.one * (kind == ToolActionKind.Water ? 0.07f : 0.1f), material);
-                part.transform.position = target + Vector3.up * (kind == ToolActionKind.Water || kind == ToolActionKind.Seed ? 0.7f : 0.15f);
-                particles.Add(new Particle { Transform = part.transform,
-                    Velocity = new Vector3(Mathf.Cos(angle) * 0.7f, kind == ToolActionKind.Water || kind == ToolActionKind.Seed ? -0.4f : 1.4f, Mathf.Sin(angle) * 0.7f) });
-            }
+            Transform parent = EffectRoot.parent;
+            Object.Destroy(EffectRoot.gameObject);
+            effects = Object.Instantiate(prefab, parent).GetComponent<FarmActionEffects>();
+            EffectRoot = effects.transform;
         }
-        public void TickEffects(float seconds)
-        {
-            for (int i = particles.Count - 1; i >= 0; i--)
-            {
-                Particle particle = particles[i]; particle.Age += seconds;
-                if (particle.Age >= 0.65f) { Object.Destroy(particle.Transform.gameObject); particles.RemoveAt(i); continue; }
-                particle.Velocity += Vector3.down * 3f * seconds;
-                particle.Transform.position += particle.Velocity * seconds;
-                particle.Transform.localScale *= Mathf.Max(0, 1 - seconds * 2);
-            }
-        }
+        public void Burst(ToolActionKind kind, Vector3 target) => effects?.Burst(kind, target);
+        public void TickEffects(float seconds) => effects?.Tick(seconds);
         public void Clear()
         {
             if (Grip != null) Object.Destroy(Grip.gameObject);
             if (EffectRoot != null) Object.Destroy(EffectRoot.gameObject);
             foreach (Material material in materials) Object.Destroy(material);
-            materials.Clear(); particles.Clear();
+            materials.Clear(); effects = null;
         }
     }
 }

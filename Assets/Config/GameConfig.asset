@@ -11,11 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 98974c4820494f1dac9e5cfd8c8f66a4, type: 3}
   m_Name: GameConfig
-  m_EditorClassIdentifier: 
-  GameSceneAddress: Scenes/MainGame
-  FarmSize: 5
-  InitialSeeds: 50
-  InitialGold: 100
+  m_EditorClassIdentifier:
   SecondsPerGameMinute: 1
   ToolActionDuration: 0.55
   MaxStamina: 100
@@ -23,8 +19,25 @@ MonoBehaviour:
   SeedStaminaCost: 1
   WaterStaminaCost: 2
   HarvestStaminaCost: 0
+  GameSceneAddress: Scenes/MainGame
+  FarmSize: 5
+  InitialSeeds: 50
+  InitialGold: 100
+  InventorySlots: 10
+  SeedItemId: turnip_seed
+  HarvestItemId: turnip
   CropGrowthDays: 3
   PlayerSpeed: 4
+  PlayerPrefabAddress: PlayerCharacter
+  InteractionHighlightAddress: InteractionHighlight
+  OceanPrefabAddress: IslandOcean
+  TerrainPrefabAddress: IslandTerrain
+  ShopPrefabAddress: IslandShop
+  FarmPlotPrefabAddress: FarmPlot
+  ToolEffectsPrefabAddress: FarmActionEffects
   InteractionReach: 2.25
   CameraPitch: 42
   CameraSize: 7
+  CameraOccludedOpacity: 0.22
+  CameraFadeDuration: 0.2
+  CameraOcclusionMargin: 0.08

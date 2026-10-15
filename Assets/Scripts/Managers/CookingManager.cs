@@ -18,8 +18,8 @@ namespace MagicIsland.Managers
         public string LastError { get; private set; }
         private AsyncOperationHandle<GameObject> handle;
         private int generation;
-        public void Initialize(CookingCatalog catalog, InventoryManager inventory, StoryEventManager stories = null)
-        { Clear(); Catalog = catalog; Inventory = inventory; Stories = stories; State = new CookingState(catalog.Definitions(), id => Stories?.State?.Completed(id) ?? false); }
+        public void Initialize(CookingCatalog catalog, InventoryManager inventory, StoryEventManager stories = null, AnimalConfig animals = null, CropCatalog crops = null)
+        { Clear(); Catalog = catalog; Inventory = inventory; Stories = stories; State = new CookingState(catalog.Definitions(), id => Stories?.State?.Completed(id) ?? false, crops != null ? crops.Ingredients(animals) : animals == null ? null : new IngredientResolver(animals.EggItemId, animals.QualityEggItemId)); }
         public IEnumerator LoadStation(Transform world, int farmSize)
         {
             LastError = null; int current = generation; handle = Addressables.InstantiateAsync(Catalog.StationAddress, world); yield return handle;

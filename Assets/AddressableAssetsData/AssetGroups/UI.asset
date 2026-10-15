@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
   m_Name: UI
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   m_GroupName: UI
   m_Data:
     m_SerializedData: []
@@ -114,6 +114,46 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1cbb543552c57cc4193d5b7849aae85b
     m_Address: HouseUpgradePanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 600ccd2596f91f2478c80028dd95e22a
+    m_Address: AnimalShopPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb4debd4c531c0f46bc8b15454b74707
+    m_Address: CoopPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7be7fdf94641da4b9e436e6cd7a4bf2
+    m_Address: DailyReportPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0395f59cb56872049aa90576dd6dd0cf
+    m_Address: InventoryUpgradePanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f17806e9c5aaae24b930df12131d8617
+    m_Address: ShippingPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e33491e40bc9b0e458074eb992430edf
+    m_Address: PausePanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f86c4a64aa8c4f644a3c11c71a460a87
+    m_Address: InteractionPromptPanel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 810254203485ac443bf0c05b863fef0a
+    m_Address: MapPanel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

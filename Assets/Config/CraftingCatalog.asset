@@ -11,14 +11,17 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 059b0290436049afbd765b2f95469579, type: 3}
   m_Name: CraftingCatalog
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   Recipes:
   - Id: wood_fence
     DisplayName: "\u6728\u6805\u680F"
     OutputItemId: wood_fence
     PrefabAddress: WoodFence
     Yield: 1
+    Clearance: 0
     IsFurniture: 0
+    IsSupply: 0
+    IsFarmingSupply: 0
     Ingredients:
     - ItemId: wood
       Quantity: 2
@@ -27,7 +30,10 @@ MonoBehaviour:
     OutputItemId: stone_path
     PrefabAddress: StonePath
     Yield: 1
+    Clearance: 0
     IsFurniture: 0
+    IsSupply: 0
+    IsFarmingSupply: 0
     Ingredients:
     - ItemId: stone
       Quantity: 2
@@ -36,7 +42,10 @@ MonoBehaviour:
     OutputItemId: garden_lamp
     PrefabAddress: GardenLamp
     Yield: 1
+    Clearance: 0
     IsFurniture: 0
+    IsSupply: 0
+    IsFarmingSupply: 0
     Ingredients:
     - ItemId: wood
       Quantity: 3
@@ -47,7 +56,10 @@ MonoBehaviour:
     OutputItemId: wood_table
     PrefabAddress: WoodTable
     Yield: 1
+    Clearance: 0
     IsFurniture: 1
+    IsSupply: 0
+    IsFarmingSupply: 0
     Ingredients:
     - ItemId: wood
       Quantity: 4
@@ -56,7 +68,10 @@ MonoBehaviour:
     OutputItemId: wood_chair
     PrefabAddress: WoodChair
     Yield: 1
+    Clearance: 0
     IsFurniture: 1
+    IsSupply: 0
+    IsFarmingSupply: 0
     Ingredients:
     - ItemId: wood
       Quantity: 3
@@ -65,9 +80,57 @@ MonoBehaviour:
     OutputItemId: small_lamp
     PrefabAddress: SmallLamp
     Yield: 1
+    Clearance: 0
     IsFurniture: 1
+    IsSupply: 0
+    IsFarmingSupply: 0
     Ingredients:
     - ItemId: wood
       Quantity: 2
     - ItemId: stone
       Quantity: 1
+  - Id: animal_feed
+    DisplayName: "\u7389\u7C73\u9972\u6599"
+    OutputItemId: animal_feed
+    PrefabAddress:
+    Yield: 10
+    Clearance: 0
+    IsFurniture: 0
+    IsSupply: 1
+    IsFarmingSupply: 0
+    Ingredients:
+    - ItemId: corn
+      Quantity: 1
+  - Id: basic_fertilizer
+    DisplayName: "\u57FA\u7840\u80A5\u6599"
+    OutputItemId: basic_fertilizer
+    PrefabAddress:
+    Yield: 5
+    Clearance: 0
+    IsFurniture: 0
+    IsSupply: 1
+    IsFarmingSupply: 1
+    Ingredients:
+    - ItemId: wood
+      Quantity: 2
+  PurchasedPlaceables:
+  - Id: apple_sapling
+    DisplayName: "\u82F9\u679C\u6811\u82D7"
+    OutputItemId: apple_sapling
+    PrefabAddress: AppleTree
+    Yield: 1
+    Clearance: 1
+    IsFurniture: 0
+    IsSupply: 0
+    IsFarmingSupply: 0
+    Ingredients: []
+  - Id: orange_sapling
+    DisplayName: "\u6A59\u6811\u82D7"
+    OutputItemId: orange_sapling
+    PrefabAddress: OrangeTree
+    Yield: 1
+    Clearance: 1
+    IsFurniture: 0
+    IsSupply: 0
+    IsFarmingSupply: 0
+    Ingredients: []

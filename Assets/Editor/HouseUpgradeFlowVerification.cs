@@ -76,7 +76,7 @@ namespace MagicIsland.EditorTools
                     g.ApplyHouseUpgrade(); Require(!g.Housing.Upgrade.Building && g.Inventory.GetCount("wood") == 19 && g.Economy.Gold == 299, "Missing material refusal costs nothing");
                     g.Inventory.TryAdd("wood", 11); g.Inventory.TryAdd("stone", 5); g.ApplyHouseUpgrade(); Require(!g.Housing.Upgrade.Building && g.Inventory.GetCount("wood") == 30, "Missing gold refusal costs nothing");
                     g.Economy.Restore(500); g.UI.RefreshViews(); Require(View.FeedbackText.text.Contains("备齐"), "Live costs clear old insufficient-gold feedback"); TextCheck(View); Capture(g, "HouseUpgradePanelPreview");
-                    g.ToggleInventory(); g.AdvanceDay(); Require(!g.UI.IsInventoryVisible && g.Farm.State.Day == 1, "Upgrade modal blocks bag and day advance");
+                    g.ToggleInventory(); g.AdvanceDay(); g.StartNewDayFromReport(); Require(!g.UI.IsInventoryVisible && g.Farm.State.Day == 1, "Upgrade modal blocks bag and day advance");
                     var office = g.Players.Player.transform.position; g.Players.RestorePosition(new Vector3(0, .1f, -4)); g.ApplyHouseUpgrade(); Require(!g.Housing.Upgrade.Building, "Distant confirmation cannot pay"); g.Players.RestorePosition(office);
                     string dir = SessionState.GetString(Key + ".Dir", ""), blocked = Path.Combine(dir, "blocked"); File.WriteAllText(blocked, "file"); SaveDirectory(g, blocked);
                     Action observer = () => { Require(g.Inventory.GetCount("wood") == 10 && g.Inventory.GetCount("stone") == 5 && g.Economy.Gold == 200 && g.Housing.Upgrade.CompletionDay == 2, "Upgrade publishes atomic costs/construction"); g.ApplyHouseUpgrade(); g.ReturnToMainMenu(); g.CloseHouseUpgrade(); };
@@ -101,9 +101,9 @@ namespace MagicIsland.EditorTools
                 else if (phase == 12 && UnityEngine.Object.FindObjectOfType<SleepView>() != null)
                 {
                     SaveDirectory(g, Path.Combine(SessionState.GetString(Key + ".Dir", ""), "blocked"));
-                    UnityEngine.Object.FindObjectOfType<SleepView>().ConfirmButton.onClick.Invoke();
+                    UnityEngine.Object.FindObjectOfType<SleepView>().ConfirmButton.onClick.Invoke(); g.StartNewDayFromReport();
                     Require(g.Farm.State.Day == 2 && g.Housing.Upgrade.Level == 1 && !g.Housing.Upgrade.Building && g.Furniture.State.HouseLevel == 1, "Sleep completes next day before save");
-                    Require(g.Interactions.Controller.Feedback.Contains("保存失败"), "Completion save failure retains expanded world"); SaveDirectory(g, SessionState.GetString(Key + ".Dir", "")); Require(g.SaveProgress(), "Completion save retry succeeds");
+                    Require(g.Interactions.Controller.Feedback.Contains("保存失败") && g.DailyReports.State.Pending && g.UI.HasDailyReport, "Completion save failure retains expanded world and pending report"); SaveDirectory(g, SessionState.GetString(Key + ".Dir", "")); Require(g.SaveProgress(), "Completion save retry succeeds"); g.StartNewDayFromReport();
                     Require(g.Housing.Interior.GetInstanceID() == SessionState.GetInt(Key + ".Room", 0) && g.Furniture.Objects.Values.Single().GetInstanceID() == SessionState.GetInt(Key + ".Table", 0), "In-place extension preserves room and furniture instances");
                     var before = JsonUtility.FromJson<Vector3>(SessionState.GetString(Key + ".Player", "{}")); Require(Vector2.Distance(new Vector2(before.x, before.z), new Vector2(g.Housing.SavedPosition.x, g.Housing.SavedPosition.z)) < .001f, "Completion preserves player horizontal position");
                     Require(g.Housing.Interior.OriginalWalls.All(w => !w.activeSelf) && g.Housing.Interior.transform.Find("PlayerHomeExpansion(Clone)") != null && g.Housing.Entrance.NameText.text == "舒适小屋", "AA extension geometry and upgraded exterior");

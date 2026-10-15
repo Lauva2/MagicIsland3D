@@ -19,19 +19,30 @@ namespace MagicIsland.Managers
         public string CropItemId => actions?.SelectedCrop.HarvestId;
         public CropCatalog Crops { get; private set; }
         public CalendarManager Calendar { get; private set; }
+        public FertilizerManager Fertilizer { get; internal set; }
         public string LastError { get; private set; }
         public int LoadedVisualCount => visualPrefabs.Count;
+        public GameObject PlotPrefab { get; private set; }
         public event Action SeedChanged;
         public event Action<TaskAction> ActionSucceeded;
         private FarmActions actions;
+        internal void SetHarvestRecorder(Action recorder) => actions?.SetHarvestRecorder(recorder);
         private readonly Dictionary<string, GameObject> visualPrefabs = new Dictionary<string, GameObject>();
         private readonly List<AsyncOperationHandle<GameObject>> visualHandles = new List<AsyncOperationHandle<GameObject>>();
         private int loadGeneration;
 
-        public IEnumerator LoadVisuals(CropCatalog crops)
+        public IEnumerator LoadVisuals(CropCatalog crops, string plotAddress = "FarmPlot")
         {
             ReleaseVisuals(); LastError = null;
             int generation = loadGeneration;
+            var plotHandle = Addressables.LoadAssetAsync<GameObject>(plotAddress);
+            visualHandles.Add(plotHandle); yield return plotHandle;
+            if (generation != loadGeneration) yield break;
+            if (plotHandle.Status != AsyncOperationStatus.Succeeded || plotHandle.Result == null
+                || plotHandle.Result.GetComponent<FarmPlotVisual>() == null || !plotHandle.Result.GetComponent<FarmPlotVisual>().IsValid
+                || plotHandle.Result.GetComponentsInChildren<Collider>(true).Length != 0)
+            { LastError = "Cannot load farm plot visual: " + plotAddress; ReleaseVisuals(); yield break; }
+            PlotPrefab = plotHandle.Result;
             foreach (CropConfig crop in crops.Crops)
                 foreach (CropGrowthStage stage in Enum.GetValues(typeof(CropGrowthStage)))
                 {
@@ -51,13 +62,13 @@ namespace MagicIsland.Managers
                     visualPrefabs.Add(address, handle.Result);
                 }
         }
-        public void Initialize(FarmGrid grid, GameConfig config, InventoryManager inventory, StaminaManager stamina, CropCatalog crops, CalendarManager calendar = null)
+        public void Initialize(FarmGrid grid, GameConfig config, InventoryManager inventory, StaminaManager stamina, CropCatalog crops, CalendarManager calendar = null, FertilizerConfig fertilizer = null, int qualitySeed = 1)
         {
             Grid = grid;
             Inventory = inventory;
             Crops = crops;
             Calendar = calendar;
-            grid.Initialize(config.FarmSize, config.CropGrowthDays, crops, crops.FindBySeed(config.SeedItemId).Id, visualPrefabs);
+            grid.Initialize(config.FarmSize, config.CropGrowthDays, crops, crops.FindBySeed(config.SeedItemId).Id, visualPrefabs, fertilizer?.Definition(), qualitySeed, PlotPrefab);
             actions = new FarmActions(State, inventory.State, config.SeedItemId, config.HarvestItemId, stamina.State,
                 config.HoeStaminaCost, config.SeedStaminaCost, config.WaterStaminaCost, config.HarvestStaminaCost, crops.Definitions(),
                 crop => Calendar == null || Calendar.CanPlant(Crops.Find(crop.Id)));
@@ -76,11 +87,13 @@ namespace MagicIsland.Managers
             }
             return acted;
         }
-        public string Describe(int index, FarmTool tool) => actions.Describe(index, tool);
+        public bool CanPerform(int index, FarmTool tool) => State != null && index >= 0 && index < State.Cells.Length
+            && (tool == FarmTool.Fertilizer ? Fertilizer.State.Check(index) == FertilizerResult.Success : actions.CanPerform(index, tool));
+        public string Describe(int index, FarmTool tool) => tool == FarmTool.Fertilizer ? Fertilizer.Describe(index) : actions.Describe(index, tool);
         public bool SelectSeed(string id, bool requireStock = true)
         { if (actions == null || !actions.SelectSeed(id, requireStock)) return false; SeedChanged?.Invoke(); return true; }
         public long TotalHarvest
-        { get { long count = 0; foreach (CropConfig crop in Crops.Crops) count += Inventory.GetCount(crop.HarvestItemId); return count; } }
+        { get { long count = 0; foreach (CropConfig crop in Crops.Crops) count += Inventory.GetCount(crop.HarvestItemId) + Inventory.GetCount(crop.QualityHarvestItemId); return count; } }
         private void ReleaseVisuals()
         {
             loadGeneration++;
@@ -90,11 +103,11 @@ namespace MagicIsland.Managers
                     if (handle.IsDone) Addressables.Release(handle);
                     else handle.Completed += operation => { if (operation.IsValid()) Addressables.Release(operation); };
                 }
-            visualHandles.Clear(); visualPrefabs.Clear();
+            visualHandles.Clear(); visualPrefabs.Clear(); PlotPrefab = null;
         }
         public void Clear()
         {
-            if (Grid != null) Grid.ClearCropVisuals();
+            if (Grid != null) { Grid.ClearCropVisuals(); Grid.ClearPlotVisuals(); }
             Grid = null; Inventory = null; actions = null; Crops = null; Calendar = null; ReleaseVisuals();
         }
         private void OnDestroy() => Clear();

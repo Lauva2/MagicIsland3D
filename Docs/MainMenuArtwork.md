@@ -1,5 +1,7 @@
 # 主菜单背景
 
+当前进度统一在每天睡觉结算后保存；白天操作仅修改运行状态，面板手动保存和返回菜单保存已取消，设置单独持久化。睡觉失败只重试该次固定快照。规则见 [暂停与睡觉存档](PauseAndSettings.md)。
+
 使用内置 image_gen 生成，保存到 `Assets/Art/Textures/UI/MainMenuBackground.png`。
 由 `MainMenuPanel` 的 Background Image 引用，作为 AA 预制体的依赖一起加载。
 背景按比例铺满，超出画布的部分裁切，不拉伸。

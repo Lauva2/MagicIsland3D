@@ -1,0 +1,135 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Audio
+  m_EditorClassIdentifier:
+  m_GroupName: Audio
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 39fc0d5a11a7e7a4aa52177912fbea00
+  m_SerializeEntries:
+  - m_GUID: 3578fc076e544dc0ad9138d2289010c5
+    m_Address: Audio_MenuMusic
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30562cb4c7dd4cba83a70d6ff46cfbae
+    m_Address: Audio_IslandMusic
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6898792ba65f4f1cb27bc432c82ed985
+    m_Address: Audio_HomeMusic
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 57a1ede3494a40a9b2b398ad8decc6e9
+    m_Address: Audio_UiClick
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93a3d54a69794fd3a45166d9a6db1e49
+    m_Address: Audio_UiOpen
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84ced50f90b440f0a72db2c0f6cb7772
+    m_Address: Audio_UiClose
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed3549e39a6142e0bc08f8c48c57cf61
+    m_Address: Audio_Hoe
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 164c0399cf91499f93c0571822b336e6
+    m_Address: Audio_Plant
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6d1d21219b64206b96d1b83cb96d671
+    m_Address: Audio_Water
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f60ca8c4bede4868bd6486d75ee9e860
+    m_Address: Audio_Harvest
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e6954812ef64bc79670e57beb2d7ddc
+    m_Address: Audio_Axe
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c050720fdce84fb9a6c01177297b2e3a
+    m_Address: Audio_Pickaxe
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cec1e33ce2544a118fd4b57cd44387d6
+    m_Address: Audio_Fertilize
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ad445e30dc84b8180a0b56d5d79ce9d
+    m_Address: Audio_Trade
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 803dc6951d885f2448470c983623e772
+    m_Address: Audio_Waves
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17fddeb912c524846ab6f2e9992f6e77
+    m_Address: Audio_Wind
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb8de572747fe074fa99fdaa3f1db4c9
+    m_Address: Audio_Rain
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3756502c985e81648b4ee4a18233975a
+    m_Address: Audio_SeagullCall
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 03b9e4e545479d0479d0575231fb26af
+    m_Address: Audio_WingFlap
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 475676023b2f7c44b9eb78ddb91351a1
+    m_Address: Audio_StepGrass
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d310478f4b54e8a4c823fb7db4905d9e
+    m_Address: Audio_StepSand
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35279bebb22aab04d86671dc9fa2f84a
+    m_Address: Audio_StepWood
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: ac955b8fe83d22d4a85c3b3fc30e9c11, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 3e4660187230b3b468ef90c629a749d1, type: 2}
+    - {fileID: 11400000, guid: e09a02236ab2d6447ac064d278e6776a, type: 2}
