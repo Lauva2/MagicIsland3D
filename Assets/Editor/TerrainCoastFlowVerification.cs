@@ -61,6 +61,7 @@ namespace MagicIsland.EditorTools
             Require(g.Terrain.OwnsTerrain&&g.Terrain.Terrain.IsValid&&g.Fishing.Spot.Deck!=null&&g.Fishing.Spot.ReachPoint!=null,"AA terrain/pier bound");
             var world=Object.FindObjectOfType<MagicIsland.Prototype.FarmPrototype>();Require(world.transform.Find("Island ground")==null&&world.transform.Find("East boundary")==null,"Legacy square ground/walls replaced");
             VerifyCoastArt(g);
+            CoastalPalmVerification.VerifyRuntime(g);
             Debug.Log("Coast setup: legacy landing");
             foreach(var p in new[]{new Vector3(11.3f,8,11.3f),new Vector3(-11.3f,3,-11.3f),new Vector3(0,2,-4.6f)})
             {Require(g.Housing.ApplyArea(HousingState.Island,p),"Legacy island position resolves safely");Require(Mathf.Abs(g.Players.Player.transform.position.y-.05f)<.025f,"Restored foot is on terrain instead of air");}
@@ -92,12 +93,15 @@ namespace MagicIsland.EditorTools
             }
             Require(palms.All(p=>p.Obstacle!=null&&p.Obstacle.enabled&&!p.Obstacle.isTrigger&&p.Obstacle.gameObject.layer==2),"Solid palm trunks ignore pointer rays");
             var palm=palms[0];var p=palm.transform.position;
-            Move(g,p+new Vector3(-1.3f,.08f,0));Walk(g,Vector2.right,18);
-            Require(g.Players.Player.transform.position.x<p.x-.3f,"Actual movement stops at palm trunk");
+            var trunk=palm.Obstacle.bounds.center;trunk.y=p.y;
+            Move(g,trunk+new Vector3(-1.3f,.08f,0));Walk(g,Vector2.right,18);
+            Require(g.Players.Player.transform.position.x<trunk.x-.3f,"Actual movement aimed at the collider center stops at palm trunk");
             Move(g,p+new Vector3(0,.08f,2.4f));g.Cameras.SetOcclusionEnabled(true);
             typeof(CameraManager).GetMethod("UpdateOcclusion",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(g.Cameras,new object[]{1f});
             var occluder=palm.GetComponent<CameraOccluder>();Require(occluder.Opacity<.3f&&occluder.RuntimeMaterialCount>0&&palm.Obstacle.enabled,"Palm fades without disabling solid trunk");Capture(g,"CoastPalmFadePreview",false);
-            Move(g,p+new Vector3(3,.08f,1.6f));typeof(CameraManager).GetMethod("UpdateOcclusion",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(g.Cameras,new object[]{1f});
+            var crown=occluder.Renderers[0].bounds;foreach(var renderer in occluder.Renderers)crown.Encapsulate(renderer.bounds);
+            float clearX=p.x>0?crown.min.x-.8f:crown.max.x+.8f;
+            Move(g,new Vector3(clearX,p.y+.08f,p.z+1.6f));typeof(CameraManager).GetMethod("UpdateOcclusion",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(g.Cameras,new object[]{1f});
             Require(occluder.Opacity==1&&occluder.RuntimeMaterialCount==0,"Palm restores original AA materials after moving aside");
             Require(!g.Interactions.RefreshPointer(new Ray(p+Vector3.up*6,Vector3.down),false).Visible,"Palm decoration cannot intercept a mouse interaction");
             var saved=new[]{new SavedPlacedObject{Id=1,ItemId="fixture",GridX=Mathf.RoundToInt(p.x),GridZ=Mathf.RoundToInt(p.z)}};

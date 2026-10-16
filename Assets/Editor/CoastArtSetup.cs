@@ -137,6 +137,40 @@ namespace MagicIsland.EditorTools
             if(Vector2.Distance(new Vector2(p.x,p.z),new Vector2(14.15f,-6.2f))<1.7f+margin)return false;
             return IslandLayout.ContainsLand(p.x,p.z,.5f+margin);
         }
+
+        [MenuItem("Magic Island/Rebuild Coastal Palms")]
+        public static void RebuildCoastalPalms()
+        {
+            if(EditorApplication.isPlayingOrWillChangePlaymode)return;
+            var root=PrefabUtility.LoadPrefabContents(TerrainSetup.PrefabPath);
+            try
+            {
+                var terrain=root.GetComponent<IslandTerrain>();
+                if(terrain.CoastalScenery==null)throw new InvalidOperationException("Coastal scenery is missing; run the initial Setup first.");
+                if(terrain.PalmScatter==null)terrain.PalmScatter=new CoastalPalmScatter();
+                var plan=terrain.PalmScatter.CreatePlan();
+                var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(PrefabFolder+"/CoastalPalm.prefab");
+                if(prefab==null||prefab.GetComponent<CoastalSceneryPatch>()==null)
+                    throw new InvalidOperationException("CoastalPalm prefab is missing or invalid; existing scenery preserved.");
+                var existing=terrain.CoastalScenery.GetComponentsInChildren<CoastalSceneryPatch>(true);
+                for(int i=0;i<plan.Length;i++)
+                {
+                    // Reuse nested instances so their component overrides and fileIDs survive.
+                    var palm=i<existing.Length?existing[i].gameObject:(GameObject)PrefabUtility.InstantiatePrefab(prefab,terrain.CoastalScenery);
+                    ApplyPalmSite(palm.transform,plan[i]);
+                }
+                for(int i=plan.Length;i<existing.Length;i++)Object.DestroyImmediate(existing[i].gameObject);
+                PrefabUtility.SaveAsPrefabAsset(root,TerrainSetup.PrefabPath);
+                Debug.Log("Coastal palms rebaked: seed="+terrain.PalmScatter.Seed+", count="+plan.Length);
+            }
+            finally{PrefabUtility.UnloadPrefabContents(root);}
+        }
+        private static void ApplyPalmSite(Transform palm,PalmSite site)
+        {
+            palm.localPosition=new Vector3((float)site.X,(float)IslandLayout.Height(site.X,site.Z),(float)site.Z);
+            palm.localRotation=Quaternion.Euler(0,(float)site.Yaw,0);
+            palm.localScale=Vector3.one*(float)site.Scale;
+        }
         private static void UpgradeTerrain()
         {
             var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(TerrainSetup.PrefabPath);
@@ -148,11 +182,11 @@ namespace MagicIsland.EditorTools
             {
                 var marker=root.GetComponent<IslandTerrain>();if(marker.CoastalScenery!=null)Object.DestroyImmediate(marker.CoastalScenery.gameObject);
                 var scenery=new GameObject("Coastal scenery");scenery.transform.SetParent(root.transform,false);marker.CoastalScenery=scenery.transform;
-                for(int i=0;i<24;i++)
+                if(marker.PalmScatter==null)marker.PalmScatter=new CoastalPalmScatter();
+                foreach(var site in marker.PalmScatter.CreatePlan())
                 {
-                    float a=i*Mathf.PI*2/24+.09f+.025f*Mathf.Sin(i*3.7f);var p=CoastPoint(a,2.9f+(i%3)*.23f);
-                    if(!ClearPath(p,.45f))continue;
-                    Instance("CoastalPalm",scenery.transform,p,i*137,Vector3.one*(.92f+(i%3)*.09f));
+                    var palm=Instance("CoastalPalm",scenery.transform,Vector3.zero,0,Vector3.one);
+                    ApplyPalmSite(palm.transform,site);
                 }
                 for(int i=0;i<58;i++)
                 {

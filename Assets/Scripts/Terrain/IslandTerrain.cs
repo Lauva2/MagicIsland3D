@@ -8,6 +8,7 @@ namespace MagicIsland.TerrainSystem
         public MeshCollider Ground, Boundary;
         [HideInInspector] public int CoastArtVersion;
         public Transform CoastalScenery;
+        public CoastalPalmScatter PalmScatter = new CoastalPalmScatter();
         public VillagePaths Paths;
         public SeasonalGroundCover SeasonalDetails;
         public bool IsValid => Ground!=null&&Boundary!=null&&Ground.sharedMesh!=null&&Boundary.sharedMesh!=null
