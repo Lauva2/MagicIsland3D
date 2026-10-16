@@ -18,6 +18,9 @@ namespace MagicIsland.Managers
         private Camera view;
         private bool originalDepth;
         private WeatherConfig weather;
+        private CoastalWildlifeNavigation coastalNavigation;
+        private CoastalWildlifePhysics coastalPhysics;
+        public bool OwnsCoastalNavigation=>coastalNavigation!=null;
         public IEnumerator Load(string address, Transform world, Camera camera, WeatherConfig config)
         {
             Clear();
@@ -39,7 +42,17 @@ namespace MagicIsland.Managers
             weather = config;
             originalDepth = (view.depthTextureMode & DepthTextureMode.Depth) != 0;
             view.depthTextureMode |= DepthTextureMode.Depth;
-            try { Surface.Tick(0, 1, false); }
+            try
+            {
+                var game=GameManager.Instance;
+                coastalPhysics=new CoastalWildlifePhysics(world,Surface.transform,game?.Terrain?.Terrain?.Ground,game?.Players?.Player?.transform,game?.Terrain?.Terrain?.Boundary);
+                coastalNavigation=new CoastalWildlifeNavigation(Surface.Birds.Length){SolidClear=coastalPhysics.ClearVolume};
+                Surface.BindCoastalNavigation(coastalNavigation);
+                float light=game?.Time?.Clock==null?1:(float)DaylightCycle.Evaluate(game.Time.Clock.Minute,weather.DawnMinute,weather.DaylightMinute,weather.DuskMinute,weather.NightMinute);
+                Surface.Tick(0,light,game?.Weather?.State?.Kind==WeatherKind.Rainy,twilight:game?.Time?.Clock==null?0:Evening(game.Time.Clock.Minute));
+                Surface.BindPresentationCamera(view);
+                Camera.onPreCull+=PreparePresentation;
+            }
             catch (System.Exception exception)
             {
                 LastError = "海洋 AA 预制体或镜头配置不完整";
@@ -57,7 +70,13 @@ namespace MagicIsland.Managers
             float light = (float)DaylightCycle.Evaluate(game.Time.Clock.Minute, weather.DawnMinute, weather.DaylightMinute, weather.DuskMinute, weather.NightMinute);
             bool animate=game.Players.Player.enabled || (game.UI.HasFishing && !game.UI.HasPause && !game.UI.HasSettings);
             Vector3? fishingPoint=game.UI.HasFishing&&game.Fishing.Spot!=null?(Vector3?)game.Fishing.Spot.Bobber.position:null;
-            Surface.Tick(animate ? Time.deltaTime : 0, light, game.Weather.State.Kind == WeatherKind.Rainy, game.Weather.Sun,game.Players.Player.transform.position,fishingPoint);
+            float twilight=Evening(game.Time.Clock.Minute);
+            Surface.Tick(animate ? Time.deltaTime : 0, light, game.Weather.State.Kind == WeatherKind.Rainy, game.Weather.Sun,game.Players.Player.transform.position,fishingPoint,twilight);
+        }
+        float Evening(double minute)=>Mathf.Sin(Mathf.Clamp01(((float)minute-(weather.DuskMinute-60))/(weather.NightMinute-weather.DuskMinute+60))*Mathf.PI);
+        void PreparePresentation(Camera camera)
+        {
+            if(isActiveAndEnabled&&Surface!=null&&camera==view)Surface.PreparePresentation(camera);
         }
         public void DisturbWater(Vector3 point)
         {
@@ -68,6 +87,10 @@ namespace MagicIsland.Managers
         public void Clear()
         {
             generation++;
+            Camera.onPreCull-=PreparePresentation;
+            if(Surface!=null)Surface.BindCoastalNavigation(null);
+            coastalNavigation?.Clear();coastalNavigation=null;coastalPhysics?.Clear();coastalPhysics=null;
+            if(Surface!=null)Surface.BindPresentationCamera(null);
             if (view != null && !originalDepth) view.depthTextureMode &= ~DepthTextureMode.Depth;
             if (handle.IsValid())
             {

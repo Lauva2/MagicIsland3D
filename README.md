@@ -70,7 +70,10 @@ Unity 2022.3.62f2，内置渲染管线，旧版 Input，Addressables 1.21.17。
 - `Configuration/GameConfig`：通过 AA 加载的运行配置，默认农田 5×5、50 颗种子、3 天生长。
 - `Configuration/ItemCatalog`：AA 物品配置，定义物品 ID、名称、类型、图标、堆叠上限和描述。
 - `Configuration/WeatherConfig`、`Managers/WeatherManager`：AA 天气参数、每日晴雨、昼夜光照、雨滴表现及雨水浇灌。
-- `Configuration/SeasonConfig`、`Managers/CalendarManager`：AA 季节长度和降雨概率，从存档总天数推导日期及检查播种季节。
+- `Configuration/SeasonConfig`、`Managers/CalendarManager`：AA 季节长度、降雨概率及四季草地 / 树冠 / 常绿配色，从存档总天数推导日期及检查播种季节；WeatherManager 在初始化与睡觉跨季时同步环境颜色。配色及 Packed AA 验证见 [日期与季节](Docs/CalendarAndSeasons.md#四季环境配色)。
+- `Terrain/SeasonalGroundCover`：随地形 AA 加载烘焙花草、落叶及薄霜，建设覆盖时隐藏，回收后恢复，飘叶随统一风动时钟暂停；见 [四季地表细节](Docs/SeasonalGroundDetails.md)。
+- `Ocean/OceanFishAnimation`：五节点距离约束鱼身、惯性跟随及昼夜 / 晴雨活动节律，参数位于 IslandOcean 的 FishAnimation，复用既有安全包络；见 [海洋表现](Docs/Ocean.md#鱼身距离约束与环境节律)。
+- `Ocean/OceanFishPassage`：珊瑚前逐鱼分流、错峰通过和渐进归群，复用完整鱼身导航与统一海洋时钟；见 [鱼群分流](Docs/Ocean.md#障碍分流与逐渐归群)。
 - `Configuration/GatheringCatalog`、`Managers/GatheringManager`、`Gathering/GatheringState`：树木和石头节点、AA 模型、采集次数、材料和体力、按天刷新与存档，工具栏及背包沿用 MVC。
 - `Configuration/OrderCatalog`、`Managers/OrderManager`、`Orders/OrderState`：每日订单生成、公告栏建筑 AA 实例、原子交付、奖励和存档，OrderPanel 通过 MVC 显示。
 - `Configuration/TaskCatalog`、`Managers/TaskManager`、`Tasks/TaskState`：AA 新手任务、成功行为进度、顺序领奖和存档，TaskPanel 通过 MVC 显示。
@@ -112,6 +115,22 @@ Unity 2022.3.62f2，内置渲染管线，旧版 Input，Addressables 1.21.17。
 
 天空新增由 WeatherManager 管理的 IslandClouds AA 预制体，云朵缓慢漂移，晴天地面偶尔出现柔和云影；暂停冻结，室内隐藏，雨天和夜晚关闭独立云影，沿用当前昼夜亮度。详见 [云层与云影](Docs/Clouds.md)。
 
+小屋窗户与门灯、码头入口及尽头两盏矮灯随傍晚渐亮，雨天提前亮灯；室内关闭户外照明，远处海洋保持夜间暗色。灯具和共享窗光材质随原小屋 / 码头 AA 依赖加载，更新资源后重新构建 Prototype Addressables。参数与验证入口见 [局部夜灯](Docs/Weather.md#小屋与码头局部夜灯)。
+
 海洋采用较窄的不规则浅滩、较深珊瑚礁带和外海三层水深，48 处浅水小珊瑚花园与 36 处大型珊瑚群落使用柔和配色。鱼群保留合批渲染，每条鱼拥有独立跟随、转向和摆尾，鳐鱼缓慢摆鳍；沿用 OceanManager、AA 加载和暂停生命周期。详见 [海洋生态](Docs/Ocean.md)。
 
-鱼群在各自固定的栖息范围内自由巡游、觅食和探索，按种类选择珊瑚或沙底，逐鱼绕开珊瑚和礁石。各类鱼通过 OceanSurface.FishPopulations 设置数量上下限，生成时独立随机抽取；调整范围后使用 Rebuild Ocean Geography And Ecology 重建，详见 [数量配置与避障](Docs/Ocean.md#数量配置觅食与避障)。
+海鸥默认 6–10 只、螃蟹 5–9 只，按独立种子随机烘焙数量与分散位置；鸟类飞行 / 停栖与蟹类停留 / 横移各自错峰，螃蟹腿部跟随步伐。玩家靠岸会惊扰附近浅水鱼，持续接近保持警觉，离开后恢复。调整 IslandOcean.CoastalPopulation 后显式执行 Rebuild Coastal Wildlife，再构建 AA；普通配置、进出和读档不重抽，详见 [鸟蟹随机分布](Docs/Ocean.md#鸟蟹数量与活动配置)。
+
+鸟蟹沿当前场景的实际树石、角色和摆放物检查安全路线。螃蟹受阻绕行或等待，海鸥落点被占用时换点或继续盘旋，离开警戒后错峰恢复；路线与落点不写存档。详见 [海岸避障与安全落点](Docs/Ocean.md#海岸避障与安全落点)。
+
+停栖海鸥会错峰观察、低头啄食和转头理羽，配合单侧翅膀轻抬；玩家接近时中断并衔接现有逃离。间隔与时长可在 CoastalBird.Habits 调整，继续使用原共享模型、材质和海洋暂停时钟，详见 [海鸥停栖动作](Docs/Ocean.md#海鸥停栖动作)。
+
+螃蟹停稳后会交替探沙觅食或抬钳观察，再按原周期短距横移；实际行走和受惊平滑中断动作。CoastalCrab.Habits 可调间隔 / 时长，双钳沿原共享网格的肩部枢轴独立转动，脚部保持贴地，详见 [螃蟹停留动作](Docs/Ocean.md#螃蟹停留动作)。
+
+海洋生态随昼夜和天气调整活动：黄昏珊瑚鱼逐渐靠近原水域内的安全礁区，夜间减少探索；岸边海鸥少飞、雨天少觅食，螃蟹夜间更活跃。节奏平滑过渡并随暂停冻结，受惊仍优先。参数位于 IslandOcean 的 FishAnimation / CoastalRhythm，详见 [昼夜与天气活动](Docs/Ocean.md#昼夜与天气活动)。
+
+鱼群在各自固定的栖息范围内自由巡游、觅食和探索，按种类选择珊瑚或沙底，逐鱼绕开珊瑚和礁石。各类鱼通过 OceanSurface.FishPopulations 设置群数与成员数量上下限，独立 FishSeed 决定数量及位置；调整后显式 Rebuild Fish Schools，再构建 AA，详见 [数量配置与避障](Docs/Ocean.md#数量配置觅食与避障)。
+
+新版鱼群可用 `./Tools/VerifyOceanFish.ps1 -Seconds 600` 复现 Windows 托管长时检查；Unity 菜单 `Verify Fish Presentation And CPU` 检查插值、着色器参数及 CPU 开销，`OceanFlowVerification.Run` 验收真正打包的 AA 内容。固定步检查使用真实步起点，避免把跨越多个模拟步的弯曲路径误当作直线。验收结果与隔离说明见 [实机验收](Docs/Ocean.md#实机验收与复现2026-10-16)，Logs 保留本地。
+
+正常游戏镜头只提交可见鱼群的插值 / GPU 姿态，屏幕外继续完整模拟，重新进入画面立即刷新。独立 Windows 验证构建及正常镜头晴雨 / 昼夜采样入口见 [可见性与 Player 验收](Docs/Ocean.md#正常镜头可见性与独立-player-验收)。

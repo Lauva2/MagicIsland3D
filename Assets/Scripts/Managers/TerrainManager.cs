@@ -26,6 +26,8 @@ namespace MagicIsland.Managers
             Physics.SyncTransforms();
         }
         public void BindPier(FishingSpot value)=>pier=value;
+        public void BindSeasonalDetails(PlacementManager placements,GatheringManager gathering,AnimalManager animals)
+            =>Terrain?.SeasonalDetails?.Bind(placements,gathering.State,Terrain.Paths,Terrain,animals);
         public void ConfigurePaths(int farmSize,MagicIsland.Configuration.HousingConfig housing)
         {
             if(Terrain?.Paths!=null&&Terrain.Paths.IsValid)Terrain.Paths.Configure(farmSize,housing);
@@ -71,7 +73,7 @@ namespace MagicIsland.Managers
         }
         public void Clear()
         {
-            generation++;pier=null;Terrain=null;
+            generation++;pier=null;Terrain?.SeasonalDetails?.Unbind();Terrain=null;
             if(handle.IsValid()){if(handle.IsDone)Release(handle);else handle.Completed+=Release;}handle=default;
         }
         private static void Release(AsyncOperationHandle<GameObject> value)

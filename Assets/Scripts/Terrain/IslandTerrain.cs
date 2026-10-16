@@ -9,9 +9,10 @@ namespace MagicIsland.TerrainSystem
         [HideInInspector] public int CoastArtVersion;
         public Transform CoastalScenery;
         public VillagePaths Paths;
+        public SeasonalGroundCover SeasonalDetails;
         public bool IsValid => Ground!=null&&Boundary!=null&&Ground.sharedMesh!=null&&Boundary.sharedMesh!=null
             && !Ground.convex&&!Boundary.convex&&!Ground.isTrigger&&!Boundary.isTrigger&&Ground.enabled&&Boundary.enabled
-            && (Paths==null||Paths.IsValid);
+            && (Paths==null||Paths.IsValid)&&(SeasonalDetails==null||SeasonalDetails.IsValid);
         public bool Contains(Vector3 world,float margin=0)
         {var p=transform.InverseTransformPoint(world);return IslandLayout.ContainsLand(p.x,p.z,margin);}
         public bool TryGround(Vector3 world,out Vector3 point)

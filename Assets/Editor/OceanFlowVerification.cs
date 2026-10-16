@@ -22,6 +22,11 @@ namespace MagicIsland.EditorTools
         public static void Run()
         {
             PrototypeAddressablesSetup.EnsureSetup();
+            CoastalNavigationVerification.Run();
+            OceanEcologyRhythmVerification.Run();
+            CoastalCrabIdleVerification.Verify(AssetDatabase.LoadAssetAtPath<GameObject>(OceanSetup.PrefabPath));
+            CoastalBirdIdleVerification.Verify(AssetDatabase.LoadAssetAtPath<GameObject>(OceanSetup.PrefabPath));
+            OceanBiomeSetup.VerifyFishScatter();
             var paths=new[]{OceanSetup.PrefabPath,OceanSetup.MaterialFolder+"/Water.mat",OceanSetup.MeshFolder+"/Ocean Surface.asset",OceanSetup.MeshFolder+"/Island Shore.asset","Assets/Config/GameConfig.asset"};
             var bytes=paths.Select(File.ReadAllBytes).ToArray();PrototypeAddressablesSetup.EnsureSetup();
             for(int i=0;i<paths.Length;i++)Require(bytes[i].SequenceEqual(File.ReadAllBytes(paths[i])),"Setup preserves artist ocean assets");
@@ -36,8 +41,10 @@ namespace MagicIsland.EditorTools
                 if(r>=edge+2&&r<=edge+6)Require(OceanGeography.SeaLevel-v.y>.15&&OceanGeography.SeaLevel-v.y<1.4,"Baked near-island floor retains a narrower continuous shallow shelf");
             }
             VerifyWildlife(AssetDatabase.LoadAssetAtPath<GameObject>(OceanSetup.PrefabPath));
+            CoastalWildlifeVerification.Verify(AssetDatabase.LoadAssetAtPath<GameObject>(OceanSetup.PrefabPath));
             OceanEcologyPolishVerification.Verify(AssetDatabase.LoadAssetAtPath<GameObject>(OceanSetup.PrefabPath));
             OceanFishBehaviourVerification.Verify(AssetDatabase.LoadAssetAtPath<GameObject>(OceanSetup.PrefabPath));
+            OceanFishAcceptanceVerification.Verify(AssetDatabase.LoadAssetAtPath<GameObject>(OceanSetup.PrefabPath));
             OceanEffectsVerification.Verify(AssetDatabase.LoadAssetAtPath<GameObject>(OceanSetup.PrefabPath));
             EditorSceneManager.OpenScene("Assets/Scenes/MainMenu.unity");PrototypeAddressablesSetup.BuildContent();
             var settings=AddressableAssetSettingsDefaultObject.Settings;settings.ActivePlayModeDataBuilderIndex=settings.DataBuilders.FindIndex(b=>b is BuildScriptPackedPlayMode);
@@ -51,8 +58,8 @@ namespace MagicIsland.EditorTools
             try
             {
                 var surface=root.GetComponent<OceanSurface>();var floor=new OceanBiomeSetup.BakedFloor(surface.Shore.GetComponent<MeshFilter>().sharedMesh);
-                Require(surface.Schools.Length==32&&surface.Schools.Sum(s=>s.Members)>=8*surface.FishPopulations.Sum(p=>p.Minimum)&&surface.Schools.Sum(s=>s.Members)<=8*surface.FishPopulations.Sum(p=>p.Maximum)&&surface.Schools.Select(s=>s.Species).Distinct().Count()==4,"Four fish species / 32 smaller schools baked into AA prefab");
-                Require(surface.Birds.Length==18&&surface.Birds.Select(b=>b.Activity).Distinct().Count()==3&&surface.Crabs.Length==16,"Flying, skimming and resting gulls plus shore crabs baked");
+                Require(surface.Schools.Length>=surface.FishPopulations.Sum(p=>p.MinimumSchools)&&surface.Schools.Length<=surface.FishPopulations.Sum(p=>p.MaximumSchools)&&surface.Schools.Select(s=>s.Species).Distinct().Count()==4,"Four species with ranged random school counts");
+                Require(surface.Birds.Length==surface.CoastalPopulation.CreatePlan().Birds.Length&&surface.Birds.Select(b=>b.Activity).Distinct().Count()==3&&surface.Crabs.Length==surface.CoastalPopulation.CreatePlan().Crabs.Length,"Ranged flying, skimming and resting gulls plus shore crabs baked");
                 foreach(var school in surface.Schools)
                 {
                     surface.ConfigureFishHabitat(school);
@@ -73,8 +80,9 @@ namespace MagicIsland.EditorTools
                 foreach(var bird in surface.Birds){bird.Render(1,0,false);Require(!bird.gameObject.activeSelf,"Gulls roost out of view at night");bird.Render(1,1,true);Require(bird.gameObject.activeSelf==(bird.Activity==CoastalBirdActivity.Perching),"Rain shelters flying birds and retains shore roosts");}
                 foreach(var crab in surface.Crabs)
                 {
-                    crab.Render(0);position=crab.transform.localPosition;crab.Render(3);
-                    Require(Vector3.Distance(position,crab.transform.localPosition)>.01f,"Shore crabs crawl");
+                    crab.Render(0);position=crab.transform.localPosition;float movement=0;
+                    for(int step=1;step<=30;step++){crab.Render(step);movement=Mathf.Max(movement,Vector3.Distance(position,crab.transform.localPosition));}
+                    Require(movement>.01f,"Shore crabs crawl between resting intervals");
                     for(int step=0;step<24;step++){crab.Render(step);var p=crab.transform.localPosition;Require(MagicIsland.Interaction.IslandLayout.ContainsLand(p.x,p.z)&&Mathf.Abs(p.y-((float)MagicIsland.Interaction.IslandLayout.Height(p.x,p.z)-.008f))<.001f,"Crabs stay on dry coastline and follow ground height");}
                 }
                 VerifyReactions(surface,floor);
@@ -166,7 +174,8 @@ namespace MagicIsland.EditorTools
                     var habitats=surface.GetComponentsInChildren<OceanHabitatPatch>();
                     Require(surface.BiomeArtVersion==OceanBiomeSetup.Version&&surface.Water.GetComponent<MeshFilter>().sharedMesh.bounds.size.x==240&&habitats.Length>=50&&habitats.Sum(h=>h.Population)>=1000&&surface.Schools.Length>=6,"Packed AA contains enlarged sea, clustered habitats and fish schools");
                     Require(habitats.Sum(h=>h.Grasses)>150&&habitats.Sum(h=>h.Corals)>80&&habitats.Sum(h=>h.Sponges)>25&&habitats.Sum(h=>h.Stars)>20&&habitats.Sum(h=>h.Shells)>20,"Diverse shallow ecosystem");
-                    Require(surface.Schools.Length==32&&surface.Birds.Length==18&&surface.Crabs.Length==16,"Packed AA includes diverse fish, gulls and crabs");
+                    var population=surface.CoastalPopulation.CreatePlan();
+                    Require(surface.Schools.Length>=surface.FishPopulations.Sum(p=>p.MinimumSchools)&&surface.Schools.Length<=surface.FishPopulations.Sum(p=>p.MaximumSchools)&&surface.Birds.Length==population.Birds.Length&&surface.Crabs.Length==population.Crabs.Length,"Packed AA includes ranged fish schools, gulls and crabs");
                     Require(surface.EffectsArtVersion==OceanInteractionEffectsSetup.Version&&surface.Effects!=null&&surface.Effects.IsValid,"Packed AA loads the nested interaction effects pool and material dependencies");
                     var material=surface.Water.sharedMaterial;
                     Require(material.GetFloat("_NormalStrength")>0&&material.GetFloat("_FoamStrength")>0&&material.GetFloat("_CausticsStrength")>0,"AA material includes ripple, surf and caustic controls");
@@ -183,7 +192,10 @@ namespace MagicIsland.EditorTools
                     Capture(g,"OceanDayPreview");Capture(g,"OceanShallowsPreview",new Vector3(18.3f,-.1f,-5.5f),5.2f);
                     Capture(g,"OceanGeographyPreview",new Vector3(7,-.1f,5),43);
                     Capture(g,"OceanFishPreview",surface.Schools[0].Center,3.5f);
+                    OceanFishVisibilityVerification.Verify(g);
+                    OceanFishBodyFlowVerification.Verify(g);
                     for(int frame=0;frame<48;frame++){surface.Tick(.16f,1,false,g.Weather.Sun);Capture(g,"OceanFishMotion"+frame.ToString("00"),surface.Schools[0].Center,3.5f);}
+                    for(int frame=0;frame<90;frame++){surface.Tick(1f/30,1,false,g.Weather.Sun);Capture(g,"OceanFishSmooth"+frame.ToString("00"),surface.Schools[0].Center,3.5f);}
                     var habitats=surface.GetComponentsInChildren<OceanHabitatPatch>();
                     Capture(g,"OceanSmallCoralsPreview",habitats.First(h=>h.SmallCorals>10).transform.position,4.8f);
                     Capture(g,"OceanCoralTerracePreview",habitats.First(h=>h.LargeCorals>18).transform.position,5.8f);
@@ -223,10 +235,10 @@ namespace MagicIsland.EditorTools
                     g.Players.RestorePosition(g.Ocean.Surface.transform.TransformPoint(bird.Center)+new Vector3(.3f,.15f,0));
                     SessionState.SetFloat(Key+".ReactionStart",g.Ocean.Surface.AnimationTime);Phase(30);
                 }
-                else if(p==30&&g.Ocean.Surface.AnimationTime-SessionState.GetFloat(Key+".ReactionStart",0)>.9f)
+                else if(p==30&&g.Ocean.Surface.AnimationTime-SessionState.GetFloat(Key+".ReactionStart",0)>1.8f)
                 {
                     var bird=g.Ocean.Surface.Birds.First(b=>b.Activity==CoastalBirdActivity.Perching);
-                    Require(bird.Alarm>.9f&&bird.transform.localPosition.y>bird.Center.y+2,"Actual player proximity is routed through OceanManager into gull takeoff");
+                    Require(bird.Alarm>.9f&&bird.transform.localPosition.y>bird.Center.y+2,"Actual player proximity is routed through OceanManager into safe gull takeoff: alarm="+bird.Alarm+", position="+bird.transform.localPosition+", landing="+bird.LandingPoint);
                     Capture(g,"WildlifeGullReactionPreview",bird.Center,6);
                     var outward=new Vector3(bird.Center.x,0,bird.Center.z).normalized;
                     g.Ocean.DisturbWater(g.Ocean.Surface.transform.TransformPoint(bird.Center+outward*2));
@@ -252,15 +264,49 @@ namespace MagicIsland.EditorTools
                     var crab=g.Ocean.Surface.Crabs[0];Require(crab.Alarm>.95f,"Actual player proximity makes beach crab scurry");
                     Capture(g,"WildlifeCrabReactionPreview",crab.Center,4.5f);
                     Capture(g,"OceanCrabEffectsPreview",crab.transform.localPosition,2.8f);
+                    for(int frame=0;frame<12;frame++)
+                    {
+                        g.Ocean.Surface.Tick(.06f,1,false,g.Weather.Sun,g.Players.Player.transform.position);
+                        Capture(g,"CoastalCrabMotion"+frame.ToString("00"),crab.transform.localPosition+Vector3.up*.1f,1.2f);
+                    }
                     g.Players.RestorePosition(SessionState.GetVector3(Key+".PlayerBeforeReaction",Vector3.zero));SessionState.SetFloat(Key+".ReactionStart",g.Ocean.Surface.AnimationTime);Phase(34);
                 }
                 else if(p==34&&g.Ocean.Surface.AnimationTime-SessionState.GetFloat(Key+".ReactionStart",0)>8.8f)
                 {
                     Require(g.Ocean.Surface.Crabs[0].Alarm==0&&g.Ocean.Surface.Birds.First(b=>b.Activity==CoastalBirdActivity.Perching).Alarm==0,"Real manager settles wildlife after player moves away");
+                    var surface=g.Ocean.Surface;float nearest=float.PositiveInfinity;Vector3 shore=Vector3.zero;int index=-1;
+                    for(int s=0;s<surface.Schools.Length;s++)foreach(var member in surface.Schools[s].Steering.States)
+                    {
+                        double angle=Math.Atan2(member.Position.z,member.Position.x),radius=MagicIsland.Interaction.IslandLayout.CoastRadius(angle)-1.05;
+                        var point=new Vector3((float)(Math.Cos(angle)*radius),.1f,(float)(Math.Sin(angle)*radius));
+                        float distance=Vector2.Distance(new Vector2(point.x,point.z),new Vector2(member.Position.x,member.Position.z));
+                        if(distance<nearest&&distance<surface.Schools[s].PlayerReactionDistance-.25f&&Mathf.Abs(point.y-member.Position.y)<1.6f)
+                        {nearest=distance;shore=point;index=s;}
+                    }
+                    Require(index>=0,"Actual baked shallow fish can detect a player on dry beach");
+                    Debug.Log("Actual beach-to-fish detection distance: "+nearest);
+                    SessionState.SetInt(Key+".ShoreSchool",index);g.Players.RestorePosition(surface.transform.TransformPoint(shore));
+                    SessionState.SetFloat(Key+".ReactionStart",surface.AnimationTime);Phase(36);
+                }
+                else if(p==36&&g.Ocean.Surface.AnimationTime-SessionState.GetFloat(Key+".ReactionStart",0)>.8f)
+                {
+                    var school=g.Ocean.Surface.Schools[SessionState.GetInt(Key+".ShoreSchool",0)];
+                    Require(school.Alarm>.95f,"Actual player standing on beach startles nearby shallow fish");
+                    Capture(g,"CoastalPlayerFishReaction",school.Center,4);
+                    g.Players.RestorePosition(SessionState.GetVector3(Key+".PlayerBeforeReaction",Vector3.zero));
+                    SessionState.SetFloat(Key+".ReactionStart",g.Ocean.Surface.AnimationTime);Phase(37);
+                }
+                else if(p==37&&g.Ocean.Surface.AnimationTime-SessionState.GetFloat(Key+".ReactionStart",0)>6.2f)
+                {
+                    Require(g.Ocean.Surface.Schools[SessionState.GetInt(Key+".ShoreSchool",0)].Alarm==0,"Actual shore player leaving permits fish recovery");
                     g.OpenPause();Phase(2);
                 }
                 else if(p==2&&Object.FindObjectOfType<PauseView>()!=null)
                 {
+                    CoastalNavigationVerification.VerifyRuntime(g);
+                    CoastalBirdIdleVerification.VerifyRuntime(g);
+                    CoastalCrabIdleVerification.VerifyRuntime(g);
+                    OceanEcologyRhythmVerification.VerifyRuntime(g);
                     SessionState.SetFloat(Key+".Time",g.Ocean.Surface.AnimationTime);SessionState.SetVector3(Key+".Fish",g.Ocean.Surface.Schools[0].transform.localPosition);
                     SessionState.SetVector3(Key+".Bird",g.Ocean.Surface.Birds[0].transform.localPosition);SessionState.SetVector3(Key+".Wing",g.Ocean.Surface.Birds[0].LeftWing.localEulerAngles);SessionState.SetVector3(Key+".Crab",g.Ocean.Surface.Crabs[0].transform.localPosition);Phase(3);
                 }
@@ -282,19 +328,22 @@ namespace MagicIsland.EditorTools
                 else if(p==8&&Object.FindObjectOfType<PauseView>()!=null){Object.FindObjectOfType<PauseView>().ReturnMenuButton.onClick.Invoke();Phase(9);}
                 else if(p==9&&g.State==GameFlowState.MainMenu)
                 {
+                    Require(!g.Ocean.OwnsCoastalNavigation,"Menu releases coastal physics queries and reservations");
                     Require(!g.Ocean.OwnsOcean&&g.Ocean.Surface==null&&Object.FindObjectsOfType<OceanSurface>(true).Length==0&&Object.FindObjectsOfType<CoastalBird>(true).Length==0&&Object.FindObjectsOfType<CoastalCrab>(true).Length==0&&Object.FindObjectsOfType<OceanEffectParticle>(true).Length==0,"Menu releases ocean, wildlife and pooled effects AA instance");
                     fixture=new GameObject("Ocean AA failure fixture").AddComponent<OceanManager>();fixture.StartCoroutine(fixture.Load("Ocean_Verification_Missing",fixture.transform,null,null));Phase(10);
                 }
                 else if(p==10&&fixture.LastError!=null)
                 {
+                    Require(!fixture.OwnsCoastalNavigation,"Failed AA load cannot own navigation");
                     Require(!fixture.OwnsOcean&&fixture.Surface==null,"Failed ocean load releases handle");
                     fixture.StartCoroutine(fixture.Load(g.Configuration.Config.OceanPrefabAddress,fixture.transform,null,null));fixture.Clear();Phase(11);
                 }
                 else if(p==11){Require(!fixture.OwnsOcean&&fixture.Surface==null&&fixture.GetComponentsInChildren<OceanSurface>(true).Length==0,"Cancelled ocean load cannot survive");Object.Destroy(fixture.gameObject);g.EnterGame();Phase(12);}
                 else if(p==12&&g.State==GameFlowState.Playing)
                 {
+                    Require(g.Ocean.OwnsCoastalNavigation,"Re-entry binds current coastal navigation");
                     Require(g.Ocean.OwnsOcean&&Object.FindObjectsOfType<OceanSurface>(true).Length==1,"Re-entry creates exactly one ocean");
-                    File.WriteAllText("Logs/OceanVerification.txt","PASS: packed AA, four fish species / 32 schools / ranged random populations and bounded free swimming, whole swim-cycle floor and wave clearance, 18 gulls with flight / wing / roost / rain behaviour, 16 crawling shore crabs, wildlife pause and unload, shaders, ripple/surf/caustic controls, actual solar reflection inputs, night clears sunlight glints, actual render/wave changes, original material preservation, depth camera, coast boundary preservation, day/night/rain, home culling, failure/cancel and re-entry.\n");
+                    File.WriteAllText("Logs/OceanVerification.txt","PASS: packed AA, four fish species / ranged random school and member counts and bounded free swimming, whole swim-cycle floor and wave clearance, seeded sparse gulls with flight / wing / roost / rain behaviour, articulated shore crabs, actual beach player fish alarm / recovery, wildlife pause and unload, shaders, ripple/surf/caustic controls, actual solar reflection inputs, night clears sunlight glints, actual render/wave changes, original material preservation, depth camera, coast boundary preservation, day/night/rain, home culling, failure/cancel and re-entry.\n");
                     Debug.Log("Ocean flow verification PASSED.");Phase(13);EditorApplication.isPlaying=false;
                 }
             }

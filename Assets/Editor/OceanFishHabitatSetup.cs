@@ -28,7 +28,7 @@ namespace MagicIsland.EditorTools
                 bool ray=school.Species==ShallowFishSpecies.SpottedRay,reef=school.Species==ShallowFishSpecies.Butterflyfish;
                 var pool=patches.Where(p=>reef?p.Biome==OceanBiome.ReefSlope:ray?p.Biome==OceanBiome.SandFlat:school.Species==ShallowFishSpecies.Clownfish?p.Corals>10:p.Biome!=OceanBiome.ReefSlope).ToArray();
                 if(pool.Length==0)throw new InvalidOperationException("No habitat for "+school.Species);
-                var random=new System.Random(surface.GeographySeed+6001+(int)school.Species*53+placed.Count*113);
+                var random=new System.Random(unchecked(surface.FishSeed+6001+(int)school.Species*53+placed.Count*113));
                 float maxRadius=members.Max(m=>m.Radius),bottom=members.Min(m=>m.Bottom+m.Pivot.y),top=members.Max(m=>m.Top+m.Pivot.y);
                 bool found=false;
                 for(int attempt=0;attempt<1600;attempt++)
@@ -64,12 +64,15 @@ namespace MagicIsland.EditorTools
                     }
                     if(!clear)continue;
                     school.Center=center;school.Swimmers=members;school.Obstacles=obstacles;school.Habitat=ray?OceanBiome.SandFlat:reef?OceanBiome.ReefSlope:patch.Biome;
+                    // A point can be clear for each fish separately yet too crowded for the whole
+                    // group's pitched bodies. Reject this candidate and keep sampling the same plan.
+                    try{surface.ConfigureFishHabitat(school);school.ResetSteering();school.Render(0);}
+                    catch(InvalidOperationException){continue;}
                     placed.Add(horizontal);found=true;break;
                 }
                 if(!found)throw new InvalidOperationException("No safe habitat for "+school.name+" ("+school.Species+")");
                 float extent=school.HomeRadius+school.Radius+maxRadius+.15f;
                 mesh.bounds=new Bounds(Vector3.zero,new Vector3(extent*2,2*(Mathf.Max(Mathf.Abs(bottom),Mathf.Abs(top))+.06f),extent*2));EditorUtility.SetDirty(mesh);
-                surface.ConfigureFishHabitat(school);school.ResetSteering();school.Render(0);
                 // Explicit rebakes write the resolved, separated spawn poses; old AA data is only repaired in memory.
                 for(int i=0;i<school.Swimmers.Length;i++)
                 {

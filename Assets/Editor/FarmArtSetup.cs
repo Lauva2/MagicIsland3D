@@ -38,7 +38,7 @@ namespace MagicIsland.EditorTools
         {
             string path = MaterialFolder + "/" + name + ".mat"; var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (mat != null) return mat;
-            mat = new Material(Shader.Find("Standard")) { name = name, color = color }; mat.SetFloat("_Glossiness", gloss); AssetDatabase.CreateAsset(mat, path); return mat;
+            mat = new Material(Shader.Find(name=="Plot Grass"||name=="Grass Tips"?"MagicIsland/Seasonal Grass":"Standard")) { name = name, color = color }; mat.SetFloat("_Glossiness", gloss); AssetDatabase.CreateAsset(mat, path); return mat;
         }
         static Transform Group(Transform parent, string name)
         { var group = new GameObject(name); group.layer = 2; group.transform.SetParent(parent, false); return group.transform; }

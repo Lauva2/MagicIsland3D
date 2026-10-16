@@ -17,3 +17,23 @@ MonoBehaviour:
   SummerRainChance: 0.2
   AutumnRainChance: 0.4
   WinterRainChance: 0.15
+  Spring:
+    Grass: {r: 0.57, g: 0.73, b: 0.39, a: 1}
+    Foliage: {r: 0.51, g: 0.7, b: 0.32, a: 1}
+    Evergreen: {r: 0.39, g: 0.63, b: 0.29, a: 1}
+    Strength: 0.55
+  Summer:
+    Grass: {r: 0.47, g: 0.66, b: 0.32, a: 1}
+    Foliage: {r: 0.32, g: 0.58, b: 0.25, a: 1}
+    Evergreen: {r: 0.32, g: 0.58, b: 0.25, a: 1}
+    Strength: 0.35
+  Autumn:
+    Grass: {r: 0.69, g: 0.63, b: 0.36, a: 1}
+    Foliage: {r: 0.79, g: 0.46, b: 0.24, a: 1}
+    Evergreen: {r: 0.4, g: 0.57, b: 0.32, a: 1}
+    Strength: 0.88
+  Winter:
+    Grass: {r: 0.58, g: 0.63, b: 0.54, a: 1}
+    Foliage: {r: 0.5, g: 0.57, b: 0.51, a: 1}
+    Evergreen: {r: 0.39, g: 0.52, b: 0.43, a: 1}
+    Strength: 0.82

@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace MagicIsland.Ocean
 {
-    // Mirrors OceanFishMotion.cginc. Motion is evaluated from the paused ocean clock,
-    // so members do not need individual objects, materials or accumulated frame state.
+    // Shared canonical/pose transforms and the legacy shader fallback. Production body
+    // curves come from OceanFishSpine at the paused fixed clock, without per-fish objects.
     public static class OceanFishMotion
     {
         public static Vector2 Rotate(Vector2 p,float yaw)
@@ -30,15 +30,22 @@ namespace MagicIsland.Ocean
         }
         public static Vector3 Body(Vector3 vertex,Vector4 pivot,Vector4 shape,float time,float yaw,float pitch=0)
         {
-            var xz=Rotate(new Vector2(vertex.x-pivot.x,vertex.z-pivot.z),-shape.x);
-            var relative=new Vector3(xz.x,vertex.y-pivot.y,xz.y);
+            var relative=Local(vertex,pivot,shape);
             float beat=time*(shape.y>2.5f?2.1f:7.5f+1.4f*Mathf.Sin(pivot.w))+pivot.w*2;
             if(shape.y>2.5f)relative.y+=Mathf.Sin(beat)*.012f*Mathf.Clamp01(Mathf.Abs(relative.x)/.45f);
             else relative.x+=Mathf.Sin(beat+relative.z*6)*.035f*Mathf.Clamp01(-relative.z/.30f);
             float y=relative.y*Mathf.Cos(pitch)+relative.z*Mathf.Sin(pitch);
             relative.z=relative.z*Mathf.Cos(pitch)-relative.y*Mathf.Sin(pitch);relative.y=y;
-            xz=Rotate(new Vector2(relative.x,relative.z),yaw);
+            var xz=Rotate(new Vector2(relative.x,relative.z),yaw);
             return new Vector3(xz.x,relative.y,xz.y);
+        }
+        public static Vector3 Local(Vector3 vertex,Vector4 pivot,Vector4 shape)
+        {var xz=Rotate(new Vector2(vertex.x-pivot.x,vertex.z-pivot.z),-shape.x);return new Vector3(xz.x,vertex.y-pivot.y,xz.y);}
+        public static Vector3 Orient(Vector3 relative,float yaw,float pitch)
+        {
+            float y=relative.y*Mathf.Cos(pitch)+relative.z*Mathf.Sin(pitch);
+            relative.z=relative.z*Mathf.Cos(pitch)-relative.y*Mathf.Sin(pitch);relative.y=y;
+            var xz=Rotate(new Vector2(relative.x,relative.z),yaw);return new Vector3(xz.x,relative.y,xz.y);
         }
     }
 }

@@ -84,7 +84,7 @@ namespace MagicIsland.EditorTools
                     int count=g.Audio.FootstepCount;g.Players.Player.ToolActionLocked=true;Walk(g,Vector2.right,30);g.Players.Player.ToolActionLocked=false;Require(g.Audio.FootstepCount==count,"Tool lock causes no footsteps");
                     Move(g,new Vector3(0,.1f,-1));Require(g.Audio.FootstepCount==count,"Teleport is silent");
                     var bird=g.Ocean.Surface.Birds.First(b=>b.Activity==CoastalBirdActivity.Perching&&b.Alarm==0);
-                    Move(g,g.Ocean.Surface.transform.TransformPoint(bird.Center)+new Vector3(0,.1f,-.8f));g.Audio.TickEnvironment(g,4,false);int flaps=g.Audio.WingFlapCount;
+                    Move(g,g.Ocean.Surface.transform.TransformPoint(bird.LandingPoint)+new Vector3(0,.1f,-.8f));g.Audio.TickEnvironment(g,4,false);int flaps=g.Audio.WingFlapCount;
                     g.Ocean.Surface.Tick(.2f,1,false,g.Weather.Sun,g.Players.Player.transform.position);g.Audio.TickEnvironment(g,.2f,false);
                     Require(g.Audio.WingFlapCount==flaps+1,"Actual nearby gull takeoff emits one flutter");g.Ocean.Surface.Tick(.2f,1,false,g.Weather.Sun,g.Players.Player.transform.position);g.Audio.TickEnvironment(g,.2f,false);Require(g.Audio.WingFlapCount==flaps+1,"Sustained alarm does not repeat flutter");
                     int calls=g.Audio.BirdCallCount;g.Audio.TickEnvironment(g,30,false);Require(g.Audio.BirdCallCount==calls+1&&g.Audio.BirdTimer>=g.Configuration.Audio.BirdMinInterval,"Nearby visible gull calls with bounded quiet interval");
@@ -101,7 +101,7 @@ namespace MagicIsland.EditorTools
                     g.Audio.TickEnvironment(g,40,true);Walk(g,Vector2.right,30);Require(g.Audio.BirdTimer==timer&&g.Audio.FootstepCount==pausedSteps&&g.Audio.BirdCallCount==pausedBirds,"Pause freezes wildlife timer and movement audio");
                     Require(Sources(g).Where(s=>s.name=="Footsteps"||s.name.StartsWith("Wildlife")).All(s=>s.clip==null),"Pause silences transient world voices");NoSave(g);
                     var quietBird=g.Ocean.Surface.Birds.First(b=>b.Activity==CoastalBirdActivity.Perching&&b.Alarm==0);
-                    Move(g,g.Ocean.Surface.transform.TransformPoint(quietBird.Center)+new Vector3(0,.1f,-.8f));int silentFlaps=g.Audio.WingFlapCount;
+                    Move(g,g.Ocean.Surface.transform.TransformPoint(quietBird.LandingPoint)+new Vector3(0,.1f,-.8f));int silentFlaps=g.Audio.WingFlapCount;
                     g.Ocean.Surface.Tick(.2f,1,false,g.Weather.Sun,g.Players.Player.transform.position);g.Audio.TickEnvironment(g,.2f,true);g.ResumeFromPause();g.Audio.TickEnvironment(g,0,false);
                     Require(g.Audio.WingFlapCount==silentFlaps,"Muted takeoffs cannot replay after popup closes");
                     Move(g,g.Housing.Entrance.Position+new Vector3(0,.1f,-1.4f));g.EnterHome();Phase(3);

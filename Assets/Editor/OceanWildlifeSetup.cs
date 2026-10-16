@@ -15,19 +15,24 @@ namespace MagicIsland.EditorTools
 
         static void BuildWildlife(GameObject root,OceanSurface surface,OceanGeography geography,Material material)
         {
+            BuildFishSchools(root,surface,geography,material);
+            BuildCoastalWildlife(root,surface,material);
+        }
+
+        static void BuildFishSchools(GameObject root,OceanSurface surface,OceanGeography geography,Material material,Transform target=null,OceanSchool[] templates=null,bool commitMeshes=true)
+        {
             var floor=new BakedFloor(surface.Shore.GetComponent<MeshFilter>().sharedMesh);
-            var random=new System.Random(surface.GeographySeed+2401);
-            var populations=new System.Random(surface.GeographySeed+93017);
-            if(surface.FishPopulations==null||surface.FishPopulations.Length!=4||surface.FishPopulations.Any(p=>p==null||!p.IsValid)||surface.FishPopulations.Select(p=>p.Species).Distinct().Count()!=4)
-                throw new InvalidOperationException("Fish population ranges require four unique species and 1 <= minimum <= maximum <= 32");
-            var schoolsRoot=root.transform.Find("Reef fish schools");
+            var random=new System.Random(unchecked(surface.FishSeed+2401));
+            var plan=OceanFishPopulation.CreatePlan(surface.FishPopulations,surface.FishSeed);
+            var schoolsRoot=target??root.transform.Find("Reef fish schools");
             var sources=new Mesh[4];
-            for(int i=0;i<4;i++)sources[i]=SaveMesh(MeshFolder+"/"+((ShallowFishSpecies)i)+".asset",WildFishMesh(i));
+            for(int i=0;i<4;i++)sources[i]=UnityEditor.AssetDatabase.LoadAssetAtPath<Mesh>(MeshFolder+"/"+((ShallowFishSpecies)i)+".asset")??SaveMesh(MeshFolder+"/"+((ShallowFishSpecies)i)+".asset",WildFishMesh(i));
             var schools=new List<OceanSchool>();
-            for(int index=0;index<32;index++)
+            try
             {
-                int species=index%4;var population=surface.FishPopulations.Single(p=>(int)p.Species==species);
-                int members=populations.Next(population.Minimum,population.Maximum+1);
+            for(int index=0;index<plan.Length;index++)
+            {
+                int species=(int)plan[index].Species;int members=plan[index].Members;
                 var builder=new Geometry();float memberEnvelope=0;
                 for(int j=0;j<members;j++)
                 {
@@ -39,70 +44,37 @@ namespace MagicIsland.EditorTools
                     builder.Add(sources[species],Matrix4x4.TRS(position,Quaternion.Euler(0,yaw,0),Vector3.one*scale),Tint(random,Color.white),false,new Vector4(position.x,position.y,position.z,1+j*2.399963f),new Vector4(yaw*Mathf.Deg2Rad,species,0,0));
                 }
                 var mesh=builder.Mesh();float orbit=species==0?1.7f:species==1?.9f:species==2?1.2f:1.4f;
-                float footprint=orbit+memberEnvelope+.10f+OceanSchool.MaxFleeDistance+OceanSchool.MaxScatterDistance;
-                Vector3 center=Vector3.zero;bool found=false;
-                for(int attempt=0;attempt<500;attempt++)
-                {
-                    double angle=attempt==0?index*Math.PI*2/32-.26:Range(random,0,Math.PI*2);
-                    double coast=IslandLayout.CoastRadius(angle),radius=coast+(index<16?Range(random,5,11):Range(random,10,geography.ShelfWidth(angle)+geography.ReefWidth(angle)-2));
-                    float x=(float)(Math.Cos(angle)*radius),z=(float)(Math.Sin(angle)*radius);
-                    if(schools.Any(s=>(new Vector2(s.Center.x-x,s.Center.z-z)).sqrMagnitude<12))continue;
-                    float highest=float.NegativeInfinity;
-                    for(int ring=0;ring<4;ring++)for(int a=0;a<32;a++)
-                    {
-                        float phase=a*Mathf.PI/16,r=footprint*ring/3;
-                        highest=Mathf.Max(highest,floor.Height(x+Mathf.Cos(phase)*r,z+Mathf.Sin(phase)*r));
-                    }
-                    float low=highest-mesh.bounds.min.y+.10f+.05f,high=(float)OceanGeography.SeaLevel-mesh.bounds.max.y-.12f-.05f;
-                    if(low>high||OceanGeography.SeaLevel-highest>3.3)continue;
-                    // Rays cruise closer to the sand; other fish occupy the middle water column.
-                    center=new Vector3(x,Mathf.Lerp(low,high,species==3?.12f:.56f),z);found=true;break;
-                }
-                if(!found){Object.DestroyImmediate(mesh);throw new InvalidOperationException("No safe shallow swim volume for school "+index);}
+                Vector3 center=Vector3.zero; // Final center and individual spawns are sampled by BakeFishHabitats.
                 // Bounds include lagged guides on the opposite side of the orbit and fin motion.
                 mesh.bounds=new Bounds(Vector3.zero,new Vector3(2*(2*orbit+memberEnvelope+OceanSchool.MaxScatterDistance),2*(Mathf.Max(Mathf.Abs(mesh.bounds.min.y),Mathf.Abs(mesh.bounds.max.y))+.02f),2*(2*orbit+memberEnvelope+OceanSchool.MaxScatterDistance)));
-                var go=MeshObject(schoolsRoot,"Fish school "+index,SaveMesh(MeshFolder+"/School "+index.ToString("00")+".asset",mesh),material,Vector3.zero);
+                var go=MeshObject(schoolsRoot,"Fish school "+index,mesh,material,Vector3.zero);
                 var school=go.AddComponent<OceanSchool>();school.Species=(ShallowFishSpecies)species;school.Members=members;school.Center=center;
                 school.Radius=orbit;school.Speed=species==0?.40f:species==1?.23f:species==2?.17f:.12f;school.Phase=(float)Range(random,0,Math.PI*2);
-                school.OrbitAspect=species==3?.78f:.58f;school.Render(0);schools.Add(school);
+                school.OrbitAspect=species==3?.78f:.58f;
+                if(templates!=null)CopyFishStyle(templates.FirstOrDefault(t=>t.Species==school.Species),school);
+                schools.Add(school);
             }
             surface.Schools=schools.ToArray();
             BakeFishHabitats(surface,schools,floor,geography);
+            if(commitMeshes)foreach(var school in schools)
+            {
+                var filter=school.GetComponent<MeshFilter>();filter.sharedMesh=SaveMesh(MeshFolder+"/School "+Array.IndexOf(surface.Schools,school).ToString("00")+".asset",filter.sharedMesh);
+            }
+            }
+            catch
+            {
+                foreach(var school in schools)if(school!=null){var mesh=school.GetComponent<MeshFilter>().sharedMesh;if(mesh!=null&&!UnityEditor.AssetDatabase.Contains(mesh))Object.DestroyImmediate(mesh);}
+                throw;
+            }
 
-            var old=root.transform.Find("Coastal wildlife");if(old!=null)Object.DestroyImmediate(old.gameObject);
-            var wildlife=new GameObject("Coastal wildlife");wildlife.layer=2;wildlife.transform.SetParent(root.transform,false);
-            var body=SaveMesh(MeshFolder+"/Seagull Body.asset",GullBody());
-            var left=SaveMesh(MeshFolder+"/Seagull Left Wing.asset",GullWing(-1));
-            var right=SaveMesh(MeshFolder+"/Seagull Right Wing.asset",GullWing(1));
-            var birds=new List<CoastalBird>();
-            for(int i=0;i<18;i++)
-            {
-                double angle=i*Math.PI*2/18-.3,edge=IslandLayout.CoastRadius(angle);
-                var activity=i<8?CoastalBirdActivity.Circling:i<12?CoastalBirdActivity.Skimming:CoastalBirdActivity.Perching;
-                double radius=edge+(activity==CoastalBirdActivity.Perching?-.85:7);
-                float x=(float)(Math.Cos(angle)*radius),z=(float)(Math.Sin(angle)*radius);
-                float y=activity==CoastalBirdActivity.Perching?(float)geography.Height(x,z):activity==CoastalBirdActivity.Skimming?.28f:(float)Range(random,3,5.5);
-                var go=MeshObject(wildlife.transform,"Seagull "+i,body,material,Vector3.zero);go.transform.localScale=Vector3.one*(float)Range(random,.85,1.15);
-                go.GetComponent<Renderer>().shadowCastingMode=ShadowCastingMode.On;
-                var bird=go.AddComponent<CoastalBird>();bird.Activity=activity;bird.Center=new Vector3(x,y,z);bird.Radius=activity==CoastalBirdActivity.Perching?2.8f:(float)Range(random,3,5);
-                bird.Speed=activity==CoastalBirdActivity.Skimming?.38f:.22f;bird.Phase=(float)Range(random,0,Math.PI*2);
-                bird.LeftWing=MeshObject(go.transform,"Left wing",left,material,new Vector3(-.07f,.27f,0)).transform;
-                bird.RightWing=MeshObject(go.transform,"Right wing",right,material,new Vector3(.07f,.27f,0)).transform;
-                bird.LeftWing.GetComponent<Renderer>().shadowCastingMode=ShadowCastingMode.On;
-                bird.RightWing.GetComponent<Renderer>().shadowCastingMode=ShadowCastingMode.On;
-                bird.Render(0,1,false);birds.Add(bird);
-            }
-            surface.Birds=birds.ToArray();
-            var crabMesh=SaveMesh(MeshFolder+"/Shore Crab.asset",CrabMesh());var crabs=new List<CoastalCrab>();
-            for(int i=0;i<16;i++)
-            {
-                double angle=i*Math.PI/8-.15,edge=IslandLayout.CoastRadius(angle),r=edge-1.05;
-                var go=MeshObject(wildlife.transform,"Shore crab "+i,crabMesh,material,Vector3.zero);go.transform.localScale=Vector3.one*(float)Range(random,.8,1.2);
-                var crab=go.AddComponent<CoastalCrab>();crab.Center=new Vector3((float)(Math.Cos(angle)*r),0,(float)(Math.Sin(angle)*r));
-                crab.Tangent=new Vector3((float)-Math.Sin(angle),0,(float)Math.Cos(angle));crab.Phase=(float)Range(random,0,Math.PI*2);crab.Render(0);crabs.Add(crab);
-            }
-            surface.Crabs=crabs.ToArray();
-            surface.EcosystemRenderers=root.GetComponentsInChildren<Renderer>(true).Where(r=>r!=surface.Water&&r!=surface.Shore&&r.GetComponent<OceanEffectParticle>()==null).ToArray();
+        }
+
+        static void CopyFishStyle(OceanSchool source,OceanSchool target)
+        {
+            if(source==null)return;
+            var generated=new[]{"Species","Members","Center","Phase","Habitat","HomeRadius","Swimmers","Obstacles"};
+            foreach(var field in typeof(OceanSchool).GetFields(System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.Public))
+                if(!field.IsInitOnly&&!field.IsNotSerialized&&!generated.Contains(field.Name))field.SetValue(target,field.GetValue(source));
         }
 
         // Rounded low-poly forms use vertex colours, with no texture or per-animal material.
@@ -181,10 +153,17 @@ namespace MagicIsland.EditorTools
                 for(int i=0;i<4;i++)
                 {
                     var a=new Vector3(side*.12f,.10f,.075f-i*.045f);var b=new Vector3(side*(.24f+i*.013f),.08f,.12f-i*.085f);var c=new Vector3(side*.29f,.018f,.14f-i*.09f);
-                    g.Tube(a,b,.016f,red);g.Tube(b,c,.012f,light);
+                    var leg=new Geometry();leg.Tube(a,b,.016f,red);leg.Tube(b,c,.012f,light);
+                    var mesh=leg.Mesh();
+                    g.Add(mesh,Matrix4x4.identity,Color.white,false,new Vector4(a.x,a.y,a.z,100+i),new Vector4((i+(side>0?1:0))*Mathf.PI,0,0,0));
+                    Object.DestroyImmediate(mesh);
                 }
-                var p=new Vector3(side*.22f,.15f,.18f);g.Tube(new Vector3(side*.12f,.11f,.07f),p,.024f,light);
-                g.Triangle(p,p+new Vector3(side*.07f,.03f,.11f),p+new Vector3(-side*.03f,.05f,.08f),light);
+                var p=new Vector3(side*.22f,.15f,.18f);var pivot=new Vector3(side*.12f,.11f,.07f);
+                var claw=new Geometry();claw.Tube(pivot,p,.024f,light);
+                claw.Triangle(p,p+new Vector3(side*.07f,.03f,.11f),p+new Vector3(-side*.03f,.05f,.08f),light);
+                var clawMesh=claw.Mesh();
+                g.Add(clawMesh,Matrix4x4.identity,Color.white,false,new Vector4(pivot.x,pivot.y,pivot.z,side<0?110:111),Vector4.zero);
+                Object.DestroyImmediate(clawMesh);
                 g.Tube(new Vector3(side*.065f,.15f,.06f),new Vector3(side*.065f,.22f,.085f),.012f,red);Eye(g,new Vector3(side*.065f,.22f,.085f),.022f);
             }
             return g.Mesh();

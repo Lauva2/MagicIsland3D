@@ -1,4 +1,6 @@
         sampler2D _MainTex;
+        #include "SeasonalColor.cginc"
+        float _SeasonEvergreen;
         fixed4 _Color;
         half _Glossiness,_Metallic;
         float4 _WindShape,_IslandWindDirection;
@@ -26,5 +28,6 @@
         void surf(Input IN,inout SurfaceOutputStandard o)
         {
             fixed4 color=tex2D(_MainTex,IN.uv_MainTex)*_Color;
-            o.Albedo=color.rgb;o.Alpha=color.a;o.Metallic=_Metallic;o.Smoothness=_Glossiness;
+            o.Albedo=IslandSeasonColor(color.rgb,lerp(_IslandSeasonFoliage,_IslandSeasonEvergreen,_SeasonEvergreen),1);
+            o.Alpha=color.a;o.Metallic=_Metallic;o.Smoothness=_Glossiness;
         }

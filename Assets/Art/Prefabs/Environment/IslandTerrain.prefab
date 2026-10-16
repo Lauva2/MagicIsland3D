@@ -698,6 +698,7 @@ Transform:
   - {fileID: 296789238101116506}
   - {fileID: 4544664744306833198}
   - {fileID: 6285794942464222891}
+  - {fileID: 933378277490574060}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4895128400055352771
@@ -717,6 +718,7 @@ MonoBehaviour:
   CoastArtVersion: 3
   CoastalScenery: {fileID: 4544664744306833198}
   Paths: {fileID: 1651139406696342260}
+  SeasonalDetails: {fileID: 7535615703757799160}
 --- !u!1 &2318202655231401344
 GameObject:
   m_ObjectHideFlags: 0
@@ -5586,6 +5588,79 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2092216061718040088, guid: 68fd233487579d942b3bec3afaed7a2f, type: 3}
   m_PrefabInstance: {fileID: 826555703082137713}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &827238165740310370
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 9078536104700878550}
+    m_Modifications:
+    - target: {fileID: 544643237482892686, guid: 951391ef89011be4e8442fcaf3dafc54, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 544643237482892686, guid: 951391ef89011be4e8442fcaf3dafc54, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 544643237482892686, guid: 951391ef89011be4e8442fcaf3dafc54, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 544643237482892686, guid: 951391ef89011be4e8442fcaf3dafc54, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 544643237482892686, guid: 951391ef89011be4e8442fcaf3dafc54, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 544643237482892686, guid: 951391ef89011be4e8442fcaf3dafc54, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 544643237482892686, guid: 951391ef89011be4e8442fcaf3dafc54, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 544643237482892686, guid: 951391ef89011be4e8442fcaf3dafc54, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 544643237482892686, guid: 951391ef89011be4e8442fcaf3dafc54, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 544643237482892686, guid: 951391ef89011be4e8442fcaf3dafc54, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5648854404889404623, guid: 951391ef89011be4e8442fcaf3dafc54, type: 3}
+      propertyPath: m_Name
+      value: SeasonalGroundDetails
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 951391ef89011be4e8442fcaf3dafc54, type: 3}
+--- !u!4 &933378277490574060 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 544643237482892686, guid: 951391ef89011be4e8442fcaf3dafc54, type: 3}
+  m_PrefabInstance: {fileID: 827238165740310370}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7535615703757799160 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7199305494812324250, guid: 951391ef89011be4e8442fcaf3dafc54, type: 3}
+  m_PrefabInstance: {fileID: 827238165740310370}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb3b6a8c70194dbea8cc989aeb81c04d, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!1001 &830820480306777577
 PrefabInstance:
   m_ObjectHideFlags: 0

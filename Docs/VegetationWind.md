@@ -19,6 +19,7 @@ VegetationWind 组件只在启用时设置各 Renderer 的形变参数和保守�
 - WindGustAmount：默认 0.18，由两段慢速波动生成轻微阵风。
 - WindChangeSeconds：默认 4 秒，控制风力向晴 / 雨目标靠近的速度。
 - VegetationWind.Bend / Flutter / Radial：单个叶簇的弯曲、细颤和根部约束方式。可在预制体内调整，常规配置保留已有参数。
+- VegetationWind.Evergreen：是否使用 SeasonConfig 的常绿配色，椰树默认开启；与风动参数共用已有 MaterialPropertyBlock。普通与 Fade 着色器共用四季颜色算法，Alpha 仍由镜头淡化控制，见 [日期与季节](CalendarAndSeasons.md#四季环境配色)。
 - CloudField.Wind 的长度仍定义基准云速，实际方向和倍率来自天气；风声音量仍受 AudioCatalog.WindVolume、Gain 和总音量设置控制。
 
 着色器为 VegetationWind.shader 和 VegetationWindFade.shader，共用 VegetationWind.cginc，避免透明状态与正常状态使用不同的摆动算法。VegetationWindSetup 首次为已知叶簇补齐组件与风动材质，保留原有颜色、纹理、碰撞和引用；后续执行保留已有材质和预制体调整。

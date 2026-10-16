@@ -29,6 +29,12 @@ namespace MagicIsland.Managers
         private WeatherConfig config;
         private FarmManager farm;
         private CalendarManager calendar;
+        private SeasonalPresentation seasons;
+        private MagicIsland.TerrainSystem.SeasonalGroundCover groundCover;
+        private Transform lightingWorld;
+        private int nightInteriorLayer;
+        private readonly System.Collections.Generic.List<OutdoorNightLighting> nightLights=new System.Collections.Generic.List<OutdoorNightLighting>();
+        public int OutdoorLightingCount=>nightLights.Count;
         private Light sun;
         private Camera view;
         private Scene scene;
@@ -65,7 +71,15 @@ namespace MagicIsland.Managers
             Clear();
             this.config = config; this.farm = farm; this.sun = sun; this.view = view;
             this.calendar = calendar;
+            groundCover=world.GetComponentInChildren<MagicIsland.TerrainSystem.SeasonalGroundCover>(true);
+            seasons = new SeasonalPresentation();
+            ApplySeason();
             State = new WeatherState(seed, config.RainChance, farm.State.Day, kind);
+            lightingWorld=world;
+            nightInteriorLayer=GameManager.Instance?.Configuration?.Housing?.InteriorLayer??LayerMask.NameToLayer("HousingInterior");
+            lastMinute=GameManager.Instance?.Time?.Clock?.Minute??480;
+            OutdoorNightLighting.Registered+=BindNightLighting;
+            foreach(var lighting in OutdoorNightLighting.Active)BindNightLighting(lighting);
             previousWindDirection=Shader.GetGlobalVector("_IslandWindDirection");previousWindTime=Shader.GetGlobalFloat("_IslandWindTime");previousWindStrength=Shader.GetGlobalFloat("_IslandWindStrength");
             Wind=new WindSimulation(config.SunnyWindStrength,config.RainWindStrength,config.WindGustAmount,config.WindChangeSeconds,seed,kind==WeatherKind.Rainy);
             TickWind(0,true);
@@ -100,8 +114,11 @@ namespace MagicIsland.Managers
         {
             if (calendar != null) State.NextDay(farm.State.Day, calendar.RainChance(farm.State.Day));
             else State.NextDay(farm.State.Day);
+            ApplySeason();
             ApplyRain();
         }
+
+        private void ApplySeason()=>seasons.Apply(calendar?.Config,calendar==null?MagicIsland.CalendarSystem.Season.Spring:calendar.Date.Season);
 
         public void ApplyRain()
         {
@@ -115,6 +132,12 @@ namespace MagicIsland.Managers
             ApplyRain();
             float light = (float)DaylightCycle.Evaluate(minute, config.DawnMinute, config.DaylightMinute, config.DuskMinute, config.NightMinute);
             bool raining = State.Kind == WeatherKind.Rainy;
+            for(int i=nightLights.Count-1;i>=0;i--)
+            {
+                var lighting=nightLights[i];
+                if(lighting==null){nightLights.RemoveAt(i);continue;}
+                if(lighting.isActiveAndEnabled)lighting.Present(light,raining,IsOutside(),nightInteriorLayer);
+            }
             float dim = raining ? config.RainLightMultiplier : 1;
             float solar = (float)DaylightCycle.SolarProgress(minute, config.DawnMinute, config.NightMinute);
             float altitude = Mathf.Sin(solar * Mathf.PI);
@@ -135,6 +158,7 @@ namespace MagicIsland.Managers
             else if (paused) { if (Rain.isPlaying) Rain.Pause(true); }
             else if (!Rain.isPlaying) Rain.Play(true);
             TickWind(UnityEngine.Time.deltaTime,paused);
+            groundCover?.Present(calendar==null?MagicIsland.CalendarSystem.Season.Spring:calendar.Date.Season,IsOutside());
             if (Clouds != null) Clouds.Tick(paused ? 0 : UnityEngine.Time.deltaTime, light, raining, IsOutside(),WindFactor,config.WindDirection);
         }
 
@@ -151,6 +175,14 @@ namespace MagicIsland.Managers
         {
             var game = GameManager.Instance;
             return game == null || game.Housing == null || !game.Housing.Inside;
+        }
+
+        private void BindNightLighting(OutdoorNightLighting lighting)
+        {
+            if(lightingWorld==null||lighting==null||!lighting.transform.IsChildOf(lightingWorld)||!lighting.IsValid)return;
+            if(!nightLights.Contains(lighting))nightLights.Add(lighting);
+            float light=(float)DaylightCycle.Evaluate(lastMinute,config.DawnMinute,config.DaylightMinute,config.DuskMinute,config.NightMinute);
+            lighting.Present(light,State.Kind==WeatherKind.Rainy,IsOutside(),nightInteriorLayer);
         }
 
         private void ClearClouds()
@@ -174,7 +206,12 @@ namespace MagicIsland.Managers
 
         public void Clear()
         {
+            OutdoorNightLighting.Registered-=BindNightLighting;
+            foreach(var lighting in nightLights)if(lighting!=null)lighting.Restore();
+            nightLights.Clear();lightingWorld=null;
             ClearClouds(); LastError = null;
+            seasons?.Clear(); seasons=null;
+            if(groundCover!=null)groundCover.gameObject.SetActive(false);groundCover=null;
             if(Wind!=null){Shader.SetGlobalVector("_IslandWindDirection",previousWindDirection);Shader.SetGlobalFloat("_IslandWindTime",previousWindTime);Shader.SetGlobalFloat("_IslandWindStrength",previousWindStrength);Wind=null;}
             if (State != null && scene.IsValid() && scene.isLoaded && UnityEngine.SceneManagement.SceneManager.GetActiveScene() == scene)
             {

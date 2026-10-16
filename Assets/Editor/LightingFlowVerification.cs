@@ -35,13 +35,13 @@ namespace MagicIsland.EditorTools
         static void Require(bool ok, string why) { if (!ok) throw new Exception(why); }
         static void Phase(int p) { SessionState.SetInt(Key + ".Phase", p); SessionState.SetFloat(Key + ".PhaseTime", (float)EditorApplication.timeSinceStartup); Debug.Log("Lighting phase " + p); }
         static FarmPrototype World => Object.FindObjectOfType<FarmPrototype>();
-        static void SetTime(GameManager g, double minute)
+        internal static void SetTime(GameManager g, double minute)
         {
             g.Time.Clock.Restore(minute); g.Weather.Tick(minute, true); g.Housing.UpdatePresentation();
             var c = g.Configuration.Weather;
             g.Ocean.Surface.Tick(0, (float)DaylightCycle.Evaluate(minute, c.DawnMinute, c.DaylightMinute, c.DuskMinute, c.NightMinute), g.Weather.State.Kind == WeatherKind.Rainy);
         }
-        static float Capture(GameManager g, string name, Vector3 focus, float size = 10.5f)
+        internal static float Capture(GameManager g, string name, Vector3 focus, float size = 10.5f)
         {
             var camera = g.Players.Player.ViewCamera; var position = camera.transform.position; float before = camera.orthographicSize;
             camera.GetComponent<CameraController>().SnapToTarget(); camera.orthographicSize = size;
@@ -117,6 +117,7 @@ namespace MagicIsland.EditorTools
                     float night = Capture(g, "LightingNight", new Vector3(0, .6f, 0)); SessionState.SetFloat(Key + ".Night", night);
                     float day = SessionState.GetFloat(Key + ".Day", 0); Require(night < day * .35f && night > .025f, "Rendered land at night is substantially darker but retains silhouettes: " + day + "/" + night);
                     Capture(g, "LightingCoastNight", new Vector3(10, .6f, -5));
+                    OutdoorNightLightingVerification.Verify(g);
                     SetTime(g, 750); Phase(34);
                 }
                 else if (p == 34)
@@ -128,6 +129,9 @@ namespace MagicIsland.EditorTools
                 {
                     Require(World.Sun.intensity < SessionState.GetFloat(Key + ".SunIntensity", 0) * .5f && !g.Weather.Rain.isPlaying, "Rain diffuses sunlight and paused rain stays frozen");
                     Capture(g, "LightingRain", new Vector3(0, .6f, 0));
+                    SetTime(g,1320);
+                    Capture(g,"OutdoorHouseRainNight",g.Housing.Entrance.transform.position+Vector3.up*.6f,7);
+                    Capture(g,"OutdoorPierRainNight",g.Fishing.Spot.transform.position+Vector3.up*.6f,7);
                     g.Weather.State.NextDay(g.Weather.State.Day + 1, 0); SetTime(g, 1320); g.ResumeFromPause();
                     Require(g.Inventory.TryAdd("garden_lamp", 1), "Lamp fixture"); Move(g, new Vector3(-5, .1f, 4.6f));
                     g.Placements.StartCoroutine(g.Placements.Begin("garden_lamp")); Phase(3);
@@ -143,6 +147,7 @@ namespace MagicIsland.EditorTools
                 else if (p == 4 && g.State == GameFlowState.Playing && g.Housing.Inside)
                 {
                     SetTime(g, 1320);
+                    OutdoorNightLightingVerification.VerifyInside(g);
                     Require((g.Weather.Moon.cullingMask & (1 << g.Configuration.Housing.InteriorLayer)) == 0 && (World.Sun.cullingMask & (1 << g.Configuration.Housing.InteriorLayer)) == 0, "Exterior sun/moon exclude interior layer");
                     float room = Capture(g, "LightingInteriorNight", g.Configuration.Housing.InteriorOrigin + new Vector3(0, .6f, 0), 7);
                     Require(room > SessionState.GetFloat(Key + ".Night", 1) * 2, "Room lights keep indoor night readable");
@@ -151,12 +156,14 @@ namespace MagicIsland.EditorTools
                 else if (p == 5 && Object.FindObjectOfType<PauseView>() != null) { Object.FindObjectOfType<PauseView>().ReturnMenuButton.onClick.Invoke(); Phase(6); }
                 else if (p == 6 && g.State == GameFlowState.MainMenu)
                 {
+                    Require(g.Weather.OutdoorLightingCount==0,"Outdoor lighting bindings released on return");
                     Require(g.Weather.Moon == null && g.Weather.Rain == null && Object.FindObjectsOfType<Light>().All(l => l.name != "Moonlight") && !File.Exists(g.Saves.SavePath), "Release weather lights without daytime save");
                     Require(Object.FindObjectsOfType<Light>().Any(l => l.gameObject.scene.name == "MainMenu" && l.enabled), "Returning to menu restores its lighting");
                     g.EnterGame(); Phase(7);
                 }
                 else if (p == 7 && g.State == GameFlowState.Playing)
                 {
+                    Require(g.Weather.OutdoorLightingCount==2,"Re-entry has exactly two outdoor lighting bindings");
                     Require(Object.FindObjectsOfType<Light>().Count(l => l.name == "Moonlight") == 1, "Re-entry has one moon without stale lighting state");
                     File.WriteAllText("Logs/LightingVerification.txt", "PASS: packed-AA preserved WeatherConfig, moving solar direction, sky/equator/ground ambient, warm dusk, zero nighttime sunlight, faint separate moon, reduced reflections and ocean night tint, rendered night/day contrast, rainy sunlight, paused particles, AA local lamp, interior layer isolation and readable room, menu cleanup and re-entry, no daytime save.\nDay luminance " + SessionState.GetFloat(Key + ".Day", 0) + ", night " + SessionState.GetFloat(Key + ".Night", 0) + "\n");
                     Debug.Log("Lighting flow verification PASSED."); Phase(20); EditorApplication.isPlaying = false;

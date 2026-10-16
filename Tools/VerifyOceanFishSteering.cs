@@ -27,7 +27,7 @@ class VerifyOceanFishSteering
         var numbers = Regex.Matches(text, @"[xyzw]: ([^,}]+)").Cast<Match>().Select(m => Number(m.Groups[1].Value)).ToArray();
         return new Vector4(numbers[0], numbers[1], numbers.Length > 2 ? numbers[2] : 0, numbers.Length > 3 ? numbers[3] : 0);
     }
-    static OceanSchool School()
+    internal static OceanSchool School()
     {
         // Skip the native MonoBehaviour constructor; only ordinary managed fields / methods are used.
         var school = (OceanSchool)FormatterServices.GetUninitializedObject(typeof(OceanSchool));
@@ -91,8 +91,15 @@ class VerifyOceanFishSteering
         float sea=Number(Field(prefab,"SeaLevel"));
         float waves=Number(Field(File.ReadAllText(Path.Combine(root,"Assets/Art/Materials/Ocean/Water.mat")),"_WaveHeight"));
         Check(obstacles.Length>1500,"Read full-height reef obstacles");
-        Check(schools.Length == 32, "Read all 32 actual baked schools");
-        int avoidance = 0, feeding = 0, exploring = 0, slow = 0, longestStop=0;
+        string ranges=Regex.Match(prefab,@"(?ms)^  FishPopulations:\r?\n(.*?)(?=^  \w+:|\z)").Groups[1].Value;
+        var populations=Regex.Split(ranges,@"(?m)^  - Species: ").Skip(1).Select(entry=>{
+            string data="    Species: "+entry;
+            return new OceanFishPopulation((ShallowFishSpecies)int.Parse(Field(data,"Species")),int.Parse(Field(data,"Minimum")),int.Parse(Field(data,"Maximum")),int.Parse(Field(data,"MinimumSchools")),int.Parse(Field(data,"MaximumSchools")));
+        }).ToArray();
+        var plan=OceanFishPopulation.CreatePlan(populations,int.Parse(Field(prefab,"FishSeed")));
+        Check(schools.Length==plan.Length,"Read every actual school from seeded count plan");
+        foreach(var population in populations)Check(plan.Where(p=>p.Species==population.Species).Select(p=>p.Members).OrderBy(n=>n).SequenceEqual(schools.Where(s=>s.Species==population.Species).Select(s=>s.Members).OrderBy(n=>n)),"Baked members match inclusive seeded ranges");
+        int avoidance = 0, feeding = 0, exploring = 0, slow = 0, longestStop=0, passages=0;
         foreach (var school in schools)
         {
             school.ConfigureWater(floor.HighestFloor(school.Center,school.HomeRadius)+.07f,sea-Mathf.Max(.1f,waves*1.5f+.025f),obstacles);
@@ -111,6 +118,8 @@ class VerifyOceanFishSteering
                     Check(simulation.Navigation.CanMove(before[i], state.Position, member), "Swept movement stays inside habitat and outside coral");
                     Check(state.Position.y+member.Bottom>=school.WaterFloor-.00001f && state.Position.y+member.Top<=school.WaterCeiling+.00001f, "Three dimensional movement stays in the baked water column");
                     Check(!float.IsNaN(state.Yaw) && !float.IsInfinity(state.Velocity.sqrMagnitude), "Motion remains finite");
+                    var prior=simulation.PreviousStepState(i).Passage;
+                    if(prior.Active&&state.Passage.Active)Check(prior.Side==state.Passage.Side,"Retain passage side until it ends");
                     stationary[i]=state.Velocity.magnitude<.005f?stationary[i]+1:0;
                     longestStop=Math.Max(longestStop,stationary[i]);
                     Check(stationary[i]<90,"A fish must not remain motionless for three seconds: "+school.Species+" member="+i);
@@ -124,6 +133,7 @@ class VerifyOceanFishSteering
             for(int i=0;i<school.Members;i++)Check(high[i]-low[i]>.01f,"Each actual fish changes depth: "+school.Species+" member="+i);
             Check(school.Alarm == 0 && simulation.States.All(s => s.Activity != OceanFishActivity.Fleeing), "Fish settle after a splash");
             avoidance += simulation.AvoidanceCount; feeding += simulation.ForagingCount; exploring += simulation.ExplorationCount;
+            passages+=simulation.PassageCount;
             var frozen = simulation.States.Select(s => s.Position).ToArray();
             foreach (float seconds in new[] { 0f, -1f, float.NaN, float.PositiveInfinity }) simulation.Advance(seconds);
             Check(frozen.SequenceEqual(simulation.States.Select(s => s.Position)), "Pause / invalid time does not mutate positions");
@@ -138,11 +148,12 @@ class VerifyOceanFishSteering
             }
         }
         Check(avoidance > 100 && feeding > 100 && exploring > 100 && slow > 100, "Flocking preserves reef avoidance and individual feeding / exploration");
+        Check(passages>10,"Baked habitats use passage routes");
 
         CheckBoidControls();
         CheckDetour();
         CheckPresentation();
-        Console.WriteLine("PASS: " + checks + " actual steering / baked habitat assertions across 32 schools; avoidance=" + avoidance + ", slow feeding=" + slow+", longest stop="+longestStop+" steps");
+        Console.WriteLine("PASS: " + checks + " actual steering / baked habitat assertions across "+schools.Length+" schools; avoidance=" + avoidance + ", slow feeding=" + slow+", longest stop="+longestStop+" steps, passages="+passages);
         return 0;
     }
     static byte[] Hex(string text)

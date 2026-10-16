@@ -49,11 +49,14 @@ namespace MagicIsland.Ocean
             var delta=b-a;float t=delta.sqrMagnitude>.000001f?Mathf.Clamp01(Vector2.Dot(point-a,delta)/delta.sqrMagnitude):0;
             return (point-a-delta*t).sqrMagnitude;
         }
-        public Vector2 Avoid(Vector3 position,Vector2 heading,OceanFishMember member,float lookAhead,float side)
+        // A fully checked passage owns steering around its obstacle; swept CanMove still checks it.
+        public Vector2 Avoid(Vector3 position,Vector2 heading,OceanFishMember member,float lookAhead,float side,int guidedObstacle=-1)
         {
             Vector2 p=new Vector2(position.x,position.z),end=p+heading*lookAhead,steer=Vector2.zero;
-            foreach(var obstacle in Obstacles)
+            for(int index=0;index<Obstacles.Length;index++)
             {
+                if(index==guidedObstacle)continue;
+                var obstacle=Obstacles[index];
                 if(position.y+member.Top<obstacle.Bottom-.025f||position.y+member.Bottom>obstacle.Top+.025f)continue;
                 float radius=obstacle.Radius+member.Radius+.22f;
                 if(SegmentDistanceSquared(p,end,obstacle.Center)>=radius*radius)continue;

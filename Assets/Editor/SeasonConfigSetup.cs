@@ -16,6 +16,7 @@ namespace MagicIsland.EditorTools
             const string path = "Assets/Config/SeasonConfig.asset";
             SeasonConfig config = AssetDatabase.LoadAssetAtPath<SeasonConfig>(path);
             if (config == null) AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<SeasonConfig>(), path);
+            else if(!File.ReadAllText(path).Contains("Spring:"))EditorUtility.SetDirty(config);
             string guid = AssetDatabase.AssetPathToGUID(path);
             var entry = settings.FindAssetEntry(guid) ?? settings.CreateOrMoveEntry(guid, group);
             if (entry.address != SeasonConfig.Address) entry.SetAddress(SeasonConfig.Address);

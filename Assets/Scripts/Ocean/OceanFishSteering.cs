@@ -10,19 +10,28 @@ namespace MagicIsland.Ocean
         const double ClockStep=1.0/30;
         public struct MemberState
         {
-            public Vector3 Position,Velocity,Target,LastDirection;
-            public float Yaw,Pitch,Until,FeedBlend,StoppedSeconds,RecoveryYaw,RecoveryPitch,RecoveryUntil;
+            public Vector3 Position,Velocity,Target,LastDirection,ShelterTarget;
+            public float Yaw,Pitch,Until,FeedBlend,StoppedSeconds,RecoveryYaw,RecoveryPitch,RecoveryUntil,ActivityLevel,ForagingLevel,ExplorationLevel,ShelterBlend;
             public OceanFishActivity Activity;
+            public OceanFishPassage Passage;
         }
         public readonly MemberState[] States;
         public readonly Vector4[] Poses=new Vector4[32],Attitudes=new Vector4[32];
+        public readonly Vector4[] SpinePoses=new Vector4[32*OceanFishSpine.Nodes];
+        public readonly OceanFishSpine[] Spines;
+        readonly OceanFishAnimation animation;
         readonly MemberState[] previous;
         readonly OceanSchool school;
         public readonly OceanSwimNavigation Navigation;
         public int AvoidanceCount { get; private set; }
         public int ForagingCount { get; private set; }
         public int ExplorationCount { get; private set; }
+        public int PassageCount { get; private set; }
         public OceanFishMember BodyBounds(int index)=>bodies[index];
+        // Snapshot at the start of the last completed fixed step (valid member index required).
+        // A render frame can complete zero or several steps; do not sweep a chord across them.
+        // Returns a value copy without changing state, emitting events or owning resources.
+        public MemberState PreviousStepState(int index)=>previous[index];
         readonly Vector3[] positions,velocities,proposed,corrections;
         readonly bool[] halted;
         readonly float[] radii,minY,maxY,pitchLimit;
@@ -32,9 +41,11 @@ namespace MagicIsland.Ocean
         public OceanFishSteering(OceanSchool school)
         {
             this.school=school;
+            animation=school.Animation??new OceanFishAnimation();
             Navigation=new OceanSwimNavigation(school.WaterObstacles??school.Obstacles,school.Center,school.HomeRadius)
                 {Floor=school.WaterFloor,Ceiling=school.WaterCeiling};
             int count=school.Swimmers.Length;
+            if(school.Anatomy!=null&&school.Anatomy.Length==count)Spines=new OceanFishSpine[count];
             States=new MemberState[count];previous=new MemberState[count];
             positions=new Vector3[count];velocities=new Vector3[count];proposed=new Vector3[count];
             corrections=new Vector3[count];halted=new bool[count];
@@ -70,8 +81,9 @@ namespace MagicIsland.Ocean
                     }
                     if(!found)throw new InvalidOperationException("No separated fish spawn inside the baked habitat: "+school.Species+" member="+i+" radius="+m.Radius+" water="+minY[i]+".."+maxY[i]+" home="+school.Center);
                 }
-                States[i]=new MemberState{Position=spawn,Yaw=school.Phase,Until=4+i*.53f,Activity=OceanFishActivity.Cruising};
+                States[i]=new MemberState{Position=spawn,Yaw=school.Phase,Until=4+i*.53f+(school.HasEnvironment?(1+Mathf.Sin(school.Phase))*2:0),Activity=OceanFishActivity.Cruising,ActivityLevel=ActivityTarget(m.Pivot.w),ForagingLevel=ForagingRate(),ExplorationLevel=ExplorationRate(),ShelterBlend=ShelterRate(),ShelterTarget=ForageTarget(i,m.Pivot.w)};
                 previous[i]=States[i];
+                if(Spines!=null)Spines[i]=new OceanFishSpine(school.Anatomy[i],animation,spawn,school.Phase,m.Pivot.w*2,school.Species==ShallowFishSpecies.SpottedRay);
             }
         }
         bool SpawnClear(Vector3 p,int count)
@@ -94,6 +106,17 @@ namespace MagicIsland.Ocean
             float middle=Mathf.Clamp(school.Swimmers[i].Spawn.y,minY[i]+amplitude,high-amplitude);
             return middle+amplitude*Mathf.Sin(time*.47f+phase);
         }
+        float ActivityTarget(float phase)
+        {
+            if(!school.HasEnvironment)return 1;
+            float light=school.EnvironmentLight;
+            light=Mathf.Clamp01(light+Mathf.Sin(phase*.7f+school.Phase)*.24f*light*(1-light));
+            return (Mathf.Lerp(animation.NightSpeed,1,light)+school.EnvironmentTwilight*(animation.TwilightSpeed-1+(1-light)*.4f))*(school.EnvironmentRain?animation.RainSpeed:1);
+        }
+        float ForagingRate()=>school.HasEnvironment?Mathf.Lerp(animation.NightForaging,1,school.EnvironmentLight)*(school.EnvironmentRain?animation.RainForaging:1):1;
+        float ExplorationRate()=>school.HasEnvironment?Mathf.Lerp(animation.NightExploration,1,school.EnvironmentLight)*(school.EnvironmentRain?animation.RainExploration:1):1;
+        float ShelterRate()=>school.HasEnvironment?Mathf.Max((1-school.EnvironmentLight)*animation.NightShelter,
+            Mathf.Max(school.EnvironmentTwilight*animation.TwilightShelter,school.EnvironmentRain?animation.RainShelter:0)):0;
         void Step(float dt,float time)
         {
             for(int i=0;i<States.Length;i++)
@@ -101,6 +124,11 @@ namespace MagicIsland.Ocean
             for(int i=0;i<States.Length;i++)
             {
                 var state=previous[i];var member=bodies[i];float phase=member.Pivot.w;
+                float transition=dt/(animation.TransitionSeconds+(i%5)*.4f+(1+Mathf.Sin(school.Phase))*.6f);
+                state.ActivityLevel=Mathf.MoveTowards(state.ActivityLevel,ActivityTarget(phase),transition);
+                state.ForagingLevel=Mathf.MoveTowards(state.ForagingLevel,ForagingRate(),transition);
+                state.ExplorationLevel=Mathf.MoveTowards(state.ExplorationLevel,ExplorationRate(),transition);
+                state.ShelterBlend=Mathf.MoveTowards(state.ShelterBlend,ShelterRate(),transition);
                 state.StoppedSeconds=new Vector2(state.Velocity.x,state.Velocity.z).sqrMagnitude<.000025f?state.StoppedSeconds+dt:0;
                 if(state.StoppedSeconds>.3f&&time>=state.RecoveryUntil)
                 {
@@ -115,12 +143,17 @@ namespace MagicIsland.Ocean
                     {state.Activity=OceanFishActivity.Foraging;state.Until=time+10+i%3;ForagingCount++;state.Target=ForageTarget(i,phase);}
                     else if(state.Activity==OceanFishActivity.Foraging)
                     {
-                        state.Activity=OceanFishActivity.Exploring;state.Until=time+7+i%4;ExplorationCount++;
-                        var p=school.Center+new Vector3(Mathf.Sin(phase)*school.HomeRadius*.7f,0,Mathf.Cos(phase)*school.HomeRadius*.7f);
-                        p.y=Depth(i,time,phase);Navigation.FindClear(p,member,phase,out state.Target);
+                        float sample=Mathf.Repeat(Mathf.Sin(phase*3.13f+time*.37f)*3187.7f,1);
+                        if(sample<state.ExplorationLevel)
+                        {
+                            state.Activity=OceanFishActivity.Exploring;state.Until=time+7+i%4;ExplorationCount++;
+                            var p=school.Center+new Vector3(Mathf.Sin(phase)*school.HomeRadius*.7f,0,Mathf.Cos(phase)*school.HomeRadius*.7f);
+                            p.y=Depth(i,time,phase);Navigation.FindClear(p,member,phase,out state.Target);
+                        }
+                        else{state.Activity=OceanFishActivity.Returning;state.Until=time+4;}
                     }
                     else if(state.Activity==OceanFishActivity.Exploring){state.Activity=OceanFishActivity.Returning;state.Until=time+4;}
-                    else {state.Activity=OceanFishActivity.Cruising;state.Until=time+10+i%7;}
+                    else {state.Activity=OceanFishActivity.Cruising;state.Until=time+(10+i%7)/Mathf.Max(.01f,state.ForagingLevel);}
                 }
                 float angle=school.Phase+time*school.Speed;
                 var goal=school.Center+new Vector3(Mathf.Cos(angle)*school.Radius,0,Mathf.Sin(angle)*school.Radius*school.OrbitAspect);
@@ -134,27 +167,48 @@ namespace MagicIsland.Ocean
                         goal+=new Vector3(Mathf.Cos(time*.65f+phase)*.45f,0,Mathf.Sin(time*.65f+phase)*.45f);
                     goal.y=Depth(i,time*.8f,phase);
                 }
+                if(state.Activity!=OceanFishActivity.Fleeing&&state.ShelterBlend>0)
+                {
+                    // Safe, individually offset coral-edge targets stay inside the existing home.
+                    // Boids, passage planning and the final whole-body sweep still arbitrate every step.
+                    var quiet=state.ShelterTarget;quiet.y=Depth(i,time*.6f,phase);
+                    quiet+=new Vector3(Mathf.Cos(time*.31f+phase),0,Mathf.Sin(time*.31f+phase))*.18f;
+                    goal=Vector3.Lerp(goal,quiet,state.ShelterBlend);
+                }
                 if(state.Activity==OceanFishActivity.Fleeing)
                 {
                     var escape=OceanFishMotion.Rotate(new Vector2(school.EscapeDirection.x,school.EscapeDirection.z),Mathf.Sin(phase)*school.ScatterDistance);
                     goal=state.Position+new Vector3(escape.x,0,escape.y)*(1+school.FleeDistance);goal.y=Depth(i,time,phase);
+                }
+                float stagger=animation.PassageStagger*(.2f+.8f*(.5f+.5f*Mathf.Sin(phase*1.37f)));
+                if(state.Activity==OceanFishActivity.Fleeing)state.Passage.Cancel(time);
+                else
+                {
+                    // Each fish retains its side until it passes, even when neighbours turn first.
+                    if(state.Passage.TryBegin(Navigation,state.Position,goal,member,i%2==0?1:-1,time,animation.PassageLookAhead,stagger))PassageCount++;
+                    state.Passage.Tick(state.Position,time,dt,animation.RegroupSeconds,stagger);
+                    goal=Vector3.Lerp(goal,state.Passage.Guide,state.Passage.Blend);
                 }
                 Vector3 toward=goal-state.Position;
                 float speed=(school.Species==ShallowFishSpecies.SpottedRay?.27f:school.Species==ShallowFishSpecies.SilverMinnow?.70f:.38f)*(1+.15f*Mathf.Sin(phase));
                 float feeding=state.Activity==OceanFishActivity.Foraging?1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.25f,1.1f,Vector3.Distance(state.Position,state.Target))):0;
                 state.FeedBlend=Mathf.MoveTowards(state.FeedBlend,feeding,dt);
                 speed*=Mathf.Lerp(1,.24f,state.FeedBlend)*(1+school.Alarm*1.8f);
+                speed*=Mathf.Lerp(state.ActivityLevel,1,school.Alarm);
+                if(state.Passage.Active)speed*=Mathf.Lerp(.45f,1,Mathf.Clamp01((time-state.Passage.WaitUntil+.25f)/.5f));
                 speed=Mathf.MoveTowards(state.Velocity.magnitude,speed,Mathf.Max(.01f,school.Acceleration)*dt);
                 var heading=new Vector3(Mathf.Sin(state.Yaw),0,Mathf.Cos(state.Yaw));
                 var flock=OceanFishBoids.Evaluate(positions,velocities,radii,i,school.NeighbourRadius,school.SeparationRadius);
                 float social=state.Activity==OceanFishActivity.Fleeing?.12f:individual?.3f:1;
+                social*=Mathf.Lerp(1,.12f,state.Passage.Blend);
                 float goalWeight=state.Activity==OceanFishActivity.Fleeing?1.8f:individual?1.4f:Mathf.Max(0,school.CruiseWeight);
                 var direction=toward.normalized*goalWeight+flock.Separation*Mathf.Max(0,school.SeparationWeight)
                     +(flock.Alignment*Mathf.Max(0,school.AlignmentWeight)+flock.Cohesion*Mathf.Max(0,school.CohesionWeight))*social;
+                if(state.Passage.Active)direction+=toward.normalized*1.3f*state.Passage.Blend;
                 direction=direction.sqrMagnitude>.0001f?direction.normalized:heading;
                 bool recovering=time<state.RecoveryUntil;
                 // Use the current heading to choose the obstacle tangent consistently across adjacent steps.
-                var avoidance=Navigation.Avoid(state.Position,new Vector2(heading.x,heading.z),member,.65f+speed,i%2==0?1:-1);
+                var avoidance=Navigation.Avoid(state.Position,new Vector2(heading.x,heading.z),member,.65f+speed,i%2==0?1:-1,state.Passage.Active?state.Passage.ObstacleIndex:-1);
                 if(avoidance.sqrMagnitude>.1f)AvoidanceCount++;
                 direction+=new Vector3(avoidance.x,0,avoidance.y);
                 if(recovering)direction=new Vector3(Mathf.Sin(state.RecoveryYaw),0,Mathf.Cos(state.RecoveryYaw));
@@ -265,6 +319,7 @@ namespace MagicIsland.Ocean
                     s.Pitch=Mathf.MoveTowards(previous[i].Pitch,pitch,35*Mathf.Deg2Rad*dt);
                 }
                 States[i]=s;
+                if(Spines!=null)Spines[i].Step(s.Position,s.Yaw,dt,s.Velocity.magnitude);
             }
         }
         float EscapeYaw(int index,float yaw,out float pitch)
@@ -348,7 +403,14 @@ namespace MagicIsland.Ocean
         public void WritePoses(Vector3 root)
         {
             for(int i=0;i<States.Length;i++)
-            {var s=RenderState(i);var p=s.Position-root;Poses[i]=new Vector4(p.x,p.y,p.z,s.Yaw);Attitudes[i]=new Vector4(s.Pitch,0,0,0);}
+            {
+                var s=RenderState(i);var p=s.Position-root;Poses[i]=new Vector4(p.x,p.y,p.z,s.Yaw);Attitudes[i]=new Vector4(s.Pitch,0,0,0);
+                if(Spines!=null)
+                {
+                    Spines[i].Interpolate(Mathf.Clamp01((float)(elapsed/ClockStep)));Spines[i].Write(SpinePoses,i);
+                    var shape=Spines[i].Anatomy;Attitudes[i]=new Vector4(s.Pitch,shape.Head,shape.Tail,Spines[i].RenderPhase);
+                }
+            }
         }
     }
 }

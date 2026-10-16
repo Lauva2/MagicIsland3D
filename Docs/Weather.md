@@ -6,7 +6,7 @@ WeatherManager 控制当天晴雨、昼夜光照、雨滴表现和雨水浇灌�
 
 ## 每日天气与农田
 
-新游戏第一天固定晴天。每次睡觉或点击调试“下一天”，先按当天浇水状态结算作物，再按目标日期的季节推进天气，回到 06:00 并睡觉时统一保存。默认春／夏／秋／冬降雨概率为 30%／20%／40%／15%，在 SeasonConfig 中调整。WeatherConfig.RainChance 保留给没有 CalendarManager 的独立天气初始化使用，正常游戏采用季节概率。
+新游戏第一天固定晴天。每次在床边确认睡觉，先按当天浇水状态结算作物，再按目标日期的季节推进天气，回到 06:00 并统一保存。默认春／夏／秋／冬降雨概率为 30%／20%／40%／15%，在 SeasonConfig 中调整。WeatherConfig.RainChance 保留给没有 CalendarManager 的独立天气初始化使用，正常游戏采用季节概率。
 
 雨天全部已种植的露天农田自动浇水，包括雨中新播种的作物；空地和仅耕地的地块不会浇水。雨水不消耗体力、种子或金币，不直接增加生长进度。跨日最多成长一次，成熟后不继续累积。次日晴天时浇水状态正常清除，次日仍下雨时立即重新浇水。
 
@@ -27,6 +27,19 @@ WeatherConfig 中可调整四个时刻、阳光峰值、月光强度（NightInte
 背包、商店和睡觉弹窗暂停时钟及雨滴运动；关闭后恢复。HUD 的 WeatherText 位于 `FarmHudPanel.prefab`，由 FarmHudModel / FarmHudController / PrototypeHud 显示中文“晴天”或“雨天”。面板继续使用 AA 同名地址和 Common 层。离开场景后清理月光、雨滴、场景引用和天气状态；在原场景内清理时恢复原有方向光、阴影参数、环境光模式和三色、反射及背景，重复进入只创建一盏月光。
 
 天空的 IslandClouds 预制体通过 AA 加载并由 WeatherManager 更新。晴天投下稀疏柔和的移动云影，暂停冻结，进入室内隐藏；雨天与夜间取消独立云影。资源、参数和渲染检查见 [云层与云影](Clouds.md)。
+
+## 小屋与码头局部夜灯
+
+`PlayerHouse` 复用原有门灯、门窗和侧窗，增加窗光覆盖层与一盏暖色门灯；`CoastalFishingSpot` 在码头入口和尽头各增加一盏矮灯。模型、灯光和 `OutdoorNightLighting` 引用烘焙在原预制体内，`Outdoor Warm Glow.mat` / `OutdoorGlow.shader` 随原 AA 地址的依赖加载，无新增地址、配置或存档字段。新增装饰不带碰撞，保持原入口、码头和钓鱼交互引用。
+
+WeatherManager 同时绑定已存在与后续 AA 加载的本世界灯组，以恢复后的时刻初始化；默认在日照系数低于 0.55 时渐亮，低于 0.08 时全亮，雨天以日照乘 0.72 计算。参数放在预制体组件中，灯光颜色、范围和最大强度沿用其 Light；默认门灯强度 1.05 / 范围 3.2 米，两盏码头灯各 1.1 / 2.7 米，均为无阴影聚光灯，外角 112°、内角 50°。保持现有月光、环境光与海水亮度，窗光用同一共享加色材质和 MPB，不克隆材质。
+
+组件不自行 Update；同一日照输入产生同一亮度，暂停不推进，进屋关闭户外灯并排除 HousingConfig.InteriorLayer。清理解除注册事件，恢复原实例灯光强度、启用状态、照明层与 MPB，AA 资源由原 HousingManager / FishingManager 释放。禁用后重新启用可重新绑定；跨世界实例不接受绑定。普通 Setup 仅创建缺失灯组 / 材质或补空引用，已配置的合法参数、位置、材质和灯光不被覆盖。资源已随源码提供，更新后构建 Prototype Addressables。
+
+- `OutdoorNightLightingVerification.Prepare`：检查重复配置字节不变、原碰撞不变、三灯上限、日照 / 雨天 / 暂停等值输入、室内关闭、原灯光和 MPB 恢复、共享材质不变。
+- `LightingFlowVerification.Run` 同时检查真正 Packed AA 后加载灯组的绑定、正常镜头日 / 昏 / 夜画面、开关局部照明的实际像素亮度差、室内关闭、返回与再次进入。
+
+2026-10-16 在隔离工程执行上述 Prepare、LightingFlowVerification 及 PauseSleepFlowVerification，均退出 0 并输出 PASSED；检查白天、傍晚、晴夜和雨夜截图后下调了初版灯光的强度与范围。Prepare 额外改动合法的灯光强度、窗光强度及位置，确认普通 Setup 保留编辑，再恢复原资产字节。本次未重新测量独立 Player 的灯光耗时。
 
 ## 存档与验证
 

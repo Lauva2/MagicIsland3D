@@ -9,6 +9,7 @@ namespace MagicIsland.WeatherSystem
         public MeshRenderer Target;
         [Min(0)] public float Bend=.10f,Flutter=.025f;
         public bool Radial;
+        public bool Evergreen;
         private MaterialPropertyBlock properties;
         private Bounds originalBounds;
         private bool captured;
@@ -23,7 +24,8 @@ namespace MagicIsland.WeatherSystem
             var bounds=mesh.bounds;float radius=Mathf.Max(bounds.extents.x,bounds.extents.z);
             if(properties==null)properties=new MaterialPropertyBlock();Target.GetPropertyBlock(properties);
             properties.SetVector(ShapeId,new Vector4(bounds.min.y,Mathf.Max(.01f,bounds.size.y),Mathf.Max(.01f,radius),Radial?1:0));
-            properties.SetFloat(BendId,Bend);properties.SetFloat(FlutterId,Flutter);Target.SetPropertyBlock(properties);
+            properties.SetFloat(BendId,Bend);properties.SetFloat(FlutterId,Flutter);
+            properties.SetFloat("_SeasonEvergreen",Evergreen?1:0);Target.SetPropertyBlock(properties);
             bounds=originalBounds;bounds.Expand(Mathf.Max(Bend,Flutter)*8);Target.localBounds=bounds;
         }
         private void OnDisable()

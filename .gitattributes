@@ -1,5 +1,6 @@
 * text=auto
 *.cs text eol=lf
+*.ps1 text eol=lf
 *.shader text eol=lf
 *.cginc text eol=lf
 *.md text eol=lf

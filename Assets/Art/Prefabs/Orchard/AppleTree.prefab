@@ -100,6 +100,7 @@ MonoBehaviour:
   Bend: 0.085
   Flutter: 0.018
   Radial: 0
+  Evergreen: 0
 --- !u!1 &100191897888476485
 GameObject:
   m_ObjectHideFlags: 0
@@ -603,6 +604,7 @@ MonoBehaviour:
   Bend: 0.085
   Flutter: 0.018
   Radial: 0
+  Evergreen: 0
 --- !u!1 &1395874826137193558
 GameObject:
   m_ObjectHideFlags: 0
@@ -786,6 +788,7 @@ MonoBehaviour:
   Bend: 0.085
   Flutter: 0.018
   Radial: 0
+  Evergreen: 0
 --- !u!1 &2750575753241286706
 GameObject:
   m_ObjectHideFlags: 0
@@ -886,6 +889,7 @@ MonoBehaviour:
   Bend: 0.085
   Flutter: 0.018
   Radial: 0
+  Evergreen: 0
 --- !u!1 &2981798215900654841
 GameObject:
   m_ObjectHideFlags: 0
@@ -986,6 +990,7 @@ MonoBehaviour:
   Bend: 0.085
   Flutter: 0.018
   Radial: 0
+  Evergreen: 0
 --- !u!1 &3085766522188699432
 GameObject:
   m_ObjectHideFlags: 0
@@ -1169,6 +1174,7 @@ MonoBehaviour:
   Bend: 0.085
   Flutter: 0.018
   Radial: 0
+  Evergreen: 0
 --- !u!1 &3930852077747561952
 GameObject:
   m_ObjectHideFlags: 0
@@ -1540,6 +1546,7 @@ MonoBehaviour:
   Bend: 0.085
   Flutter: 0.018
   Radial: 0
+  Evergreen: 0
 --- !u!1 &7708635272483546458
 GameObject:
   m_ObjectHideFlags: 0
@@ -1640,6 +1647,7 @@ MonoBehaviour:
   Bend: 0.085
   Flutter: 0.018
   Radial: 0
+  Evergreen: 0
 --- !u!1 &7812483887495737954
 GameObject:
   m_ObjectHideFlags: 0
@@ -1740,3 +1748,4 @@ MonoBehaviour:
   Bend: 0.085
   Flutter: 0.018
   Radial: 0
+  Evergreen: 0

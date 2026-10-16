@@ -345,6 +345,7 @@ namespace MagicIsland.Managers
                 ReturnAfterFailure(error);
                 yield break;
             }
+            Terrain.BindSeasonalDetails(Placements,Gathering,Animals);
             yield return RestoreResidence();
             if (Housing.LastError != null || Scenes.LastError != null || Furniture.LastError != null)
             {

@@ -125,6 +125,8 @@ namespace MagicIsland.EditorTools
             GatheringArtSetup.Ensure();
             OrchardSetup.Ensure(settings);
             VegetationWindSetup.Ensure();
+            SeasonalDetailsSetup.Ensure(settings);
+            OutdoorNightLightingSetup.Ensure();
             AddressableAssetGroup uiGroup = settings.FindGroup("UI");
             if (uiGroup == null)
                 uiGroup = settings.CreateGroup("UI", false, false, true, null,

@@ -29,6 +29,10 @@ namespace MagicIsland.EditorTools
                 try
                 {
                     bool changed=false;
+                    bool needsSeason= !File.ReadAllText(path).Contains("Evergreen:");
+                    if(needsSeason)
+                        foreach(var wind in root.GetComponentsInChildren<VegetationWind>(true))
+                        {wind.Evergreen=path==Prefabs[0];changed=true;}
                     foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>(true))
                     {
                         if(!FoliageNames.Contains(renderer.name)||renderer.GetComponent<VegetationWind>()!=null)continue;
@@ -37,6 +41,7 @@ namespace MagicIsland.EditorTools
                         var replacements=originals.Select(WindMaterial).ToArray();renderer.sharedMaterials=replacements;
                         var wind=renderer.gameObject.AddComponent<VegetationWind>();wind.Target=renderer;
                         wind.Radial=renderer.name=="Palm crown"||renderer.name=="Young fronds";
+                        wind.Evergreen=path==Prefabs[0];
                         wind.Bend=wind.Radial?.14f:renderer.name=="Leaf clusters"?.065f:.085f;
                         wind.Flutter=wind.Radial?.045f:.018f;changed=true;
                     }
