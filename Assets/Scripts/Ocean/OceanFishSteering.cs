@@ -10,8 +10,8 @@ namespace MagicIsland.Ocean
         const double ClockStep=1.0/30;
         public struct MemberState
         {
-            public Vector3 Position,Velocity,Target,LastDirection,ShelterTarget;
-            public float Yaw,Pitch,Until,FeedBlend,StoppedSeconds,RecoveryYaw,RecoveryPitch,RecoveryUntil,ActivityLevel,ForagingLevel,ExplorationLevel,ShelterBlend;
+            public Vector3 Position,Velocity,Target,LastDirection,ShelterTarget,SteeringGoal;
+            public float Yaw,Pitch,Until,FeedBlend,StoppedSeconds,RecoveryYaw,RecoveryPitch,RecoveryUntil,ActivityLevel,ForagingLevel,ExplorationLevel,ShelterBlend,YawRate;
             public OceanFishActivity Activity;
             public OceanFishPassage Passage;
         }
@@ -82,6 +82,7 @@ namespace MagicIsland.Ocean
                     if(!found)throw new InvalidOperationException("No separated fish spawn inside the baked habitat: "+school.Species+" member="+i+" radius="+m.Radius+" water="+minY[i]+".."+maxY[i]+" home="+school.Center);
                 }
                 States[i]=new MemberState{Position=spawn,Yaw=school.Phase,Until=4+i*.53f+(school.HasEnvironment?(1+Mathf.Sin(school.Phase))*2:0),Activity=OceanFishActivity.Cruising,ActivityLevel=ActivityTarget(m.Pivot.w),ForagingLevel=ForagingRate(),ExplorationLevel=ExplorationRate(),ShelterBlend=ShelterRate(),ShelterTarget=ForageTarget(i,m.Pivot.w)};
+                var initial=States[i];initial.SteeringGoal=school.Center+new Vector3(Mathf.Cos(school.Phase)*school.Radius,spawn.y-school.Center.y,Mathf.Sin(school.Phase)*school.Radius*school.OrbitAspect);States[i]=initial;
                 previous[i]=States[i];
                 if(Spines!=null)Spines[i]=new OceanFishSpine(school.Anatomy[i],animation,spawn,school.Phase,m.Pivot.w*2,school.Species==ShallowFishSpecies.SpottedRay);
             }
@@ -163,8 +164,8 @@ namespace MagicIsland.Ocean
                 {
                     goal=state.Target;
                     // Follow a small moving feeding circuit instead of braking to zero at a shared point.
-                    if(Vector3.Distance(state.Position,goal)<.8f)
-                        goal+=new Vector3(Mathf.Cos(time*.65f+phase)*.45f,0,Mathf.Sin(time*.65f+phase)*.45f);
+                    float circuit=1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.35f,1.1f,Vector3.Distance(state.Position,goal)));
+                    goal+=new Vector3(Mathf.Cos(time*.65f+phase)*.45f,0,Mathf.Sin(time*.65f+phase)*.45f)*circuit;
                     goal.y=Depth(i,time*.8f,phase);
                 }
                 if(state.Activity!=OceanFishActivity.Fleeing&&state.ShelterBlend>0)
@@ -189,7 +190,9 @@ namespace MagicIsland.Ocean
                     state.Passage.Tick(state.Position,time,dt,animation.RegroupSeconds,stagger);
                     goal=Vector3.Lerp(goal,state.Passage.Guide,state.Passage.Blend);
                 }
-                Vector3 toward=goal-state.Position;
+                // Blend waypoint/activity changes before steering; an alarm still preempts immediately.
+                state.SteeringGoal=state.Activity==OceanFishActivity.Fleeing?goal:Vector3.Lerp(state.SteeringGoal,goal,1-Mathf.Exp(-dt/animation.GoalBlendSeconds));
+                Vector3 toward=state.SteeringGoal-state.Position;
                 float speed=(school.Species==ShallowFishSpecies.SpottedRay?.27f:school.Species==ShallowFishSpecies.SilverMinnow?.70f:.38f)*(1+.15f*Mathf.Sin(phase));
                 float feeding=state.Activity==OceanFishActivity.Foraging?1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.25f,1.1f,Vector3.Distance(state.Position,state.Target))):0;
                 state.FeedBlend=Mathf.MoveTowards(state.FeedBlend,feeding,dt);
@@ -213,8 +216,7 @@ namespace MagicIsland.Ocean
                 direction+=new Vector3(avoidance.x,0,avoidance.y);
                 if(recovering)direction=new Vector3(Mathf.Sin(state.RecoveryYaw),0,Mathf.Cos(state.RecoveryYaw));
                 float targetYaw=Mathf.Atan2(direction.x,direction.z);
-                float turn=(school.Species==ShallowFishSpecies.SpottedRay?75:135)*dt;
-                float yaw=Mathf.MoveTowardsAngle(state.Yaw*Mathf.Rad2Deg,targetYaw*Mathf.Rad2Deg,turn)*Mathf.Deg2Rad;
+                float yaw=TurnYaw(state.Yaw,targetYaw,previous[i].YawRate,dt,out state.YawRate);
                 float vertical=recovering?0:Mathf.Clamp(toward.y*.7f+flock.Separation.y*.15f
                     +(flock.Alignment.y*school.AlignmentWeight*.04f+flock.Cohesion.y*school.CohesionWeight*.06f)*social,-school.VerticalSpeed,school.VerticalSpeed);
                 float pitch=Mathf.Atan2(vertical,Mathf.Max(.02f,speed));
@@ -233,8 +235,8 @@ namespace MagicIsland.Ocean
                         state.RecoveryUntil=time+1.5f;
                     }
                     float escapeYaw=state.RecoveryYaw;
-                    yaw=Mathf.MoveTowardsAngle(state.Yaw*Mathf.Rad2Deg,escapeYaw*Mathf.Rad2Deg,turn)*Mathf.Deg2Rad;
-                    state.Pitch=Mathf.MoveTowards(previous[i].Pitch,state.RecoveryPitch,35*Mathf.Deg2Rad*dt);
+                    yaw=TurnYaw(state.Yaw,escapeYaw,previous[i].YawRate,dt,out state.YawRate);
+                    state.Pitch=Mathf.Clamp(Mathf.MoveTowards(previous[i].Pitch,Mathf.Clamp(state.RecoveryPitch,-pitchLimit[i],pitchLimit[i]),35*Mathf.Deg2Rad*dt),-pitchLimit[i],pitchLimit[i]);
                     velocity=new Vector3(Mathf.Sin(yaw)*Mathf.Cos(state.Pitch),Mathf.Sin(state.Pitch),Mathf.Cos(yaw)*Mathf.Cos(state.Pitch))*speed;
                     velocity.y=Mathf.Clamp(velocity.y,-school.VerticalSpeed,school.VerticalSpeed);
                     if(!Navigation.CanMove(state.Position,state.Position+velocity*dt,member))velocity=Vector3.zero;
@@ -313,21 +315,35 @@ namespace MagicIsland.Ocean
                 if(horizontal>.005f)
                 {
                     s.LastDirection=s.Velocity.normalized;
-                    float turn=(school.Species==ShallowFishSpecies.SpottedRay?75:135)*dt;
-                    s.Yaw=Mathf.MoveTowardsAngle(previous[i].Yaw*Mathf.Rad2Deg,Mathf.Atan2(s.Velocity.x,s.Velocity.z)*Mathf.Rad2Deg,turn)*Mathf.Deg2Rad;
+                    float actualYaw=Mathf.Atan2(s.Velocity.x,s.Velocity.z);
+                    // Contacts may redirect a swimmer. Re-evaluate from the same old rate, once,
+                    // rather than replacing the eased turn with a constant-speed heading snap.
+                    if(Mathf.Abs(Mathf.DeltaAngle(s.Yaw*Mathf.Rad2Deg,actualYaw*Mathf.Rad2Deg))>.05f)
+                        s.Yaw=TurnYaw(previous[i].Yaw,actualYaw,previous[i].YawRate,dt,out s.YawRate);
                     float pitch=Mathf.Clamp(Mathf.Atan2(s.Velocity.y,horizontal),-pitchLimit[i],pitchLimit[i]);
                     s.Pitch=Mathf.MoveTowards(previous[i].Pitch,pitch,35*Mathf.Deg2Rad*dt);
                 }
+                s.Pitch=Mathf.Clamp(s.Pitch,-pitchLimit[i],pitchLimit[i]);
                 States[i]=s;
                 if(Spines!=null)Spines[i].Step(s.Position,s.Yaw,dt,s.Velocity.magnitude);
             }
+        }
+        float TurnYaw(float yaw,float target,float rate,float dt,out float nextRate)
+        {
+            float error=Mathf.DeltaAngle(yaw*Mathf.Rad2Deg,target*Mathf.Rad2Deg);
+            // Keep a committed side while a target crosses directly behind the fish.
+            if(Mathf.Abs(error)>150&&Mathf.Abs(rate)>8&&error*rate<0)error+=rate>0?360:-360;
+            float maximum=school.Species==ShallowFishSpecies.SpottedRay?75:135;
+            float desired=Mathf.Clamp(error/animation.TurnResponseSeconds,-maximum,maximum);
+            nextRate=Mathf.MoveTowards(rate,desired,animation.TurnAcceleration*dt);
+            return yaw+nextRate*dt*Mathf.Deg2Rad;
         }
         float EscapeYaw(int index,float yaw,out float pitch)
         {
             var position=positions[index];var forward=new Vector3(Mathf.Sin(yaw),0,Mathf.Cos(yaw));
             var reverse=-previous[index].LastDirection;
             float best=float.NegativeInfinity,result=reverse.sqrMagnitude>.1f?Mathf.Atan2(reverse.x,reverse.z):yaw+Mathf.PI;
-            pitch=reverse.sqrMagnitude>.1f?Mathf.Asin(Mathf.Clamp(reverse.y,-1,1)):0;
+            pitch=reverse.sqrMagnitude>.1f?Mathf.Clamp(Mathf.Asin(Mathf.Clamp(reverse.y,-1,1)),-pitchLimit[index],pitchLimit[index]):0;
             for(int reach=0;reach<3;reach++)
             {
                 for(int sample=0;sample<=32;sample++)for(int level=-1;level<=1;level++)
@@ -338,7 +354,8 @@ namespace MagicIsland.Ocean
                     {
                         direction=-previous[index].LastDirection;
                         if(direction.sqrMagnitude<.1f)continue;
-                        angle=Mathf.Atan2(direction.x,direction.z);tilt=Mathf.Asin(Mathf.Clamp(direction.y,-1,1));
+                        angle=Mathf.Atan2(direction.x,direction.z);tilt=Mathf.Clamp(Mathf.Asin(Mathf.Clamp(direction.y,-1,1)),-pitchLimit[index],pitchLimit[index]);
+                        direction=new Vector3(Mathf.Sin(angle)*Mathf.Cos(tilt),Mathf.Sin(tilt),Mathf.Cos(angle)*Mathf.Cos(tilt));
                     }
                     var endpoint=position+direction*(reach==0?.12f:reach==1?.025f:.003f);
                     if(!Navigation.CanMove(position,endpoint,bodies[index]))continue;

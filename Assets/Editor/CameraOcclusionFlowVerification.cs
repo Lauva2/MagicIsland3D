@@ -59,7 +59,14 @@ namespace MagicIsland.EditorTools
                 if (!EditorApplication.isPlaying) return;
                 var g = GameManager.Instance; if (g == null) return;
                 Require(g.State != GameFlowState.Failed, "Camera flow bootstrap");
-                if (phase == 0 && g.State == GameFlowState.MainMenu) { g.EnterGame(); Phase(1); }
+                if (phase == 0 && g.State == GameFlowState.MainMenu)
+                {
+                    string directory = Path.GetFullPath("Logs/CameraOcclusionSaves/" + Guid.NewGuid().ToString("N"));
+                    Directory.CreateDirectory(directory);
+                    g.Saves.Initialize(g.Configuration.Config, g.Configuration.Items, g.Configuration.Crops, directory, g.Configuration.Tasks, g.Configuration.Orders, g.Configuration.Seasons, g.Configuration.Gathering, g.Configuration.ToolUpgrades, g.Configuration.Storage, g.Configuration.NPCs, g.Configuration.Relationships, g.Configuration.Stories, g.Configuration.NPCSchedules, g.Configuration.Fishing, g.Configuration.Crafting, g.Configuration.Animals);
+                    g.Settings.Initialize(Path.Combine(directory, "Settings"));
+                    g.EnterGame(); Phase(1);
+                }
                 else if (phase == 1 && g.State == GameFlowState.Playing)
                 {
                     Fixtures(g);

@@ -29930,6 +29930,9 @@ MonoBehaviour:
     PassageLookAhead: 1.6
     PassageStagger: 0.6
     RegroupSeconds: 3
+    TurnResponseSeconds: 0.35
+    TurnAcceleration: 540
+    GoalBlendSeconds: 0.45
   CoastalPopulation:
     Seed: 31847
     MinimumBirds: 6

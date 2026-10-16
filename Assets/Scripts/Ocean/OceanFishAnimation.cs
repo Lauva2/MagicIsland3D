@@ -19,12 +19,16 @@ namespace MagicIsland.Ocean
         [Range(.5f,3)] public float PassageLookAhead=1.6f;
         [Range(0,1.5f)] public float PassageStagger=.6f;
         [Range(1,8)] public float RegroupSeconds=3;
+        [Range(.1f,1.2f)] public float TurnResponseSeconds=.35f;
+        [Range(90,1080)] public float TurnAcceleration=540;
+        [Range(.15f,1.5f)] public float GoalBlendSeconds=.45f;
         static bool Range(float v,float a,float b)=>!float.IsNaN(v)&&!float.IsInfinity(v)&&v>=a&&v<=b;
         public bool IsValid=>Range(JointAngle,5,35)&&Range(MuscleResponse,.1f,20)&&Range(Inertia,0,.95f)&&Range(TailStrength,0,1)
             &&Range(NightSpeed,.1f,1)&&Range(RainSpeed,.1f,1)&&Range(TwilightSpeed,1,1.5f)
             &&Range(NightForaging,.1f,1)&&Range(RainForaging,.1f,1)&&Range(TransitionSeconds,.5f,20)
             &&Range(NightExploration,.05f,1)&&Range(RainExploration,.05f,1)&&Range(TwilightShelter,0,1)&&Range(NightShelter,0,1)&&Range(RainShelter,0,1)
-            &&Range(PassageLookAhead,.5f,3)&&Range(PassageStagger,0,1.5f)&&Range(RegroupSeconds,1,8);
+            &&Range(PassageLookAhead,.5f,3)&&Range(PassageStagger,0,1.5f)&&Range(RegroupSeconds,1,8)
+            &&Range(TurnResponseSeconds,.1f,1.2f)&&Range(TurnAcceleration,90,1080)&&Range(GoalBlendSeconds,.15f,1.5f);
     }
 
     // Canonical cross-section endpoints exactly enclose the authored mesh in X/Z.

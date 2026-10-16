@@ -638,3 +638,4 @@ MonoBehaviour:
   Seed: {fileID: 9216549923728558163}
   WoodChip: {fileID: 8956760221566010522}
   StoneChip: {fileID: 877634421371297746}
+  HeldToolsPrefab: {fileID: 5639013808596677066, guid: ee7a90bce4f3fc04d94be8d2c327ed30, type: 3}

@@ -2,6 +2,34 @@
 
 OceanManager 由 GameManager 创建和调度，在玩家区域恢复后、显示游戏 UI 前通过 AA 加载 `IslandOcean`。海洋预制体位于 `Assets/Art/Prefabs/Environment/IslandOcean.prefab`，地址由现有 GameConfig.OceanPrefabAddress 配置。预制体携带海面、海床、浅滩生态和鱼群的网格、材质与组件依赖。
 
+## Blender 动物模型
+
+四种鱼、海鸥和螃蟹现使用 Blender 制作的八块共享网格：鱼身条纹和鱼鳍、鳐鱼胸鳍与斑点、海鸥头颈 / 羽翼 / 脚趾、蟹壳 / 腿节 / 双钳。基础网格共 10,138 三角面，沿用 `Assets/Art/Materials/Ocean/Ecosystem.mat`、顶点色及现有 GPU 动画，不新增材质、纹理、AA 地址、独立 Update 或存档字段。
+
+源文件位于 `SourceArt/Ocean/OceanWildlife.blend` / `.fbx`；正式局部米制数据为 `Assets/Art/Meshes/Ocean/Wildlife.meshdata.json`。编辑、顶点色 / 关节约定和验收入口见 [海洋源美术](../SourceArt/Ocean/README.md)。执行 **Magic Island > Art > Rebuild Blender Ocean Wildlife (Explicit)** 才更新模型，随后 Build Prototype Addressables。
+
+此操作与 Rebuild Fish Schools / Rebuild Coastal Wildlife 分开：保留 Ocean 预制体、原网格 GUID、鱼群数量 / 成员枢轴 / 旋转 / 缩放 / 色调 / 出生记录、鸟蟹位置及全部活动参数；只在现有合并鱼群网格内替换成员外观。新鱼身必须保持原上下界和水平包络，并在全部鱼群的完整身体初始化通过后才写资源。海床、珊瑚群落、材质和共享着色器保持，普通 Apply / Setup 不覆盖人工模型编辑。海鸥沿用原翼根与头颈形变，螃蟹在源模型中明确提供 100–103 腿部及 110 / 111 双钳关节属性；不通过旧参考模型猜测新网格部件。
+
+## Blender 珊瑚与海底装饰
+
+枝状 / 扇状 / 桌状 / 团块珊瑚、海草、管状海绵、海星和装饰贝壳使用八种 Blender 模型，原位更新 84 个合并群落中的 2,744 件装饰。成员的位置、旋转、尺寸、色调、群落计数及鱼群障碍保持；不改变鱼群、鸟蟹、海床、海面、岸线、材质或存档。草根固定，叶尖沿用统一海洋时间摆动，其他装饰不参与海草形变。
+
+源文件、顶点色 / 权重、原始布局和显式导出入口见 [海底群落源美术](../SourceArt/OceanReef/README.md)。更新使用 **Magic Island > Art > Rebuild Blender Reef Models (Explicit)**，随后 Build Prototype Addressables；普通 Apply / Configure 保留手调，成员布局不匹配时拒绝覆盖。模板限制在原安全半径及上下界内，保持每群一个 Renderer，全海底三角面增加约 7.34%。枝状珊瑚、海草、贝壳沿用 Coast 目录下的共用模板，海岸嵌套模型同时获得新外观，原碰撞与位置保持。
+
+## 目标附近的转向衔接
+
+觅食 / 探索原来在距目标 0.8 米处突然加入固定偏移，现改为随距离连续混入小范围游动；活动及绕行路点改变时，临时 SteeringGoal 平滑接近新目标。受惊目标立即接管，仍由完整鱼身避障、接触分离及既有脱困规则决定实际移动。
+
+朝向使用有角加速度的转弯：逐渐起转，接近目标方向时降低角速度；目标跨过正后方时保留已经采用的转向侧，减少左右反复。普通鱼 / 鳐鱼原最大角速度 135 / 75 度每秒保留。接触修正后的朝向从同一个步开始状态重新计算，不通过后续固定角速度覆盖平滑结果，也不在一次固定步内推进两次转弯惯性。
+
+同时修正避障脱困时反向候选方向可能超过鱼身俯仰上限的问题：反向查询、受阻等待及最终提交均执行原 MaximumPitch 限制，停滞时也不能保留过大的俯仰。沿用原海床 / 波谷间距及身体包络，不放宽安全检查。
+
+AA `OceanSurface.FishAnimation` 新参数：TurnResponseSeconds 默认 0.35 秒（0.1–1.2），TurnAcceleration 默认 540 度/秒²（90–1080），GoalBlendSeconds 默认 0.45 秒（0.15–1.5）。有限数与范围参与原 IsValid 校验，普通配置保留合法手调。YawRate 和 SteeringGoal 仅是 30 Hz 临时状态，暂停不推进、低帧率执行相同步长、退出随鱼群释放，不存档、不重新随机鱼群、不扩大鱼身或水域。
+
+`VerifyOceanFish.ps1` 增加目标阈值连续、起转 / 换向的角加速度上限、持续游动及暂停惯性检查；邻居快照检查改为验证双方从原朝向对称缓转。`FishTurningFlowVerification.Run` 在隔离存档及 Packed AA 中验证实际转向参数、目标换向、暂停和共享资源，并录制 30 FPS 近景。它还用固定相机 / 根 / 光照对照确认新海草的 GPU 摆动及暂停图像。完整生态与生命周期继续由 OceanFlowVerification 覆盖。
+
+2026-10-17 转向验收：48 秒托管回归通过 1,574,422 项实际群游 / 海床 / 障碍检查，另通过 111 项 Boids、9,012 项数量、86,418 项鱼身 / 节律及 25,957 项绕行检查。Unity 2022.3.62f2 隔离工程的 FishTurningFlowVerification 与完整 Packed OceanFlowVerification 均退出 0 并输出 PASSED，包含实际目标换向、暂停图像、鱼身间距、玩家惊扰、室内、失败 / 取消、返回及重新进入；已检查近景序列。海洋预制体仅增加三个转向参数，原生态记录、共享材质和 GUID 保持。未生成独立 Player 或测量 GPU 性能；资源同步后重新构建 AA。
+
 ## 海洋范围、地貌与生态
 
 海面从 80×80 米扩大到 **240×240 米**，面积为原来的 9 倍。岛屿附近保留 1 米海面网格，远海采用 4 米间距；海床采用 256 个角向分段、128 个径向采样，覆盖半径 180 米。

@@ -157,6 +157,7 @@
 - TerrainManager 恢复实际地面 / 码头高度及安全落点；旧摆放与新椰树冲突时先隐藏新景观，不移动或删除玩家记录。装饰树与可采集树分开，不误发资源。
 - 美术替换保持原碰撞与交互范围；树冠、受击摇晃、农田 / 作物、建筑新增细节和水下景观不额外阻挡点击。按已有约定使用 Ignore Raycast；树干的实体行走碰撞仍保留。
 - 玩家根控制 CharacterController / 位置，Visual 控朝向，Animator 控模型，禁用 root motion。行走和脚步按实际水平位移，撞墙不踏步；工具表现采样 ToolManager 同一动作进度，暂停保留并冻结已有动作。
+- 锄头、水壶、斧头、镐子使用编辑器烘焙的 IslandFarmTools，作为 FarmActionEffects 的 AA 依赖加载。ToolPresentation 在原 ToolSocket 下复用同一套模型与共享材质，退出先清理实例再释放依赖，不回退为运行时拼装占位几何。普通 Setup 只补缺失工具引用，保留合法替换、握持调整、网格和材质；更新源美术须显式 Rebuild。
 - CameraManager 统一遮挡检测；CameraOccluder 明确 Renderer，不允许多个组件管理同一 Renderer。淡化不修改 AA 原材质，使用可释放副本，退出 / 禁用 / 切场景立即恢复；风动透明态使用相同形变算法。
 - 地形道路由 IslandTerrain 嵌套 IslandPaths 携带，TerrainManager 初始化配置；道路为表现，不新加碰撞，不因铺路清掉旧建设。地图读取实际设施 / 道路与统一岸线，室内使用小屋门口作标记与距离起点，选择地点不传送。
 - WeatherManager 统一昼夜、晴雨、风与阵风。夜间太阳关闭，环境 / 反射 / 海水同步变暗，室内照明隔离；风动只改变视觉顶点，不动根、碰撞、果实或受击逻辑。
@@ -165,6 +166,8 @@
 - 四季花草、地面落叶和薄霜使用编辑器固定种子随机烘焙的 SeasonalGroundDetails，连续随机位置、数量范围、尺寸及朝向随预制体配置，随 IslandTerrain 的 AA 依赖加载；进出 / 读档不重新抽取。TerrainManager 绑定实际设施、道路、农田 / NPC 路线及摆放事务，玩家建设优先，遮盖处隐藏、回收后恢复；不加碰撞、不占玩法格、不改变旧记录。WeatherManager 统一季节与室内显示，飘叶沿用风动时钟在 GPU 运动，砍去对应树冠后停止飘落。退出解除摆放与采集订阅，不逐帧生成对象或重建网格；普通 Setup 不覆盖已有布置与网格，重新随机布置只能显式 Rebuild Seasonal Ground Details。
 - 云朵 / 云影随统一暂停和室内状态，云位移累计速度保持晴雨切换连续；退出恢复原太阳 Cookie / 参数。风动退出恢复原全局参数，不叠加第二套风场。
 - OceanManager 统一海洋 / 生态 / 海鸥 / 螃蟹 / 特效，依赖固定种子编辑器烘焙，不消耗玩法随机序列；环境鱼不参与钓鱼掉落和背包。正常进入 / 读档沿用烘焙结果。
+- 四种环境鱼、海鸥身体 / 双翼和螃蟹使用 Blender 源文件及编辑器烘焙网格，沿用 IslandOcean 的共享顶点色材质和原关节 / 鱼身动画。更新美术仅显式 Rebuild Blender Ocean Wildlife，保留原网格 GUID、鱼群成员枢轴 / 缩放 / 出生记录、鸟蟹布局、活动参数及安全包络；不重抽地貌或生态，不增加逐鱼 / 逐腿对象。普通 Apply / Setup 保留人工编辑，源文件改变要求显式重建；交接方式见 SourceArt/Ocean/README.md。
+- 珊瑚、海草、海绵、海星与装饰贝壳使用 Blender 源文件及原位烘焙网格。显式 Rebuild Blender Reef Models 根据 ReefLayout 保留原群落 / 成员的位置、旋转、尺寸、色调和障碍，只更新模板与合并群落网格，沿用原 GUID、材质及统一海草摆动。模板及成员布局与记录不匹配时拒绝覆盖；普通 Apply / Setup 保留手调，不重随机生态，不增加碰撞、单件运行时对象或存档字段。海岸共用模板同步验证，编辑 / 布局交接见 SourceArt/OceanReef/README.md。
 - 海鸥 / 螃蟹由 IslandOcean.CoastalPopulation 独立种子抽取含端点的数量，默认 6–10 / 5–9；连续随机位置保留至少 10 / 6.1 米家园间距，螃蟹完整横移 / 逃离包络与停栖落点避开海水和码头入口。只有显式 Rebuild Coastal Wildlife 重烘焙鸟蟹，保留地貌、珊瑚、鱼群、共享材质及受惊参数；普通 Setup / 读档不重抽。活动周期、停留比例、体型与相位错开，海鸥受惊后持续盘旋而非悬停，螃蟹腿部用原共享网格的关节元数据与 MPB 变形，不增加逐腿对象、材质副本、独立 Update 或存档。
 - 鸟蟹安全路线由 OceanManager 绑定 CoastalWildlifeNavigation 与所属世界的非分配物理查询；忽略地面、玩家专用隐形海岸边界、触发器和其他世界，玩家体积单独检查。蟹类完整路线准备后才采用，逐段复查新障碍；海鸥按展开翅膀的完整空间检查飞行，下降前检查干地、玩家及有拥有者的落点预留，受阻换点或盘旋。旧玩家建设优先，不移动或删除物品；新物体覆盖生物时只允许限速连续脱离。返回延迟按个体相位错开，搜索重试、路径、预留和脱困全部随海洋暂停 / 室内停止，退出 / 失败 / 重进解除绑定并清空查询引用，不新增进度字段或额外 Update。查询缓冲区满时拒绝通行。
 - 海鸥只在安全落地且无惊扰时执行观察、啄食和理羽，Habits 间隔 / 时长随 AA 预制体配置，个体相位与动作序列决定错峰，不消耗玩法随机数。头颈用原共享网格的 MPB 顶点形变，理羽配合已有翼节点，脚部不动；完整动作保持原停栖包络，渲染裁剪只扩展实例 bounds，不改共享网格 / 材质。受惊、飞行及落点受阻取消动作并平滑归位，落回重新等待；暂停冻结、室内不推进、夜间隐藏时复位，退出随 AA 清理，不新增 Animator、骨骼对象、Update 或存档状态。显式鸟蟹重烘焙保留手调 Habits，普通 Setup 不覆盖。
@@ -173,6 +176,7 @@
 - 鱼群总数不固定：每鱼种按 MinimumSchools / MaximumSchools（1–16）抽取群数，每群按 Minimum / Maximum（1–32）抽取鱼数，均含端点；四种合计最多 64 群。独立 FishSeed 决定数量、栖息位置与成员出生点，改变鱼群不必改地貌种子。仅显式 Rebuild Fish Schools 重烘焙鱼群，保留海床、珊瑚、海鸥 / 螃蟹及已有群游参数；完整鱼身和整群间距验证通过后才接受候选栖息地，不通过则继续抽取，全部安全位置准备完成后才提交鱼群资源。普通 Setup / 读档不重抽，不新增存档字段。
 - 海洋、风动及生态使用所属统一可暂停时钟；普通暂停冻结，垂钓时海洋继续，室内隐藏 / 停止室外表现，退出随 AA 释放。镜头淡化可用非缩放时间完成，音乐交叉淡化沿用非缩放时间。
 - 鱼群使用三维 Boids 的分离、对齐、聚合规则，固定30Hz读取同一步开始时的邻居位置 / 速度，接触修正汇总后提交，不能读取已更新邻鱼；渲染插值位置、偏航与俯仰。共享网格 / 材质，以 MaterialPropertyBlock 传数据；基于 AA 烘焙海床、浪高和完整障碍收窄安全水柱，保持整条鱼（含俯仰包络）在栖息范围、水面和海床之间，三维位移区间避开障碍，兼容低帧率。按身体尺寸保持间距，觅食不能因到达目标永久归零，脱困方向短时保持，实例裁剪范围覆盖上下游动且不改共享网格。数量范围满足1≤Minimum≤Maximum≤32；扩大逃离 / 散开范围同步安全包络并重烘焙。
+- 鱼到达目标附近连续混入觅食小环路，活动 / 路点变化平滑衔接，受惊立即接管。转弯响应、角加速度和目标混合时间读取 AA FishAnimation，保留原角速度上限、完整鱼身避障和接触检查；接触后的朝向从同一步原状态计算，不重复推进转向惯性。目标跨过身后时保留已选侧以减少抖动；YawRate / SteeringGoal 只随原 30 Hz 时钟推进，暂停冻结、退出清理，不增加 Update、玩法随机数或存档字段。普通 Setup 保留手调参数。
 - 鱼身使用五节点位置式距离约束链，与 Boids 共用固定 30Hz：头部引导、身体 / 尾部惯性跟随，节点间保持原始距离，渲染插值后再次投影距离约束。原 AA 网格按节段横截面凸包准备一次安全样本；弯曲超出原有完整鱼身包络时减小弯曲，不扩大碰撞范围或裁剪 / 拉伸模型。GPU 与 CPU 变形一致，法线随节段转动；不加逐鱼 GameObject、骨骼对象或材质副本。OceanSurface.FishAnimation 配置活动和约束参数，昼夜 / 晴雨平滑改变巡游及觅食频率并错峰，受惊仍优先；运动与节律随统一海洋时钟暂停，室内停止，不存档。
 - 鱼群遇障碍可临时分流：逐鱼保留绕行侧及弧段引导，完整路线通过同一鱼身 / 水层 / 栖息范围检查后才采用；首选侧受阻尝试另一侧，两侧都不可通行时沿用原避障 / 脱困。错峰减速通过后逐渐恢复对齐和聚合，不瞬间吸回；分离和接触约束始终生效，受惊立即取消绕行。路线、等待及归群权重仅随海洋固定时钟推进，不改变烘焙范围、消耗玩法随机数或新增存档字段。
 - 鱼群的可见性只裁减渲染工作，不跳过屏幕外的 30Hz 行为、接触及鱼身约束。OceanManager 仅为自己加载的玩家镜头绑定 onPreCull，在镜头跟随后用完整栖息包络判断可见性，进入画面的首次剔除前提交最新插值与鱼身节点；不使用其他镜头也会影响的 Renderer.isVisible，不按正交镜头下的世界距离降低可见鱼群帧率。暂停时不重复提交相同姿态，通用生态循环不重复更新鱼群 MPB；退出 / 失败 / 重新加载解除镜头回调并随 AA 释放缓存，不修改共享网格或材质。
@@ -209,7 +213,7 @@
 | 料理与钓鱼 | [料理 / 食物](Docs/CookingAndFood.md)、[鱼类料理](Docs/FishCooking.md)、[蛋料理](Docs/EggCooking.md)、[钓鱼](Docs/Fishing.md) |
 | 居民 | [NPC / 对话](Docs/NPCAndDialogue.md)、[日程](Docs/NPCSchedules.md)、[关系 / 送礼](Docs/Relationships.md)、[好感度事件](Docs/StoryEvents.md) |
 | 小屋与养殖 | [小屋](Docs/Housing.md)、[扩建](Docs/HouseUpgrades.md)、[家具](Docs/Furniture.md)、[鸡舍](Docs/Animals.md)、[亲密度](Docs/AnimalFriendship.md)、[品质蛋](Docs/QualityEggs.md)、[果树](Docs/Orchard.md) |
-| 交互与角色 | [角色 / 动画](Docs/PlayerCharacterAndAnimation.md)、[交互提示](Docs/InteractionPrompts.md)、[地图](Docs/Map.md)、[镜头遮挡](Docs/CameraOcclusion.md) |
+| 交互与角色 | [角色 / 动画](Docs/PlayerCharacterAndAnimation.md)、[工具动作](Docs/ToolsAndFeedback.md)、[交互提示](Docs/InteractionPrompts.md)、[地图](Docs/Map.md)、[镜头遮挡](Docs/CameraOcclusion.md) |
 | 环境与美术 | [海岸 / 码头](Docs/WalkableCoast.md)、[海洋](Docs/Ocean.md)、[海岸美术](Docs/CoastalArt.md)、[村落](Docs/VillageArt.md)、[农田](Docs/FarmArt.md)、[采集美术](Docs/GatheringArt.md)、[设施](Docs/FacilityArt.md)、[云层](Docs/Clouds.md)、[植被风动](Docs/VegetationWind.md)、[四季地表](Docs/SeasonalGroundDetails.md)、[主菜单背景](Docs/MainMenuArtwork.md) |
 | 声音 | [音效 / 配乐](Docs/Audio.md)、[海岸环境音 / 脚步](Docs/CoastalAudio.md) |
 

@@ -8,6 +8,7 @@
 
 - 地块：`Assets/Art/Prefabs/Crops/FarmPlot.prefab`，AA 地址 `FarmPlot`。
 - 农务特效：`Assets/Art/Prefabs/Effects/FarmActionEffects.prefab`，AA 地址 `FarmActionEffects`。
+- 锄头 / 水壶 / 斧头 / 镐子：`Assets/Art/Prefabs/Tools/IslandFarmTools.prefab`，由 FarmActionEffects.HeldToolsPrefab 引用并随同一 AA 句柄加载；编辑与生命周期见 [工具动作](ToolsAndFeedback.md)。
 - 地块网格与材质：`Assets/Art/Meshes/Farm`、`Assets/Art/Materials/Farm`。
 - 作物沿用九个 AA 阶段地址，网格与材质仍位于 Crops 文件夹。
 

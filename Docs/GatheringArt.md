@@ -8,6 +8,7 @@
 - `Assets/Art/Prefabs/Gathering/GatheringRock.prefab`，地址 `GatheringRock`。
 - 网格：`Assets/Art/Meshes/Gathering`；材质：`Assets/Art/Materials/Gathering`。
 - 木屑和碎石模板位于已有 `FarmActionEffects.prefab`，随同 AA 地址 `FarmActionEffects` 加载。
+- Blender 斧头 / 镐子位于 `IslandFarmTools.prefab`，经 FarmActionEffects.HeldToolsPrefab 随同一依赖加载；两件分别为 1,884 / 2,384 三角面，与锄头、水壶共用色板材质。保留 ToolSocket、动作进度、命中时机和节点碰撞，手持网格不增加 Collider。编辑方法与生命周期见 [工具动作](ToolsAndFeedback.md)。
 
 GatheringManager 继续拥有两种 AA 模型依赖及五个节点实例，配置中的节点 ID、位置、次数、产出、体力和恢复间隔保持原值。ToolManager 拥有 AA 特效依赖。没有新增 UI、配置资产或存档字段。
 

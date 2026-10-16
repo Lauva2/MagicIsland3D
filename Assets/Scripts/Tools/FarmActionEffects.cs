@@ -7,7 +7,9 @@ namespace MagicIsland.Tools
     public sealed class FarmActionEffects : MonoBehaviour
     {
         public Transform Dust, Droplet, Spark, Seed, WoodChip, StoneChip;
-        public bool IsValid => Dust != null && Droplet != null && Spark != null && Seed != null && WoodChip != null && StoneChip != null;
+        public FarmToolModels HeldToolsPrefab;
+        public bool IsValid => Dust != null && Droplet != null && Spark != null && Seed != null && WoodChip != null && StoneChip != null
+            && HeldToolsPrefab != null && HeldToolsPrefab.IsValid;
         public int ActiveCount => active.Count;
         public const int MaximumParticles = 48;
         private readonly List<Particle> active = new List<Particle>();

@@ -66,7 +66,10 @@ namespace MagicIsland.EditorTools
                 var state = aligned.States[1]; state.Yaw = neighbourYaw;
                 state.Velocity = neighbourVelocity; aligned.States[1] = state;
                 aligned.Advance(OceanFishSteering.StepSeconds);
-                Require(Mathf.Abs(aligned.States[0].Yaw - neighbourYaw) < .00001f && Mathf.Abs(aligned.States[1].Yaw) < .00001f, "members turn towards each other's previous headings");
+                Require(aligned.States[0].Yaw > 0 && aligned.States[0].Yaw < neighbourYaw
+                    && aligned.States[1].Yaw > 0 && aligned.States[1].Yaw < neighbourYaw
+                    && Mathf.Abs(aligned.States[0].Yaw + aligned.States[1].Yaw - neighbourYaw) < .00001f,
+                    "members ease symmetrically towards the previous-step headings");
 
                 // With an immutable neighbourhood snapshot, reversing member order keeps the same first-step result.
                 Vector3 first = aligned.States[0].Velocity, second = aligned.States[1].Velocity;

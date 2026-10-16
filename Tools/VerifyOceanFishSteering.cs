@@ -153,8 +153,50 @@ class VerifyOceanFishSteering
         CheckBoidControls();
         CheckDetour();
         CheckPresentation();
+        CheckTurning();
         Console.WriteLine("PASS: " + checks + " actual steering / baked habitat assertions across "+schools.Length+" schools; avoidance=" + avoidance + ", slow feeding=" + slow+", longest stop="+longestStop+" steps, passages="+passages);
         return 0;
+    }
+    static OceanFishSteering TurningFixture()
+    {
+        var school=School();school.Members=1;school.HomeRadius=20;school.Radius=.1f;school.Animation=new OceanFishAnimation();
+        school.AlignmentWeight=school.SeparationWeight=school.CohesionWeight=0;
+        school.Swimmers=new[]{new OceanFishMember{Spawn=Vector3.zero,Radius=.1f,Bottom=-.03f,Top=.03f,Pivot=new Vector4(0,0,0,1)}};
+        var result=new OceanFishSteering(school);var s=result.States[0];s.Activity=OceanFishActivity.Foraging;s.Until=100;s.Target=Vector3.right*4;s.Velocity=Vector3.forward*.3f;result.States[0]=s;return result;
+    }
+    static void CheckTurning()
+    {
+        var settings=new OceanFishAnimation();settings.TurnResponseSeconds=0;Check(!settings.IsValid,"Zero turn response rejected");settings.TurnResponseSeconds=.35f;
+        settings.TurnAcceleration=float.NaN;Check(!settings.IsValid,"Nonfinite angular acceleration rejected");settings.TurnAcceleration=540;
+        settings.GoalBlendSeconds=float.PositiveInfinity;Check(!settings.IsValid,"Nonfinite target blend rejected");
+        var simulation=TurningFixture();float peak=0;
+        for(int frame=0;frame<300;frame++)
+        {
+            if(frame>=120){var changed=simulation.States[0];changed.Target=new Vector3(-4,0,(frame%2==0?1:-1)*.03f);simulation.States[0]=changed;}
+            var before=simulation.States[0];simulation.Advance(1f/30);var after=simulation.States[0];peak=Mathf.Max(peak,Mathf.Abs(after.YawRate));
+            Check(Mathf.Abs(after.YawRate-before.YawRate)<=540/30f+.0001f,"Retargeting has bounded angular acceleration, including heading reversal");
+            Check(Mathf.Abs(after.YawRate)<=135.001f,"Turns retain the existing maximum heading rate");
+            Check(Vector3.Distance(before.Position,after.Position)>.00001f,"An unobstructed feeding fish continues swimming through a turn");
+            if(frame==0)Check(Mathf.Abs(after.Yaw-before.Yaw)*Mathf.Rad2Deg<1,"Turn starts gradually instead of instantly using full angular speed");
+        }
+        Check(peak>60,"Easing still permits a deliberate turn rather than freezing heading");
+        var paused=simulation.States[0];simulation.Advance(0);Check(simulation.States[0].YawRate==paused.YawRate&&simulation.States[0].SteeringGoal==paused.SteeringGoal,"Pause freezes turn momentum and target blending");
+        var left=TurningFixture();var right=TurningFixture();
+        var a=left.States[0];a.Position=new Vector3(0,0,.799f);a.Target=a.SteeringGoal=Vector3.zero;left.States[0]=a;
+        var b=right.States[0];b.Position=new Vector3(0,0,.801f);b.Target=b.SteeringGoal=Vector3.zero;right.States[0]=b;
+        left.Advance(1f/30);right.Advance(1f/30);
+        Check(Vector3.Distance(left.States[0].SteeringGoal,right.States[0].SteeringGoal)<.005f,"Crossing the former arrival threshold no longer jumps the feeding circuit target");
+        var school=School();school.Members=1;school.HomeRadius=4;school.Animation=new OceanFishAnimation();
+        school.Swimmers=new[]{new OceanFishMember{Spawn=Vector3.zero,Radius=.1f,Bottom=-.03f,Top=.03f,Pivot=new Vector4(0,0,0,1)}};
+        school.ConfigureWater(-.4f,.4f,new[]{new OceanSwimObstacle{Center=new Vector2(0,.33f),Radius=.1f,Bottom=-1,Top=1}});
+        var recovery=new OceanFishSteering(school);var blocked=recovery.States[0];blocked.Position=new Vector3(0,0,.085f);blocked.Velocity=Vector3.forward*.5f;
+        blocked.RecoveryPitch=1.4f;blocked.RecoveryUntil=100;blocked.Until=100;recovery.States[0]=blocked;
+        for(int i=0;i<90;i++)
+        {
+            var before=recovery.States[0];recovery.Advance(1f/30);var after=recovery.States[0];
+            Check(Mathf.Abs(after.Pitch)<=school.MaximumPitch*Mathf.Deg2Rad+.00001f,"A blocked/hovering recovery cannot pitch beyond its reserved body volume");
+            Check(recovery.Navigation.CanMove(before.Position,after.Position,recovery.BodyBounds(0)),"Clamped recovery preserves the original full-body swept navigation");
+        }
     }
     static byte[] Hex(string text)
     {
@@ -198,7 +240,8 @@ class VerifyOceanFishSteering
         var velocity = new Vector3(Mathf.Sin(yaw), 0, Mathf.Cos(yaw)) * .5f;
         var state = simulation.States[1]; state.Yaw = yaw; state.Velocity = velocity; simulation.States[1] = state;
         simulation.Advance(OceanFishSteering.StepSeconds);
-        Check(Mathf.Abs(simulation.States[0].Yaw - yaw) < .00001f && Mathf.Abs(simulation.States[1].Yaw) < .00001f, "Both swimmers read previous-step headings, including the later member");
+        Check(simulation.States[0].Yaw>0&&simulation.States[0].Yaw<yaw&&simulation.States[1].Yaw>0&&simulation.States[1].Yaw<yaw
+            &&Mathf.Abs(simulation.States[0].Yaw+simulation.States[1].Yaw-yaw)<.00001f, "Both swimmers ease symmetrically from previous-step headings, including the later member");
         Vector3 first = simulation.States[0].Velocity.normalized, second = simulation.States[1].Velocity.normalized;
         simulation = Controlled(school, 0, 1, 0);
         state = simulation.States[0]; state.Yaw = yaw; state.Velocity = velocity; simulation.States[0] = state;

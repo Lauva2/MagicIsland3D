@@ -23,6 +23,7 @@ namespace MagicIsland.EditorTools
         {
             Directory.CreateDirectory(MaterialFolder); Directory.CreateDirectory(MeshFolder); AssetDatabase.Refresh();
             CreatePlot(); CreateEffects();
+            FarmToolArtSetup.EnsureBinding();
             Register(settings, PlotPath, "FarmPlot", "Crop Models"); Register(settings, EffectPath, "FarmActionEffects", "Effects");
             string source = File.ReadAllText("Assets/Config/GameConfig.asset");
             if (!source.Contains("FarmPlotPrefabAddress:") || !source.Contains("ToolEffectsPrefabAddress:")) EditorUtility.SetDirty(config);

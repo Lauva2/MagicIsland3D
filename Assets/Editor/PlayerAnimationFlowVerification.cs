@@ -23,6 +23,7 @@ namespace MagicIsland.EditorTools
         const string Key = "MagicIsland.PlayerAnimationVerification";
         static PlayerManager loading;
         static GameConfig bad;
+        static ToolManager toolLoading;
         static PlayerAnimationFlowVerification() { if (SessionState.GetBool(Key, false)) EditorApplication.update += Tick; }
         public static void Run()
         {
@@ -58,13 +59,76 @@ namespace MagicIsland.EditorTools
             Rig(g).SampleAction(.45f);
             g.Tools.Presentation.Animate(kind, .45f);
             Require(Mathf.Approximately(Rig(g).ActionProgress, .45f) && !Rig(g).Animator.applyRootMotion, "Manual pose follows gate progress without root motion");
+            CheckTools(g, kind);
             Vector3 position = g.Players.Player.transform.position; Move(g, Vector2.up, .1f);
             Require(Vector3.ProjectOnPlane(g.Players.Player.transform.position - position, Vector3.up).sqrMagnitude < .00001f, "Action lock blocks translation");
+            Capture(g, "Player" + kind + "Preview");
+            if (kind == ToolActionKind.Hoe || kind == ToolActionKind.Water || kind == ToolActionKind.Axe || kind == ToolActionKind.Pickaxe)
+            {
+                try
+                {
+                    foreach (float progress in new[] { 0f, .25f, .5f, .75f, 1f })
+                    {
+                        Rig(g).SampleAction(progress); g.Tools.Presentation.Animate(kind, progress);
+                        Capture(g, "Player" + kind + "Pose" + Mathf.RoundToInt(progress * 100).ToString("D3"));
+                    }
+                }
+                finally { Rig(g).SampleAction(.45f); g.Tools.Presentation.Animate(kind, .45f); }
+            }
+        }
+        static void CheckTools(GameManager g, ToolActionKind kind)
+        {
+            var models = g.Tools.Presentation.Grip.GetComponentInChildren<MagicIsland.Tools.FarmToolModels>(true);
+            var source = g.Tools.Presentation.EffectRoot.GetComponent<MagicIsland.Tools.FarmActionEffects>().HeldToolsPrefab;
+            Require(g.Tools.OwnsEffects && models != null && models.IsValid && source != null, "Packed AA owns baked farm tools with the effects dependency");
+            var roots = new[] { models.Hoe, models.WateringCan, models.Axe, models.Pickaxe };
+            var originals = new[] { source.Hoe, source.WateringCan, source.Axe, source.Pickaxe };
+            var kinds = new[] { ToolActionKind.Hoe, ToolActionKind.Water, ToolActionKind.Axe, ToolActionKind.Pickaxe };
+            for (int i = 0; i < roots.Length; i++)
+            {
+                Require(roots[i].gameObject.activeSelf == (kind == kinds[i]), "Only the selected baked tool is visible");
+                Require(roots[i].GetComponent<MeshFilter>().sharedMesh == originals[i].GetComponent<MeshFilter>().sharedMesh
+                    && roots[i].GetComponent<MeshRenderer>().sharedMaterial == originals[i].GetComponent<MeshRenderer>().sharedMaterial,
+                    "Tool instances share AA geometry/materials without cloning");
+            }
         }
         static void Capture(GameManager g, string name)
         {
             g.Players.Player.ViewCamera.GetComponent<CameraController>().SnapToTarget();
             GameUiPreview.CaptureInventory(g.Players.Player.ViewCamera); File.Copy("Logs/InventoryPreview.png", "Logs/" + name + ".png", true);
+            var camera = g.Players.Player.ViewCamera;
+            float size = camera.orthographicSize;
+            Vector3 position = camera.transform.position; Quaternion rotation = camera.transform.rotation;
+            var canvases = Object.FindObjectsOfType<Canvas>(); var enabled = canvases.Select(c => c.enabled).ToArray();
+            var environment = Object.FindObjectsOfType<Renderer>().Where(r => !r.transform.IsChildOf(g.Players.Player.transform)).ToArray();
+            var visible = environment.Select(r => r.enabled).ToArray();
+            var clearFlags = camera.clearFlags; Color background = camera.backgroundColor;
+            try
+            {
+                foreach (var canvas in canvases) canvas.enabled = false;
+                // Isolate the actual AA actor and held tool for close inspection, retaining game lighting.
+                foreach (var renderer in environment) renderer.enabled = false;
+                camera.clearFlags = CameraClearFlags.SolidColor; camera.backgroundColor = new Color(.72f, .79f, .73f);
+                camera.orthographicSize = 1.35f;
+                camera.transform.rotation = Rig(g).Animator.transform.rotation * Quaternion.Euler(28, 155, 0);
+                camera.transform.position = g.Players.Player.transform.position + Vector3.up * .85f - camera.transform.forward * 7;
+                GameUiPreview.CaptureInventory(camera);
+                File.Copy("Logs/InventoryPreview.png", "Logs/" + name + "Detail.png", true);
+                if (name.Contains("Pose"))
+                {
+                    camera.transform.rotation = Rig(g).Animator.transform.rotation * Quaternion.Euler(12, -90, 0);
+                    camera.transform.position = g.Players.Player.transform.position + Vector3.up * .85f - camera.transform.forward * 7;
+                    GameUiPreview.CaptureInventory(camera);
+                    File.Copy("Logs/InventoryPreview.png", "Logs/" + name + "Side.png", true);
+                }
+            }
+            finally
+            {
+                camera.orthographicSize = size; camera.transform.SetPositionAndRotation(position, rotation);
+                camera.clearFlags = clearFlags; camera.backgroundColor = background;
+                for (int i = 0; i < canvases.Length; i++) if (canvases[i] != null) canvases[i].enabled = enabled[i];
+                for (int i = 0; i < environment.Length; i++) if (environment[i] != null) environment[i].enabled = visible[i];
+            }
         }
         static void Movement(GameManager g)
         {
@@ -98,15 +162,25 @@ namespace MagicIsland.EditorTools
                 if (EditorApplication.timeSinceStartup - SessionState.GetFloat(Key + ".Start", 0) > 240) throw new Exception("Player animation timeout " + p);
                 if (!EditorApplication.isPlaying) return; var g = GameManager.Instance; if (g == null) return;
                 Require(g.State != GameFlowState.Failed, "Player startup failure");
-                if (p == 0 && g.State == GameFlowState.MainMenu) { g.EnterGame(); Phase(1); }
+                if (p == 0 && g.State == GameFlowState.MainMenu)
+                {
+                    string directory = Path.GetFullPath("Logs/PlayerAnimationSaves/" + Guid.NewGuid().ToString("N"));
+                    Directory.CreateDirectory(directory);
+                    g.Saves.Initialize(g.Configuration.Config, g.Configuration.Items, g.Configuration.Crops, directory, g.Configuration.Tasks, g.Configuration.Orders, g.Configuration.Seasons, g.Configuration.Gathering, g.Configuration.ToolUpgrades, g.Configuration.Storage, g.Configuration.NPCs, g.Configuration.Relationships, g.Configuration.Stories, g.Configuration.NPCSchedules, g.Configuration.Fishing, g.Configuration.Crafting, g.Configuration.Animals);
+                    g.Settings.Initialize(Path.Combine(directory, "Settings"));
+                    g.EnterGame(); Phase(1);
+                }
                 else if (p == 1 && g.State == GameFlowState.Playing)
                 {
                     Require(g.Players.OwnsPlayer && Rig(g).IsValid && g.Players.Player.GetComponentsInChildren<Renderer>().Length >= 10, "AA PlayerManager owns articulated prefab");
                     Require(g.Tools.Presentation.Grip.parent == Rig(g).ToolSocket && g.Players.Player.ViewCamera.GetComponent<CameraController>().Target == g.Players.Player.transform, "Rig hand socket and camera bound to AA player");
+                    CheckTools(g, ToolActionKind.Hoe);
+                    // A noon fixture makes palette and tool overlap visible in acceptance captures.
+                    g.Time.Clock.Restore(720); g.Weather.Tick(720, true);
                     Movement(g); Plot(g, 0); g.Tools.SelectTool(FarmTool.Hoe);
                     Action(g, ToolActionKind.Hoe, () => g.Tools.TryAct(0, out _));
                     int stamina = g.Stamina.State.Current, sounds = g.Audio.PlayedSoundCount;
-                    Require(!g.Tools.TryAct(0, out _) && g.Stamina.State.Current == stamina && g.Audio.PlayedSoundCount == sounds, "Repeat cannot settle or sound twice"); Capture(g, "PlayerHoePreview");
+                    Require(!g.Tools.TryAct(0, out _) && g.Stamina.State.Current == stamina && g.Audio.PlayedSoundCount == sounds, "Repeat cannot settle or sound twice");
                     g.OpenPause(); Phase(2);
                 }
                 else if (p == 2 && View<PauseView>() != null)
@@ -123,10 +197,10 @@ namespace MagicIsland.EditorTools
                     Require(!Rig(g).Action.HasValue && !g.Players.Player.ToolActionLocked, "End of gate releases animation and movement");
                     g.Tools.SelectTool(FarmTool.Seeds); Action(g, ToolActionKind.Seed, () => g.Tools.TryAct(0, out _)); Phase(5);
                 }
-                else if (p == 5 && !g.Tools.Busy) { g.Tools.SelectTool(FarmTool.WateringCan); Action(g, ToolActionKind.Water, () => g.Tools.TryAct(0, out _)); Capture(g, "PlayerWaterPreview"); Phase(6); }
+                else if (p == 5 && !g.Tools.Busy) { g.Tools.SelectTool(FarmTool.WateringCan); Action(g, ToolActionKind.Water, () => g.Tools.TryAct(0, out _)); Phase(6); }
                 else if (p == 6 && !g.Tools.Busy)
                 {
-                    g.Farm.State.Cells[0].Growth = 3; g.Farm.Grid.Refresh(); Action(g, ToolActionKind.Harvest, () => g.Tools.TryAct(0, out _)); Capture(g, "PlayerHarvestPreview"); Phase(7);
+                    g.Farm.State.Cells[0].Growth = 3; g.Farm.Grid.Refresh(); Action(g, ToolActionKind.Harvest, () => g.Tools.TryAct(0, out _)); Phase(7);
                 }
                 else if (p == 7 && !g.Tools.Busy)
                 {
@@ -155,25 +229,34 @@ namespace MagicIsland.EditorTools
                 else if (p == 13 && g.State == GameFlowState.MainMenu)
                 {
                     Require(g.Players.Player == null && !g.Players.OwnsPlayer && Object.FindObjectsOfType<PlayerMovement>().Length == 0, "AA actor and handle released on menu return");
+                    Require(!g.Tools.OwnsEffects && g.Tools.Presentation == null && Object.FindObjectsOfType<MagicIsland.Tools.FarmToolModels>().Length == 0,
+                        "Menu releases held tool instances and their AA dependency");
+                    toolLoading = new GameObject("Tool load fixture").AddComponent<ToolManager>();
+                    toolLoading.StartCoroutine(toolLoading.LoadEffects("Tool_Verification_Missing"));
                     loading = new GameObject("Player load fixture").AddComponent<PlayerManager>(); bad = Object.Instantiate(g.Configuration.Config); bad.PlayerPrefabAddress = "Player_Verification_Missing";
                     loading.StartCoroutine(loading.LoadPlayer(bad, loading.transform)); Phase(14);
                 }
-                else if (p == 14 && loading.LastError != null)
+                else if (p == 14 && loading.LastError != null && toolLoading.LastError != null)
                 {
                     Require(!loading.OwnsPlayer && loading.Player == null, "Failed player AA load releases handle");
+                    Require(!toolLoading.OwnsEffects && toolLoading.Presentation == null, "Failed tool dependency load releases handle");
+                    toolLoading.StartCoroutine(toolLoading.LoadEffects(g.Configuration.Config.ToolEffectsPrefabAddress)); toolLoading.Clear();
                     loading.StartCoroutine(loading.LoadPlayer(g.Configuration.Config, loading.transform)); loading.Clear(); Phase(15);
                 }
                 else if (p == 15)
                 {
                     Require(loading.Player == null && !loading.OwnsPlayer, "Cancelled load cannot bind late player"); Phase(16);
+                    Require(!toolLoading.OwnsEffects && toolLoading.Presentation == null, "Cancelled tool dependency cannot bind late models");
                 }
                 else if (p == 16)
                 {
                     Require(loading.GetComponentsInChildren<PlayerMovement>().Length == 0, "Cancelled AA instance is released after completion"); Object.Destroy(loading.gameObject); Object.Destroy(bad); g.EnterGame(); Phase(17);
+                    Require(Object.FindObjectsOfType<MagicIsland.Tools.FarmToolModels>().Length == 0, "No late tool instance survived cancellation"); Object.Destroy(toolLoading.gameObject);
                 }
                 else if (p == 17 && g.State == GameFlowState.Playing)
                 {
                     Require(g.Players.OwnsPlayer && Rig(g).IsValid && !Rig(g).Action.HasValue && Object.FindObjectsOfType<PlayerMovement>().Length == 1, "Re-entry creates one fresh actor");
+                    CheckTools(g, ToolActionKind.Hoe);
                     g.ReturnToMainMenu(); Phase(18);
                 }
                 else if (p == 18 && View<PauseView>() != null) { View<PauseView>().ReturnMenuButton.onClick.Invoke(); Phase(19); }

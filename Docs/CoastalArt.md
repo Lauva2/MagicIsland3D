@@ -8,6 +8,8 @@
 
 可复用预制体位于 `Assets/Art/Prefabs/Environment/Scenery`，AA 地址分别为 `CoastalPalm`、`CoastalShrub`、`BeachShell`、`ReefRock`、`ReefCoral`、`ReefSeagrass`。场景通过嵌套预制体携带这些依赖。网格位于 `Assets/Art/Meshes/Coast`，材质位于 `Assets/Art/Materials/Coast`，可直接修改或替换。
 
+枝状珊瑚、海草和装饰贝壳已作为海底群落美术的共用模板更新为 Blender 网格，保留原 GUID、嵌套引用、位置、材质和碰撞。更新仅通过显式 Rebuild Blender Reef Models，普通配置不覆盖；原位布局、安全包络与编辑约定见 [海底群落源美术](../SourceArt/OceanReef/README.md)。装饰贝壳不加入海滩拾取节点或存档。
+
 ## 轮廓与兼容
 
 IslandLayout 采用圆角轮廓与不规则海岸的平滑并集。原方形岛内和此前可行走海岸的坐标继续有效；地形、海床和边界碰撞同时采用该轮廓，避免只修改可见网格。草地与沙滩颜色沿轮廓渐变，保留平坦的农田和原设施位置。

@@ -71,7 +71,7 @@ namespace MagicIsland.EditorTools
                         for(int v=0;v<vertices.Length;v+=23)
                         {
                             var p=school.DeformedVertex(vertices[v],pivots[v],shapes[v]);
-                            Require(p.y<surface.Water.transform.localPosition.y-.09f&&p.y>floor.Height(p.x,p.z)+.06f,"Every fish path fits between actual baked floor and wave troughs");
+                            Require(p.y<surface.Water.transform.localPosition.y-.09f&&p.y>floor.Height(p.x,p.z)+.06f,"Every fish path fits between actual baked floor and wave troughs: "+school.Species+" step="+step+" vertex="+v+" point="+p.ToString("F6")+" floor="+floor.Height(p.x,p.z)+" water="+surface.SeaLevel+" motion="+school.MotionTime);
                         }
                     }
                 }
