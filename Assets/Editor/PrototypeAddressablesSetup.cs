@@ -126,6 +126,8 @@ namespace MagicIsland.EditorTools
             OrchardSetup.Ensure(settings);
             VegetationWindSetup.Ensure();
             SeasonalDetailsSetup.Ensure(settings);
+            IslandBiomeSetup.Ensure();
+            MagicContentSetup.Ensure(settings, configGroup, catalog);
             OutdoorNightLightingSetup.Ensure();
             AddressableAssetGroup uiGroup = settings.FindGroup("UI");
             if (uiGroup == null)
@@ -188,7 +190,7 @@ namespace MagicIsland.EditorTools
         public static void ValidateUiPrefabs()
         {
             var settings = AddressableAssetSettingsDefaultObject.Settings;
-            foreach (string name in new[] { RuntimeUi.MenuAddress, RuntimeUi.HudAddress, RuntimeUi.InventoryAddress, "SettingsPanel", "ShopPanel", "SleepPanel", "FeedbackPanel", "CropInfoPanel", "TaskPanel", "OrderPanel", "ToolUpgradePanel", "StoragePanel", "CookingPanel", "DialoguePanel", "GiftPanel", "FishingPanel", "CraftingPanel", "PlacementPanel", "SceneTransitionPanel", "HouseUpgradePanel", "CoopPanel", "AnimalShopPanel", "DailyReportPanel", "InventoryUpgradePanel", "ShippingPanel", "PausePanel", "MapPanel" })
+            foreach (string name in new[] { RuntimeUi.MenuAddress, RuntimeUi.HudAddress, RuntimeUi.InventoryAddress, "SettingsPanel", "ShopPanel", "SleepPanel", "FeedbackPanel", "CropInfoPanel", "TaskPanel", "OrderPanel", "ToolUpgradePanel", "StoragePanel", "CookingPanel", "DialoguePanel", "GiftPanel", "FishingPanel", "CraftingPanel", "PlacementPanel", "SceneTransitionPanel", "HouseUpgradePanel", "CoopPanel", "AnimalShopPanel", "DailyReportPanel", "InventoryUpgradePanel", "ShippingPanel", "PausePanel", "MapPanel", "MagicPanel" })
             {
                 string path = PrototypeUiPrefabBuilder.Folder + "/" + name + ".prefab";
                 GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
@@ -217,6 +219,9 @@ namespace MagicIsland.EditorTools
             var map = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/MapPanel.prefab").GetComponent<MapView>();
             if (map == null || map.Layer != UILayer.PopUp || !map.IsValid || hud.MapButton == null)
                 throw new System.Exception("MapPanel requires wired map, TMP markers and MVC buttons on PopUp layer");
+            var magic = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/MagicPanel.prefab").GetComponent<MagicView>();
+            if (magic == null || !magic.IsValid || magic.Layer != UILayer.PopUp || hud.MagicButton == null)
+                throw new System.Exception("MagicPanel requires wired TMP and MVC buttons on PopUp layer");
             InventoryView inventory = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/InventoryPanel.prefab")
                 .GetComponent<InventoryView>();
             if (inventory == null || inventory.SortButton == null || inventory.UseSeedButton == null || inventory.UseFoodButton == null || inventory.SaveButton == null || inventory.FeedbackText == null || inventory.CloseButton == null || inventory.CapacityText == null
@@ -270,7 +275,7 @@ namespace MagicIsland.EditorTools
             TaskView task = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/TaskPanel.prefab").GetComponent<TaskView>();
             if (task == null || task.Layer != UILayer.Common || task.Card == null || task.Details == null || task.HeaderText == null
                 || task.TitleText == null || task.DescriptionText == null || task.ProgressText == null || task.FeedbackText == null
-                || task.ClaimButton == null || task.CollapseButton == null)
+                || task.ClaimButton == null || task.CollapseButton == null || float.IsNaN(task.ExpandedHeight) || float.IsInfinity(task.ExpandedHeight) || task.ExpandedHeight < 52)
                 throw new System.Exception("TaskPanel must have wired TMP and button references on Common layer.");
             CropInfoView cropInfo = AssetDatabase.LoadAssetAtPath<GameObject>(PrototypeUiPrefabBuilder.Folder + "/CropInfoPanel.prefab").GetComponent<CropInfoView>();
             if (cropInfo == null || cropInfo.Group == null || cropInfo.NameText == null || cropInfo.DetailsText == null || cropInfo.HintText == null

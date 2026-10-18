@@ -160,7 +160,10 @@ namespace MagicIsland.Managers
             float radius = saved ? Mathf.Max(.02f, c.radius - c.skinWidth - .01f) : c.radius + .025f;
             var center = point + c.center; float half = c.height * .5f - radius;
             foreach (var hit in Physics.OverlapCapsule(center - Vector3.up * half, center + Vector3.up * half, radius, ~0, QueryTriggerInteraction.Ignore))
+            {
+                if(GameManager.Instance?.Terrain?.Terrain?.IsGround(hit)??false)continue;
                 if (!hit.transform.IsChildOf(players.Player.transform) && hit.bounds.max.y > point.y + .05f) return false;
+            }
             return true;
         }
         public Vector3 SavedPosition => Inside ? players.Player.transform.position - Config.InteriorOrigin : players.Player.transform.position;

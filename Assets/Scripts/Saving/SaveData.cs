@@ -22,7 +22,8 @@ namespace MagicIsland.Saving
     [Serializable]
     public sealed class SaveData
     {
-        public const int CurrentVersion = 29;
+        public const int CurrentVersion = 30;
+        public MagicIsland.Magic.SavedMagic Magic = new MagicIsland.Magic.SavedMagic();
         public SavedBeachForage BeachForage;
         public SavedOrchardTree[] Orchard = Array.Empty<SavedOrchardTree>();
         public int CropQualitySeed = 1;
@@ -118,8 +119,9 @@ namespace MagicIsland.Saving
             if (Version == 28)
             {
                 BeachForage = new BeachForageState(Math.Max(1, Day), Math.Max(1, CropQualitySeed), beachForage).Capture();
-                Version = CurrentVersion;
+                Version = 29;
             }
+            if (Version == 29) { Magic = new MagicIsland.Magic.SavedMagic(); Version = 30; }
         }
         public int Version;
         public string SavedUtc;
@@ -134,6 +136,7 @@ namespace MagicIsland.Saving
         {
             if (CropQualitySeed < 1) throw new InvalidOperationException("Invalid crop quality seed");
             if (Version != CurrentVersion) throw new InvalidOperationException("Unsupported save version");
+            if (!MagicIsland.Magic.MagicState.Valid(Magic)) throw new InvalidOperationException("Invalid saved magic progress");
             if (BeachForage == null) throw new InvalidOperationException("Missing saved beach forage");
             new BeachForageState(Day, BeachForage.Seed, beachForage).Restore(BeachForage);
             var shippingDefinitions = (shippingPrices ?? Array.Empty<KeyValuePair<string, int>>()).ToArray();

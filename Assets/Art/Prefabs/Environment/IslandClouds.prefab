@@ -1282,6 +1282,7 @@ MonoBehaviour:
   - {fileID: 4534897288884313193}
   ShadowCookie: {fileID: 2800000, guid: 1ec2923a90845104f958a97c4262272e, type: 3}
   FieldSize: 128
+  ShadowScale: 3
   Altitude: 42
   Wind: {x: 0.3, y: 0.11}
 --- !u!1 &4994277743632023468

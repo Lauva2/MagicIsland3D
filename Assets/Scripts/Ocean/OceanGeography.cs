@@ -48,7 +48,7 @@ namespace MagicIsland.Ocean
         {
             if(double.IsNaN(x)||double.IsInfinity(x)||double.IsNaN(z)||double.IsInfinity(z)||Math.Abs(x)>220||Math.Abs(z)>220)throw new ArgumentException("Invalid ocean coordinate");
             double angle=Math.Atan2(z,x),distance=Math.Sqrt(x*x+z*z)-IslandLayout.CoastRadius(angle);
-            double original=IslandLayout.Height(x,z)-.008;
+            double original=IslandLayout.LegacyHeight(x,z)-.008;
             if(distance<=.65)return original;
             double shelf=ShelfWidth(angle)+1.2*(Noise(x*.10,z*.10)-.5),reef=shelf+ReefWidth(angle);
             double depth=.56+.30*Smooth(0,shelf,distance)+.24*Noise(x*.09+6,z*.09-4);

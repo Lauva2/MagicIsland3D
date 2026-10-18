@@ -9,7 +9,7 @@ namespace MagicIsland.Tools
         public Transform Grip { get; }
         public Transform EffectRoot { get; private set; }
         public int ActiveEffectCount => effects != null ? effects.ActiveCount : 0;
-        private readonly GameObject[] models = new GameObject[8];
+        private readonly GameObject[] models = new GameObject[9];
         public Transform FishingRodRoot => models[(int)ToolActionKind.FishingRod].transform;
         private readonly List<Material> materials = new List<Material>();
         private FarmActionEffects effects;

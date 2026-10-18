@@ -41,10 +41,12 @@ namespace MagicIsland.WeatherSystem
         // Requires validated AA references and the owning world's interior layer. No events,
         // random source, gameplay transaction or resource allocation after first binding.
         public void Present(float daylight,bool raining,bool outside,int interiorLayer)
+            => Present(daylight,raining?1f:0f,outside,interiorLayer);
+        public void Present(float daylight,float rainAmount,bool outside,int interiorLayer)
         {
             if(blocks==null&&!IsValid)return;
             Capture();
-            float perceived=Mathf.Clamp01(daylight)*(raining?RainDaylight:1);
+            float perceived=Mathf.Clamp01(daylight)*Mathf.Lerp(1,RainDaylight,Mathf.Clamp01(rainAmount));
             Level=outside?1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(FullDaylight,BeginDaylight,perceived)):0;
             for(int i=0;i<GlowRenderers.Length;i++)if(GlowRenderers[i]!=null)
             {GlowRenderers[i].GetPropertyBlock(blocks[i]);blocks[i].SetFloat(glowId,Level*GlowStrength);GlowRenderers[i].SetPropertyBlock(blocks[i]);}

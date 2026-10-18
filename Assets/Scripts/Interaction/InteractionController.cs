@@ -22,6 +22,7 @@ namespace MagicIsland.Interaction
         public float Reach = 2.25f;
         public int HoverIndex { get; private set; } = -1;
         public bool HoverInRange { get; private set; }
+        public bool HasFocus { get; private set; } = true;
         public int GatheringHoverIndex { get; private set; } = -1;
         public string NPCHoverId { get; private set; }
         private readonly HashSet<int> visited = new HashSet<int>();
@@ -36,6 +37,7 @@ namespace MagicIsland.Interaction
 
         private void Update()
         {
+            if (!HasFocus) return;
             if (Input.GetKeyDown(KeyCode.Alpha1)) SelectTool(FarmTool.Hoe);
             if (Input.GetKeyDown(KeyCode.Alpha2)) SelectTool(FarmTool.Seeds);
             if (Input.GetKeyDown(KeyCode.Alpha3)) SelectTool(FarmTool.WateringCan);
@@ -55,6 +57,7 @@ namespace MagicIsland.Interaction
                 gestureBlocked = false;
             }
             Manager.RefreshPointer(ViewCamera.ScreenPointToRay(Input.mousePosition), overUI);
+            if (!overUI && Input.GetKeyDown(KeyCode.R)) { Manager.TryCastRain(); return; }
             var target = Manager.Current;
             if (overUI || gestureBlocked || !target.Visible) return;
             if (Input.GetMouseButtonDown(1)) { Manager.TryInteract(true); return; }
@@ -68,18 +71,15 @@ namespace MagicIsland.Interaction
         }
         internal void ApplyTarget(InteractionTarget target)
         {
-            ClearHover();
             Hint = target.Visible ? target.Hint : GameManager.Instance?.Housing?.Inside == true
                 ? "WASD 移动·点击床休息或出口出门" : "WASD 移动 · 鼠标指向可交互目标";
-            if (!target.Visible) return;
-            if (target.Kind == InteractionKind.Farm)
-            {
-                HoverIndex = target.Index; HoverInRange = target.InRange;
-                Farm.SetHover(HoverIndex, HoverInRange);
-            }
-            else if (target.Kind == InteractionKind.Gathering) GatheringHoverIndex = target.Index;
-            else if (target.Kind == InteractionKind.NPC) NPCHoverId = target.Id;
-            else if (target.Kind == InteractionKind.Decoration) DecorationHover = target.Root.GetComponent<PlacedDecoration>();
+            bool visible = target.Visible;
+            HoverIndex = visible && target.Kind == InteractionKind.Farm ? target.Index : -1;
+            HoverInRange = HoverIndex >= 0 && target.InRange;
+            if (Farm != null && Farm.State != null) Farm.SetHover(HoverIndex, HoverInRange);
+            GatheringHoverIndex = visible && target.Kind == InteractionKind.Gathering ? target.Index : -1;
+            NPCHoverId = visible && target.Kind == InteractionKind.NPC ? target.Id : null;
+            DecorationHover = visible && target.Kind == InteractionKind.Decoration ? target.Root.GetComponent<PlacedDecoration>() : null;
         }
         // Retain the public hover queries used by earlier editor tools; all resolve the same target.
         public bool RefreshHomeHover(Ray ray, bool overUI) => Manager.RefreshPointer(ray, overUI).Kind == InteractionKind.Home;
@@ -105,6 +105,13 @@ namespace MagicIsland.Interaction
         }
         private void OnDisable()
         {
+            visited.Clear(); gestureBlocked = true;
+            ClearHover(); Manager?.ClearTarget();
+        }
+        private void OnApplicationFocus(bool focused)
+        {
+            HasFocus = focused;
+            if (focused) return;
             visited.Clear(); gestureBlocked = true;
             ClearHover(); Manager?.ClearTarget();
         }

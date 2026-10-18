@@ -26,8 +26,10 @@ def run():
         else:assert all(a==0 for a in c[3::4])
         assert not any(p['hinges']) and not any(p['gait'])
     counts=[len(p['triangles'])//3 for p in d['parts']]+[layout['sources'][8]['triangles']]
-    before=sum(layout['sources'][m['source']]['triangles'] for g in layout['groups'] for m in g['members'])
-    after=sum(counts[m['source']] for g in layout['groups'] for m in g['members'])
+    visible=[m for g in layout['groups'] for m in g['members'] if not m.get('hidden',False)]
+    assert visible and all(any(not m.get('hidden',False) for m in g['members']) for g in layout['groups'])
+    before=sum(layout['sources'][m['source']]['triangles'] for m in visible)
+    after=sum(counts[m['source']] for m in visible)
     assert after<before*1.25
-    print(f'PASS: eight source models, 84 original habitats / 2744 members; geometry, normals, original envelopes and grass weights. Combined triangles {before:,} -> {after:,} ({(after/before-1)*100:.2f}%).')
+    print(f'PASS: eight source models, 84 habitats / 2744 recorded members / {len(visible)} visible; geometry, normals, original envelopes and grass weights. Visible combined triangles {before:,} -> {after:,} ({(after/before-1)*100:.2f}%).')
 if __name__=='__main__':run()

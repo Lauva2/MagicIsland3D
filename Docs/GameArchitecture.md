@@ -11,7 +11,7 @@ GameManager 统一调度流程，各系统由对应的 Manager 控制。UIManage
 `LoadingConfiguration → MainMenu → LoadingScene → InitializingGame → Playing → ReturningToMenu → MainMenu`
 
 1. GameManager 是跨场景单例，创建各系统 Manager。
-2. ConfigurationManager 初始化 AA，然后加载并校验 `GameConfig`、`ItemCatalog`、`CropCatalog`、`WeatherConfig`、`SeasonConfig`、`TaskCatalog`、`OrderCatalog`、`GatheringCatalog`、`ToolUpgradeCatalog`、`StorageConfig`、`CookingCatalog`、`NPCCatalog`、`DialogueCatalog`、`RelationshipCatalog`、`StoryEventCatalog`、`FishingCatalog`、`NPCScheduleCatalog`、`CraftingCatalog`、`HousingConfig`、`AnimalConfig`、`InventoryUpgradeConfig`、`ShippingConfig`、`FertilizerConfig`、`AudioCatalog` 和 `OrchardCatalog` 共 25 份配置。
+2. ConfigurationManager 初始化 AA，然后加载并校验 `GameConfig`、`ItemCatalog`、`CropCatalog`、`WeatherConfig`、`SeasonConfig`、`TaskCatalog`、`OrderCatalog`、`GatheringCatalog`、`ToolUpgradeCatalog`、`StorageConfig`、`CookingCatalog`、`NPCCatalog`、`DialogueCatalog`、`RelationshipCatalog`、`StoryEventCatalog`、`FishingCatalog`、`NPCScheduleCatalog`、`CraftingCatalog`、`HousingConfig`、`AnimalConfig`、`InventoryUpgradeConfig`、`ShippingConfig`、`FertilizerConfig`、`AudioCatalog` 、`OrchardCatalog` 和 `MagicConfig` 共 26 份配置。
 3. SaveManager 检查本地存档；UIManager 按名字加载 `MainMenuPanel`，创建 MainMenuModel / MainMenuController，并根据存档状态启用“加载游戏”。
 4. 点击“新游戏”使用初始状态；点击“加载游戏”先从磁盘读取并校验数据。GameManager 锁定流程，SceneManager 通过 AA 以 Additive 模式加载 GameConfig 指定的场景。
 5. GameManager 先等待 FarmManager 按 GameConfig 加载 AA FarmPlot 并按 CropCatalog 加载全部阶段模型、PlayerManager 加载 AA 玩家、TerrainManager 加载 AA IslandTerrain 的地面与海岸碰撞，并配置其 IslandPaths 嵌套道路，再初始化 InventoryManager、EconomyManager、StaminaManager；FarmPrototype 创建镜头、灯光和农田网格；随后初始化 TimeManager、FarmManager、PlayerManager，按需恢复存档，再初始化 CalendarManager、CameraManager、WeatherManager、HousingManager、GatheringManager、ToolManager、InteractionManager、ShopManager。床由 HousingManager 绑定室内预制体，进入室内后交给 TimeManager。GatheringManager 恢复采集进度和冷却，ToolManager 管理共用农务／采集动作锁。FarmGrid 根据已恢复的进度显示对应模型；CalendarManager 从总天数推导日期，WeatherManager 恢复当天晴雨并根据已恢复的时刻设置光照，下一天使用新日期所属季节的降雨概率。
@@ -26,6 +26,7 @@ GameManager 统一调度流程，各系统由对应的 Manager 控制。UIManage
 | Manager | 职责 |
 | --- | --- |
 | OrchardManager | 果树成长、结果日期、采收容量检查和阶段显示；位置与 AA 实例委托 PlacementManager，睡觉跨日并统一保存 |
+| MagicManager | 魔法手札与启蒙、一次性种子、成功收获记录与献花学习、局部唤雨及 AA 特效；进度随 v30 睡觉快照保存，详见 [魔法内容](Magic.md) |
 | MapManager | 从场景读取地图地点、道路和玩家区域、坐标投影、选择说明与世界引用清理 |
 | GameManager | 启动、新游戏、继续游戏、睡觉时统一保存调度、返回菜单、流程状态、初始化顺序、重复请求拦截 |
 | SaveManager | 存档版本、校验、JSON 保存与读取、原子替换和备份恢复 |
@@ -121,3 +122,5 @@ AnimalManager 管理鸡舍、鸡、喂食与产物。GameManager 等待世界设
 玩家小屋与订单办事处的美术、原交互点 / 碰撞兼容及道路初始化见 [村落建筑与小路](VillageArt.md)。道路归 TerrainManager，建筑继续由 HousingManager / OrderManager 控制。
 
 地图由 MapManager 管理，UIManager 按需加载 PopUp 层 MapPanel。M / HUD 打开，M / Esc / 关闭按钮收起；加载与显示期间纳入模态暂停，禁止叠加其他玩法面板。室内以小屋门口标记位置；选择用途不影响世界和存档。见 [岛屿地图与地点指引](Map.md)。
+
+魔法内容初始化：FarmManager 恢复农田与库存后初始化 MagicManager，绑定成功收获事务；开放输入前加载 MagicRainEffect。K 手札在加载和显示期间暂停，R 施法沿用 ToolManager 动作锁与 InteractionManager 的实时目标。退出先清理手札与特效，再清理工具和农田；初始化失败也走相同释放路径。

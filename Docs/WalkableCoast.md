@@ -1,5 +1,7 @@
 # 岛屿地形、可行走沙滩与码头
 
+初始岛屿新增草原 / 沙漠 / 常年雪地及沙滩出生点，沿用本文原岸线与碰撞。当前分区、AA 参数、旧存档兼容和验证见 [初始岛屿自然群系](IslandBiomes.md)。
+
 TerrainManager 由 GameManager 创建，先通过现有 AA GameConfig.TerrainPrefabAddress 加载 `IslandTerrain`，再初始化农场与场景系统。地形预制体包含完整草地、缓坡沙滩 MeshCollider 和海岸边界；码头继续使用 AA 地址 `CoastalFishingSpot`，替换了原方块水池。旧的运行时方形地面和四面木墙已移除。
 
 ## 行走与边界

@@ -14,6 +14,13 @@ class VerifyCoastalPalms
             var settings=new CoastalPalmScatter{Seed=seed};var sites=settings.CreatePlan();var again=settings.CreatePlan();
             Require(sites.Length>=settings.MinimumCount&&sites.Length<=settings.MaximumCount,"Inclusive count range");
             Require(sites.SequenceEqual(again),"Rebuild is deterministic and does not depend on other random users");
+            if(seed<64)
+            {
+                var details=new CoastalDetailScatter();var props=details.CreatePlan(sites);
+                Require(props.Length==details.Shrubs+details.Shells+details.Pebbles&&props.SequenceEqual(details.CreatePlan(sites)),"Detail count and deterministic rebuild");
+                foreach(var p in props)
+                    Require(CoastalPalmScatter.ClearSite(p.X,p.Z,p.Kind==0?.55*p.Scale:p.Kind==1?.16:.38),"Detail footprint clears shore and protected routes");
+            }
             foreach(var site in sites)
             {
                 Require(CoastalPalmScatter.ClearSite(site.X,site.Z,.29*site.Scale+.35),"Trunk footprint clears shore, village, pier and NPC approach");
@@ -23,14 +30,18 @@ class VerifyCoastalPalms
                 Require(Math.Abs(IslandLayout.Height(site.X,site.Z))<.00001,"Trunks stand on flat dry ground");
             }
             for(int i=0;i<sites.Length;i++)for(int j=i+1;j<sites.Length;j++)
-                Require(Math.Pow(sites[i].X-sites[j].X,2)+Math.Pow(sites[i].Z-sites[j].Z,2)>=settings.MinimumSpacing*settings.MinimumSpacing,"Clumps preserve minimum trunk spacing");
+            {
+                double spacing=Math.Max(settings.MinimumSpacing,settings.CrownSpacing*(sites[i].Scale+sites[j].Scale));
+                Require(Math.Pow(sites[i].X-sites[j].X,2)+Math.Pow(sites[i].Z-sites[j].Z,2)>=spacing*spacing,"Clumps leave space according to both crown sizes");
+            }
         }
         var defaults=new CoastalPalmScatter();var plan=defaults.CreatePlan();
         var depths=plan.Select(s=>IslandLayout.CoastRadius(Math.Atan2(s.Z,s.X))-Math.Sqrt(s.X*s.X+s.Z*s.Z)).ToArray();
         var angles=plan.Select(s=>(Math.Atan2(s.Z,s.X)+Math.PI*2)%(Math.PI*2)).OrderBy(a=>a).ToArray();
         var gaps=angles.Select((a,i)=>i==0?a+Math.PI*2-angles[angles.Length-1]:a-angles[i-1]).ToArray();
+        Console.WriteLine("Default count="+plan.Length+", depth="+(depths.Max()-depths.Min()).ToString("F2")+", angular gap min/mean/max="+gaps.Min()+"/"+gaps.Average()+"/"+gaps.Max());
         Require(depths.Max()-depths.Min()>1.8,"Default layout has depth, rather than a narrow ring");
-        Require(gaps.Max()>gaps.Average()*2&&gaps.Min()<gaps.Average()*.5,"Default layout has clearings and small clumps");
+        Require(gaps.Max()>gaps.Average()*1.7&&gaps.Min()<gaps.Average()*.7,"Default layout has clearings and loose clumps with crown clearance");
         Require(plan.Select(s=>s.Scale).Distinct().Count()==plan.Length,"No repeating three-size cycle");
         Require(!plan.SequenceEqual(new CoastalPalmScatter{Seed=defaults.Seed+1}.CreatePlan()),"Seed changes layout");
         var invalid=new[]{new CoastalPalmScatter{MinimumInset=float.NaN},new CoastalPalmScatter{MaximumScale=float.PositiveInfinity},

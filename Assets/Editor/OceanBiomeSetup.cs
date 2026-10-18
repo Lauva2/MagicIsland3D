@@ -31,7 +31,8 @@ namespace MagicIsland.EditorTools
                 SaveMesh(OceanSetup.MeshFolder+"/Island Shore.asset",FloorMesh(geography));
                 var material=AssetDatabase.LoadAssetAtPath<Material>(MaterialPath);
                 if(material==null){material=new Material(Shader.Find("MagicIsland/Ocean Ecology")){name="Ocean Ecosystem"};AssetDatabase.CreateAsset(material,MaterialPath);}
-                BuildEcology(root,surface,geography,material);
+                var reefMaterial=AssetDatabase.LoadAssetAtPath<Material>(OceanReefPaletteSetup.MaterialPath)??material;
+                BuildEcology(root,surface,geography,reefMaterial);
                 BuildWildlife(root,surface,geography,material);
                 var water=surface.Water.sharedMaterial;
                 water.SetColor("_ShallowColor",new Color(.38f,.68f,.64f));water.SetColor("_MidColor",new Color(.19f,.46f,.52f));

@@ -20,9 +20,11 @@ namespace MagicIsland.Managers
         public bool OwnsHighlight => highlightHandle.IsValid();
         private AsyncOperationHandle<GameObject> highlightHandle;
         private readonly RaycastHit[] hits = new RaycastHit[64];
+        private Ray pointerRay;
+        private bool hasPointer, dispatching, notifying;
         private int generation;
         private GameManager Game => GameManager.Instance;
-        private bool CanInput => Controller != null && Controller.isActiveAndEnabled && Game != null
+        private bool CanInput => Controller != null && Controller.isActiveAndEnabled && Controller.HasFocus && Game != null
             && Game.State == GameFlowState.Playing && !Game.UI.AnyPopupVisible;
         public void Initialize(InteractionController controller, GameConfig config, FarmManager farm, ToolManager tools)
         {
@@ -51,8 +53,11 @@ namespace MagicIsland.Managers
         public void SetInputEnabled(bool enabled) { if (Controller != null) Controller.enabled = enabled; if (!enabled) ClearTarget(); }
         public void ClearTarget()
         {
+            hasPointer = false;
+            bool changed = Current != InteractionTarget.None;
             Current = InteractionTarget.None; Controller?.ApplyTarget(Current);
-            if (Highlight != null) Highlight.Hide(); Changed?.Invoke();
+            if (Highlight != null) Highlight.Hide();
+            if (changed) NotifyChanged();
         }
         public void Clear()
         {
@@ -65,14 +70,27 @@ namespace MagicIsland.Managers
         { if (!operation.IsValid()) return; if (operation.Status == AsyncOperationStatus.Succeeded) Addressables.ReleaseInstance(operation); else Addressables.Release(operation); }
         public InteractionTarget RefreshPointer(Ray ray, bool overUI)
         {
-            Current = CanInput && !overUI ? Resolve(ray) : InteractionTarget.None;
+            pointerRay = ray; hasPointer = CanInput && !overUI;
+            var target = hasPointer ? Resolve(ray) : InteractionTarget.None;
+            if (ReferenceEquals(Current, target)) return Current;
+            Current = target;
             Controller?.ApplyTarget(Current);
             if (Highlight != null) { if (Current.Visible && Current.Kind != InteractionKind.Farm) Highlight.Show(Current); else Highlight.Hide(); }
-            Changed?.Invoke(); return Current;
+            NotifyChanged(); return Current;
+        }
+        private void NotifyChanged()
+        {
+            bool wasNotifying = notifying; notifying = true;
+            try { Changed?.Invoke(); }
+            finally { notifying = wasNotifying; }
         }
         private InteractionTarget Make(InteractionKind kind, Transform root, string name, string operation, string details, bool near, bool ready = true, int index = -1, string id = null)
         {
             if (Game.Tools.Busy) { ready = false; details = "正在操作，请稍候"; }
+            // Reuse the immutable snapshot only after the live ray and readiness checks above.
+            if (Current.Kind == kind && Current.Root == root && Current.Name == name && Current.Operation == operation
+                && Current.Details == details && Current.InRange == near && Current.Ready == ready && Current.Index == index && Current.Id == id)
+                return Current;
             return new InteractionTarget(kind, root, name, operation, details, near, ready, index, id);
         }
         private InteractionTarget Resolve(Ray ray)
@@ -89,7 +107,11 @@ namespace MagicIsland.Managers
                 if (hit.collider == null || hit.transform.IsChildOf(Controller.Player.transform) || hit.distance >= distance) continue;
                 collider = hit.collider; distance = hit.distance;
             }
-            if (collider != null)
+            float farmDistance = float.MaxValue;
+            int farmIndex = !game.Housing.Inside && (Controller.ViewCamera.cullingMask & (1 << Controller.Farm.gameObject.layer)) != 0
+                ? Controller.Farm.Pick(ray, out farmDistance) : -1;
+            if (farmIndex < 0) farmDistance = float.MaxValue;
+            if (collider != null && distance <= farmDistance)
             {
                 var portal = collider.GetComponentInParent<HomePortal>();
                 if (game.Housing.Owns(portal)) return Make(InteractionKind.Home, portal.transform, portal.IsExit ? "小屋出口" : game.Housing.Upgrade.Level == 1 ? "舒适小屋" : "我的小屋", portal.IsExit ? "左键返回农场" : "左键进门", "", game.Housing.InRange(portal, reach));
@@ -145,13 +167,13 @@ namespace MagicIsland.Managers
                     if (shop != null && shop.transform == game.Shop.Counter) return Make(InteractionKind.Shop, shop.transform, "岛屿商店", "左键买卖物品", "种子、收购与背包扩容", game.Shop.InRange(player, reach));
                 }
             }
-            if (game.Housing.Inside || (Controller.ViewCamera.cullingMask & (1 << Controller.Farm.gameObject.layer)) == 0) return InteractionTarget.None;
-            int index = Controller.Farm.Pick(ray);
-            if (index < 0 || collider != null && collider.bounds.max.y > Controller.Farm.CellCenter(index).y + .04f) return InteractionTarget.None;
+            int index = farmIndex;
+            if (index < 0 || collider != null && distance <= farmDistance && collider.bounds.max.y > Controller.Farm.CellCenter(index).y + .04f) return InteractionTarget.None;
             var cell = game.Farm.State.Cells[index]; var tool = Controller.Tool;
             string name = cell.Planted ? game.Inventory.Catalog.Find(game.Farm.Crops.Find(cell.CropId).HarvestItemId).DisplayName : "农田地块";
             string operation = cell.Mature && tool != FarmTool.Fertilizer && tool != FarmTool.FishingRod ? "左键收获"
                 : tool == FarmTool.Hoe ? "左键耕地" : tool == FarmTool.Seeds ? "左键播种" : tool == FarmTool.WateringCan ? "左键浇水" : tool == FarmTool.Fertilizer ? "左键施肥" : "请选择农具（1 / 2 / 3 / 7）";
+            if (game.Magic.State?.RainLearned == true) operation += " · R 唤雨";
             string details = tool == FarmTool.FishingRod ? "鱼竿用于海岸垂钓" : game.Farm.Describe(index, tool);
             if (!cell.Tilled && tool != FarmTool.Hoe && !cell.Planted) details = "请先使用锄头（1）耕地";
             if (tool == FarmTool.Hoe && cell.Tilled && !cell.Planted) details = "土地已耕好，可选择种子（2）播种";
@@ -159,12 +181,45 @@ namespace MagicIsland.Managers
             bool near = Vector3.ProjectOnPlane(Controller.Farm.CellCenter(index) - player, Vector3.up).sqrMagnitude <= reach * reach;
             return Make(InteractionKind.Farm, Controller.Farm.transform, name, operation, details, near, game.Farm.CanPerform(index, tool), index);
         }
+        public bool TryCastRain()
+        {
+            if (!CanInput || !hasPointer || dispatching || notifying || Game.Tools.Busy) return false;
+            dispatching = true;
+            try
+            {
+                RefreshPointer(pointerRay, false);
+                if (Current.Kind != InteractionKind.Farm) { Game.Tools.ReportFailure("请指向附近已耕作的农田"); return false; }
+                return Game.Tools.TryCastRain(Game.Magic, Current.Index, out _);
+            }
+            finally
+            {
+                try { if (hasPointer) RefreshPointer(pointerRay, false); }
+                finally { dispatching = false; }
+            }
+        }
         public bool TryInteract(bool secondary = false)
         {
-            if (!CanInput || !Current.Visible || Game.Tools.Busy) return false;
+            if (!CanInput || !hasPointer || dispatching || notifying || Game.Tools.Busy) return false;
+            dispatching = true;
+            try
+            {
+                // Recheck the same ray at click time; state, tools and actors can change after hover.
+                RefreshPointer(pointerRay, false);
+                return Dispatch(secondary);
+            }
+            finally
+            {
+                // Publish the committed state before allowing another dispatch, including event callbacks.
+                try { if (hasPointer) RefreshPointer(pointerRay, false); }
+                finally { dispatching = false; }
+            }
+        }
+        private bool Dispatch(bool secondary)
+        {
+            if (!Current.Visible) return false;
             var target = Current;
             if ((secondary && target.Kind != InteractionKind.Decoration && target.Kind != InteractionKind.Orchard) || (!secondary && target.Kind == InteractionKind.Decoration)) return false;
-            if (!target.InRange || (!target.Ready && !secondary)) { Controller.SetFeedback(target.Hint); Game.Tools.ReportFailure(target.Hint); return false; }
+            if (!target.InRange || (!target.Ready && !secondary)) { Controller.SetFeedback(target.Hint); Game.Tools.ReportFailure(target.Hint, target.Name); return false; }
             if (secondary) { Game.RecoverDecoration(target.Root.GetComponent<PlacedDecoration>()); return true; }
             switch (target.Kind)
             {

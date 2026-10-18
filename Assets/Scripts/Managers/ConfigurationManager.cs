@@ -33,6 +33,8 @@ namespace MagicIsland.Managers
         public FertilizerConfig Fertilizer { get; private set; }
         public AudioCatalog Audio { get; private set; }
         public OrchardCatalog Orchards { get; private set; }
+        public MagicConfig Magic { get; private set; }
+        private AsyncOperationHandle<MagicConfig> magicHandle;
         private AsyncOperationHandle<OrchardCatalog> orchardHandle;
         private AsyncOperationHandle<AudioCatalog> audioHandle;
         private AsyncOperationHandle<FertilizerConfig> fertilizerHandle;
@@ -308,6 +310,10 @@ namespace MagicIsland.Managers
             orchardHandle = Addressables.LoadAssetAsync<OrchardCatalog>(OrchardCatalog.Address); yield return orchardHandle;
             if (orchardHandle.Status != AsyncOperationStatus.Succeeded || orchardHandle.Result == null || !orchardHandle.Result.Validate(itemHandle.Result, craftingHandle.Result))
             { LastError = "OrchardCatalog has invalid fruit trees"; ReleaseConfiguration(); yield break; }
+            magicHandle = Addressables.LoadAssetAsync<MagicConfig>(MagicConfig.Address); yield return magicHandle;
+            if (magicHandle.Status != AsyncOperationStatus.Succeeded || magicHandle.Result == null || !magicHandle.Result.Validate(itemHandle.Result, cropHandle.Result))
+            { LastError = "MagicConfig has invalid crop or spell rules"; ReleaseConfiguration(); yield break; }
+            Magic = magicHandle.Result;
             Orchards = orchardHandle.Result;
             Audio = audioHandle.Result;
             Fertilizer = fertilizerHandle.Result;
@@ -346,6 +352,8 @@ namespace MagicIsland.Managers
         private void OnDestroy() => ReleaseConfiguration();
         private void ReleaseConfiguration()
         {
+            if (magicHandle.IsValid()) { if (magicHandle.IsDone) Addressables.Release(magicHandle); else magicHandle.Completed += h => { if (h.IsValid()) Addressables.Release(h); }; }
+            magicHandle = default; Magic = null;
             if (orchardHandle.IsValid()) { if (orchardHandle.IsDone) Addressables.Release(orchardHandle); else orchardHandle.Completed += h => { if (h.IsValid()) Addressables.Release(h); }; }
             if (audioHandle.IsValid()) { if (audioHandle.IsDone) Addressables.Release(audioHandle); else audioHandle.Completed += h => { if (h.IsValid()) Addressables.Release(h); }; }
             if (fertilizerHandle.IsValid()) { if (fertilizerHandle.IsDone) Addressables.Release(fertilizerHandle); else fertilizerHandle.Completed += h => { if (h.IsValid()) Addressables.Release(h); }; }

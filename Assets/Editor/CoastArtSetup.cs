@@ -14,7 +14,7 @@ using Object = UnityEngine.Object;
 
 namespace MagicIsland.EditorTools
 {
-    public static class CoastArtSetup
+    public static partial class CoastArtSetup
     {
         public const string MeshFolder = "Assets/Art/Meshes/Coast";
         public const string MaterialFolder = "Assets/Art/Materials/Coast";
@@ -44,8 +44,10 @@ namespace MagicIsland.EditorTools
         public static Color LandColor(float radius,float edge,float angle)
         {
             float inset=edge-radius;
-            float irregular=.16f*Mathf.Sin(angle*11)+.10f*Mathf.Sin(angle*23);
-            float blend=Mathf.SmoothStep(0,1,Mathf.InverseLerp(3.9f+irregular,2.2f+irregular,inset));
+            float x=Mathf.Cos(angle)*radius,z=Mathf.Sin(angle)*radius;
+            float irregular=.55f*Mathf.Sin(angle*5+.4f)+.32f*Mathf.Sin(angle*11+1.8f)
+                +.85f*(Mathf.PerlinNoise(x*.48f+37,z*.48f+19)-.5f);
+            float blend=Mathf.SmoothStep(0,1,Mathf.InverseLerp(4.0f+irregular,2.5f+irregular,inset));
             var grass=new Color(.56f,.72f,.34f);var sand=new Color(.90f,.80f,.55f);
             var color=Color.Lerp(grass,sand,blend);
             color*=1+.018f*Mathf.Sin(angle*8+radius*1.1f);
@@ -124,20 +126,6 @@ namespace MagicIsland.EditorTools
             var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(PrefabFolder+"/"+name+".prefab");
             var go=(GameObject)PrefabUtility.InstantiatePrefab(prefab);go.transform.SetParent(parent,false);go.transform.localPosition=position;go.transform.localRotation=Quaternion.Euler(0,yaw,0);go.transform.localScale=scale;return go;
         }
-        private static Vector3 CoastPoint(float angle,float inset)
-        {
-            float radius=(float)IslandLayout.CoastRadius(angle)-inset;
-            float x=Mathf.Cos(angle)*radius,z=Mathf.Sin(angle)*radius;
-            return new Vector3(x,(float)IslandLayout.Height(x,z),z);
-        }
-        private static bool ClearPath(Vector3 p,float margin)
-        {
-            if(Mathf.Abs(p.x)<12.7f&&Mathf.Abs(p.z)<12.7f)return false;
-            if(p.x>11.5f&&p.x<19.3f&&Mathf.Abs(p.z+8.2f)<2+margin)return false;
-            if(Vector2.Distance(new Vector2(p.x,p.z),new Vector2(14.15f,-6.2f))<1.7f+margin)return false;
-            return IslandLayout.ContainsLand(p.x,p.z,.5f+margin);
-        }
-
         [MenuItem("Magic Island/Rebuild Coastal Palms")]
         public static void RebuildCoastalPalms()
         {
@@ -188,25 +176,8 @@ namespace MagicIsland.EditorTools
                     var palm=Instance("CoastalPalm",scenery.transform,Vector3.zero,0,Vector3.one);
                     ApplyPalmSite(palm.transform,site);
                 }
-                for(int i=0;i<58;i++)
-                {
-                    float a=i*Mathf.PI*2/58+.16f+.018f*Mathf.Sin(i*2.7f);var p=CoastPoint(a,2.7f+(i%4)*.3f);
-                    if(!ClearPath(p,.20f))continue;
-                    var go=Instance("CoastalShrub",scenery.transform,p,i*47,Vector3.one*(.7f+(i%4)*.14f));
-                    if(i%3==0)for(int f=0;f<3;f++)Part(go.transform,"Beach flower "+f,PrimitiveType.Sphere,new Vector3(-.15f+f*.16f,.45f+f*.03f,.07f),new Vector3(.12f,.065f,.12f),f%2==0?coralGold:shell);
-                }
-                for(int i=0;i<36;i++)
-                {
-                    float a=i*Mathf.PI*2/36+.24f;var p=CoastPoint(a,.85f+(i%4)*.27f);
-                    if(!ClearPath(p,.08f))continue;
-                    Instance("BeachShell",scenery.transform,p+Vector3.up*.012f,i*73,Vector3.one*(.16f+(i%3)*.035f));
-                    if(i%4==0)
-                    {
-                        var stone=Instance("ReefRock",scenery.transform,p+new Vector3(.3f,-.07f,.15f),i*23,new Vector3(.46f,.35f,.38f));
-                        // Small shore stones remain passable; larger submerged rocks have no gameplay collider.
-                        stone.name="Beach pebbles "+i;
-                    }
-                }
+                if(marker.DetailScatter==null)marker.DetailScatter=new CoastalDetailScatter();
+                ApplyCoastalDetails(marker);
                 marker.CoastArtVersion=Version;PrefabUtility.SaveAsPrefabAsset(root,TerrainSetup.PrefabPath);
             }
             finally{PrefabUtility.UnloadPrefabContents(root);}

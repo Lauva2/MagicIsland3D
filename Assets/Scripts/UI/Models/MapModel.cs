@@ -13,6 +13,8 @@ namespace MagicIsland.UI.Models
         public readonly List<MapLocationModel> Locations = new List<MapLocationModel>();
         public Vector4[] Roads = new Vector4[0];
         public int FarmSize, Selected;
+        public bool WorldOverview;
+        public MagicIsland.TerrainSystem.IslandBiomeSettings Biomes;
         public Vector2 PlayerPosition;
         public string Region, DetailTitle, DetailText;
     }

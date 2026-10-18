@@ -8,19 +8,22 @@ namespace MagicIsland.UI.Views
     {
         public const int MaximumLocations = 12;
         public Button CloseButton;
+        public Button ScaleButton;
         public Button[] LocationButtons, MarkerButtons;
         public TMP_Text[] LocationLabels, MarkerLabels;
         public TMP_Text RegionText, DetailTitle, DetailText;
         public RectTransform MapArea, PlayerMarker;
         public IslandMapGraphic MapGraphic;
-        public bool IsValid => CloseButton != null && RegionText != null && DetailTitle != null && DetailText != null && MapArea != null && PlayerMarker != null && MapGraphic != null && MapGraphic.GetComponent<CanvasRenderer>() != null
+        public bool IsValid => CloseButton != null && ScaleButton != null && RegionText != null && DetailTitle != null && DetailText != null && MapArea != null && PlayerMarker != null && MapGraphic != null && MapGraphic.GetComponent<CanvasRenderer>() != null
             && LocationButtons?.Length == MaximumLocations && MarkerButtons?.Length == MaximumLocations && LocationLabels?.Length == MaximumLocations && MarkerLabels?.Length == MaximumLocations
             && System.Array.TrueForAll(LocationButtons, b => b != null) && System.Array.TrueForAll(MarkerButtons, b => b != null)
             && System.Array.TrueForAll(LocationLabels, b => b != null) && System.Array.TrueForAll(MarkerLabels, b => b != null);
         private void Position(RectTransform rect, Vector2 position) => rect.anchoredPosition = new Vector2(position.x * MapArea.rect.width, (position.y - 1) * MapArea.rect.height);
         public void Render(MapModel model)
         {
-            MapGraphic.SetMap(model.FarmSize, model.Roads); RegionText.text = model.Region; DetailTitle.text = model.DetailTitle; DetailText.text = model.DetailText;
+            MapGraphic.WorldOverview=model.WorldOverview;
+            if(ScaleButton!=null)ScaleButton.GetComponentInChildren<TMP_Text>().text=model.WorldOverview?"查看生活区":"查看全岛";
+            MapGraphic.SetMap(model.FarmSize, model.Roads, model.Biomes); RegionText.text = model.Region; DetailTitle.text = model.DetailTitle; DetailText.text = model.DetailText;
             for (int i = 0; i < MaximumLocations; i++)
             {
                 bool active = i < model.Locations.Count; LocationButtons[i].gameObject.SetActive(active); MarkerButtons[i].gameObject.SetActive(active); if (!active) continue;

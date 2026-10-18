@@ -9,6 +9,7 @@ namespace MagicIsland.TerrainSystem
         public MeshRenderer Surface;
         public Mesh[] Seasons = new Mesh[4];
         public string TreeId;
+        public IslandBiome Biome;
         [Range(.1f,.49f)] public float FootprintRadius=.48f;
         public bool IsValid => Filter!=null&&Surface!=null&&Surface.sharedMaterial!=null
             &&Seasons!=null&&Seasons.Length==4&&System.Array.TrueForAll(Seasons,m=>m!=null)

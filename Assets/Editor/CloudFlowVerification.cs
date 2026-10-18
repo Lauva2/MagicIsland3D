@@ -25,7 +25,7 @@ namespace MagicIsland.EditorTools
             var entry = AddressableAssetSettingsDefaultObject.Settings.FindAssetEntry(AssetDatabase.AssetPathToGUID(CloudSetup.PrefabPath));
             Require(entry != null && entry.address == CloudField.Address, "AA address matches prefab name");
             var pixels = field.ShadowCookie.GetPixels();
-            Require(pixels.Min(p => p.a) >= .77f && pixels.Min(p => p.a) < .82f, "mild sunlight attenuation");
+            Require(pixels.Min(p => p.a) >= .915f && pixels.Min(p => p.a) < .95f, "soft direct-sun attenuation, up to eight percent");
             Require(pixels.Count(p => p.a > .99f) > pixels.Length * .55f, "most of the sky admits full sunlight");
             Require(field.ShadowCookie.wrapMode == TextureWrapMode.Repeat, "seamless repeating cookie");
         }
@@ -38,6 +38,7 @@ namespace MagicIsland.EditorTools
             double minute = game.Time.Clock.Minute;
             weather.Tick(750, true);
             Require(clouds.ShadowsActive && sun.cookie == clouds.ShadowCookie, "sunlight receives cloud cookie");
+            Require(Mathf.Approximately(sun.cookieSize,clouds.FieldSize*clouds.ShadowScale),"independent broad shadow span");
             float intensity = sun.intensity; Quaternion direction = sun.transform.rotation;
             float time = clouds.AnimationTime; Vector3 cloudPosition = clouds.Clouds[0].localPosition, cookiePosition = sun.transform.position;
             clouds.Tick(4, 1, false, true);

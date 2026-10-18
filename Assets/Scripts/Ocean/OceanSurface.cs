@@ -8,6 +8,8 @@ namespace MagicIsland.Ocean
     {
         public Renderer Water;
         public Renderer Shore;
+        [System.NonSerialized] public Renderer[] WorldWaters=System.Array.Empty<Renderer>();
+        [System.NonSerialized] public WorldWaterEcology WorldEcology;
         public float SeaLevel = -.22f;
         [HideInInspector] public int CoastArtVersion;
         [HideInInspector] public int WaterArtVersion;
@@ -65,6 +67,7 @@ namespace MagicIsland.Ocean
                     if (visible) LastVisibleSchools++;
                     if ((visible || !CullFishPresentation) && school.PresentLatest()) LastFishSubmissions++;
                 }
+                WorldEcology?.Present(camera);
             }
         }
         public void ConfigureFishHabitat(OceanSchool school)
@@ -93,10 +96,12 @@ namespace MagicIsland.Ocean
             if(float.IsNaN(worldPoint.x)||float.IsNaN(worldPoint.y)||float.IsNaN(worldPoint.z)||float.IsInfinity(worldPoint.x)||float.IsInfinity(worldPoint.y)||float.IsInfinity(worldPoint.z))return;
             SplashCount++;var point=transform.InverseTransformPoint(worldPoint);
             foreach(var school in Schools)if(school!=null)school.Startle(point);
+            WorldEcology?.Disturb(worldPoint);
             if(Effects!=null)Effects.Splash(worldPoint,this);
         }
         public float HeightAt(Vector3 world)
         {
+            if(WorldEcology!=null&&WorldEcology.TryLakeHeight(world,AnimationTime,out float lakeHeight))return lakeHeight;
             var material=Water.sharedMaterial;float t=AnimationTime*material.GetFloat("_WaveSpeed"),height=material.GetFloat("_WaveHeight");
             return Water.transform.position.y+height*(Mathf.Sin(world.x*.85f+world.z*.32f+t)+.5f*Mathf.Sin(world.z*1.28f-world.x*.27f-t*.71f));
         }
@@ -109,11 +114,11 @@ namespace MagicIsland.Ocean
             && Water.sharedMaterial.shader != null && Water.sharedMaterial.shader.name == "MagicIsland/Island Ocean"
             && Water.GetComponent<MeshFilter>()?.sharedMesh != null && Shore.GetComponent<MeshFilter>()?.sharedMesh != null
             && Effects!=null&&Effects.IsValid&&GetComponentsInChildren<Collider>(true).Length == 0;
-        public void Tick(float seconds, float daylight, bool raining, Light sunlight = null,Vector3? playerPosition=null,Vector3? fishingPosition=null,float twilight=0)
+        public void Tick(float seconds, float daylight, bool raining, Light sunlight = null,Vector3? playerPosition=null,Vector3? fishingPosition=null,float twilight=0,float? rainAmount=null)
         {
             using(simulationMarker.Auto())
             {
-            AnimationTime += Mathf.Max(0, seconds); Daylight = Mathf.Clamp01(daylight); Rain = raining ? 1 : 0;
+            AnimationTime += Mathf.Max(0, seconds); Daylight = Mathf.Clamp01(daylight); Rain = Mathf.Clamp01(rainAmount ?? (raining ? 1 : 0));
             if (properties == null) properties = new MaterialPropertyBlock();
             Water.GetPropertyBlock(properties); properties.SetFloat("_OceanTime", AnimationTime);
             properties.SetFloat("_Daylight", Daylight); properties.SetFloat("_Rain", Rain);
@@ -123,6 +128,7 @@ namespace MagicIsland.Ocean
                 properties.SetColor("_SunColor", sunlight.color); properties.SetFloat("_SunIntensity", sunlight.intensity);
             }
             Water.SetPropertyBlock(properties);
+            foreach(var water in WorldWaters)if(water!=null)water.SetPropertyBlock(properties);
             if(ecologyProperties==null)ecologyProperties=new MaterialPropertyBlock();
             if(ambientRenderers==null)ambientRenderers=EcosystemRenderers.Where(r=>r!=null&&r.GetComponent<OceanSchool>()==null).ToArray();
             foreach(var renderer in ambientRenderers)if(renderer!=null){renderer.GetPropertyBlock(ecologyProperties);ecologyProperties.SetFloat("_OceanTime",AnimationTime);renderer.SetPropertyBlock(ecologyProperties);}
@@ -138,6 +144,7 @@ namespace MagicIsland.Ocean
             foreach(var bird in Birds)if(bird!=null){bird.SetEnvironment(CoastalRhythm,Daylight,raining,twilight);bird.React(seconds,player,AnimationTime,Daylight,raining);bird.Render(AnimationTime,Daylight,raining);}
             foreach(var crab in Crabs)if(crab!=null){crab.SetEnvironment(CoastalRhythm,Daylight,raining);crab.React(seconds,player);crab.Render(AnimationTime);}
             if(Effects!=null)Effects.Tick(seconds,this,playerPosition);
+            WorldEcology?.Tick(AnimationTime,seconds,Daylight,raining,twilight,playerPosition,fishingPosition,presentationCamera==null,true);
             }
         }
     }

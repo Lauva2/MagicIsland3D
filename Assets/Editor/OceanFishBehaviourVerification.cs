@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using MagicIsland.Ocean;
 using UnityEditor;
@@ -22,7 +23,7 @@ namespace MagicIsland.EditorTools
             try
             {
                 var surface=root.GetComponent<OceanSurface>();var floor=new OceanBiomeSetup.BakedFloor(surface.Shore.GetComponent<MeshFilter>().sharedMesh);
-                Require(surface.SwimObstacles.Length>1500,"Individual coral and rock navigation volumes baked into AA ocean");
+                VerifyReefObstacles(surface);
                 foreach(var population in surface.FishPopulations)
                 {
                     Require(population.IsValid,"Valid configurable species population range");
@@ -82,6 +83,27 @@ namespace MagicIsland.EditorTools
                 Debug.Log("Fish behaviour verification PASSED: ranged populations, bounded free swimming, swept reef avoidance, habitats, feeding/exploration, startle/recovery, pause and frame-rate independence. Avoidance="+avoidance+", slow feeding samples="+slowFeeding);
             }
             finally{Object.DestroyImmediate(root);}
+        }
+        static void VerifyReefObstacles(OceanSurface surface)
+        {
+            var layout=JsonUtility.FromJson<OceanReefArtSetup.Layout>(File.ReadAllText(OceanReefArtSetup.LayoutPath));
+            var patches=surface.GetComponentsInChildren<OceanHabitatPatch>(true);
+            var hidden=new System.Collections.Generic.List<Vector2>();
+            int visible=0;
+            foreach(var group in layout.groups)
+            {
+                var patch=patches.Single(p=>AssetDatabase.GetAssetPath(p.GetComponentInChildren<MeshFilter>().sharedMesh)==group.path);
+                foreach(var member in group.members.Where(m=>m.source<4||m.source==5||m.source==8))
+                {
+                    var p=surface.transform.InverseTransformPoint(patch.transform.TransformPoint(member.position));var center=new Vector2(p.x,p.z);
+                    bool found=surface.SwimObstacles.Any(o=>Vector2.Distance(o.Center,center)<.002f);
+                    Require(found!=member.hidden,"Obstacle matches authored visible reef member");
+                    if(member.hidden)hidden.Add(center);else visible++;
+                }
+            }
+            Require(visible>0&&surface.SwimObstacles.Length>=visible,"Visible coral and rocks have navigation volumes");
+            if(layout.originalObstacles!=null&&layout.originalObstacles.Length>0)
+                Require(layout.originalObstacles.Where(o=>!hidden.Any(c=>Vector2.Distance(c,o.Center)<.002f)).SequenceEqual(surface.SwimObstacles),"Density preserves original obstacle envelopes and removes only hidden members");
         }
         static void VerifyFrameRates(OceanSchool school)
         {

@@ -47,7 +47,7 @@ namespace MagicIsland.Player
         }
         public void BeginAction(ToolActionKind kind)
         {
-            string state = kind == ToolActionKind.Seed ? "Plant" : kind == ToolActionKind.Fertilizer ? "Fertilize" : kind.ToString();
+            string state = kind == ToolActionKind.RainSpell ? "Water" : kind == ToolActionKind.Seed ? "Plant" : kind == ToolActionKind.Fertilizer ? "Fertilize" : kind.ToString();
             actionState = UnityEngine.Animator.StringToHash("Base Layer." + state);
             Action = kind; MovementRatio = 0; Animator.SetFloat(moveSpeed, 0); Animator.speed = 0;
             SampleAction(0);

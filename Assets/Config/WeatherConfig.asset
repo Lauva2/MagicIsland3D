@@ -37,6 +37,10 @@ MonoBehaviour:
   DaySky: {r: 0.62, g: 0.79, b: 0.84, a: 1}
   NightSky: {r: 0.006, g: 0.01, b: 0.022, a: 1}
   RainSky: {r: 0.43, g: 0.53, b: 0.6, a: 1}
+  WeatherTransitionSeconds: 3
+  TwilightSky: {r: 0.78, g: 0.52, b: 0.41, a: 1}
+  TwilightAmbient: {r: 0.43, g: 0.25, b: 0.16, a: 1}
+  TwilightStrength: 0.22
   RainMaterial: {fileID: 2100000, guid: eaaaf10eb88589e48b28b34d39b3d17c, type: 2}
   RainParticlesPerSecond: 260
   WindDirection: {x: 1, y: 0.35}

@@ -42,7 +42,7 @@ namespace MagicIsland.Managers
             settingsGeneration++; settingsOpening = false; Settings.Flush(); UI.CloseSettings();
             if (State == GameFlowState.Playing) SetInputEnabled(!ModalOpen);
         }
-        private bool AnyGameplayCommit => shippingCommitting || inventoryUpgradeCommitting || reportCommitting || orderCommitting || animalCommitting || advancingDay
+        private bool AnyGameplayCommit => magicCommitting || shippingCommitting || inventoryUpgradeCommitting || reportCommitting || orderCommitting || animalCommitting || advancingDay
             || houseUpgradeCommitting || craftingCommitting || placementCommitting || fishingCommitting || shopCommitting || giftCommitting || dialogueCommitting || storageCommitting || consumableCommitting;
     }
 }

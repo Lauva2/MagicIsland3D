@@ -23,6 +23,7 @@ namespace MagicIsland.EditorTools
         public static void Run()
         {
             PrototypeAddressablesSetup.EnsureSetup();
+            PrototypeAddressablesSetup.ValidateUiPrefabs();
             var before = File.ReadAllBytes("Assets/Config/WeatherConfig.asset");
             PrototypeAddressablesSetup.EnsureSetup();
             Require(before.SequenceEqual(File.ReadAllBytes("Assets/Config/WeatherConfig.asset")), "Setup preserves tuned lighting configuration");
@@ -41,11 +42,15 @@ namespace MagicIsland.EditorTools
             var c = g.Configuration.Weather;
             g.Ocean.Surface.Tick(0, (float)DaylightCycle.Evaluate(minute, c.DawnMinute, c.DaylightMinute, c.DuskMinute, c.NightMinute), g.Weather.State.Kind == WeatherKind.Rainy);
         }
-        internal static float Capture(GameManager g, string name, Vector3 focus, float size = 10.5f)
+        internal static float Capture(GameManager g, string name, Vector3 focus, float size = 10.5f, float extraDistance = 0)
         {
             var camera = g.Players.Player.ViewCamera; var position = camera.transform.position; float before = camera.orthographicSize;
             camera.GetComponent<CameraController>().SnapToTarget(); camera.orthographicSize = size;
             camera.transform.position += focus - (g.Players.Player.transform.position + Vector3.up * .6f);
+            // Enlarging an orthographic overview keeps the 18 m gameplay offset, which clips
+            // the foreground ocean against the near plane. Move only the capture camera back.
+            float pitch=Mathf.Asin(Mathf.Abs(camera.transform.forward.y));
+            camera.transform.position-=camera.transform.forward*(Mathf.Max(0,size/Mathf.Tan(pitch)-15f)+extraDistance);
             var canvases = Object.FindObjectsOfType<Canvas>(); var enabled = canvases.Select(c => c.enabled).ToArray();
             bool ring = g.Interactions.Highlight.Ring.enabled; g.Cameras.SetOcclusionEnabled(false);
             try
@@ -86,6 +91,7 @@ namespace MagicIsland.EditorTools
                 {
                     Require(g.Configuration.Weather.IsValid && g.Weather.Moon != null && Object.FindObjectsOfType<Light>().Count(l => l.name == "Moonlight") == 1, "AA config and single owned moonlight");
                     Require(Object.FindObjectsOfType<Light>().Where(l => l.gameObject.scene.name == "MainMenu").All(l => !l.enabled), "Retained menu light cannot illuminate gameplay");
+                    AtmospherePolishVerification.Verify(g);
                     g.OpenPause(); SetTime(g, 480); Phase(2);
                 }
                 else if (p == 2 && Object.FindObjectOfType<PauseView>() != null)
@@ -123,7 +129,7 @@ namespace MagicIsland.EditorTools
                 else if (p == 34)
                 {
                     Capture(g, "LightingCoastDay", new Vector3(10, .6f, -5)); SessionState.SetFloat(Key + ".SunIntensity", World.Sun.intensity);
-                    g.Weather.State.NextDay(g.Weather.State.Day + 1, 1); SetTime(g, 750); Phase(35);
+                    g.Weather.State.NextDay(g.Weather.State.Day + 1, 1); AtmospherePolishVerification.Advance(g.Weather,g.Configuration.Weather.WeatherTransitionSeconds); SetTime(g, 750); Phase(35);
                 }
                 else if (p == 35)
                 {
@@ -132,7 +138,7 @@ namespace MagicIsland.EditorTools
                     SetTime(g,1320);
                     Capture(g,"OutdoorHouseRainNight",g.Housing.Entrance.transform.position+Vector3.up*.6f,7);
                     Capture(g,"OutdoorPierRainNight",g.Fishing.Spot.transform.position+Vector3.up*.6f,7);
-                    g.Weather.State.NextDay(g.Weather.State.Day + 1, 0); SetTime(g, 1320); g.ResumeFromPause();
+                    g.Weather.State.NextDay(g.Weather.State.Day + 1, 0); AtmospherePolishVerification.Advance(g.Weather,g.Configuration.Weather.WeatherTransitionSeconds); SetTime(g, 1320); g.ResumeFromPause();
                     Require(g.Inventory.TryAdd("garden_lamp", 1), "Lamp fixture"); Move(g, new Vector3(-5, .1f, 4.6f));
                     g.Placements.StartCoroutine(g.Placements.Begin("garden_lamp")); Phase(3);
                 }

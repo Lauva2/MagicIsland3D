@@ -25,6 +25,11 @@ namespace MagicIsland.Configuration
         public Color DaySky = new Color(0.62f, 0.79f, 0.84f);
         public Color NightSky = new Color(0.006f, 0.010f, 0.022f);
         public Color RainSky = new Color(0.43f, 0.53f, 0.6f);
+        [Header("Visual transitions")]
+        [Range(0, 20)] public float WeatherTransitionSeconds = 3;
+        public Color TwilightSky = new Color(.78f, .52f, .41f);
+        public Color TwilightAmbient = new Color(.43f, .25f, .16f);
+        [Range(0, 1)] public float TwilightStrength = .22f;
         public Material RainMaterial;
         public float RainParticlesPerSecond = 260;
         [Header("Shared outdoor wind")]
@@ -34,6 +39,8 @@ namespace MagicIsland.Configuration
         [Range(.1f,20)] public float WindChangeSeconds=4;
 
         public bool IsValid => Finite(RainChance) && RainChance >= 0 && RainChance <= 1
+            && Finite(WeatherTransitionSeconds) && WeatherTransitionSeconds >= 0 && WeatherTransitionSeconds <= 20
+            && Finite(TwilightStrength) && TwilightStrength >= 0 && TwilightStrength <= 1 && ValidColor(TwilightSky) && ValidColor(TwilightAmbient)
             && Finite(WindDirection.x)&&Finite(WindDirection.y)&&WindDirection.sqrMagnitude>.01f&&WindDirection.sqrMagnitude<100
             && Finite(SunnyWindStrength)&&SunnyWindStrength>=0&&SunnyWindStrength<=2
             && Finite(RainWindStrength)&&RainWindStrength>=SunnyWindStrength&&RainWindStrength<=2

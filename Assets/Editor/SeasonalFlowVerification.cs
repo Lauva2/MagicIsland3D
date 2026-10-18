@@ -98,9 +98,11 @@ namespace MagicIsland.EditorTools
         {
             var camera=g.Players.Player.ViewCamera;var position=camera.transform.position;float size=camera.orthographicSize;
             var canvases=Object.FindObjectsOfType<Canvas>();var visible=canvases.Select(c=>c.enabled).ToArray();
+            // Restore camera-owned fade copies before recording the authored material baseline.
+            g.Cameras.SetOcclusionEnabled(false);
             var transforms=Object.FindObjectsOfType<VegetationWind>().Select(w=>new{Wind=w,Matrix=w.transform.localToWorldMatrix,Material=w.Target.sharedMaterial,Color=w.Target.sharedMaterial.color}).ToArray();
             var colliders=Object.FindObjectsOfType<Collider>().Select(c=>new{Collider=c,Bounds=c.bounds}).ToArray();
-            var scope=new SeasonalPresentation();g.Cameras.SetOcclusionEnabled(false);
+            var scope=new SeasonalPresentation();
             try
             {
                 foreach(var c in canvases)c.enabled=false;
@@ -184,7 +186,9 @@ namespace MagicIsland.EditorTools
                 }
                 else if(p==8&&g.State==GameFlowState.Playing)
                 {
-                    Require(g.Farm.State.Day==4&&g.Calendar.Date.Season==Season.Winter&&g.Housing.Inside,"Load restores winter before input");CheckSeason(g);Rest(g);Phase(4);
+                    Require(g.Farm.State.Day==4&&g.Calendar.Date.Season==Season.Winter&&g.Housing.Inside,"Load restores winter before input");
+                    Require(g.Weather.RainAmount==(g.Weather.State.Kind==WeatherKind.Rainy?1:0),"Loaded weather starts at the saved visual endpoint even indoors");
+                    CheckSeason(g);Rest(g);Phase(4);
                 }
                 else if(p==12&&g.State==GameFlowState.Playing)
                 {

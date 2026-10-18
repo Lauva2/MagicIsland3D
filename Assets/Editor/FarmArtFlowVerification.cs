@@ -51,7 +51,9 @@ namespace MagicIsland.EditorTools
             Move(g, g.Farm.Grid.CellCenter(Plot) + new Vector3(0, .055f, -1.1f)); Require(g.Tools.SelectTool(tool), "Select farm tool");
             var target = g.Interactions.RefreshPointer(new Ray(g.Farm.Grid.CellCenter(Plot) + Vector3.up * 5, Vector3.down), false);
             Require(target.Index == Plot && target.InRange && g.Interactions.TryInteract(), "Real mouse farm dispatch " + tool);
-            Require(g.Tools.Presentation.ActiveEffectCount > 0, "Committed farm action emits AA feedback"); SameSave(g);
+            typeof(ToolManager).GetMethod("TickAction", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .Invoke(g.Tools, new object[] { g.Configuration.Config.ToolActionDuration * .52f });
+            Require(g.Tools.Presentation.ActiveEffectCount > 0, "Committed farm action emits AA feedback at contact"); SameSave(g);
         }
         static void Capture(GameManager g, string name, float size = 4.4f)
         {
@@ -63,7 +65,9 @@ namespace MagicIsland.EditorTools
         }
         static void Fixtures(GameManager g)
         {
-            Require(g.Farm.LoadedVisualCount == 9 && g.Farm.PlotPrefab != null && g.Tools.OwnsEffects, "Nine crop models plus soil and effects loaded through packed AA");
+            int expectedModels = g.Farm.Crops.Crops.SelectMany(crop => Enum.GetValues(typeof(CropGrowthStage))
+                .Cast<CropGrowthStage>().Select(crop.PrefabAddress)).Distinct().Count();
+            Require(g.Farm.LoadedVisualCount == expectedModels && g.Farm.PlotPrefab != null && g.Tools.OwnsEffects, "Configured crop models plus soil and effects loaded through packed AA");
             for (int i = 0; i < g.Farm.State.Cells.Length; i++)
             {
                 var visual = g.Farm.Grid.GetPlotVisual(i);
@@ -162,7 +166,7 @@ namespace MagicIsland.EditorTools
                 else if (p == 20)
                 {
                     Require(fixture.PlotPrefab == null && fixture.LoadedVisualCount == 0, "Cancelled AA plot load cannot bind late asset"); Object.Destroy(fixture.gameObject);
-                    File.WriteAllText("Logs/FarmArtVerification.txt", "PASS: editable farm/crop art preservation, packed AA 9 crop stages plus plots/FX, original ray picking and collider-free visuals, same-stage reuse, real hoe/seed/water/fertilizer/harvest/replant dispatch, bounded reusable paused FX, three actual sleeps/growth/dry soil, checkpoint reload, no daytime save, unload/failure/cancellation.\n");
+                    File.WriteAllText("Logs/FarmArtVerification.txt", "PASS: editable farm/crop art preservation, all configured crop stages plus plots/FX through packed AA, original ray picking and collider-free visuals, same-stage reuse, real hoe/seed/water/fertilizer/harvest/replant dispatch, bounded reusable paused FX, three actual sleeps/growth/dry soil, checkpoint reload, no daytime save, unload/failure/cancellation.\n");
                     Debug.Log("Farm art flow verification PASSED."); Phase(30); EditorApplication.isPlaying = false;
                 }
             }

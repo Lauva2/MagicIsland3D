@@ -1,6 +1,6 @@
 namespace MagicIsland.Tools
 {
-    public enum ToolActionKind { Hoe, Seed, Water, Axe, Pickaxe, Harvest, FishingRod, Fertilizer }
+    public enum ToolActionKind { Hoe, Seed, Water, Axe, Pickaxe, Harvest, FishingRod, Fertilizer, RainSpell }
     public sealed class ToolFeedback
     {
         public bool Success { get; }

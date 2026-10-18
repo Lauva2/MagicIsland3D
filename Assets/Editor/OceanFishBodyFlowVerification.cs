@@ -33,10 +33,10 @@ namespace MagicIsland.EditorTools
                 // Hold location, yaw, pitch, fin phase AND ocean clock. Only constrained links differ.
                 block.SetVectorArray("_FishPoses",positions);block.SetVectorArray("_FishAttitudes",attitudes);block.SetFloat("_OceanTime",start+.8f);
                 block.SetFloat("_FishBodyEnabled",0);renderer.SetPropertyBlock(block);var rigidB=Capture(camera,"FishBodyRigidControlB");
-                Require(rigidA.SequenceEqual(rigidB),"Rigid control stays identical with root poses held fixed");
+                Require(SameImage(rigidA,rigidB),"Rigid control stays identical with root poses held fixed");
                 block.SetFloat("_FishBodyEnabled",1);renderer.SetPropertyBlock(block);var b=Capture(camera,"FishBodyConstrainedB");
                 Require(a.Zip(b,(x,y)=>Math.Abs(x.r-y.r)+Math.Abs(x.g-y.g)+Math.Abs(x.b-y.b)>8?1:0).Sum()>25,"Actual fish body silhouette/shading changes independently of whole model motion");
-                Require(b.SequenceEqual(Capture(camera,"FishBodyConstrainedPause")),"Paused constrained body render is identical");
+                Require(SameImage(b,Capture(camera,"FishBodyConstrainedPause")),"Paused constrained body render is identical");
                 school.gameObject.layer=layer;camera.cullingMask=mask;camera.backgroundColor=background;
                 school.ResetSteering();school.Render(surface.AnimationTime);
                 for(int frame=0;frame<60;frame++)
@@ -46,7 +46,7 @@ namespace MagicIsland.EditorTools
                     camera.transform.position=focus+Vector3.up*.05f-camera.transform.forward*18;
                     Capture(camera,"FishBodySwim"+frame.ToString("00"));
                 }
-                Debug.Log("Fish body render verification PASSED: fixed-root GPU control, independent distance-constrained body deformation, exact paused image and close-up 30 FPS sequence.");
+                Debug.Log("Fish body render verification PASSED: fixed-root GPU control, independent distance-constrained body deformation, paused image within 8-bit edge rounding and close-up 30 FPS sequence.");
             }
             finally
             {
@@ -54,6 +54,21 @@ namespace MagicIsland.EditorTools
                 camera.transform.position=cameraPosition;camera.orthographicSize=size;camera.cullingMask=mask;camera.backgroundColor=background;
                 for(int i=0;i<canvases.Length;i++)canvases[i].enabled=visible[i];game.Cameras.SetOcclusionEnabled(true);
             }
+        }
+        static bool SameImage(Color32[] a,Color32[] b)
+        {
+            // Independent D3D11 targets occasionally round an edge by one 8-bit level,
+            // as in OceanFishVisibilityVerification. Actual motion exceeds this bound.
+            if(a.Length!=b.Length)return false;
+            int changed=0;
+            for(int i=0;i<a.Length;i++)
+            {
+                int r=Math.Abs(a[i].r-b[i].r),g=Math.Abs(a[i].g-b[i].g),blue=Math.Abs(a[i].b-b[i].b);
+                if(r>1||g>1||blue>1||a[i].a!=b[i].a)return false;
+                changed+=(r>0?1:0)+(g>0?1:0)+(blue>0?1:0);
+                if(changed>128)return false;
+            }
+            return true;
         }
         static Color32[] Capture(Camera camera,string name)
         {

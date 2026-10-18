@@ -11,8 +11,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2b43f5bab0f74e1ab5ce1a692c1f434d, type: 3}
   m_Name: SeasonConfig
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   DaysPerSeason: 28
+  PaletteTransitionDays: 7
   SpringRainChance: 0.3
   SummerRainChance: 0.2
   AutumnRainChance: 0.4

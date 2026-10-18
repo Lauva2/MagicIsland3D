@@ -11,6 +11,7 @@ namespace MagicIsland.UI.Controllers
         private readonly InteractionPromptView view;
         private readonly InteractionManager interaction;
         private readonly FarmManager farm;
+        private InteractionTarget displayedTarget;
         public InteractionPromptController(InteractionPromptView view, InteractionManager interaction, FarmManager farm)
         { this.view = view; this.interaction = interaction; this.farm = farm; interaction.Changed += Tick; Tick(); }
         public void Tick()
@@ -18,7 +19,9 @@ namespace MagicIsland.UI.Controllers
             if (view == null) return;
             var target = interaction.Current;
             // Planted plots already have their own crop details card.
-            Model.Visible = target.Visible && !(target.Kind == InteractionKind.Farm && farm.State != null && farm.State.Cells[target.Index].Planted);
+            bool visible = target.Visible && !(target.Kind == InteractionKind.Farm && farm.State != null && farm.State.Cells[target.Index].Planted);
+            if (ReferenceEquals(displayedTarget, target) && Model.Visible == visible) return;
+            displayedTarget = target; Model.Visible = visible;
             Model.Name = target.Name; Model.Operation = target.Operation;
             Model.InRange = target.InRange; Model.Ready = target.Ready;
             Model.Status = !target.InRange ? "请靠近" : target.Ready ? "可操作" : "需准备";

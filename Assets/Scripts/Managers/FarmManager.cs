@@ -27,6 +27,7 @@ namespace MagicIsland.Managers
         public event Action<TaskAction> ActionSucceeded;
         private FarmActions actions;
         internal void SetHarvestRecorder(Action recorder) => actions?.SetHarvestRecorder(recorder);
+        internal void SetMagicHarvestRecorder(Action<string> recorder) => actions?.SetMagicHarvestRecorder(recorder);
         private readonly Dictionary<string, GameObject> visualPrefabs = new Dictionary<string, GameObject>();
         private readonly List<AsyncOperationHandle<GameObject>> visualHandles = new List<AsyncOperationHandle<GameObject>>();
         private int loadGeneration;

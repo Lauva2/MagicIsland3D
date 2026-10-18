@@ -108,7 +108,11 @@ namespace MagicIsland.EditorTools
                 { Require(g.Placements.Objects.Values.All(a => a.GetComponent<OrchardActor>().Fruit.activeSelf), "Ready fruit survives checkpoint reload"); ExitHome(g); Phase(14); }
                 else if (p == 14 && g.State == GameFlowState.Playing && !g.Housing.Inside)
                 {
-                    Capture(g, "OrchardRipePreview"); var tree = Tree(g, "apple_sapling"); Move(g, Vector3.zero); Require(!g.HarvestTree(tree), "Distant harvest rejected");
+                    Capture(g, "OrchardRipePreview"); var tree = Tree(g, "apple_sapling"); Move(g, Vector3.zero);
+                    MagicIsland.Tools.ToolFeedback distanceFeedback = null;
+                    Action<MagicIsland.Tools.ToolFeedback> observe = value => distanceFeedback = value; g.Tools.Feedback += observe;
+                    try { Require(!g.HarvestTree(tree) && distanceFeedback != null && !distanceFeedback.Success && distanceFeedback.Message == "距离太远，请靠近" && !g.Tools.Busy, "Distant harvest reports reason without action"); }
+                    finally { g.Tools.Feedback -= observe; }
                     Move(g, tree.transform.position + new Vector3(0, .1f, -1.4f)); int fill = (g.Inventory.State.Capacity - 1) * 99; Require(g.Inventory.TryAdd("wood", fill), "Fill bag fixture");
                     Require(!g.HarvestTree(tree) && tree.GetComponent<OrchardActor>().Fruit.activeSelf && g.Orchard.State.Find(tree.Id).NextFruitDay == 4, "Full bag retains ripe fruit"); Require(g.Inventory.TryRemove("wood", fill), "Remove fill fixture");
                     Harvest(g, "apple_sapling"); Require(g.Inventory.GetCount("apple") == 2 && !tree.GetComponent<OrchardActor>().Fruit.activeSelf && !g.HarvestTree(tree), "One harvest gives two apples and blocks repeat"); Phase(15);

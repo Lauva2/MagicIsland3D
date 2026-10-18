@@ -64,7 +64,7 @@ namespace MagicIsland.Managers
         private bool orderOpening;
         private bool sleepOpening;
         private bool shopOpening;
-        private bool ModalOpen => PauseBusy || UI.HasShipping || shippingOpening || shippingCommitting || ConstructionBusy || UI.HasFishing || fishingOpening || fishingCommitting || shopCommitting || UI.HasGift || giftOpening || giftCommitting || UI.HasDialogue || dialogueOpening || dialogueCommitting || UI.HasCooking || cookingOpening || consumableCommitting || UI.HasStorage || storageOpening || storageCommitting || UI.HasToolUpgrade || upgradeOpening || upgradeCommitting || UI.IsInventoryVisible || UI.HasShop || shopOpening || UI.HasSleep || sleepOpening || UI.HasOrder || orderOpening || orderCommitting;
+        private bool ModalOpen => MagicBusy || PauseBusy || UI.HasShipping || shippingOpening || shippingCommitting || ConstructionBusy || UI.HasFishing || fishingOpening || fishingCommitting || shopCommitting || UI.HasGift || giftOpening || giftCommitting || UI.HasDialogue || dialogueOpening || dialogueCommitting || UI.HasCooking || cookingOpening || consumableCommitting || UI.HasStorage || storageOpening || storageCommitting || UI.HasToolUpgrade || upgradeOpening || upgradeCommitting || UI.IsInventoryVisible || UI.HasShop || shopOpening || UI.HasSleep || sleepOpening || UI.HasOrder || orderOpening || orderCommitting;
         private bool settingsOpening;
         private SaveData pendingSave;
         private Scene menuScene;
@@ -91,7 +91,7 @@ namespace MagicIsland.Managers
             Configuration = GetOrAdd<ConfigurationManager>();
             Scenes = GetOrAdd<SceneManager>();
             UI = GetOrAdd<UIManager>();
-            Farm = GetOrAdd<FarmManager>(); Fertilizer = GetOrAdd<FertilizerManager>();
+            Farm = GetOrAdd<FarmManager>(); Fertilizer = GetOrAdd<FertilizerManager>(); Magic = GetOrAdd<MagicManager>();
             Inventory = GetOrAdd<InventoryManager>();
             Players = GetOrAdd<PlayerManager>();
             Cameras = GetOrAdd<CameraManager>();
@@ -376,8 +376,11 @@ namespace MagicIsland.Managers
                 ReturnAfterFailure(error);
                 yield break;
             }
+            yield return Magic.LoadEffect(FindWorld(Scenes.GameScene).transform);
+            if (Magic.LastError != null)
+            { error = Magic.LastError; yield return Scenes.UnloadGameScene(); ClearSystems(); ReturnAfterFailure(error); yield break; }
             Map.Initialize(this);
-            yield return UI.ShowFarmHud(Farm, Interactions, Economy, Time, Stamina, Weather, RequestRest, OpenPause, ToggleInventory, ToggleMap);
+            yield return UI.ShowFarmHud(Farm, Interactions, Economy, Time, Stamina, Weather, RequestRest, OpenPause, ToggleInventory, ToggleMap, ToggleMagic);
             if (UI.LastError == null) yield return UI.PrepareInventory(Inventory, Farm, UseSeed, CloseInventory, Food, UseFood, SaveFood, Placements, BeginPlacementFromBag, SortInventory, BeginInventoryDrag, DropInventoryItem, SplitInventoryItem, CancelInventoryDrag);
             if (UI.LastError == null) yield return UI.ShowCropInfo(Farm, Interactions);
             if (UI.LastError == null) yield return UI.ShowInteractionPrompt(Interactions, Farm);
@@ -412,6 +415,7 @@ namespace MagicIsland.Managers
                 if (world == null) throw new InvalidOperationException("Game scene has no FarmPrototype world root");
                 var config = Configuration.Config; Saves.ClearSleepCheckpoint(); sleepSaveFailed = false;
                 var savedTasks = pendingSave?.Tasks;
+                var savedMagic = pendingSave?.Magic;
                 var savedOrder = pendingSave?.Order;
                 var savedGathering = pendingSave?.Gathering;
                 var savedBeach=pendingSave?.BeachForage;
@@ -429,7 +433,9 @@ namespace MagicIsland.Managers
                 var savedAnimals = pendingSave?.Animals;
                 var savedReport = pendingSave?.DailyReport; var savedShipping = pendingSave?.Shipping;
                 loadedPlayerArea = pendingSave?.PlayerArea ?? MagicIsland.Interaction.HousingState.Island;
-                loadedPlayerPosition = pendingSave == null ? (Vector3?)null : new Vector3(pendingSave.PlayerX, pendingSave.PlayerY, pendingSave.PlayerZ);
+                loadedPlayerPosition = pendingSave == null
+                    ? (Terrain.Terrain.BiomeArtVersion > 0 ? (Vector3?)Terrain.Terrain.transform.TransformPoint(Terrain.Terrain.Biomes.NewGameSpawn) : null)
+                    : new Vector3(pendingSave.PlayerX, pendingSave.PlayerY, pendingSave.PlayerZ);
                 Inventory.Initialize(config, Configuration.Items, Configuration.InventoryUpgrades, pendingSave?.InventoryUpgrade);
                 Economy.Initialize(config.InitialGold);
                 Stamina.Initialize(config);
@@ -455,6 +461,7 @@ namespace MagicIsland.Managers
                     pendingSave = null;
                 }
                 Fertilizer.Initialize(Configuration.Fertilizer, Farm, Inventory, Stamina);
+                Magic.Initialize(Configuration.Magic, Farm, savedMagic);
                 DailyReports.Initialize(Farm, Economy, savedReport);
                 Calendar.Initialize(Configuration.Seasons, Farm);
                 Cameras.Initialize(world.CameraController, config);
@@ -513,6 +520,7 @@ namespace MagicIsland.Managers
                 Weather.ApplyRain();
                 bool[] matureBefore = Farm.State.Cells.Select(c => c.Mature).ToArray();
                 int eggsBefore = Animals.State.Eggs, qualityBefore = Animals.State.QualityEggs;
+                Magic.ResetPresentation();
                 Farm.AdvanceDay();
                 Animals.NextDay(Farm.State.Day);
                 Orchard.NextDay(Farm.State.Day);
@@ -962,12 +970,15 @@ namespace MagicIsland.Managers
             Time.Tick(UnityEngine.Time.deltaTime, ModalOpen);
             NPCSchedules.Tick(Time.Clock.Minute, UnityEngine.Time.deltaTime, ModalOpen);
             Weather.Tick(Time.Clock.Minute, ModalOpen);
+            var weatherConfig = Configuration.Weather;
+            Magic.Tick(UnityEngine.Time.deltaTime, ModalOpen, Housing.Inside, (float)MagicIsland.WeatherSystem.DaylightCycle.Evaluate(Time.Clock.Minute, weatherConfig.DawnMinute, weatherConfig.DaylightMinute, weatherConfig.DuskMinute, weatherConfig.NightMinute));
             Housing.UpdatePresentation();
             Animals.Tick(UnityEngine.Time.deltaTime, ModalOpen);
             Audio.TickEnvironment(this,UnityEngine.Time.deltaTime,ModalOpen);
             if (Time.Clock.Finished && !ModalOpen) Interactions.SetFeedback("已经深夜了，请到床边睡觉");
             if (Input.GetKeyDown(KeyCode.B)) ToggleInventory();
             else if (Input.GetKeyDown(KeyCode.M)) ToggleMap();
+            else if (Input.GetKeyDown(KeyCode.K)) ToggleMagic();
             else if (Input.GetKeyDown(KeyCode.Escape)) HandleEscape();
         }
         public void HandleEscape()
@@ -977,6 +988,7 @@ namespace MagicIsland.Managers
             {
                 if (UI.HasSettings || settingsOpening) { CloseSettings(); return; }
                 if (UI.HasPause || pauseOpening) { if (pauseOpening) ClosePause(); else ResumeFromPause(); return; }
+                if (MagicBusy) { CloseMagic(); return; }
                 if (MapBusy) { CloseMap(); return; }
                 if (ActivePlacement.Active || placementOpening) CancelPlacement();
                 else if (InventoryUpgradeBusy) CloseInventoryUpgrade();
@@ -1008,7 +1020,7 @@ namespace MagicIsland.Managers
         private void ConfirmReturnToMenu()
         {
             if (shippingCommitting || inventoryUpgradeCommitting || reportCommitting || orderCommitting || animalCommitting || advancingDay || houseUpgradeCommitting || craftingCommitting || placementCommitting || fishingCommitting || shopCommitting || giftCommitting || dialogueCommitting || storageCommitting || consumableCommitting || State != GameFlowState.Playing) return;
-            CloseSettings(); ClosePause();
+            CloseSettings(); ClosePause(); CloseMagic();
             UI.SetDailyReportVisible(false);
             ClearInventoryUpgradePanel();
             CloseConstructionForExit();
@@ -1057,7 +1069,7 @@ namespace MagicIsland.Managers
             Interactions.SetInputEnabled(enabled);
         }
 
-        private void ClearSystems() { CloseMap(); Map.Clear(); Audio.UnbindGameplay(); CloseSettings(); ClosePause(); Saves.ClearSleepCheckpoint(); sleepSaveFailed = false; CloseShipping(); Shipping.Clear(); shippingCommitting = false; ClearInventoryUpgradePanel(); UI.CloseDailyReport(); DailyReports.Clear(); reportCommitting = false; UI.CloseCoop(); UI.CloseAnimalShop(); animalGeneration++; animalOpening = false; coopOffice = false; UI.CloseHouseUpgrade(); houseUpgradeGeneration++; houseUpgradeOpening = false; UI.CloseSceneTransition(); Animals.Clear(); Furniture.Clear(); Housing.Clear(); loadedPlayerPosition = null; loadedPlayerArea = MagicIsland.Interaction.HousingState.Island; CloseConstructionForExit(); Orchard.Clear(); Placements.Clear(); Crafting.Clear(); NPCSchedules.Clear(); Fishing.Clear(); Dialogue.Clear(); Cooking.Clear(); Stories.Clear(); Relationships.Clear(); NPCs.Clear(); Food.Clear(); Storage.Clear(); ToolUpgrades.Clear(); Gathering.Clear(); Orders.Clear(); Tasks.Clear(); Tools.Clear(); Weather.Clear(); Calendar.Clear(); Stamina.Clear(); Time.Clear(); Shop.Clear(); Economy.Clear(); Fertilizer.Clear(); Farm.Clear(); Inventory.Clear(); Ocean.Clear(); Terrain.Clear(); Players.Clear(); Cameras.Clear(); Interactions.Clear(); }
+        private void ClearSystems() { CloseMagic(); Magic.Clear(); CloseMap(); Map.Clear(); Audio.UnbindGameplay(); CloseSettings(); ClosePause(); Saves.ClearSleepCheckpoint(); sleepSaveFailed = false; CloseShipping(); Shipping.Clear(); shippingCommitting = false; ClearInventoryUpgradePanel(); UI.CloseDailyReport(); DailyReports.Clear(); reportCommitting = false; UI.CloseCoop(); UI.CloseAnimalShop(); animalGeneration++; animalOpening = false; coopOffice = false; UI.CloseHouseUpgrade(); houseUpgradeGeneration++; houseUpgradeOpening = false; UI.CloseSceneTransition(); Animals.Clear(); Furniture.Clear(); Housing.Clear(); loadedPlayerPosition = null; loadedPlayerArea = MagicIsland.Interaction.HousingState.Island; CloseConstructionForExit(); Orchard.Clear(); Placements.Clear(); Crafting.Clear(); NPCSchedules.Clear(); Fishing.Clear(); Dialogue.Clear(); Cooking.Clear(); Stories.Clear(); Relationships.Clear(); NPCs.Clear(); Food.Clear(); Storage.Clear(); ToolUpgrades.Clear(); Gathering.Clear(); Orders.Clear(); Tasks.Clear(); Tools.Clear(); Weather.Clear(); Calendar.Clear(); Stamina.Clear(); Time.Clear(); Shop.Clear(); Economy.Clear(); Fertilizer.Clear(); Farm.Clear(); Inventory.Clear(); Ocean.Clear(); Terrain.Clear(); Players.Clear(); Cameras.Clear(); Interactions.Clear(); }
         private void SetMenuCameraEnabled(bool enabled)
         {
             // Additive scenes share lighting; the retained menu must not light the island.

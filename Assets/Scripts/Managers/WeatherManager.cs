@@ -18,6 +18,7 @@ namespace MagicIsland.Managers
         public Light Sun => sun;
         public WindSimulation Wind { get; private set; }
         public float WindFactor => Wind==null?1:(float)Wind.Strength/.65f;
+        public float RainAmount { get; private set; }
         private Vector4 previousWindDirection;
         private float previousWindTime,previousWindStrength;
         public CloudField Clouds { get; private set; }
@@ -62,7 +63,7 @@ namespace MagicIsland.Managers
             }
             Clouds.Bind(sun);
             float light = (float)DaylightCycle.Evaluate(lastMinute, config.DawnMinute, config.DaylightMinute, config.DuskMinute, config.NightMinute);
-            Clouds.Tick(0, light, State.Kind == WeatherKind.Rainy, IsOutside());
+            Clouds.Tick(0, light, State.Kind == WeatherKind.Rainy, IsOutside(), rainAmount:RainAmount);
         }
 
         public void Initialize(WeatherConfig config, FarmManager farm, Light sun, Camera view, Transform world,
@@ -75,6 +76,7 @@ namespace MagicIsland.Managers
             seasons = new SeasonalPresentation();
             ApplySeason();
             State = new WeatherState(seed, config.RainChance, farm.State.Day, kind);
+            RainAmount = kind == WeatherKind.Rainy ? 1 : 0;
             lightingWorld=world;
             nightInteriorLayer=GameManager.Instance?.Configuration?.Housing?.InteriorLayer??LayerMask.NameToLayer("HousingInterior");
             lastMinute=GameManager.Instance?.Time?.Clock?.Minute??480;
@@ -118,7 +120,7 @@ namespace MagicIsland.Managers
             ApplyRain();
         }
 
-        private void ApplySeason()=>seasons.Apply(calendar?.Config,calendar==null?MagicIsland.CalendarSystem.Season.Spring:calendar.Date.Season);
+        private void ApplySeason()=>seasons.Apply(calendar?.Config,calendar==null?MagicIsland.CalendarSystem.Season.Spring:calendar.Date.Season,calendar?.Date.Day??1);
 
         public void ApplyRain()
         {
@@ -130,36 +132,57 @@ namespace MagicIsland.Managers
             if (State == null || sun == null || view == null) return;
             lastMinute = minute;
             ApplyRain();
+            TickPresentation(UnityEngine.Time.deltaTime, paused);
             float light = (float)DaylightCycle.Evaluate(minute, config.DawnMinute, config.DaylightMinute, config.DuskMinute, config.NightMinute);
             bool raining = State.Kind == WeatherKind.Rainy;
             for(int i=nightLights.Count-1;i>=0;i--)
             {
                 var lighting=nightLights[i];
                 if(lighting==null){nightLights.RemoveAt(i);continue;}
-                if(lighting.isActiveAndEnabled)lighting.Present(light,raining,IsOutside(),nightInteriorLayer);
+                if(lighting.isActiveAndEnabled)lighting.Present(light,RainAmount,IsOutside(),nightInteriorLayer);
             }
-            float dim = raining ? config.RainLightMultiplier : 1;
+            float dim = Mathf.Lerp(1, config.RainLightMultiplier, RainAmount);
+            float warmth = 4 * light * (1-light) * config.TwilightStrength * (1-RainAmount);
             float solar = (float)DaylightCycle.SolarProgress(minute, config.DawnMinute, config.NightMinute);
             float altitude = Mathf.Sin(solar * Mathf.PI);
             sun.intensity = config.DayIntensity * light * Mathf.Lerp(.6f, 1, altitude) * dim;
-            sun.shadowStrength = raining ? .25f : .85f;
+            sun.shadowStrength = Mathf.Lerp(.85f, .25f, RainAmount);
             sun.color = Color.Lerp(config.TwilightSun, config.DaySun, Mathf.SmoothStep(0, 1, light));
             sun.transform.rotation = Quaternion.Euler(altitude * config.SunPeakElevation, Mathf.Lerp(config.SunriseAzimuth, config.SunsetAzimuth, solar), 0);
             Moon.cullingMask = sun.cullingMask;
             Moon.color = config.NightSun; Moon.intensity = config.NightIntensity * (1 - Mathf.SmoothStep(0, 1, Mathf.Clamp01(light / .45f))) * dim;
-            float fill = raining ? .88f : 1;
+            float fill = Mathf.Lerp(1, .88f, RainAmount);
             RenderSettings.ambientMode = AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor = Color.Lerp(config.NightAmbient, config.DayAmbient, light) * fill;
-            RenderSettings.ambientEquatorColor = Color.Lerp(config.NightEquator, config.DayEquator, light) * fill;
+            RenderSettings.ambientSkyColor = Color.Lerp(Color.Lerp(config.NightAmbient, config.DayAmbient, light), config.TwilightAmbient, warmth) * fill;
+            RenderSettings.ambientEquatorColor = Color.Lerp(Color.Lerp(config.NightEquator, config.DayEquator, light), config.TwilightAmbient, warmth * .5f) * fill;
             RenderSettings.ambientGroundColor = Color.Lerp(config.NightGround, config.DayGround, light) * fill;
             RenderSettings.reflectionIntensity = Mathf.Lerp(config.NightReflection, config.DayReflection, light) * fill;
-            view.backgroundColor = Color.Lerp(config.NightSky, raining ? config.RainSky : config.DaySky, light);
-            if (!raining) { if (!Rain.isStopped) Rain.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear); }
+            view.backgroundColor = Color.Lerp(Color.Lerp(config.NightSky, Color.Lerp(config.DaySky, config.RainSky, RainAmount), light), config.TwilightSky, warmth);
+            var emission = Rain.emission; emission.rateOverTime = config.RainParticlesPerSecond * RainAmount;
+            var player=GameManager.Instance?.Players?.Player;
+            if(IsOutside()&&player!=null&&!paused)
+            {
+                // Reuse the bounded weather field throughout the mainland, including high ground.
+                var focus=player.transform.position.z>60?player.transform.position:Vector3.zero;
+                Rain.transform.position=focus+Vector3.up*7.5f;
+                if(Clouds!=null)Clouds.transform.position=focus;
+            }
+            if (RainAmount <= 0) { if (!Rain.isStopped) Rain.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear); }
             else if (paused) { if (Rain.isPlaying) Rain.Pause(true); }
             else if (!Rain.isPlaying) Rain.Play(true);
             TickWind(UnityEngine.Time.deltaTime,paused);
             groundCover?.Present(calendar==null?MagicIsland.CalendarSystem.Season.Spring:calendar.Date.Season,IsOutside());
-            if (Clouds != null) Clouds.Tick(paused ? 0 : UnityEngine.Time.deltaTime, light, raining, IsOutside(),WindFactor,config.WindDirection);
+            if (Clouds != null) Clouds.Tick(paused ? 0 : UnityEngine.Time.deltaTime, light, raining, IsOutside(),WindFactor,config.WindDirection,RainAmount);
+        }
+
+        // Presentation only; weather rules and rain watering always use State.Kind immediately.
+        // Saved weather is applied directly at initialization, never blended from a previous session.
+        internal void TickPresentation(float seconds, bool paused)
+        {
+            if (State == null || paused || !IsOutside()) return;
+            float target = State.Kind == WeatherKind.Rainy ? 1 : 0;
+            RainAmount = config.WeatherTransitionSeconds == 0 ? target
+                : Mathf.MoveTowards(RainAmount, target, Mathf.Max(0, seconds) / config.WeatherTransitionSeconds);
         }
 
         internal void TickWind(float seconds,bool paused)
@@ -182,7 +205,7 @@ namespace MagicIsland.Managers
             if(lightingWorld==null||lighting==null||!lighting.transform.IsChildOf(lightingWorld)||!lighting.IsValid)return;
             if(!nightLights.Contains(lighting))nightLights.Add(lighting);
             float light=(float)DaylightCycle.Evaluate(lastMinute,config.DawnMinute,config.DaylightMinute,config.DuskMinute,config.NightMinute);
-            lighting.Present(light,State.Kind==WeatherKind.Rainy,IsOutside(),nightInteriorLayer);
+            lighting.Present(light,RainAmount,IsOutside(),nightInteriorLayer);
         }
 
         private void ClearClouds()
@@ -223,7 +246,7 @@ namespace MagicIsland.Managers
             if (view != null) view.backgroundColor = previousBackground;
             if (Rain != null) { Rain.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear); Destroy(Rain.gameObject); }
             if (Moon != null) { Moon.enabled = false; Destroy(Moon.gameObject); }
-            Moon = null; Rain = null; State = null; config = null; farm = null; calendar = null; sun = null; view = null; scene = default;
+            Moon = null; Rain = null; State = null; RainAmount = 0; config = null; farm = null; calendar = null; sun = null; view = null; scene = default;
         }
         private void OnDestroy() => Clear();
     }

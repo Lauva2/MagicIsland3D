@@ -53,7 +53,9 @@ namespace MagicIsland.EditorTools
             var node = g.Gathering.Nodes[index]; Move(g, node.transform.position + new Vector3(0, .1f, -1.15f)); Require(g.Tools.SelectTool(tool), "Select gathering tool");
             var target = g.Interactions.RefreshPointer(new Ray(node.transform.position + Vector3.up * 7, Vector3.down), false);
             Require(target.Kind == InteractionKind.Gathering && target.Index == index && target.InRange && g.Interactions.TryInteract(), "Real click dispatch to gathering resource");
-            Require(g.Tools.Presentation.ActiveEffectCount > 0 && node.Art.IsReacting, "Successful hit plays resource reaction and AA fragments"); SameSave(g);
+            typeof(ToolManager).GetMethod("TickAction", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .Invoke(g.Tools, new object[] { g.Configuration.Config.ToolActionDuration * .52f });
+            Require(g.Tools.Presentation.ActiveEffectCount > 0 && node.Art.IsReacting, "Successful contact plays resource reaction and AA fragments"); SameSave(g);
         }
         static void Capture(GameManager g, int index, string name, float size)
         {
@@ -109,19 +111,18 @@ namespace MagicIsland.EditorTools
                     Require(!g.TryGather(Tree, out _) && g.Stamina.State.Current == 100 && g.Gathering.State.HitsRemaining(Tree) == 3, "Distant hit free");
                     Move(g, tree.transform.position + new Vector3(0, .1f, -1.15f)); g.Tools.SelectTool(FarmTool.Pickaxe);
                     Require(!g.TryGather(Tree, out _) && !tree.Art.IsReacting && g.Tools.Presentation.ActiveEffectCount == 0, "Wrong tool has no reaction/fragments");
-                    colliderPose = Colliders(tree); Hit(g, Tree, FarmTool.Axe); Require(g.Gathering.State.HitsRemaining(Tree) == 2 && g.Stamina.State.Current == 96 && g.Inventory.GetCount("wood") == 0, "First tree hit commits only partial progress"); Phase(2);
-                }
-                else if (p == 2 && g.Tools.Busy && g.Tools.ActionProgress > .13f)
-                {
+                    colliderPose = Colliders(tree); Hit(g, Tree, FarmTool.Axe); Require(g.Gathering.State.HitsRemaining(Tree) == 2 && g.Stamina.State.Current == 96 && g.Inventory.GetCount("wood") == 0, "First tree hit commits only partial progress");
                     var art = g.Gathering.Nodes[Tree].Art; Require(art.IsReacting && Quaternion.Angle(art.WholeMotion.localRotation, Quaternion.identity) > .1f && Colliders(g.Gathering.Nodes[Tree]) == colliderPose, "Tree sways while every collider stays fixed");
                     Capture(g, Tree, "GatheringTreeHitPreview", 3.2f); g.ToggleInventory(); pausedRotation = art.WholeMotion.localRotation; pausedParticles = g.Tools.Presentation.EffectRoot.GetComponentsInChildren<Transform>().Select(t => t.position).ToArray(); pauseStart = EditorApplication.timeSinceStartup; Phase(3);
                 }
                 else if (p == 3 && EditorApplication.timeSinceStartup - pauseStart > .25)
                 { Require(g.UI.IsInventoryVisible && g.Gathering.Nodes[Tree].Art.WholeMotion.localRotation == pausedRotation && pausedParticles.SequenceEqual(g.Tools.Presentation.EffectRoot.GetComponentsInChildren<Transform>().Select(t => t.position)), "Inventory freezes sway and flying fragments"); g.CloseInventory(); Phase(4); }
                 else if (p == 4 && !g.Tools.Busy)
-                { Require(!g.Gathering.Nodes[Tree].Art.IsReacting && g.Gathering.Nodes[Tree].Art.WholeMotion.localRotation == Quaternion.identity, "Hit restores exact tree pose"); colliderPose = Colliders(g.Gathering.Nodes[Rock]); Hit(g, Rock, FarmTool.Pickaxe); Phase(5); }
-                else if (p == 5 && g.Tools.Busy && g.Tools.ActionProgress > .13f)
-                { Require(g.Gathering.Nodes[Rock].Art.IsReacting && Colliders(g.Gathering.Nodes[Rock]) == colliderPose && g.Gathering.State.HitsRemaining(Rock) == 1 && g.Inventory.GetCount("stone") == 0, "Boulder reaction keeps collision and partial progress"); Capture(g, Rock, "GatheringRockHitPreview", 2.5f); Phase(6); }
+                {
+                    Require(!g.Gathering.Nodes[Tree].Art.IsReacting && g.Gathering.Nodes[Tree].Art.WholeMotion.localRotation == Quaternion.identity, "Hit restores exact tree pose");
+                    colliderPose = Colliders(g.Gathering.Nodes[Rock]); Hit(g, Rock, FarmTool.Pickaxe);
+                    Require(g.Gathering.Nodes[Rock].Art.IsReacting && Colliders(g.Gathering.Nodes[Rock]) == colliderPose && g.Gathering.State.HitsRemaining(Rock) == 1 && g.Inventory.GetCount("stone") == 0, "Boulder reaction keeps collision and partial progress"); Capture(g, Rock, "GatheringRockHitPreview", 2.5f); Phase(6);
+                }
                 else if (p == 6 && !g.Tools.Busy) { Home(g); Phase(7); }
                 else if (p == 7 && g.State == GameFlowState.Playing && g.Housing.Inside) { Rest(g); Phase(8); }
                 else if (p == 8 && View<SleepView>() != null)

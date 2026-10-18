@@ -9,11 +9,13 @@ namespace MagicIsland.UI.Controllers
         private readonly MapView view;
         private readonly MapManager manager;
         private readonly UnityAction close;
+        private readonly UnityAction scale;
         private readonly UnityAction[] selections;
         public MapController(MapView view, MapManager manager, Action close)
         {
             if (view == null || !view.IsValid || !manager.Ready || manager.Model.Locations.Count > MapView.MaximumLocations) throw new InvalidOperationException("MapPanel needs wired MVC controls and initialized locations");
             this.view = view; this.manager = manager; this.close = () => close(); view.CloseButton.onClick.AddListener(this.close);
+            scale=()=>{manager.ToggleScale();Tick();};if(view.ScaleButton!=null)view.ScaleButton.onClick.AddListener(scale);
             selections = new UnityAction[MapView.MaximumLocations];
             for (int i = 0; i < selections.Length; i++) { int index = i; selections[i] = () => { manager.Select(index); Tick(); }; view.LocationButtons[i].onClick.AddListener(selections[i]); view.MarkerButtons[i].onClick.AddListener(selections[i]); }
             Tick();
@@ -22,6 +24,7 @@ namespace MagicIsland.UI.Controllers
         public void Dispose()
         {
             view.CloseButton.onClick.RemoveListener(close);
+            if(view.ScaleButton!=null)view.ScaleButton.onClick.RemoveListener(scale);
             for (int i = 0; i < selections.Length; i++) { view.LocationButtons[i].onClick.RemoveListener(selections[i]); view.MarkerButtons[i].onClick.RemoveListener(selections[i]); }
         }
     }

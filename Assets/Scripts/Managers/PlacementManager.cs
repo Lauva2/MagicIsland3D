@@ -108,9 +108,19 @@ namespace MagicIsland.Managers
         {
             if (!Ready) return;
             if (overUI) { if (HasCandidate) SetCandidate(GridX, GridZ); return; }
-            var plane = new Plane(world.up, world.position);
-            if (!plane.Raycast(ray, out float distance) || distance > 100) { HasCandidate = false; preview.SetActive(false); Result = PlacementResult.InvalidPosition; return; }
-            var point = world.InverseTransformPoint(ray.GetPoint(distance));
+            Vector3 surface;
+            if (!Indoor && GameManager.Instance?.Terrain?.Terrain != null)
+            {
+                if(!GameManager.Instance.Terrain.Terrain.Raycast(ray,out var hit,3000)){HasCandidate=false;preview.SetActive(false);Result=PlacementResult.InvalidPosition;return;}
+                surface=hit.point;
+            }
+            else
+            {
+                var plane=new Plane(world.up,world.position);
+                if(!plane.Raycast(ray,out float distance)||distance>100){HasCandidate=false;preview.SetActive(false);Result=PlacementResult.InvalidPosition;return;}
+                surface=ray.GetPoint(distance);
+            }
+            var point = world.InverseTransformPoint(surface);
             SetCandidate(Mathf.RoundToInt(point.x), Mathf.RoundToInt(point.z));
         }
         public void SetCandidate(int x, int z)
@@ -142,13 +152,14 @@ namespace MagicIsland.Managers
         protected virtual void Present(GameObject go) { }
         protected bool PhysicalClear(int x, int z, bool restoring)
         {
-            Physics.SyncTransforms(); var point = world.TransformPoint(new Vector3(x, .9f, z));
+            Physics.SyncTransforms();float ground=Indoor?0:(GameManager.Instance?.Terrain?.GroundHeight(x,z)??0); var point = world.TransformPoint(new Vector3(x, ground+.9f, z));
             foreach (var c in Physics.OverlapBox(point, new Vector3(.46f, .89f, .46f), world.rotation, ~0, QueryTriggerInteraction.Collide))
             {
                 if (preview != null && c.transform.IsChildOf(preview.transform)) continue;
+                if(!Indoor&&(GameManager.Instance?.Terrain?.Terrain?.IsGround(c)??false))continue;
                 if (c.isTrigger) { if (c.GetComponentInParent<FishingSpot>() != null || (Indoor && c.GetComponentInParent<HomePortal>() != null)) return false; continue; }
                 if (restoring && (c is CharacterController || c.GetComponentInParent<NPCActor>() != null || c.GetComponentInParent<PlacedDecoration>() != null)) continue;
-                if (c.bounds.max.y <= world.position.y + .05f) continue;
+                if (c.bounds.max.y <= world.position.y + ground + .05f) continue;
                 return false;
             }
             return true;

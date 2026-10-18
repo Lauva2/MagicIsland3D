@@ -25,6 +25,7 @@ namespace MagicIsland.EditorTools
                 config = ScriptableObject.CreateInstance<WeatherConfig>(); config.RainMaterial = material;
                 AssetDatabase.CreateAsset(config, path);
             }
+            else if (!System.IO.File.ReadAllText(path).Contains("WeatherTransitionSeconds:")) EditorUtility.SetDirty(config);
             string guid = AssetDatabase.AssetPathToGUID(path);
             var entry = settings.FindAssetEntry(guid) ?? settings.CreateOrMoveEntry(guid, group);
             if (entry.address != WeatherConfig.Address) entry.SetAddress(WeatherConfig.Address);

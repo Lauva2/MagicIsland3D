@@ -9,9 +9,10 @@ namespace MagicIsland.TerrainSystem
     public sealed class CoastalPalmScatter
     {
         public int Seed = 20261017;
-        public int MinimumCount = 18, MaximumCount = 23;
+        public int MinimumCount = 16, MaximumCount = 20;
         public float MinimumInset = 1.9f, MaximumInset = 4.8f;
         public float MinimumSpacing = 1.9f;
+        public float CrownSpacing = 1.55f;
         public float MinimumScale = .80f, MaximumScale = 1.22f;
 
         public PalmSite[] CreatePlan()
@@ -19,6 +20,7 @@ namespace MagicIsland.TerrainSystem
             if(MinimumCount<8||MaximumCount<MinimumCount||MaximumCount>64
                 ||!Finite(MinimumInset)||!Finite(MaximumInset)||MinimumInset<1.8f||MaximumInset<MinimumInset||MaximumInset>6
                 ||!Finite(MinimumSpacing)||MinimumSpacing<1.5f||MinimumSpacing>5
+                ||!Finite(CrownSpacing)||CrownSpacing<1||CrownSpacing>2
                 ||!Finite(MinimumScale)||!Finite(MaximumScale)||MinimumScale<.6f||MaximumScale<MinimumScale||MaximumScale>1.5f)
                 throw new ArgumentException("Invalid coastal palm scatter settings; existing scenery preserved.");
             var random=new Random(Seed);
@@ -39,7 +41,7 @@ namespace MagicIsland.TerrainSystem
                         double r=IslandLayout.CoastRadius(angles[j])-insets[j];
                         if(Math.Pow(x-Math.Cos(angles[j])*r,2)+Math.Pow(z-Math.Sin(angles[j])*r,2)<7.5*7.5){found=false;break;}
                     }
-                    if(found){angles[i]=angle;insets[i]=inset;limits[i]=random.Next(2,5);}
+                    if(found){angles[i]=angle;insets[i]=inset;limits[i]=random.Next(2,4);}
                 }
                 if(!found)throw new InvalidOperationException("Cannot reserve separated palm groves; existing scenery preserved.");
             }
@@ -47,7 +49,7 @@ namespace MagicIsland.TerrainSystem
             for(int attempt=0;attempt<16000&&sites.Count<count;attempt++)
             {
                 double angle,inset;int group=-1;
-                if(random.NextDouble()<.78)
+                if(random.NextDouble()<.65)
                 {
                     int cluster=random.Next(clusters);
                     if(used[cluster]>=limits[cluster])continue;
@@ -63,7 +65,10 @@ namespace MagicIsland.TerrainSystem
                 if(!ClearSite(x,z,clearance))continue;
                 bool clear=true;
                 foreach(var site in sites)
-                    if((site.X-x)*(site.X-x)+(site.Z-z)*(site.Z-z)<MinimumSpacing*MinimumSpacing){clear=false;break;}
+                {
+                    double spacing=Math.Max(MinimumSpacing,CrownSpacing*(site.Scale+scale));
+                    if((site.X-x)*(site.X-x)+(site.Z-z)*(site.Z-z)<spacing*spacing){clear=false;break;}
+                }
                 if(!clear)continue;
                 sites.Add(new PalmSite(x,z,random.NextDouble()*360,scale));
                 if(group>=0)used[group]++;

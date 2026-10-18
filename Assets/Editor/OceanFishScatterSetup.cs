@@ -39,20 +39,27 @@ namespace MagicIsland.EditorTools
             try
             {
                 var surface=root.GetComponent<OceanSurface>();var original=surface.Schools.ToArray();
-                var positions=original.Select(s=>s.Center).ToArray();
-                for(int pass=0;pass<2;pass++)
+                OceanSchool[] repeated=null;Vector3[] positions=null;
+                // Authored homes survive reef-density edits, while a fresh bake uses the
+                // current obstacle set. Compare two fresh plans with identical inputs.
+                for(int pass=0;pass<3;pass++)
                 {
-                    if(pass==1)surface.FishSeed++;
+                    if(pass==2)surface.FishSeed++;
                     var stage=new GameObject("Fish scatter verification "+pass);stage.transform.SetParent(root.transform,false);
                     BuildFishSchools(root,surface,new OceanGeography(surface.GeographySeed),AssetDatabase.LoadAssetAtPath<Material>(MaterialPath),stage.transform,original,false);
                     temporary.AddRange(surface.Schools);
                     if(pass==0)
                     {
                         if(surface.Schools.Length!=original.Length)throw new Exception("Repeat seed changed school count");
-                        for(int i=0;i<original.Length;i++)
-                            if(surface.Schools[i].Members!=original[i].Members||Vector3.Distance(surface.Schools[i].Center,positions[i])>.0001f)throw new Exception("Repeat seed changed fish count/position");
+                        repeated=surface.Schools.ToArray();positions=repeated.Select(s=>s.Center).ToArray();
                     }
-                    else if(surface.Schools.Length==original.Length&&surface.Schools.Select((s,i)=>Vector3.Distance(s.Center,positions[i])<.0001f).All(same=>same))
+                    else if(pass==1)
+                    {
+                        if(surface.Schools.Length!=repeated.Length)throw new Exception("Repeat seed changed school count");
+                        for(int i=0;i<repeated.Length;i++)
+                            if(surface.Schools[i].Members!=repeated[i].Members||Vector3.Distance(surface.Schools[i].Center,positions[i])>.0001f||!surface.Schools[i].Swimmers.SequenceEqual(repeated[i].Swimmers))throw new Exception("Repeat seed changed fish count/position/spawns");
+                    }
+                    else if(surface.Schools.Length==repeated.Length&&surface.Schools.Select((s,i)=>Vector3.Distance(s.Center,positions[i])<.0001f).All(same=>same))
                         throw new Exception("Different fish seed did not change layout");
                     foreach(var school in surface.Schools)
                         for(int i=0;i<school.Members;i++)if(!school.Steering.Navigation.CanMove(school.Steering.States[i].Position,school.Steering.States[i].Position,school.Steering.BodyBounds(i)))throw new Exception("Random fish has unsafe full body spawn");

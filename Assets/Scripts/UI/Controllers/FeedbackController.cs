@@ -20,9 +20,11 @@ namespace MagicIsland.UI.Controllers
         }
         public void Tick()
         {
-            if (view == null) return;
+            if (view == null || remaining <= 0) return;
             remaining = Mathf.Max(0, remaining - Time.unscaledDeltaTime);
-            Model.Alpha = Mathf.Clamp01(remaining / 0.35f); view.Render(Model);
+            float alpha = Mathf.Clamp01(remaining / 0.35f);
+            if (Model.Alpha == alpha) return;
+            Model.Alpha = alpha; view.Render(Model);
         }
         public void Dismiss()
         {

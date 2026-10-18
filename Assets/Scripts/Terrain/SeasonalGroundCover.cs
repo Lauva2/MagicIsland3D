@@ -42,7 +42,9 @@ namespace MagicIsland.TerrainSystem
             for(int i=0;i<Patches.Length;i++)
             {
                 var p=Patches[i];var center=p.transform.position;
-                available[i]=ClearPaths(p,paths)&&ClearPhysics(p,terrain);
+                var local=terrain.transform.InverseTransformPoint(center);
+                available[i]=(terrain.World!=null?p.Biome==IslandBiome.Grassland&&terrain.Biomes.At(local.x,local.z)!=IslandBiome.Beach:terrain.BiomeArtVersion==0||terrain.Biomes.Weight(p.Biome,local.x,local.z)>.5f)
+                    &&ClearPaths(p,paths)&&ClearPhysics(p,terrain);
                 int x=Mathf.RoundToInt(terrain.transform.InverseTransformPoint(center).x),z=Mathf.RoundToInt(terrain.transform.InverseTransformPoint(center).z);
                 if(animals!=null&&animals.ReservesTile(x,z))available[i]=false;
                 trees[i]=-1;

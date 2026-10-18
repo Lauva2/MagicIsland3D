@@ -45,11 +45,14 @@ namespace MagicIsland.Managers
             try
             {
                 var game=GameManager.Instance;
+                Surface.WorldWaters=game?.Terrain?.Terrain?.World?.Waters??System.Array.Empty<Renderer>();
+                Surface.WorldEcology=game?.Terrain?.Terrain?.World?.GetComponentInChildren<WorldWaterEcology>(true);
                 coastalPhysics=new CoastalWildlifePhysics(world,Surface.transform,game?.Terrain?.Terrain?.Ground,game?.Players?.Player?.transform,game?.Terrain?.Terrain?.Boundary);
                 coastalNavigation=new CoastalWildlifeNavigation(Surface.Birds.Length){SolidClear=coastalPhysics.ClearVolume};
                 Surface.BindCoastalNavigation(coastalNavigation);
                 float light=game?.Time?.Clock==null?1:(float)DaylightCycle.Evaluate(game.Time.Clock.Minute,weather.DawnMinute,weather.DaylightMinute,weather.DuskMinute,weather.NightMinute);
-                Surface.Tick(0,light,game?.Weather?.State?.Kind==WeatherKind.Rainy,twilight:game?.Time?.Clock==null?0:Evening(game.Time.Clock.Minute));
+                Surface.WorldEcology?.Bind(Surface.FishAnimation,light,game?.Weather?.State?.Kind==WeatherKind.Rainy,game?.Time?.Clock==null?0:Evening(game.Time.Clock.Minute));
+                Surface.Tick(0,light,game?.Weather?.State?.Kind==WeatherKind.Rainy,game?.Weather?.Sun,twilight:game?.Time?.Clock==null?0:Evening(game.Time.Clock.Minute));
                 Surface.BindPresentationCamera(view);
                 Camera.onPreCull+=PreparePresentation;
             }
@@ -66,12 +69,13 @@ namespace MagicIsland.Managers
             if (Surface == null || game == null || game.State != GameFlowState.Playing) return;
             bool outside = !game.Housing.Inside;
             if (Surface.gameObject.activeSelf != outside) Surface.gameObject.SetActive(outside);
+            if(!outside)Surface.WorldEcology?.Tick(Surface.AnimationTime,0,Surface.Daylight,false,0,null,null,false,false);
             if (!outside) return;
             float light = (float)DaylightCycle.Evaluate(game.Time.Clock.Minute, weather.DawnMinute, weather.DaylightMinute, weather.DuskMinute, weather.NightMinute);
             bool animate=game.Players.Player.enabled || (game.UI.HasFishing && !game.UI.HasPause && !game.UI.HasSettings);
             Vector3? fishingPoint=game.UI.HasFishing&&game.Fishing.Spot!=null?(Vector3?)game.Fishing.Spot.Bobber.position:null;
             float twilight=Evening(game.Time.Clock.Minute);
-            Surface.Tick(animate ? Time.deltaTime : 0, light, game.Weather.State.Kind == WeatherKind.Rainy, game.Weather.Sun,game.Players.Player.transform.position,fishingPoint,twilight);
+            Surface.Tick(animate ? Time.deltaTime : 0, light, game.Weather.State.Kind == WeatherKind.Rainy, game.Weather.Sun,game.Players.Player.transform.position,fishingPoint,twilight,game.Weather.RainAmount);
         }
         float Evening(double minute)=>Mathf.Sin(Mathf.Clamp01(((float)minute-(weather.DuskMinute-60))/(weather.NightMinute-weather.DuskMinute+60))*Mathf.PI);
         void PreparePresentation(Camera camera)
@@ -88,6 +92,7 @@ namespace MagicIsland.Managers
         {
             generation++;
             Camera.onPreCull-=PreparePresentation;
+            if(Surface!=null){Surface.WorldEcology?.Clear();Surface.WorldEcology=null;}
             if(Surface!=null)Surface.BindCoastalNavigation(null);
             coastalNavigation?.Clear();coastalNavigation=null;coastalPhysics?.Clear();coastalPhysics=null;
             if(Surface!=null)Surface.BindPresentationCamera(null);

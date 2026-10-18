@@ -12,6 +12,7 @@ namespace MagicIsland.Farming
         private Transform[] crops;
         private string[] displayedAddresses;
         private Transform highlight;
+        private Renderer[] outlineEdges;
         private readonly List<Material> materials = new List<Material>();
         private Material valid, invalid;
         private CropCatalog catalog;
@@ -46,6 +47,7 @@ namespace MagicIsland.Farming
                 edge.transform.SetParent(highlight, false);
                 edge.transform.localPosition = position;
             }
+            outlineEdges = highlight.GetComponentsInChildren<Renderer>();
             Refresh();
             SetHover(-1, false);
         }
@@ -57,10 +59,12 @@ namespace MagicIsland.Farming
                 (index / State.Size - half) * CellSize);
         }
 
-        public int Pick(Ray ray)
+        public int Pick(Ray ray) => Pick(ray, out _);
+        // Distance uses the same grid plane as picking, so objects behind a plot cannot steal its click.
+        public int Pick(Ray ray, out float distance)
         {
             Plane plane = new Plane(Vector3.up, transform.position + Vector3.up * 0.08f);
-            if (!plane.Raycast(ray, out float distance)) return -1;
+            if (!plane.Raycast(ray, out distance)) return -1;
             Vector3 local = ray.GetPoint(distance) - transform.position;
             float halfWidth = State.Size * CellSize * 0.5f;
             int x = Mathf.FloorToInt((local.x + halfWidth) / CellSize);
@@ -70,10 +74,11 @@ namespace MagicIsland.Farming
 
         public void SetHover(int index, bool inRange)
         {
-            highlight.gameObject.SetActive(index >= 0);
+            if (highlight.gameObject.activeSelf != (index >= 0)) highlight.gameObject.SetActive(index >= 0);
             if (index < 0) return;
             highlight.position = CellCenter(index) + Vector3.up * 0.08f;
-            foreach (Renderer edge in highlight.GetComponentsInChildren<Renderer>()) edge.sharedMaterial = inRange ? valid : invalid;
+            Material material = inRange ? valid : invalid;
+            foreach (Renderer edge in outlineEdges) if (edge.sharedMaterial != material) edge.sharedMaterial = material;
         }
 
         public void Refresh()

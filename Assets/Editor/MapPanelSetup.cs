@@ -15,6 +15,7 @@ namespace MagicIsland.EditorTools
         public static void CreateAndUpgrade()
         {
             if (!File.Exists(Path)) Create();
+            StarterIslandWorldSetup.EnsureMap();
             var mapAsset = AssetDatabase.LoadAssetAtPath<GameObject>(Path);
             if (mapAsset.GetComponent<MapView>().MapGraphic.GetComponent<CanvasRenderer>() == null)
             {

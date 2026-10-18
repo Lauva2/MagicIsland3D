@@ -5,7 +5,7 @@ namespace MagicIsland.EditorTools
 {
     public static class GameUiPreview
     {
-        public static void CaptureInventory(Camera camera)
+        public static void CaptureInventory(Camera camera, int width = 1280, int height = 720, System.Action validateLayout = null)
         {
             var canvases = Object.FindObjectsOfType<Canvas>();
             var modes = new RenderMode[canvases.Length];
@@ -13,7 +13,7 @@ namespace MagicIsland.EditorTools
             var distances = new float[canvases.Length];
             RenderTexture oldTarget = camera.targetTexture;
             RenderTexture oldActive = RenderTexture.active;
-            RenderTexture target = new RenderTexture(1280, 720, 24);
+            RenderTexture target = new RenderTexture(width, height, 24);
             Texture2D output = null;
             try
             {
@@ -29,10 +29,11 @@ namespace MagicIsland.EditorTools
                     canvases[i].planeDistance = camera.nearClipPlane + 0.01f;
                 }
                 Canvas.ForceUpdateCanvases();
+                validateLayout?.Invoke();
                 camera.Render();
                 RenderTexture.active = target;
-                output = new Texture2D(1280, 720, TextureFormat.RGB24, false);
-                output.ReadPixels(new Rect(0, 0, 1280, 720), 0, 0);
+                output = new Texture2D(width, height, TextureFormat.RGB24, false);
+                output.ReadPixels(new Rect(0, 0, width, height), 0, 0);
                 output.Apply();
                 Directory.CreateDirectory("Logs");
                 File.WriteAllBytes("Logs/InventoryPreview.png", output.EncodeToPNG());

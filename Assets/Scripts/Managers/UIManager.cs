@@ -27,6 +27,10 @@ namespace MagicIsland.Managers
             }
         }
         public bool HasPause => instances.ContainsKey("PausePanel");
+        public bool HasMagic => instances.ContainsKey("MagicPanel");
+        public IEnumerator ShowMagic(MagicManager magic, Action study, Action close)
+        { yield return Load("MagicPanel", root => new MagicController(root.GetComponent<MagicView>(), magic, study, close)); }
+        public void CloseMagic() => Close("MagicPanel");
         public bool HasMap => instances.ContainsKey("MapPanel");
         public IEnumerator ShowMap(MapManager map, Action close)
         { yield return Load("MapPanel", root => new MapController(root.GetComponent<MapView>(), map, close)); }
@@ -120,13 +124,13 @@ namespace MagicIsland.Managers
             SetMainMenuVisible(true);
         }
 
-        public IEnumerator ShowFarmHud(FarmManager farm, InteractionManager interaction, EconomyManager economy, TimeManager time, StaminaManager stamina, WeatherManager weather, Action nextDay, Action returnMenu, Action toggleInventory, Action toggleMap = null)
+        public IEnumerator ShowFarmHud(FarmManager farm, InteractionManager interaction, EconomyManager economy, TimeManager time, StaminaManager stamina, WeatherManager weather, Action nextDay, Action returnMenu, Action toggleInventory, Action toggleMap = null, Action toggleMagic = null)
         {
             yield return Load(RuntimeUi.HudAddress, root =>
             {
                 PrototypeHud view = root.GetComponent<PrototypeHud>();
                 if (view == null) throw new InvalidOperationException("FarmHudPanel has no PrototypeHud view");
-                return new FarmHudController(view, farm, interaction, economy, time, stamina, weather, nextDay, returnMenu, toggleInventory, toggleMap);
+                return new FarmHudController(view, farm, interaction, economy, time, stamina, weather, nextDay, returnMenu, toggleInventory, toggleMap, toggleMagic);
             });
         }
 

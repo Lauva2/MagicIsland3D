@@ -1,6 +1,13 @@
 Shader "MagicIsland/Ocean Ecology"
 {
-    Properties { _Color ("Tint", Color)=(1,1,1,1) _OceanTime ("Ocean time", Float)=0 _FishScatter ("Fish scatter", Float)=0 }
+    Properties
+    {
+        _Color ("Tint", Color)=(1,1,1,1)
+        _OceanTime ("Ocean time", Float)=0
+        _FishScatter ("Fish scatter", Float)=0
+        _VertexSaturation ("顶点色饱和度", Range(0,3))=1
+        _VertexBrightness ("顶点色亮度", Range(0.5,1.5))=1
+    }
     SubShader
     {
         Tags { "RenderType"="Opaque" }
@@ -11,7 +18,7 @@ Shader "MagicIsland/Ocean Ecology"
         #include "UnityCG.cginc"
         #include "OceanFishMotion.cginc"
         float4 _Color;
-        float _OceanTime,_FishScatter,_FishEnabled;
+        float _OceanTime,_FishScatter,_FishEnabled,_VertexSaturation,_VertexBrightness;
         float4 _FishGuide;
         float4 _CrabMotion;
         float4 _CrabPose;
@@ -66,6 +73,11 @@ Shader "MagicIsland/Ocean Ecology"
         void surf(Input IN,inout SurfaceOutputStandard o)
         {
             float3 color=IN.vertexColor.rgb;
+            if(_VertexSaturation!=1 || _VertexBrightness!=1)
+            {
+                float grey=dot(color,float3(.2126,.7152,.0722));
+                color=saturate(lerp(grey.xxx,color,_VertexSaturation)*_VertexBrightness);
+            }
             #ifndef UNITY_COLORSPACE_GAMMA
             color=GammaToLinearSpace(color);
             #endif

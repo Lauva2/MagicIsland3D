@@ -225,11 +225,16 @@ namespace MagicIsland.EditorTools
                     g.Weather.State.NextDay(g.Weather.State.Day+1,1);g.Time.Clock.Restore(600);Phase(22);
                 }
                 else if(p==22)Phase(23);
-                else if(p==23)
+                // Weather visuals blend over the configured transition instead of switching
+                // immediately. Wait for the shared rain presentation to reach its target.
+                else if(p==23&&g.Weather.RainAmount==1&&g.Ocean.Surface.Rain==1)
                 {
                     Require(g.Ocean.Surface.Rain==1&&g.Ocean.Surface.Daylight==1&&g.Weather.Rain.isPlaying,"Actual rainy weather drives water and rain together");
                     Capture(g,"OceanRainPreview");g.Weather.State.NextDay(g.Weather.State.Day+1,0);
                     g.Time.Clock.Restore(750);g.Weather.Tick(750,false);
+                    // New games now start on the beach, which can itself disturb wildlife.
+                    // Use the original inland village center as the quiet retreat fixture.
+                    g.Players.RestorePosition(new Vector3(0,.15f,0));
                     SessionState.SetVector3(Key+".PlayerBeforeReaction",g.Players.Player.transform.position);
                     var bird=g.Ocean.Surface.Birds.First(b=>b.Activity==CoastalBirdActivity.Perching);
                     g.Players.RestorePosition(g.Ocean.Surface.transform.TransformPoint(bird.Center)+new Vector3(.3f,.15f,0));

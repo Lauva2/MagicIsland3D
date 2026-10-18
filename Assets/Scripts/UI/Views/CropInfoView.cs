@@ -10,8 +10,11 @@ namespace MagicIsland.UI.Views
         public TMP_Text NameText, DetailsText, HintText;
         public void Render(CropInfoModel model)
         {
-            Group.alpha = model.Visible ? 1 : 0;
-            NameText.text = model.Name; DetailsText.text = model.Details; HintText.text = model.Hint;
+            float alpha = model.Visible ? 1 : 0;
+            if (Group.alpha != alpha) Group.alpha = alpha;
+            if (NameText.text != model.Name) NameText.text = model.Name;
+            if (DetailsText.text != model.Details) DetailsText.text = model.Details;
+            if (HintText.text != model.Hint) HintText.text = model.Hint;
         }
     }
 }

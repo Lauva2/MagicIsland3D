@@ -24,8 +24,8 @@ namespace MagicIsland.EditorTools
             }
             foreach(var group in layout.groups)
             {
-                var mesh=AssetDatabase.LoadAssetAtPath<Mesh>(group.path);int expected=group.members.Sum(m=>m.source<8?data.parts[m.source].triangles.Length/3:layout.sources[m.source].triangles);
-                Require(mesh.triangles.Length/3==expected,"All original reef members retained in one combined renderer.");total+=expected;
+                var mesh=AssetDatabase.LoadAssetAtPath<Mesh>(group.path);int expected=group.members.Where(m=>!m.hidden).Sum(m=>m.source<8?data.parts[m.source].triangles.Length/3:layout.sources[m.source].triangles);
+                Require(mesh.triangles.Length/3==expected,"Visible authored reef members share one combined renderer.");total+=expected;
                 var bounds=mesh.bounds;bounds.Expand(.00001f);Require(mesh.vertices.All(bounds.Contains),"Authored reef geometry stays in culling bounds.");
             }
             Require(total<layout.groups.Sum(g=>g.members.Sum(m=>layout.sources[m.source].triangles))*1.25,"Whole-reef triangle budget stays within 25 percent of the original.");

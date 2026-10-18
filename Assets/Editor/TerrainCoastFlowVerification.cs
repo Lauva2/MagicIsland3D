@@ -62,6 +62,7 @@ namespace MagicIsland.EditorTools
             var world=Object.FindObjectOfType<MagicIsland.Prototype.FarmPrototype>();Require(world.transform.Find("Island ground")==null&&world.transform.Find("East boundary")==null,"Legacy square ground/walls replaced");
             VerifyCoastArt(g);
             CoastalPalmVerification.VerifyRuntime(g);
+            CoastalLandscapeVerification.VerifyRuntime(g);
             Debug.Log("Coast setup: legacy landing");
             foreach(var p in new[]{new Vector3(11.3f,8,11.3f),new Vector3(-11.3f,3,-11.3f),new Vector3(0,2,-4.6f)})
             {Require(g.Housing.ApplyArea(HousingState.Island,p),"Legacy island position resolves safely");Require(Mathf.Abs(g.Players.Player.transform.position.y-.05f)<.025f,"Restored foot is on terrain instead of air");}

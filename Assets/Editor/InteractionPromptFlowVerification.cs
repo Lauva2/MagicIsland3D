@@ -53,6 +53,8 @@ namespace MagicIsland.EditorTools
         { g.UI.RefreshViews(); GameUiPreview.CaptureInventory(g.Players.Player.ViewCamera); File.Copy("Logs/InventoryPreview.png", "Logs/" + name + ".png", true); }
         static void OutdoorTargets(GameManager g)
         {
+            InteractionExperienceVerification.Verify(g);
+            GameplayLayoutVerification.Verify(g);
             var panel = Prompt;
             Require(panel != null && panel.Layer == UILayer.Common && panel.transform.parent == g.UI.GetLayerRoot(UILayer.Common), "Prompt uses AA MVC and Common layer");
             Require(!panel.Group.interactable && !panel.Group.blocksRaycasts && panel.GetComponentsInChildren<Graphic>(true).All(x => !x.raycastTarget), "Prompt cannot intercept mouse");
@@ -112,7 +114,16 @@ namespace MagicIsland.EditorTools
                 if (EditorApplication.timeSinceStartup - SessionState.GetFloat(Key + ".Start", 0) > 240) throw new Exception("Interaction timeout " + p);
                 if (!EditorApplication.isPlaying) return; var g = GameManager.Instance; if (g == null) return;
                 Require(g.State != GameFlowState.Failed, "Game initialization");
-                if (p == 0 && g.State == GameFlowState.MainMenu) { g.EnterGame(); Phase(1); }
+                if (p == 0 && g.State == GameFlowState.MainMenu)
+                {
+                    string dir = Path.GetFullPath("Logs/InteractionSaves/" + Guid.NewGuid().ToString("N")); Directory.CreateDirectory(dir);
+                    g.Saves.Initialize(g.Configuration.Config, g.Configuration.Items, g.Configuration.Crops, dir, g.Configuration.Tasks, g.Configuration.Orders,
+                        g.Configuration.Seasons, g.Configuration.Gathering, g.Configuration.ToolUpgrades, g.Configuration.Storage, g.Configuration.NPCs,
+                        g.Configuration.Relationships, g.Configuration.Stories, g.Configuration.NPCSchedules, g.Configuration.Fishing, g.Configuration.Crafting, g.Configuration.Animals, g.Configuration.Orchards);
+                    g.Settings.Initialize(Path.Combine(dir, "Settings"));
+                    g.Configuration.Weather.RainChance = 0; g.Configuration.Seasons.SpringRainChance = 0;
+                    g.EnterGame(); Phase(1);
+                }
                 else if (p == 1 && g.State == GameFlowState.Playing) { OutdoorTargets(g); Phase(2); }
                 else if (p == 2 && !g.Tools.Busy)
                 {

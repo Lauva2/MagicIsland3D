@@ -72,7 +72,7 @@ namespace MagicIsland.EditorTools
             }
         }
 
-        private static void EnsureChineseFont(TMP_FontAsset font)
+        public static void EnsureChineseFont(TMP_FontAsset font)
         {
             string characters = "";
             foreach (string path in Directory.GetFiles("Assets", "*.cs", SearchOption.AllDirectories)

@@ -83,37 +83,7 @@ namespace MagicIsland.EditorTools
 
         private static void CreateCookie()
         {
-            const int size = 256;
-            var pixels = new Color[size * size];
-            for (int i = 0; i < pixels.Length; i++) pixels[i] = Color.white;
-            var positions = new Vector2[CloudCount]; var radii = new float[CloudCount]; var random = new System.Random(Seed);
-            for (int i = 0; i < CloudCount; i++) { positions[i] = Position(i, random); radii[i] = Radius(random); }
-            for (int y = 0; y < size; y++) for (int x = 0; x < size; x++)
-            {
-                Vector2 p = new Vector2((x + .5f) / size * 128 - 64, (y + .5f) / size * 128 - 64);
-                float coverage = 0;
-                for (int c = 0; c < CloudCount; c++)
-                {
-                    float dx = Mathf.Abs(p.x - positions[c].x); dx = Mathf.Min(dx, 128 - dx);
-                    float dy = Mathf.Abs(p.y - positions[c].y); dy = Mathf.Min(dy, 128 - dy);
-                    float q = (dx * dx + dy * dy / .60f) / (radii[c] * radii[c]);
-                    coverage = Mathf.Max(coverage, 1 - Mathf.SmoothStep(0, 1, Mathf.Clamp01((q - .04f) / 1.11f)));
-                }
-                // The 22% maximum affects direct sunlight alone; gaps transmit full sun.
-                float transmission = 1 - coverage * .22f;
-                pixels[y * size + x] = new Color(1, 1, 1, transmission);
-            }
-            var texture = new Texture2D(size, size, TextureFormat.RGBA32, true, true);
-            try { texture.SetPixels(pixels); texture.Apply(); File.WriteAllBytes(CookiePath, texture.EncodeToPNG()); }
-            finally { Object.DestroyImmediate(texture); }
-            AssetDatabase.ImportAsset(CookiePath, ImportAssetOptions.ForceSynchronousImport);
-            var importer = (TextureImporter)AssetImporter.GetAtPath(CookiePath);
-            importer.textureType = TextureImporterType.Default; importer.sRGBTexture = false;
-            importer.alphaSource = TextureImporterAlphaSource.FromInput; importer.alphaIsTransparency = false;
-            importer.wrapMode = TextureWrapMode.Repeat; importer.filterMode = FilterMode.Trilinear;
-            importer.mipmapEnabled = true; importer.isReadable = true;
-            importer.textureCompression = TextureImporterCompression.Uncompressed;
-            importer.SaveAndReimport();
+            CloudShadowSetup.CreateMissingCookie();
         }
 
         private static Mesh BuildMesh()

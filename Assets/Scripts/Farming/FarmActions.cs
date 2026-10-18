@@ -18,6 +18,8 @@ namespace MagicIsland.Farming
         private readonly int hoeCost, seedCost, waterCost, harvestCost;
         private bool acting;
         private Action harvestRecorder;
+        private Action<string> magicHarvestRecorder;
+        internal void SetMagicHarvestRecorder(Action<string> recorder) => magicHarvestRecorder = recorder;
         internal void SetHarvestRecorder(Action recorder) => harvestRecorder = recorder;
         private readonly Func<CropDefinition, bool> canPlant;
         public FarmActions(FarmState farm, InventoryState inventory, string seedId, string cropId,
@@ -86,11 +88,12 @@ namespace MagicIsland.Farming
             {
                 bool harvest = cell.Mature;
                 string harvestedId = harvest ? HarvestId(cell) : null;
+                string harvestedCrop = harvest ? cell.CropId : null;
                 string usedSeed = SeedId;
                 if (!farm.TryAct(index, tool, out message, SelectedCrop.Id)) return false;
                 // All preflight checks passed. Commit stamina before inventory observers run.
                 stamina?.TrySpend(cost, false);
-                if (harvest) { harvestRecorder?.Invoke(); inventory.TryAdd(harvestedId, 1); }
+                if (harvest) { harvestRecorder?.Invoke(); magicHarvestRecorder?.Invoke(harvestedCrop); inventory.TryAdd(harvestedId, 1); }
                 else if (tool == FarmTool.Seeds) inventory.TryRemove(usedSeed, 1);
                 if (cost > 0) stamina?.NotifyChanged();
                 return true;

@@ -24,6 +24,7 @@ namespace MagicIsland.Interaction
         public Button ReturnMenuButton;
         public Button InventoryButton;
         public Button MapButton;
+        public Button MagicButton;
         public Button[] ToolButtons;
         public Color SelectedToolColor = new Color(0.28f, 0.43f, 0.31f);
         public Color IdleToolColor = new Color(0.92f, 0.89f, 0.8f);

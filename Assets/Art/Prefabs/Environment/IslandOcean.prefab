@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -129,13 +129,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 1
-  Rocks: 5
-  Grasses: 9
-  Corals: 15
+  Rocks: 1
+  Grasses: 1
+  Corals: 2
   Sponges: 0
-  Stars: 2
-  Shells: 1
-  SmallCorals: 15
+  Stars: 0
+  Shells: 0
+  SmallCorals: 2
   LargeCorals: 0
 --- !u!1 &44000872907711066
 GameObject:
@@ -237,14 +237,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 3
-  Grasses: 6
-  Corals: 21
-  Sponges: 2
-  Stars: 1
-  Shells: 1
+  Rocks: 0
+  Grasses: 0
+  Corals: 1
+  Sponges: 0
+  Stars: 0
+  Shells: 0
   SmallCorals: 0
-  LargeCorals: 21
+  LargeCorals: 1
 --- !u!1 &339321718645321766
 GameObject:
   m_ObjectHideFlags: 0
@@ -374,14 +374,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 2
-  Grasses: 3
-  Corals: 25
-  Sponges: 1
-  Stars: 2
-  Shells: 1
+  Rocks: 0
+  Grasses: 0
+  Corals: 1
+  Sponges: 0
+  Stars: 0
+  Shells: 0
   SmallCorals: 0
-  LargeCorals: 25
+  LargeCorals: 1
 --- !u!1 &408475714397741419
 GameObject:
   m_ObjectHideFlags: 0
@@ -443,7 +443,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -746,7 +746,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -814,13 +814,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 2
-  Rocks: 2
-  Grasses: 10
-  Corals: 14
+  Rocks: 1
+  Grasses: 0
+  Corals: 1
   Sponges: 0
-  Stars: 2
-  Shells: 4
-  SmallCorals: 14
+  Stars: 0
+  Shells: 1
+  SmallCorals: 1
   LargeCorals: 0
 --- !u!1 &631747169119414347
 GameObject:
@@ -883,7 +883,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -951,13 +951,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 0
-  Rocks: 3
-  Grasses: 11
-  Corals: 18
+  Rocks: 2
+  Grasses: 1
+  Corals: 0
   Sponges: 0
   Stars: 0
   Shells: 0
-  SmallCorals: 18
+  SmallCorals: 0
   LargeCorals: 0
 --- !u!1 &734118728394851048
 GameObject:
@@ -1074,7 +1074,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1196,13 +1196,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 0
-  Rocks: 8
-  Grasses: 5
-  Corals: 15
+  Rocks: 6
+  Grasses: 2
+  Corals: 11
   Sponges: 0
   Stars: 2
-  Shells: 2
-  SmallCorals: 15
+  Shells: 1
+  SmallCorals: 11
   LargeCorals: 0
 --- !u!1 &792465052558600944
 GameObject:
@@ -1372,7 +1372,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1455,7 +1455,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1523,14 +1523,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 1
-  Grasses: 3
-  Corals: 22
-  Sponges: 2
-  Stars: 2
-  Shells: 4
+  Rocks: 0
+  Grasses: 0
+  Corals: 4
+  Sponges: 1
+  Stars: 0
+  Shells: 1
   SmallCorals: 0
-  LargeCorals: 22
+  LargeCorals: 4
 --- !u!1 &861925708666912041
 GameObject:
   m_ObjectHideFlags: 0
@@ -1577,14 +1577,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 2
-  Grasses: 1
-  Corals: 24
-  Sponges: 3
-  Stars: 3
-  Shells: 1
+  Rocks: 0
+  Grasses: 0
+  Corals: 1
+  Sponges: 0
+  Stars: 0
+  Shells: 0
   SmallCorals: 0
-  LargeCorals: 24
+  LargeCorals: 1
 --- !u!1 &866222303261221157
 GameObject:
   m_ObjectHideFlags: 0
@@ -1646,7 +1646,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1729,7 +1729,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1895,7 +1895,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1964,12 +1964,12 @@ MonoBehaviour:
   m_EditorClassIdentifier:
   Biome: 1
   Rocks: 7
-  Grasses: 9
-  Corals: 16
+  Grasses: 7
+  Corals: 15
   Sponges: 0
   Stars: 0
   Shells: 0
-  SmallCorals: 16
+  SmallCorals: 15
   LargeCorals: 0
 --- !u!1 &975381769383396488
 GameObject:
@@ -2032,7 +2032,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2115,7 +2115,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2890,7 +2890,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2959,12 +2959,12 @@ MonoBehaviour:
   m_EditorClassIdentifier:
   Biome: 2
   Rocks: 1
-  Grasses: 14
-  Corals: 13
+  Grasses: 13
+  Corals: 11
   Sponges: 0
   Stars: 1
   Shells: 3
-  SmallCorals: 13
+  SmallCorals: 11
   LargeCorals: 0
 --- !u!1 &1311026524180653429
 GameObject:
@@ -3012,14 +3012,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 1
-  Grasses: 3
-  Corals: 26
-  Sponges: 2
-  Stars: 1
-  Shells: 1
+  Rocks: 0
+  Grasses: 0
+  Corals: 4
+  Sponges: 0
+  Stars: 0
+  Shells: 0
   SmallCorals: 0
-  LargeCorals: 26
+  LargeCorals: 4
 --- !u!1 &1413567227973365406
 GameObject:
   m_ObjectHideFlags: 0
@@ -3066,13 +3066,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 2
-  Rocks: 6
-  Grasses: 13
-  Corals: 8
+  Rocks: 1
+  Grasses: 0
+  Corals: 1
   Sponges: 0
-  Stars: 2
-  Shells: 1
-  SmallCorals: 8
+  Stars: 1
+  Shells: 0
+  SmallCorals: 1
   LargeCorals: 0
 --- !u!1 &1454757349419204106
 GameObject:
@@ -3319,7 +3319,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3402,7 +3402,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3470,14 +3470,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 1
-  Grasses: 3
-  Corals: 26
-  Sponges: 2
-  Stars: 1
-  Shells: 1
+  Rocks: 0
+  Grasses: 0
+  Corals: 5
+  Sponges: 0
+  Stars: 0
+  Shells: 0
   SmallCorals: 0
-  LargeCorals: 26
+  LargeCorals: 5
 --- !u!1 &1611597138860383570
 GameObject:
   m_ObjectHideFlags: 0
@@ -3539,7 +3539,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3823,13 +3823,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 1
-  Rocks: 3
-  Grasses: 16
-  Corals: 10
+  Rocks: 0
+  Grasses: 2
+  Corals: 3
   Sponges: 0
   Stars: 0
-  Shells: 3
-  SmallCorals: 10
+  Shells: 1
+  SmallCorals: 3
   LargeCorals: 0
 --- !u!1 &1861086475004439188
 GameObject:
@@ -3892,7 +3892,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4074,13 +4074,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 2
-  Rocks: 3
-  Grasses: 11
-  Corals: 15
+  Rocks: 0
+  Grasses: 2
+  Corals: 0
   Sponges: 0
-  Stars: 3
+  Stars: 0
   Shells: 0
-  SmallCorals: 15
+  SmallCorals: 0
   LargeCorals: 0
 --- !u!1 &2001341148971790642
 GameObject:
@@ -4143,7 +4143,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4226,7 +4226,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4542,7 +4542,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5020,12 +5020,12 @@ MonoBehaviour:
   Biome: 5
   Rocks: 0
   Grasses: 0
-  Corals: 27
-  Sponges: 2
-  Stars: 4
-  Shells: 1
+  Corals: 0
+  Sponges: 0
+  Stars: 1
+  Shells: 0
   SmallCorals: 0
-  LargeCorals: 27
+  LargeCorals: 0
 --- !u!1 &2200981312929009639
 GameObject:
   m_ObjectHideFlags: 0
@@ -5073,12 +5073,12 @@ MonoBehaviour:
   m_EditorClassIdentifier:
   Biome: 1
   Rocks: 4
-  Grasses: 11
-  Corals: 13
+  Grasses: 10
+  Corals: 12
   Sponges: 0
   Stars: 2
   Shells: 2
-  SmallCorals: 13
+  SmallCorals: 12
   LargeCorals: 0
 --- !u!1 &2259144001727419484
 GameObject:
@@ -5248,7 +5248,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5385,7 +5385,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5551,7 +5551,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5634,7 +5634,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5717,7 +5717,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5800,7 +5800,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6057,14 +6057,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 3
+  Rocks: 0
   Grasses: 0
-  Corals: 26
-  Sponges: 2
+  Corals: 2
+  Sponges: 0
   Stars: 1
-  Shells: 2
+  Shells: 0
   SmallCorals: 0
-  LargeCorals: 26
+  LargeCorals: 2
 --- !u!1 &2707180960458801297
 GameObject:
   m_ObjectHideFlags: 0
@@ -6111,13 +6111,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 2
-  Rocks: 3
-  Grasses: 8
-  Corals: 15
+  Rocks: 0
+  Grasses: 1
+  Corals: 1
   Sponges: 0
   Stars: 0
-  Shells: 6
-  SmallCorals: 15
+  Shells: 0
+  SmallCorals: 1
   LargeCorals: 0
 --- !u!1 &2738306436008892891
 GameObject:
@@ -6540,7 +6540,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7026,7 +7026,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7759,7 +7759,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7842,7 +7842,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7925,7 +7925,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7993,13 +7993,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 2
-  Rocks: 3
-  Grasses: 6
-  Corals: 21
+  Rocks: 0
+  Grasses: 1
+  Corals: 2
   Sponges: 0
-  Stars: 1
-  Shells: 1
-  SmallCorals: 21
+  Stars: 0
+  Shells: 0
+  SmallCorals: 2
   LargeCorals: 0
 --- !u!1 &3163639385102886530
 GameObject:
@@ -8047,13 +8047,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 1
-  Rocks: 5
-  Grasses: 15
-  Corals: 10
+  Rocks: 1
+  Grasses: 0
+  Corals: 1
   Sponges: 0
   Stars: 0
-  Shells: 2
-  SmallCorals: 10
+  Shells: 0
+  SmallCorals: 1
   LargeCorals: 0
 --- !u!1 &3168061403971685387
 GameObject:
@@ -8184,13 +8184,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 1
-  Rocks: 3
-  Grasses: 11
-  Corals: 16
+  Rocks: 0
+  Grasses: 1
+  Corals: 0
   Sponges: 0
   Stars: 0
-  Shells: 2
-  SmallCorals: 16
+  Shells: 1
+  SmallCorals: 0
   LargeCorals: 0
 --- !u!1 &3274550356978271553
 GameObject:
@@ -8253,7 +8253,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8336,7 +8336,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8404,13 +8404,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 1
-  Rocks: 4
-  Grasses: 12
-  Corals: 14
+  Rocks: 0
+  Grasses: 1
+  Corals: 2
   Sponges: 0
-  Stars: 2
+  Stars: 0
   Shells: 0
-  SmallCorals: 14
+  SmallCorals: 2
   LargeCorals: 0
 --- !u!1 &3516650683809713213
 GameObject:
@@ -8970,7 +8970,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9038,13 +9038,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 2
-  Rocks: 7
-  Grasses: 8
-  Corals: 15
+  Rocks: 0
+  Grasses: 2
+  Corals: 0
   Sponges: 0
   Stars: 0
-  Shells: 2
-  SmallCorals: 15
+  Shells: 1
+  SmallCorals: 0
   LargeCorals: 0
 --- !u!1 &3707332607403946487
 GameObject:
@@ -9107,7 +9107,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9435,7 +9435,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9841,7 +9841,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9924,7 +9924,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10457,13 +10457,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 2
-  Rocks: 5
-  Grasses: 5
-  Corals: 20
+  Rocks: 1
+  Grasses: 0
+  Corals: 3
   Sponges: 0
-  Stars: 2
+  Stars: 0
   Shells: 0
-  SmallCorals: 20
+  SmallCorals: 3
   LargeCorals: 0
 --- !u!1 &4272154425110628525
 GameObject:
@@ -10511,14 +10511,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 2
-  Grasses: 5
-  Corals: 24
+  Rocks: 0
+  Grasses: 0
+  Corals: 1
   Sponges: 0
-  Stars: 3
+  Stars: 0
   Shells: 0
   SmallCorals: 0
-  LargeCorals: 24
+  LargeCorals: 1
 --- !u!1 &4278098217056488070
 GameObject:
   m_ObjectHideFlags: 0
@@ -10580,7 +10580,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10663,7 +10663,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10746,7 +10746,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10829,7 +10829,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10912,7 +10912,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -11132,7 +11132,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -11200,14 +11200,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 1
-  Grasses: 4
-  Corals: 24
-  Sponges: 1
+  Rocks: 0
+  Grasses: 1
+  Corals: 0
+  Sponges: 0
   Stars: 0
-  Shells: 4
+  Shells: 0
   SmallCorals: 0
-  LargeCorals: 24
+  LargeCorals: 0
 --- !u!1 &4660465072410388802
 GameObject:
   m_ObjectHideFlags: 0
@@ -11269,7 +11269,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -11420,14 +11420,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 3
-  Grasses: 2
-  Corals: 22
-  Sponges: 4
+  Rocks: 0
+  Grasses: 1
+  Corals: 3
+  Sponges: 1
   Stars: 0
-  Shells: 3
+  Shells: 1
   SmallCorals: 0
-  LargeCorals: 22
+  LargeCorals: 3
 --- !u!1 &4714540949076228741
 GameObject:
   m_ObjectHideFlags: 0
@@ -11474,14 +11474,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 2
-  Grasses: 1
-  Corals: 27
-  Sponges: 2
+  Rocks: 1
+  Grasses: 0
+  Corals: 4
+  Sponges: 0
   Stars: 0
-  Shells: 2
+  Shells: 0
   SmallCorals: 0
-  LargeCorals: 27
+  LargeCorals: 4
 --- !u!1 &4720726369276412751
 GameObject:
   m_ObjectHideFlags: 0
@@ -11597,7 +11597,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -11680,7 +11680,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -11763,7 +11763,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -11846,7 +11846,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -11968,13 +11968,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 1
-  Rocks: 5
-  Grasses: 8
-  Corals: 16
+  Rocks: 1
+  Grasses: 0
+  Corals: 1
   Sponges: 0
   Stars: 1
-  Shells: 2
-  SmallCorals: 16
+  Shells: 0
+  SmallCorals: 1
   LargeCorals: 0
 --- !u!1 &4816880613929448245
 GameObject:
@@ -12037,7 +12037,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -12120,7 +12120,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -12188,13 +12188,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 2
-  Rocks: 3
-  Grasses: 11
-  Corals: 16
+  Rocks: 0
+  Grasses: 2
+  Corals: 2
   Sponges: 0
   Stars: 0
-  Shells: 2
-  SmallCorals: 16
+  Shells: 0
+  SmallCorals: 2
   LargeCorals: 0
 --- !u!1 &4920991485918575768
 GameObject:
@@ -12509,7 +12509,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -12801,13 +12801,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 0
-  Rocks: 6
-  Grasses: 7
-  Corals: 13
+  Rocks: 0
+  Grasses: 1
+  Corals: 1
   Sponges: 0
-  Stars: 3
-  Shells: 3
-  SmallCorals: 13
+  Stars: 0
+  Shells: 0
+  SmallCorals: 1
   LargeCorals: 0
 --- !u!1 &5056111134369976106
 GameObject:
@@ -13585,7 +13585,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -13653,13 +13653,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 1
-  Rocks: 1
-  Grasses: 7
-  Corals: 20
+  Rocks: 0
+  Grasses: 0
+  Corals: 2
   Sponges: 0
-  Stars: 2
-  Shells: 2
-  SmallCorals: 20
+  Stars: 0
+  Shells: 0
+  SmallCorals: 2
   LargeCorals: 0
 --- !u!1 &5418706675407898548
 GameObject:
@@ -13920,7 +13920,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14003,7 +14003,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14345,7 +14345,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14428,7 +14428,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14496,14 +14496,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 2
-  Grasses: 2
-  Corals: 26
+  Rocks: 0
+  Grasses: 1
+  Corals: 10
   Sponges: 1
-  Stars: 2
+  Stars: 1
   Shells: 1
   SmallCorals: 0
-  LargeCorals: 26
+  LargeCorals: 10
 --- !u!1 &5664280116858853238
 GameObject:
   m_ObjectHideFlags: 0
@@ -14932,7 +14932,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -15000,14 +15000,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 3
-  Grasses: 2
-  Corals: 24
-  Sponges: 2
+  Rocks: 0
+  Grasses: 1
+  Corals: 3
+  Sponges: 0
   Stars: 0
-  Shells: 3
+  Shells: 0
   SmallCorals: 0
-  LargeCorals: 24
+  LargeCorals: 3
 --- !u!1 &5845979934017419604
 GameObject:
   m_ObjectHideFlags: 0
@@ -15108,13 +15108,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 0
-  Rocks: 3
-  Grasses: 7
-  Corals: 19
+  Rocks: 0
+  Grasses: 0
+  Corals: 2
   Sponges: 0
-  Stars: 2
-  Shells: 1
-  SmallCorals: 19
+  Stars: 0
+  Shells: 0
+  SmallCorals: 2
   LargeCorals: 0
 --- !u!1 &5970321073538605732
 GameObject:
@@ -15177,7 +15177,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -15260,7 +15260,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -15343,7 +15343,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -15411,13 +15411,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 1
-  Rocks: 6
-  Grasses: 10
-  Corals: 15
+  Rocks: 1
+  Grasses: 1
+  Corals: 2
   Sponges: 0
   Stars: 0
-  Shells: 1
-  SmallCorals: 15
+  Shells: 0
+  SmallCorals: 2
   LargeCorals: 0
 --- !u!1 &6185382842757316004
 GameObject:
@@ -15480,7 +15480,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -15563,7 +15563,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -15633,12 +15633,12 @@ MonoBehaviour:
   Biome: 5
   Rocks: 2
   Grasses: 4
-  Corals: 23
+  Corals: 21
   Sponges: 2
   Stars: 2
   Shells: 1
   SmallCorals: 0
-  LargeCorals: 23
+  LargeCorals: 21
 --- !u!1 &6269376199772756459
 GameObject:
   m_ObjectHideFlags: 0
@@ -15685,14 +15685,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 1
-  Grasses: 5
-  Corals: 19
-  Sponges: 4
-  Stars: 2
-  Shells: 3
+  Rocks: 0
+  Grasses: 0
+  Corals: 2
+  Sponges: 0
+  Stars: 1
+  Shells: 0
   SmallCorals: 0
-  LargeCorals: 19
+  LargeCorals: 2
 --- !u!1 &6327977287816973821
 GameObject:
   m_ObjectHideFlags: 0
@@ -15739,14 +15739,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 2
-  Grasses: 8
-  Corals: 23
+  Rocks: 0
+  Grasses: 1
+  Corals: 1
   Sponges: 0
   Stars: 0
-  Shells: 1
+  Shells: 0
   SmallCorals: 0
-  LargeCorals: 23
+  LargeCorals: 1
 --- !u!1 &6351099763580121499
 GameObject:
   m_ObjectHideFlags: 0
@@ -15793,13 +15793,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 2
-  Rocks: 1
-  Grasses: 9
-  Corals: 20
+  Rocks: 0
+  Grasses: 0
+  Corals: 1
   Sponges: 0
-  Stars: 1
-  Shells: 1
-  SmallCorals: 20
+  Stars: 0
+  Shells: 0
+  SmallCorals: 1
   LargeCorals: 0
 --- !u!1 &6352696050985137840
 GameObject:
@@ -15847,14 +15847,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 2
-  Grasses: 6
-  Corals: 22
-  Sponges: 2
-  Stars: 1
-  Shells: 1
+  Rocks: 0
+  Grasses: 0
+  Corals: 4
+  Sponges: 0
+  Stars: 0
+  Shells: 0
   SmallCorals: 0
-  LargeCorals: 22
+  LargeCorals: 4
 --- !u!1 &6359461664793362697
 GameObject:
   m_ObjectHideFlags: 0
@@ -16009,14 +16009,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 5
-  Grasses: 3
-  Corals: 21
-  Sponges: 2
-  Stars: 2
-  Shells: 1
+  Rocks: 0
+  Grasses: 0
+  Corals: 0
+  Sponges: 0
+  Stars: 1
+  Shells: 0
   SmallCorals: 0
-  LargeCorals: 21
+  LargeCorals: 0
 --- !u!1 &6555762898031974949
 GameObject:
   m_ObjectHideFlags: 0
@@ -16078,7 +16078,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -16161,7 +16161,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -16358,7 +16358,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -16407,8 +16407,8 @@ Transform:
   m_GameObject: {fileID: 6702582413161413191}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.22, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: -0.22, z: 560}
+  m_LocalScale: {x: 13.333333, y: 1, z: 10.833333}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4838612784311394281}
@@ -16524,7 +16524,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -16821,13 +16821,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 0
-  Rocks: 4
-  Grasses: 11
-  Corals: 10
+  Rocks: 0
+  Grasses: 1
+  Corals: 1
   Sponges: 0
-  Stars: 2
-  Shells: 1
-  SmallCorals: 10
+  Stars: 0
+  Shells: 0
+  SmallCorals: 1
   LargeCorals: 0
 --- !u!1 &6918211509216472841
 GameObject:
@@ -17034,14 +17034,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 2
-  Grasses: 4
-  Corals: 17
-  Sponges: 5
-  Stars: 6
+  Rocks: 0
+  Grasses: 1
+  Corals: 1
+  Sponges: 1
+  Stars: 0
   Shells: 0
   SmallCorals: 0
-  LargeCorals: 17
+  LargeCorals: 1
 --- !u!1 &7000972051309423583
 GameObject:
   m_ObjectHideFlags: 0
@@ -17186,7 +17186,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -17255,13 +17255,13 @@ MonoBehaviour:
   m_EditorClassIdentifier:
   Biome: 5
   Rocks: 0
-  Grasses: 4
-  Corals: 25
-  Sponges: 2
-  Stars: 2
-  Shells: 1
+  Grasses: 0
+  Corals: 2
+  Sponges: 1
+  Stars: 0
+  Shells: 0
   SmallCorals: 0
-  LargeCorals: 25
+  LargeCorals: 2
 --- !u!1 &7218532942438400988
 GameObject:
   m_ObjectHideFlags: 0
@@ -17377,7 +17377,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -17664,13 +17664,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 2
-  Rocks: 2
-  Grasses: 16
-  Corals: 11
+  Rocks: 0
+  Grasses: 3
+  Corals: 1
   Sponges: 0
-  Stars: 2
-  Shells: 1
-  SmallCorals: 11
+  Stars: 0
+  Shells: 0
+  SmallCorals: 1
   LargeCorals: 0
 --- !u!1 &7309206062174194257
 GameObject:
@@ -17733,7 +17733,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -17816,7 +17816,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -17884,14 +17884,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 2
-  Grasses: 3
-  Corals: 25
-  Sponges: 1
-  Stars: 3
+  Rocks: 0
+  Grasses: 1
+  Corals: 1
+  Sponges: 0
+  Stars: 0
   Shells: 0
   SmallCorals: 0
-  LargeCorals: 25
+  LargeCorals: 1
 --- !u!1 &7504063088686835851
 GameObject:
   m_ObjectHideFlags: 0
@@ -18052,14 +18052,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 2
-  Grasses: 1
-  Corals: 26
-  Sponges: 1
-  Stars: 1
-  Shells: 3
+  Rocks: 0
+  Grasses: 0
+  Corals: 0
+  Sponges: 0
+  Stars: 0
+  Shells: 1
   SmallCorals: 0
-  LargeCorals: 26
+  LargeCorals: 0
 --- !u!1 &7652926125702380544
 GameObject:
   m_ObjectHideFlags: 0
@@ -18472,7 +18472,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -18692,7 +18692,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -18979,7 +18979,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -19520,13 +19520,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 2
-  Rocks: 1
-  Grasses: 11
-  Corals: 17
+  Rocks: 0
+  Grasses: 0
+  Corals: 2
   Sponges: 0
-  Stars: 1
-  Shells: 2
-  SmallCorals: 17
+  Stars: 0
+  Shells: 0
+  SmallCorals: 2
   LargeCorals: 0
 --- !u!1 &8348826302032690259
 GameObject:
@@ -19589,7 +19589,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -19672,7 +19672,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -20021,7 +20021,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -20104,7 +20104,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -20187,7 +20187,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -20353,7 +20353,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -20698,101 +20698,6 @@ MonoBehaviour:
     Bottom: -0.90176135
     Top: -0.57511675
     Coral: 1
-  - Center: {x: -2.67697, y: 23.456367}
-    Radius: 0.18142715
-    Bottom: -1.049118
-    Top: -0.7549189
-    Coral: 1
-  - Center: {x: -1.5645052, y: 21.792112}
-    Radius: 0.15317722
-    Bottom: -0.95723015
-    Top: -0.8384195
-    Coral: 1
-  - Center: {x: 0.6771589, y: 21.983952}
-    Radius: 0.15346012
-    Bottom: -0.93684536
-    Top: -0.618694
-    Coral: 1
-  - Center: {x: 0.23894742, y: 23.50217}
-    Radius: 0.19888881
-    Bottom: -0.9999193
-    Top: -0.67740464
-    Coral: 1
-  - Center: {x: -1.4527322, y: 23.812042}
-    Radius: 0.17123201
-    Bottom: -1.037789
-    Top: -0.7601221
-    Coral: 1
-  - Center: {x: -2.4596975, y: 21.428759}
-    Radius: 0.11271094
-    Bottom: -0.9580133
-    Top: -0.77524316
-    Coral: 1
-  - Center: {x: -2.9688761, y: 20.712358}
-    Radius: 0.12414174
-    Bottom: -0.9369445
-    Top: -0.7356384
-    Coral: 1
-  - Center: {x: -0.36501342, y: 22.066427}
-    Radius: 0.1787106
-    Bottom: -0.9507028
-    Top: -0.81208736
-    Coral: 1
-  - Center: {x: -1.7660048, y: 24.22512}
-    Radius: 0.14542139
-    Bottom: -1.0583771
-    Top: -0.9455822
-    Coral: 1
-  - Center: {x: -1.913047, y: 20.0399}
-    Radius: 0.12691927
-    Bottom: -0.90001315
-    Top: -0.63688594
-    Coral: 1
-  - Center: {x: -1.276489, y: 22.861073}
-    Radius: 0.18503182
-    Bottom: -0.99720526
-    Top: -0.8536868
-    Coral: 1
-  - Center: {x: -1.2897741, y: 21.385418}
-    Radius: 0.38369602
-    Bottom: -0.9359567
-    Top: -0.36337355
-    Coral: 0
-  - Center: {x: 0.6608337, y: 22.005966}
-    Radius: 0.15285254
-    Bottom: -0.93782246
-    Top: -0.6899594
-    Coral: 1
-  - Center: {x: -0.9263682, y: 22.121895}
-    Radius: 0.42600015
-    Bottom: -0.96071285
-    Top: -0.325
-    Coral: 0
-  - Center: {x: -1.3808054, y: 21.973415}
-    Radius: 0.17213978
-    Bottom: -0.9617964
-    Top: -0.6826575
-    Coral: 1
-  - Center: {x: -0.9717195, y: 22.823397}
-    Radius: 0.16745636
-    Bottom: -0.99041504
-    Top: -0.8605289
-    Coral: 1
-  - Center: {x: -0.48115733, y: 22.729265}
-    Radius: 0.43827495
-    Bottom: -0.9790303
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: -2.0374568, y: 20.026695}
-    Radius: 0.099155225
-    Bottom: -0.9012229
-    Top: -0.76566344
-    Coral: 1
-  - Center: {x: -3.0945115, y: 21.877073}
-    Radius: 0.12980726
-    Bottom: -0.99043983
-    Top: -0.81297463
-    Coral: 1
   - Center: {x: -6.865686, y: -19.891926}
     Radius: 0.16790622
     Bottom: -1.0468626
@@ -21113,110 +21018,20 @@ MonoBehaviour:
     Bottom: -0.9741669
     Top: -0.7978621
     Coral: 1
-  - Center: {x: 2.693398, y: 28.193182}
-    Radius: 0.121895
-    Bottom: -1.1002514
-    Top: -0.9025886
-    Coral: 1
-  - Center: {x: 3.1237278, y: 26.469046}
-    Radius: 0.163582
-    Bottom: -1.0670099
-    Top: -0.72787404
-    Coral: 1
-  - Center: {x: 3.037037, y: 30.175282}
-    Radius: 0.13535653
-    Bottom: -1.4498045
-    Top: -1.1691853
-    Coral: 1
   - Center: {x: 1.928079, y: 28.280382}
     Radius: 0.21391992
     Bottom: -1.1120292
     Top: -0.94610393
-    Coral: 1
-  - Center: {x: 3.0055532, y: 26.743258}
-    Radius: 0.14694016
-    Bottom: -1.0742823
-    Top: -0.9603093
     Coral: 1
   - Center: {x: 2.5406463, y: 27.388306}
     Radius: 0.5121819
     Bottom: -1.0893204
     Top: -0.32499996
     Coral: 0
-  - Center: {x: 3.468764, y: 27.30161}
-    Radius: 0.13943858
-    Bottom: -1.0851415
-    Top: -0.9769871
-    Coral: 1
   - Center: {x: 3.9077506, y: 27.268553}
     Radius: 0.095484704
     Bottom: -1.0838587
     Top: -0.8859012
-    Coral: 1
-  - Center: {x: 1.5122006, y: 30.219736}
-    Radius: 0.69476116
-    Bottom: -1.7622573
-    Top: -0.7254769
-    Coral: 0
-  - Center: {x: 0.6931, y: 28.257532}
-    Radius: 0.43905357
-    Bottom: -1.1942974
-    Top: -0.5391052
-    Coral: 0
-  - Center: {x: 1.213309, y: 29.762766}
-    Radius: 0.15270454
-    Bottom: -1.6276127
-    Top: -1.3110279
-    Coral: 1
-  - Center: {x: 2.7564003, y: 29.049612}
-    Radius: 0.4605834
-    Bottom: -1.1564734
-    Top: -0.46915254
-    Coral: 0
-  - Center: {x: 3.5717506, y: 29.711689}
-    Radius: 0.58446187
-    Bottom: -1.2314304
-    Top: -0.3592477
-    Coral: 0
-  - Center: {x: 1.2457004, y: 27.594776}
-    Radius: 0.18038413
-    Bottom: -1.0969543
-    Top: -0.8044465
-    Coral: 1
-  - Center: {x: 1.7230146, y: 26.544628}
-    Radius: 0.11374315
-    Bottom: -1.0771266
-    Top: -0.8413159
-    Coral: 1
-  - Center: {x: 4.505579, y: 27.2291}
-    Radius: 0.31248134
-    Bottom: -1.0827749
-    Top: -0.61646426
-    Coral: 0
-  - Center: {x: 1.0271577, y: 27.857944}
-    Radius: 0.16004412
-    Bottom: -1.1051215
-    Top: -0.8863182
-    Coral: 1
-  - Center: {x: 1.9347945, y: 26.895285}
-    Radius: 0.21110229
-    Bottom: -1.0827882
-    Top: -0.9190484
-    Coral: 1
-  - Center: {x: 2.8652093, y: 28.92569}
-    Radius: 0.10105881
-    Bottom: -1.1353678
-    Top: -0.9972058
-    Coral: 1
-  - Center: {x: 1.2439636, y: 29.481205}
-    Radius: 0.142154
-    Bottom: -1.5030179
-    Top: -1.3086729
-    Coral: 1
-  - Center: {x: 1.1951622, y: 26.4412}
-    Radius: 0.1794583
-    Bottom: -1.0788463
-    Top: -0.93965095
     Coral: 1
   - Center: {x: 24.18779, y: 15.539568}
     Radius: 0.48238403
@@ -21583,11 +21398,6 @@ MonoBehaviour:
     Bottom: -1.0354412
     Top: -0.9107425
     Coral: 1
-  - Center: {x: 17.086035, y: 19.40749}
-    Radius: 0.121805
-    Bottom: -1.0313233
-    Top: -0.8647983
-    Coral: 1
   - Center: {x: 16.883068, y: 22.51873}
     Radius: 0.08354272
     Bottom: -1.091422
@@ -21603,190 +21413,30 @@ MonoBehaviour:
     Bottom: -1.0792073
     Top: -0.9175364
     Coral: 1
-  - Center: {x: 16.352962, y: 21.424389}
-    Radius: 0.1287761
-    Bottom: -1.051054
-    Top: -0.8422329
-    Coral: 1
   - Center: {x: 14.124072, y: 21.512232}
     Radius: 0.45240209
     Bottom: -1.000112
     Top: -0.32499996
     Coral: 0
-  - Center: {x: -4.692145, y: 21.38238}
-    Radius: 0.13749933
-    Bottom: -1.0005788
-    Top: -0.7155171
-    Coral: 1
-  - Center: {x: -5.22516, y: 20.857866}
-    Radius: 0.12100047
-    Bottom: -0.98662585
-    Top: -0.7357694
-    Coral: 1
   - Center: {x: -4.5671763, y: 20.898174}
     Radius: 0.4360089
     Bottom: -0.97564876
     Top: -0.32499996
     Coral: 0
-  - Center: {x: -4.3143444, y: 20.541796}
-    Radius: 0.08652957
-    Bottom: -0.9553079
-    Top: -0.83700955
-    Coral: 1
-  - Center: {x: -5.4884377, y: 21.047955}
-    Radius: 0.36686245
-    Bottom: -1.0005226
-    Top: -0.45305994
-    Coral: 0
-  - Center: {x: -2.1713202, y: 21.76583}
-    Radius: 0.10874254
-    Bottom: -0.96712047
-    Top: -0.741677
-    Coral: 1
-  - Center: {x: -4.087905, y: 22.067795}
-    Radius: 0.13737106
-    Bottom: -1.0200831
-    Top: -0.79732454
-    Coral: 1
-  - Center: {x: -3.6145399, y: 21.568033}
-    Radius: 0.197797
-    Bottom: -0.98716563
-    Top: -0.83374596
-    Coral: 1
-  - Center: {x: -4.190283, y: 20.555475}
-    Radius: 0.11412645
-    Bottom: -0.95345837
-    Top: -0.7974311
-    Coral: 1
   - Center: {x: -5.3229523, y: 22.90335}
     Radius: 0.19782294
     Bottom: -1.083256
     Top: -0.92981625
-    Coral: 1
-  - Center: {x: -5.172755, y: 21.194012}
-    Radius: 0.20074585
-    Bottom: -1.0012594
-    Top: -0.84555256
-    Coral: 1
-  - Center: {x: -4.3643026, y: 22.90627}
-    Radius: 0.13658962
-    Bottom: -1.0633107
-    Top: -0.8765731
-    Coral: 1
-  - Center: {x: -5.581948, y: 22.290644}
-    Radius: 0.12618466
-    Bottom: -1.0613402
-    Top: -0.8888276
-    Coral: 1
-  - Center: {x: -3.5379272, y: 19.7399}
-    Radius: 0.13845049
-    Bottom: -0.91409665
-    Top: -0.72481495
-    Coral: 1
-  - Center: {x: -5.499929, y: 20.864656}
-    Radius: 0.13198292
-    Bottom: -0.9921792
-    Top: -0.778158
-    Coral: 1
-  - Center: {x: -3.3431032, y: 19.416985}
-    Radius: 0.13213903
-    Bottom: -0.86651474
-    Top: -0.6522404
-    Coral: 1
-  - Center: {x: -25.712088, y: -7.4854655}
-    Radius: 0.19934595
-    Bottom: -1.1509578
-    Top: -0.82770187
-    Coral: 1
-  - Center: {x: -24.554884, y: -11.079974}
-    Radius: 0.10859719
-    Bottom: -1.1842245
-    Top: -1.0357565
-    Coral: 1
-  - Center: {x: -25.554745, y: -7.8702416}
-    Radius: 0.08136273
-    Bottom: -1.1551521
-    Top: -1.0439175
-    Coral: 1
-  - Center: {x: -25.711271, y: -10.483247}
-    Radius: 0.14188279
-    Bottom: -1.2019664
-    Top: -1.0079923
-    Coral: 1
-  - Center: {x: -25.665295, y: -11.089699}
-    Radius: 0.13042237
-    Bottom: -1.2067217
-    Top: -0.93633187
-    Coral: 1
-  - Center: {x: -25.139654, y: -9.291886}
-    Radius: 0.56834704
-    Bottom: -1.1731347
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: -25.618042, y: -10.257204}
-    Radius: 0.130544
-    Bottom: -1.1976311
-    Top: -1.0963757
-    Coral: 1
-  - Center: {x: -27.348291, y: -8.461377}
-    Radius: 0.18838662
-    Bottom: -1.1989062
-    Top: -0.80834574
-    Coral: 1
-  - Center: {x: -27.437359, y: -9.098878}
-    Radius: 0.18532422
-    Bottom: -1.2064816
-    Top: -0.905963
     Coral: 1
   - Center: {x: -27.097734, y: -10.801246}
     Radius: 0.11769755
     Bottom: -1.2178344
     Top: -0.97382545
     Coral: 1
-  - Center: {x: -23.969978, y: -7.9016123}
-    Radius: 0.09308267
-    Bottom: -1.1094885
-    Top: -0.9822311
-    Coral: 1
-  - Center: {x: -24.122015, y: -9.302757}
-    Radius: 0.3056381
-    Bottom: -1.1463044
-    Top: -0.69020575
-    Coral: 0
-  - Center: {x: -26.815304, y: -9.378313}
-    Radius: 0.19685526
-    Bottom: -1.2039869
-    Top: -0.8847698
-    Coral: 1
-  - Center: {x: -23.893366, y: -8.619719}
-    Radius: 0.1949127
-    Bottom: -1.1246041
-    Top: -0.97342163
-    Coral: 1
   - Center: {x: -24.749063, y: -8.124448}
     Radius: 0.14783327
     Bottom: -1.1386614
     Top: -0.89893746
-    Coral: 1
-  - Center: {x: -25.93324, y: -9.645423}
-    Radius: 0.47559598
-    Bottom: -1.1951594
-    Top: -0.48543552
-    Coral: 0
-  - Center: {x: -26.583694, y: -8.51271}
-    Radius: 0.21098745
-    Bottom: -1.1891843
-    Top: -1.0255336
-    Coral: 1
-  - Center: {x: -24.964132, y: -8.654922}
-    Radius: 0.17831884
-    Bottom: -1.1563319
-    Top: -1.0180203
-    Coral: 1
-  - Center: {x: -24.765144, y: -10.55938}
-    Radius: 0.13952096
-    Bottom: -1.1835698
-    Top: -1.0753515
     Coral: 1
   - Center: {x: -12.531104, y: -20.103352}
     Radius: 0.35874084
@@ -21823,11 +21473,6 @@ MonoBehaviour:
     Bottom: -1.1218888
     Top: -0.32499996
     Coral: 0
-  - Center: {x: -13.035383, y: -19.998806}
-    Radius: 0.21421285
-    Bottom: -1.0539124
-    Top: -0.8877599
-    Coral: 1
   - Center: {x: -13.694635, y: -18.387878}
     Radius: 0.2160872
     Bottom: -0.98134536
@@ -21908,275 +21553,20 @@ MonoBehaviour:
     Bottom: -1.0722
     Top: -0.73897177
     Coral: 1
-  - Center: {x: 22.259321, y: -14.252934}
-    Radius: 0.14236912
-    Bottom: -1.0258691
-    Top: -0.7307115
-    Coral: 1
-  - Center: {x: 23.011576, y: -15.401593}
-    Radius: 0.17195527
-    Bottom: -1.0813175
-    Top: -0.94794184
-    Coral: 1
-  - Center: {x: 23.51442, y: -14.27961}
-    Radius: 0.1503392
-    Bottom: -1.071571
-    Top: -0.8277835
-    Coral: 1
-  - Center: {x: 25.398054, y: -16.165298}
-    Radius: 0.18583368
-    Bottom: -1.168875
-    Top: -1.0247346
-    Coral: 1
-  - Center: {x: 24.005507, y: -16.689482}
-    Radius: 0.17884184
-    Bottom: -1.1468275
-    Top: -0.7760551
-    Coral: 1
-  - Center: {x: 22.5118, y: -14.0400505}
-    Radius: 0.09823551
-    Bottom: -1.0298837
-    Top: -0.8955817
-    Coral: 1
-  - Center: {x: 22.204813, y: -14.43561}
-    Radius: 0.15312797
-    Bottom: -1.0286293
-    Top: -0.81928134
-    Coral: 1
-  - Center: {x: 23.440447, y: -16.710135}
-    Radius: 0.16201954
-    Bottom: -1.141731
-    Top: -0.8790029
-    Coral: 1
-  - Center: {x: 26.390043, y: -14.552464}
-    Radius: 0.15274154
-    Bottom: -1.1677281
-    Top: -0.95890844
-    Coral: 1
-  - Center: {x: 24.084234, y: -16.69428}
-    Radius: 0.10142558
-    Bottom: -1.149449
-    Top: -0.98497903
-    Coral: 1
-  - Center: {x: 23.989038, y: -15.531794}
-    Radius: 0.5304888
-    Bottom: -1.1166395
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: 24.468678, y: -16.256502}
-    Radius: 0.13357784
-    Bottom: -1.1478105
-    Top: -1.0442019
-    Coral: 1
-  - Center: {x: 25.37198, y: -15.78226}
-    Radius: 0.13351019
-    Bottom: -1.1615454
-    Top: -0.884754
-    Coral: 1
-  - Center: {x: 22.610218, y: -14.66289}
-    Radius: 0.0961642
-    Bottom: -1.0484179
-    Top: -0.9169476
-    Coral: 1
-  - Center: {x: 24.649372, y: -14.371772}
-    Radius: 0.14276259
-    Bottom: -1.1139534
-    Top: -1.0032207
-    Coral: 1
   - Center: {x: 23.572178, y: -12.752922}
     Radius: 0.15280579
     Bottom: -1.0472636
     Top: -0.7994764
-    Coral: 1
-  - Center: {x: 22.914648, y: -14.26672}
-    Radius: 0.19078575
-    Bottom: -1.0495505
-    Top: -0.65401626
-    Coral: 1
-  - Center: {x: 25.485949, y: -16.164288}
-    Radius: 0.13932686
-    Bottom: -1.1707448
-    Top: -0.94481474
-    Coral: 1
-  - Center: {x: 22.9766, y: -13.554911}
-    Radius: 0.16163024
-    Bottom: -1.0368702
-    Top: -0.70178074
-    Coral: 1
-  - Center: {x: 23.871649, y: -14.928872}
-    Radius: 0.100902095
-    Bottom: -1.0985199
-    Top: -0.9605723
-    Coral: 1
-  - Center: {x: 17.57256, y: -16.326714}
-    Radius: 0.1449059
-    Bottom: -0.938133
-    Top: -0.7400258
-    Coral: 1
-  - Center: {x: 17.948812, y: -16.535719}
-    Radius: 0.2116195
-    Bottom: -0.9661914
-    Top: -0.62303287
-    Coral: 1
-  - Center: {x: 16.34915, y: -18.189703}
-    Radius: 0.21939456
-    Bottom: -0.9779739
-    Top: -0.80780226
-    Coral: 1
-  - Center: {x: 14.981074, y: -17.76787}
-    Radius: 0.23404364
-    Bottom: -0.9304367
-    Top: -0.7489026
-    Coral: 1
-  - Center: {x: 15.639084, y: -18.105038}
-    Radius: 0.15527298
-    Bottom: -0.956102
-    Top: -0.70431405
-    Coral: 1
-  - Center: {x: 15.4192, y: -18.584526}
-    Radius: 0.16452836
-    Bottom: -0.97224003
-    Top: -0.6311422
-    Coral: 1
-  - Center: {x: 14.77182, y: -17.808603}
-    Radius: 0.0911742
-    Bottom: -0.92848724
-    Top: -0.803839
     Coral: 1
   - Center: {x: 15.61632, y: -18.68619}
     Radius: 0.095668696
     Bottom: -0.9813257
     Top: -0.8505328
     Coral: 1
-  - Center: {x: 18.352888, y: -17.593512}
-    Radius: 0.10256153
-    Bottom: -1.0730561
-    Top: -0.86042696
-    Coral: 1
-  - Center: {x: 16.41567, y: -16.525469}
-    Radius: 0.35273886
-    Bottom: -0.9145271
-    Top: -0.38814086
-    Coral: 0
-  - Center: {x: 17.07737, y: -19.484917}
-    Radius: 0.1211508
-    Bottom: -1.0556908
-    Top: -0.9617211
-    Coral: 1
-  - Center: {x: 15.300144, y: -17.728731}
-    Radius: 0.28335342
-    Bottom: -0.93429
-    Top: -0.5114464
-    Coral: 0
-  - Center: {x: 14.799666, y: -18.729986}
-    Radius: 0.11638302
-    Bottom: -0.9653488
-    Top: -0.87507725
-    Coral: 1
-  - Center: {x: -11.098051, y: 18.67758}
-    Radius: 0.08798383
-    Bottom: -0.9670955
-    Top: -0.8468089
-    Coral: 1
-  - Center: {x: -9.747326, y: 19.10983}
-    Radius: 0.15614992
-    Bottom: -0.98047036
-    Top: -0.6567426
-    Coral: 1
-  - Center: {x: -11.196815, y: 21.535574}
-    Radius: 0.1297849
-    Bottom: -1.110709
-    Top: -0.9332743
-    Coral: 1
-  - Center: {x: -11.699082, y: 22.374619}
-    Radius: 0.16339426
-    Bottom: -1.1496779
-    Top: -0.8109312
-    Coral: 1
-  - Center: {x: -10.223871, y: 19.856915}
-    Radius: 0.19027886
-    Bottom: -1.0247148
-    Top: -0.8771266
-    Coral: 1
-  - Center: {x: -11.700883, y: 22.343367}
-    Radius: 0.09352724
-    Bottom: -1.1484265
-    Top: -0.9545272
-    Coral: 1
-  - Center: {x: -13.581101, y: 20.330734}
-    Radius: 0.10790994
-    Bottom: -1.0719874
-    Top: -0.84827006
-    Coral: 1
-  - Center: {x: -9.679944, y: 19.795332}
-    Radius: 0.18673618
-    Bottom: -1.0162371
-    Top: -0.62909836
-    Coral: 1
   - Center: {x: -11.944183, y: 19.702675}
     Radius: 0.12744783
     Bottom: -1.0342469
     Top: -0.7700239
-    Coral: 1
-  - Center: {x: -12.909119, y: 22.124384}
-    Radius: 0.15093149
-    Bottom: -1.1440508
-    Top: -0.9377058
-    Coral: 1
-  - Center: {x: -12.786766, y: 21.120983}
-    Radius: 0.520642
-    Bottom: -1.1019453
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: -9.834769, y: 22.205702}
-    Radius: 0.09512503
-    Bottom: -1.1274164
-    Top: -0.9973667
-    Coral: 1
-  - Center: {x: -11.655161, y: 20.242548}
-    Radius: 0.13693362
-    Bottom: -1.0557047
-    Top: -0.8336555
-    Coral: 1
-  - Center: {x: -13.020045, y: 22.167889}
-    Radius: 0.15444826
-    Bottom: -1.1460809
-    Top: -0.82588094
-    Coral: 1
-  - Center: {x: -12.727357, y: 19.72793}
-    Radius: 0.15549095
-    Bottom: -1.0406786
-    Top: -0.8281002
-    Coral: 1
-  - Center: {x: -12.578863, y: 19.157772}
-    Radius: 0.13331571
-    Bottom: -1.0166973
-    Top: -0.8344355
-    Coral: 1
-  - Center: {x: -10.986112, y: 18.97428}
-    Radius: 0.09498831
-    Bottom: -0.99249643
-    Top: -0.86263376
-    Coral: 1
-  - Center: {x: -12.980451, y: 21.191988}
-    Radius: 0.09524611
-    Bottom: -1.1059642
-    Top: -0.97574914
-    Coral: 1
-  - Center: {x: -10.7269335, y: 22.466087}
-    Radius: 0.14165333
-    Bottom: -1.1472933
-    Top: -0.8536197
-    Coral: 1
-  - Center: {x: -11.879263, y: 19.698915}
-    Radius: 0.14784993
-    Bottom: -1.0335838
-    Top: -0.72706336
-    Coral: 1
-  - Center: {x: -11.983458, y: 19.088427}
-    Radius: 0.124189794
-    Bottom: -1.0113556
-    Top: -0.7538871
     Coral: 1
   - Center: {x: 24.598421, y: -2.3776052}
     Radius: 0.12388556
@@ -22288,61 +21678,6 @@ MonoBehaviour:
     Bottom: -1.1947507
     Top: -1.0723337
     Coral: 1
-  - Center: {x: 22.242056, y: -6.6355357}
-    Radius: 0.18303156
-    Bottom: -1.0332931
-    Top: -0.6538347
-    Coral: 1
-  - Center: {x: 19.117016, y: -7.506642}
-    Radius: 0.113617346
-    Bottom: -0.8691269
-    Top: -0.684887
-    Coral: 1
-  - Center: {x: 20.572187, y: -9.189583}
-    Radius: 0.19490981
-    Bottom: -0.91849667
-    Top: -0.6024343
-    Coral: 1
-  - Center: {x: 19.742727, y: -8.4990635}
-    Radius: 0.11505809
-    Bottom: -0.89937973
-    Top: -0.7420788
-    Coral: 1
-  - Center: {x: 20.460041, y: -6.8559885}
-    Radius: 0.22560602
-    Bottom: -0.9510014
-    Top: -0.77601194
-    Coral: 1
-  - Center: {x: 19.329954, y: -8.766123}
-    Radius: 0.17140928
-    Bottom: -0.8867253
-    Top: -0.60877097
-    Coral: 1
-  - Center: {x: 21.485958, y: -6.457122}
-    Radius: 0.10116118
-    Bottom: -1.0037012
-    Top: -0.7939753
-    Coral: 1
-  - Center: {x: 21.017714, y: -5.9662294}
-    Radius: 0.15227179
-    Bottom: -0.9941185
-    Top: -0.7471972
-    Coral: 1
-  - Center: {x: 21.215532, y: -9.52222}
-    Radius: 0.1520371
-    Bottom: -0.94143504
-    Top: -0.6948943
-    Coral: 1
-  - Center: {x: 21.933504, y: -8.014701}
-    Radius: 0.44649398
-    Bottom: -0.99129546
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: 19.05149, y: -8.183846}
-    Radius: 0.09946138
-    Bottom: -0.8616757
-    Top: -0.65547377
-    Coral: 1
   - Center: {x: 18.701736, y: -8.505385}
     Radius: 0.16550872
     Bottom: -0.80368537
@@ -22353,265 +21688,15 @@ MonoBehaviour:
     Bottom: -0.9726093
     Top: -0.8362327
     Coral: 1
-  - Center: {x: 18.652306, y: -6.6712246}
-    Radius: 0.1655556
-    Bottom: -0.7313337
-    Top: -0.38810617
-    Coral: 1
-  - Center: {x: 22.440887, y: -7.398377}
-    Radius: 0.4190413
-    Bottom: -1.0251517
-    Top: -0.39982343
-    Coral: 0
-  - Center: {x: 20.181742, y: -5.8637958}
-    Radius: 0.1360314
-    Bottom: -0.9626928
-    Top: -0.68067443
-    Coral: 1
-  - Center: {x: 20.17153, y: -7.9997215}
-    Radius: 0.39799204
-    Bottom: -0.9189168
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: 19.30252, y: -6.533652}
-    Radius: 0.15838353
-    Bottom: -0.9029018
-    Top: -0.7800529
-    Coral: 1
-  - Center: {x: 18.74106, y: -8.969605}
-    Radius: 0.10028039
-    Bottom: -0.8173187
-    Top: -0.6094188
-    Coral: 1
-  - Center: {x: 19.934381, y: -8.439093}
-    Radius: 0.1574719
-    Bottom: -0.9053617
-    Top: -0.78321993
-    Coral: 1
-  - Center: {x: 19.495443, y: -7.9937305}
-    Radius: 0.2266218
-    Bottom: -0.90064955
-    Top: -0.7248722
-    Coral: 1
-  - Center: {x: 22.22821, y: -6.7738404}
-    Radius: 0.13229714
-    Bottom: -1.0294743
-    Top: -0.84860504
-    Coral: 1
-  - Center: {x: -11.541917, y: 23.93966}
-    Radius: 0.15958066
-    Bottom: -1.2012221
-    Top: -0.8703817
-    Coral: 1
-  - Center: {x: -10.481128, y: 21.95815}
-    Radius: 0.5350105
-    Bottom: -1.1233872
-    Top: -0.32499996
-    Coral: 0
   - Center: {x: -8.082475, y: 24.923073}
     Radius: 0.37404984
     Bottom: -1.1937217
     Top: -0.63553333
     Coral: 0
-  - Center: {x: -9.466653, y: 25.482817}
-    Radius: 0.598503
-    Bottom: -1.218136
-    Top: -0.32500002
-    Coral: 0
-  - Center: {x: -8.912848, y: 23.10955}
-    Radius: 0.13626231
-    Bottom: -1.1533616
-    Top: -0.96707135
-    Coral: 1
-  - Center: {x: -11.193608, y: 24.384645}
-    Radius: 0.14202763
-    Bottom: -1.2105755
-    Top: -1.0164033
-    Coral: 1
-  - Center: {x: -11.56147, y: 25.029598}
-    Radius: 0.5757683
-    Bottom: -1.2223439
-    Top: -0.36313453
-    Coral: 0
-  - Center: {x: -8.671073, y: 23.99441}
-    Radius: 0.106735215
-    Bottom: -1.1796002
-    Top: -0.9583183
-    Coral: 1
-  - Center: {x: -8.955286, y: 24.827435}
-    Radius: 0.12735933
-    Bottom: -1.2028164
-    Top: -1.0286978
-    Coral: 1
-  - Center: {x: -9.34821, y: 23.21416}
-    Radius: 0.12549509
-    Bottom: -1.1624204
-    Top: -0.9908505
-    Coral: 1
-  - Center: {x: -9.741775, y: 24.965834}
-    Radius: 0.21735439
-    Bottom: -1.2132689
-    Top: -1.0446798
-    Coral: 1
-  - Center: {x: -11.867186, y: 24.557678}
-    Radius: 0.1041835
-    Bottom: -1.2154632
-    Top: -1.0730294
-    Coral: 1
-  - Center: {x: -8.696953, y: 25.568304}
-    Radius: 0.11973848
-    Bottom: -1.2135537
-    Top: -1.0193878
-    Coral: 1
-  - Center: {x: -10.987661, y: 22.514526}
-    Radius: 0.1605
-    Bottom: -1.1511871
-    Top: -0.890923
-    Coral: 1
-  - Center: {x: -11.503774, y: 22.295923}
-    Radius: 0.11605019
-    Bottom: -1.1454943
-    Top: -0.9868371
-    Coral: 1
   - Center: {x: -11.1915865, y: 25.580032}
     Radius: 0.14230965
     Bottom: -1.2411532
     Top: -1.0103863
-    Coral: 1
-  - Center: {x: -10.823193, y: 23.874765}
-    Radius: 0.16967477
-    Bottom: -1.1966941
-    Top: -0.9215525
-    Coral: 1
-  - Center: {x: -9.514596, y: 25.270756}
-    Radius: 0.12204373
-    Bottom: -1.2157183
-    Top: -1.0488669
-    Coral: 1
-  - Center: {x: -9.053675, y: 25.350864}
-    Radius: 0.28626388
-    Bottom: -1.2126844
-    Top: -0.7854976
-    Coral: 0
-  - Center: {x: -10.297614, y: 24.159813}
-    Radius: 0.17405923
-    Bottom: -1.2007216
-    Top: -0.9184702
-    Coral: 1
-  - Center: {x: -9.489363, y: 22.164005}
-    Radius: 0.15191698
-    Bottom: -1.1213286
-    Top: -0.9136362
-    Coral: 1
-  - Center: {x: 25.881727, y: -5.443681}
-    Radius: 0.36729765
-    Bottom: -1.2034136
-    Top: -0.65530145
-    Coral: 0
-  - Center: {x: 25.802338, y: -8.747642}
-    Radius: 0.10363195
-    Bottom: -1.1434267
-    Top: -0.9285784
-    Coral: 1
-  - Center: {x: 24.172354, y: -5.8269954}
-    Radius: 0.16732383
-    Bottom: -1.1385516
-    Top: -0.8672222
-    Coral: 1
-  - Center: {x: 25.817686, y: -5.829847}
-    Radius: 0.08894503
-    Bottom: -1.194457
-    Top: -1.0728564
-    Coral: 1
-  - Center: {x: 23.972815, y: -6.441403}
-    Radius: 0.13188894
-    Bottom: -1.115436
-    Top: -0.9015671
-    Coral: 1
-  - Center: {x: 25.883215, y: -5.4388514}
-    Radius: 0.16937129
-    Bottom: -1.2035372
-    Top: -1.0721657
-    Coral: 1
-  - Center: {x: 25.119757, y: -5.0401816}
-    Radius: 0.3546614
-    Bottom: -1.1911331
-    Top: -0.6618779
-    Coral: 0
-  - Center: {x: 26.036678, y: -5.6213746}
-    Radius: 0.29135567
-    Bottom: -1.2059509
-    Top: -0.77116567
-    Coral: 0
-  - Center: {x: 26.75431, y: -7.881115}
-    Radius: 0.15737076
-    Bottom: -1.199331
-    Top: -0.98418266
-    Coral: 1
-  - Center: {x: 24.342022, y: -5.1822333}
-    Radius: 0.19053172
-    Bottom: -1.1606529
-    Top: -1.0128685
-    Coral: 1
-  - Center: {x: 25.742825, y: -5.598732}
-    Radius: 0.58445704
-    Bottom: -1.1971754
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: 24.780918, y: -9.118028}
-    Radius: 0.12372161
-    Bottom: -1.0989969
-    Top: -0.9298516
-    Coral: 1
-  - Center: {x: 24.354546, y: -7.8239465}
-    Radius: 0.1414641
-    Bottom: -1.1018351
-    Top: -0.80855376
-    Coral: 1
-  - Center: {x: 24.24545, y: -7.461376}
-    Radius: 0.13696696
-    Bottom: -1.1043874
-    Top: -0.88228416
-    Coral: 1
-  - Center: {x: 25.581371, y: -6.1556287}
-    Radius: 0.14500982
-    Bottom: -1.1816987
-    Top: -0.9834494
-    Coral: 1
-  - Center: {x: 25.6241, y: -7.229909}
-    Radius: 0.08548433
-    Bottom: -1.1619489
-    Top: -1.0450796
-    Coral: 1
-  - Center: {x: 26.863047, y: -8.089029}
-    Radius: 0.3300597
-    Bottom: -1.2095138
-    Top: -0.7169712
-    Coral: 0
-  - Center: {x: 26.178572, y: -7.397242}
-    Radius: 0.56988895
-    Bottom: -1.1754358
-    Top: -0.32500005
-    Coral: 0
-  - Center: {x: 22.788343, y: -6.473614}
-    Radius: 0.1216915
-    Bottom: -1.0617431
-    Top: -0.8644103
-    Coral: 1
-  - Center: {x: 24.842894, y: -8.621176}
-    Radius: 0.52515876
-    Bottom: -1.1086856
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: 26.348297, y: -5.6813498}
-    Radius: 0.17975888
-    Bottom: -1.2237611
-    Top: -1.0843326
-    Coral: 1
-  - Center: {x: 22.961327, y: -6.614326}
-    Radius: 0.105128236
-    Bottom: -1.0662627
-    Top: -0.9225374
     Coral: 1
   - Center: {x: -18.305288, y: 16.662628}
     Radius: 0.4460046
@@ -22703,36 +21788,6 @@ MonoBehaviour:
     Bottom: -1.0300341
     Top: -0.6760188
     Coral: 1
-  - Center: {x: -4.3281045, y: 27.18543}
-    Radius: 0.27617657
-    Bottom: -1.3944159
-    Top: -0.98228216
-    Coral: 0
-  - Center: {x: -3.4837637, y: 25.915527}
-    Radius: 0.12805025
-    Bottom: -1.1323005
-    Top: -0.8668285
-    Coral: 1
-  - Center: {x: -6.465653, y: 25.02762}
-    Radius: 0.2994264
-    Bottom: -1.1710343
-    Top: -0.7242054
-    Coral: 0
-  - Center: {x: -4.0437837, y: 27.016289}
-    Radius: 0.39309666
-    Bottom: -1.3270676
-    Top: -0.7404561
-    Coral: 0
-  - Center: {x: -3.806715, y: 26.258514}
-    Radius: 0.19487485
-    Bottom: -1.1674161
-    Top: -0.76340437
-    Coral: 1
-  - Center: {x: -5.0861516, y: 23.676577}
-    Radius: 0.52507156
-    Bottom: -1.1085554
-    Top: -0.32499996
-    Coral: 0
   - Center: {x: -3.1453462, y: 23.993868}
     Radius: 0.10998522
     Bottom: -1.0788643
@@ -22743,41 +21798,6 @@ MonoBehaviour:
     Bottom: -1.1340653
     Top: -0.32500002
     Coral: 0
-  - Center: {x: -3.0075846, y: 25.716156}
-    Radius: 0.14906514
-    Bottom: -1.1202018
-    Top: -0.8784804
-    Coral: 1
-  - Center: {x: -3.0719342, y: 24.311014}
-    Radius: 0.18561916
-    Bottom: -1.0876395
-    Top: -0.94366544
-    Coral: 1
-  - Center: {x: -5.7684727, y: 26.327303}
-    Radius: 0.11670526
-    Bottom: -1.2458063
-    Top: -1.0038546
-    Coral: 1
-  - Center: {x: -4.4938188, y: 24.69173}
-    Radius: 0.18016711
-    Bottom: -1.1275319
-    Top: -0.9877867
-    Coral: 1
-  - Center: {x: -4.4436965, y: 23.42378}
-    Radius: 0.14132781
-    Bottom: -1.0858928
-    Top: -0.792894
-    Coral: 1
-  - Center: {x: -5.4114594, y: 27.47539}
-    Radius: 0.15693837
-    Bottom: -1.5387545
-    Top: -1.4170265
-    Coral: 1
-  - Center: {x: -3.9683416, y: 27.442694}
-    Radius: 0.102186225
-    Bottom: -1.4541899
-    Top: -1.2884865
-    Coral: 1
   - Center: {x: -21.251303, y: 11.507358}
     Radius: 0.23308529
     Bottom: -1.0040667
@@ -22858,95 +21878,15 @@ MonoBehaviour:
     Bottom: -0.9999521
     Top: -0.8361192
     Coral: 1
-  - Center: {x: -26.999159, y: -16.432589}
-    Radius: 0.15297544
-    Bottom: -1.4719495
-    Top: -1.1548029
-    Coral: 1
-  - Center: {x: -29.157473, y: -15.709864}
-    Radius: 0.111476675
-    Bottom: -2.1862547
-    Top: -1.9551429
-    Coral: 1
   - Center: {x: -25.517212, y: -15.129154}
     Radius: 0.11051904
     Bottom: -1.2468495
     Top: -1.0957541
     Coral: 1
-  - Center: {x: -27.234016, y: -15.101131}
-    Radius: 0.09500423
-    Bottom: -1.4084523
-    Top: -1.2114909
-    Coral: 1
-  - Center: {x: -28.89589, y: -16.013763}
-    Radius: 0.124512166
-    Bottom: -2.1260371
-    Top: -1.8679003
-    Coral: 1
-  - Center: {x: -28.61901, y: -14.710151}
-    Radius: 0.118065596
-    Bottom: -1.8630034
-    Top: -1.7015908
-    Coral: 1
-  - Center: {x: -28.23047, y: -15.709252}
-    Radius: 0.14165244
-    Bottom: -1.8271292
-    Top: -1.6334699
-    Coral: 1
-  - Center: {x: -27.430973, y: -15.687879}
-    Radius: 0.40229616
-    Bottom: -1.5249143
-    Top: -0.92457443
-    Coral: 0
-  - Center: {x: -26.560139, y: -17.068174}
-    Radius: 0.1534073
-    Bottom: -1.412754
-    Top: -1.2030241
-    Coral: 1
-  - Center: {x: -28.450558, y: -14.055415}
-    Radius: 0.11956914
-    Bottom: -1.7174066
-    Top: -1.5235153
-    Coral: 1
-  - Center: {x: -26.385265, y: -15.379675}
-    Radius: 0.12899688
-    Bottom: -1.2726619
-    Top: -1.1726066
-    Coral: 1
-  - Center: {x: -26.063097, y: -13.859088}
-    Radius: 0.098873354
-    Bottom: -1.2370132
-    Top: -1.1018392
-    Coral: 1
-  - Center: {x: -26.876, y: -14.506773}
-    Radius: 0.10617451
-    Bottom: -1.287349
-    Top: -1.0672295
-    Coral: 1
   - Center: {x: -26.566622, y: -16.41674}
     Radius: 0.14804983
     Bottom: -1.3583944
     Top: -1.155989
-    Coral: 1
-  - Center: {x: -28.42359, y: -16.166956}
-    Radius: 0.10214795
-    Bottom: -1.9596056
-    Top: -1.8199546
-    Coral: 1
-  - Center: {x: -26.440897, y: -17.734682}
-    Radius: 0.16576646
-    Bottom: -1.452561
-    Top: -1.1088964
-    Coral: 1
-  - Center: {x: -27.263132, y: -16.647703}
-    Radius: 0.215414
-    Bottom: -1.5792189
-    Top: -1.2299073
-    Coral: 1
-  - Center: {x: -27.529213, y: -16.659132}
-    Radius: 0.2094923
-    Bottom: -1.6761135
-    Top: -1.5136225
     Coral: 1
   - Center: {x: 22.145214, y: 20.977758}
     Radius: 0.1642408
@@ -23063,111 +22003,11 @@ MonoBehaviour:
     Bottom: -1.1611404
     Top: -0.63146687
     Coral: 0
-  - Center: {x: 3.6917171, y: 20.655218}
-    Radius: 0.102312304
-    Bottom: -0.88244915
-    Top: -0.7425735
-    Coral: 1
   - Center: {x: 3.3090568, y: 20.266024}
     Radius: 0.15386194
     Bottom: -0.876615
     Top: -0.7572732
     Coral: 1
-  - Center: {x: 3.406617, y: 18.72197}
-    Radius: 0.23705949
-    Bottom: -0.6787599
-    Top: -0.325
-    Coral: 0
-  - Center: {x: 3.9937778, y: 18.755157}
-    Radius: 0.24924523
-    Bottom: -0.6969444
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: 4.0386333, y: 21.55896}
-    Radius: 0.11020866
-    Bottom: -0.9061668
-    Top: -0.6776838
-    Coral: 1
-  - Center: {x: 2.9449117, y: 20.831358}
-    Radius: 0.16994695
-    Bottom: -0.8874636
-    Top: -0.6118806
-    Coral: 1
-  - Center: {x: 1.8398154, y: 20.648636}
-    Radius: 0.37533414
-    Bottom: -0.88510484
-    Top: -0.325
-    Coral: 0
-  - Center: {x: 1.3208425, y: 19.603445}
-    Radius: 0.11884212
-    Bottom: -0.8730899
-    Top: -0.62670815
-    Coral: 1
-  - Center: {x: 2.6168227, y: 19.793247}
-    Radius: 0.24608722
-    Bottom: -0.87376994
-    Top: -0.68289435
-    Coral: 1
-  - Center: {x: 1.0128968, y: 19.91126}
-    Radius: 0.1925977
-    Bottom: -0.8766224
-    Top: -0.56430924
-    Coral: 1
-  - Center: {x: 4.3754106, y: 19.07289}
-    Radius: 0.14421865
-    Bottom: -0.80493325
-    Top: -0.5710708
-    Coral: 1
-  - Center: {x: 2.0017314, y: 20.988317}
-    Radius: 0.38154987
-    Bottom: -0.89438045
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: 4.086043, y: 18.711758}
-    Radius: 0.17702007
-    Bottom: -0.6830604
-    Top: -0.3960077
-    Coral: 1
-  - Center: {x: 3.9733176, y: 19.594498}
-    Radius: 0.18419757
-    Bottom: -0.87509316
-    Top: -0.57640153
-    Coral: 1
-  - Center: {x: -18.889332, y: -15.957729}
-    Radius: 0.16425608
-    Bottom: -1.050924
-    Top: -0.71039057
-    Coral: 1
-  - Center: {x: -15.775408, y: -15.365458}
-    Radius: 0.2183376
-    Bottom: -0.7535633
-    Top: -0.5842115
-    Coral: 1
-  - Center: {x: -15.4287195, y: -15.818543}
-    Radius: 0.116077684
-    Bottom: -0.7822928
-    Top: -0.5416422
-    Coral: 1
-  - Center: {x: -18.50774, y: -15.697902}
-    Radius: 0.4714663
-    Bottom: -1.0285612
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: -15.896035, y: -15.999989}
-    Radius: 0.35767606
-    Bottom: -0.90555733
-    Top: -0.37180334
-    Coral: 0
-  - Center: {x: -15.770537, y: -16.58722}
-    Radius: 0.15255903
-    Bottom: -0.9558797
-    Top: -0.8375485
-    Coral: 1
-  - Center: {x: -16.761719, y: -16.181047}
-    Radius: 0.33641982
-    Bottom: -0.978782
-    Top: -0.47674832
-    Coral: 0
   - Center: {x: -17.367117, y: -13.519826}
     Radius: 0.35367996
     Bottom: -0.85279065
@@ -23178,235 +22018,30 @@ MonoBehaviour:
     Bottom: -0.98493654
     Top: -0.88554
     Coral: 1
-  - Center: {x: -18.678137, y: -14.55682}
-    Radius: 0.087478295
-    Bottom: -1.00902
-    Top: -0.88942456
-    Coral: 1
-  - Center: {x: -18.061317, y: -14.656285}
-    Radius: 0.13071011
-    Bottom: -0.9874021
-    Top: -0.8087026
-    Coral: 1
-  - Center: {x: -18.083721, y: -16.059225}
-    Radius: 0.12663186
-    Bottom: -1.0213289
-    Top: -0.8159849
-    Coral: 1
-  - Center: {x: -16.902271, y: -14.125767}
-    Radius: 0.32907036
-    Bottom: -0.81606615
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: -15.58258, y: -15.260234}
-    Radius: 0.23166735
-    Bottom: -0.6707133
-    Top: -0.325
-    Coral: 0
   - Center: {x: 10.648775, y: 22.740227}
     Radius: 0.43725932
     Bottom: -0.9775147
     Top: -0.32499996
     Coral: 0
-  - Center: {x: 12.053683, y: 19.402363}
-    Radius: 0.15073699
-    Bottom: -0.91942585
-    Top: -0.60692006
-    Coral: 1
-  - Center: {x: 11.426675, y: 20.419727}
-    Radius: 0.1011891
-    Bottom: -0.92689836
-    Top: -0.76281184
-    Coral: 1
-  - Center: {x: 12.134394, y: 21.020851}
-    Radius: 0.08332137
-    Bottom: -0.9496841
-    Top: -0.8357718
-    Coral: 1
-  - Center: {x: 12.737497, y: 21.109818}
-    Radius: 0.16403228
-    Bottom: -0.9620018
-    Top: -0.7377461
-    Coral: 1
-  - Center: {x: 12.914931, y: 20.710798}
-    Radius: 0.09086772
-    Bottom: -0.9560153
-    Top: -0.83178604
-    Coral: 1
-  - Center: {x: 9.368608, y: 21.527483}
-    Radius: 0.18363756
-    Bottom: -0.92821693
-    Top: -0.54750216
-    Coral: 1
-  - Center: {x: 10.739577, y: 21.67998}
-    Radius: 0.23276368
-    Bottom: -0.9469131
-    Top: -0.76637185
-    Coral: 1
-  - Center: {x: 11.539231, y: 19.533205}
-    Radius: 0.19678845
-    Bottom: -0.91466033
-    Top: -0.5955516
-    Coral: 1
-  - Center: {x: 8.828637, y: 21.03034}
-    Radius: 0.15568481
-    Bottom: -0.91188186
-    Top: -0.65942603
-    Coral: 1
-  - Center: {x: 9.704231, y: 18.662825}
-    Radius: 0.13169478
-    Bottom: -0.84397507
-    Top: -0.57094735
-    Coral: 1
-  - Center: {x: 11.093799, y: 21.28867}
-    Radius: 0.4058053
-    Bottom: -0.94130987
-    Top: -0.33573344
-    Coral: 0
-  - Center: {x: 11.824544, y: 21.374626}
-    Radius: 0.16916661
-    Bottom: -0.95347166
-    Top: -0.82225895
-    Coral: 1
-  - Center: {x: 11.789454, y: 22.40221}
-    Radius: 0.18946415
-    Bottom: -0.9820757
-    Top: -0.6748439
-    Coral: 1
   - Center: {x: 9.189083, y: 19.519209}
     Radius: 0.3832876
     Bottom: -0.89697367
     Top: -0.325
     Coral: 0
-  - Center: {x: 10.645257, y: 20.93298}
-    Radius: 0.09390073
-    Bottom: -0.92784876
-    Top: -0.7994729
-    Coral: 1
-  - Center: {x: 12.328756, y: 19.830885}
-    Radius: 0.20635092
-    Bottom: -0.92927444
-    Top: -0.76922
-    Coral: 1
-  - Center: {x: 8.9885845, y: 21.93338}
-    Radius: 0.16226651
-    Bottom: -0.9356779
-    Top: -0.5992693
-    Coral: 1
-  - Center: {x: 12.871567, y: 20.531017}
-    Radius: 0.14665343
-    Bottom: -0.9514982
-    Top: -0.8377477
-    Coral: 1
-  - Center: {x: 11.559502, y: 20.953672}
-    Radius: 0.16087623
-    Bottom: -0.93962526
-    Top: -0.7196843
-    Coral: 1
-  - Center: {x: 12.869018, y: 20.854513}
-    Radius: 0.19210355
-    Bottom: -0.9585393
-    Top: -0.80953574
-    Coral: 1
   - Center: {x: -28.013577, y: -2.4733317}
     Radius: 0.102828726
     Bottom: -1.1489384
     Top: -0.9821931
     Coral: 1
-  - Center: {x: -29.229202, y: -1.7833515}
-    Radius: 0.12809327
-    Bottom: -1.1920278
-    Top: -0.98431396
-    Coral: 1
-  - Center: {x: -29.357634, y: -1.0359838}
-    Radius: 0.48918706
-    Bottom: -1.1958477
-    Top: -0.4658421
-    Coral: 0
   - Center: {x: -28.30087, y: -1.0846162}
     Radius: 0.5559175
     Bottom: -1.1545863
     Top: -0.32499996
     Coral: 0
-  - Center: {x: -28.493958, y: -0.857158}
-    Radius: 0.2804519
-    Bottom: -1.1621952
-    Top: -0.74368155
-    Coral: 0
-  - Center: {x: -26.226673, y: -0.3231211}
-    Radius: 0.21866994
-    Bottom: -1.0551429
-    Top: -0.7005515
-    Coral: 1
   - Center: {x: -28.313871, y: -2.135848}
     Radius: 0.17932466
     Bottom: -1.1587622
     Top: -0.7869889
-    Coral: 1
-  - Center: {x: -27.726229, y: 0.33305225}
-    Radius: 0.19232644
-    Bottom: -1.1276709
-    Top: -0.97849447
-    Coral: 1
-  - Center: {x: -28.935715, y: -1.1571374}
-    Radius: 0.5732143
-    Bottom: -1.1803981
-    Top: -0.32500002
-    Coral: 0
-  - Center: {x: -26.964598, y: -3.0455596}
-    Radius: 0.19386585
-    Bottom: -1.1110731
-    Top: -0.70915323
-    Coral: 1
-  - Center: {x: -25.696024, y: -0.4298416}
-    Radius: 0.12945168
-    Bottom: -1.0292122
-    Top: -0.7608349
-    Coral: 1
-  - Center: {x: -27.992287, y: -3.3464391}
-    Radius: 0.18181819
-    Bottom: -1.1546011
-    Top: -0.85976785
-    Coral: 1
-  - Center: {x: -26.402536, y: -2.860199}
-    Radius: 0.12887682
-    Bottom: -1.0846171
-    Top: -0.8756327
-    Coral: 1
-  - Center: {x: -26.563885, y: -2.5408726}
-    Radius: 0.1154176
-    Bottom: -1.0874321
-    Top: -0.90027297
-    Coral: 1
-  - Center: {x: -27.36403, y: -2.7021017}
-    Radius: 0.14240736
-    Bottom: -1.1238095
-    Top: -1.0133524
-    Coral: 1
-  - Center: {x: -27.404644, y: -1.0069294}
-    Radius: 0.14769273
-    Bottom: -1.114264
-    Top: -0.91234684
-    Coral: 1
-  - Center: {x: -29.038141, y: 0.39340892}
-    Radius: 0.15140776
-    Bottom: -1.1839954
-    Top: -1.0665572
-    Coral: 1
-  - Center: {x: -28.761816, y: -1.0204803}
-    Radius: 0.55448616
-    Bottom: -1.1734668
-    Top: -0.3460164
-    Coral: 0
-  - Center: {x: -29.634806, y: -1.6016419}
-    Radius: 0.114584826
-    Bottom: -1.2054108
-    Top: -1.0196021
-    Coral: 1
-  - Center: {x: -27.538881, y: -0.40452996}
-    Radius: 0.13826299
-    Bottom: -1.1189225
-    Top: -1.0116799
     Coral: 1
   - Center: {x: 22.70197, y: 9.538052}
     Radius: 0.16955374
@@ -23623,185 +22258,20 @@ MonoBehaviour:
     Bottom: -1.7226311
     Top: -1.4481592
     Coral: 1
-  - Center: {x: 22.945017, y: -20.711775}
-    Radius: 0.17203929
-    Bottom: -1.1970074
-    Top: -1.0635666
-    Coral: 1
-  - Center: {x: 20.328075, y: -22.407219}
-    Radius: 0.5960702
-    Bottom: -1.2244048
-    Top: -0.3348993
-    Coral: 0
-  - Center: {x: 20.185223, y: -21.907831}
-    Radius: 0.087905675
-    Bottom: -1.2119501
-    Top: -1.0917704
-    Coral: 1
-  - Center: {x: 22.275747, y: -23.133549}
-    Radius: 0.12801541
-    Bottom: -1.3365611
-    Top: -1.1289735
-    Coral: 1
-  - Center: {x: 23.203075, y: -21.90104}
-    Radius: 0.16391638
-    Bottom: -1.2411115
-    Top: -1.0170143
-    Coral: 1
-  - Center: {x: 21.546236, y: -20.035334}
-    Radius: 0.36993504
-    Bottom: -1.1957911
-    Top: -0.6437433
-    Coral: 0
-  - Center: {x: 23.280792, y: -21.580227}
-    Radius: 0.18319508
-    Bottom: -1.2027541
-    Top: -0.90568817
-    Coral: 1
-  - Center: {x: 21.139044, y: -21.695189}
-    Radius: 0.1448294
-    Bottom: -1.2162489
-    Top: -1.0182463
-    Coral: 1
-  - Center: {x: 20.76462, y: -23.092823}
-    Radius: 0.61161214
-    Bottom: -1.2376986
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: 21.67158, y: -20.791523}
-    Radius: 0.13464305
-    Bottom: -1.1921867
-    Top: -0.97385186
-    Coral: 1
-  - Center: {x: 22.17329, y: -22.966204}
-    Radius: 0.14889468
-    Bottom: -1.3003222
-    Top: -0.99163586
-    Coral: 1
-  - Center: {x: 23.384905, y: -21.64755}
-    Radius: 0.28822964
-    Bottom: -1.2225887
-    Top: -0.7924684
-    Coral: 0
   - Center: {x: 20.29101, y: -22.950617}
     Radius: 0.10270958
     Bottom: -1.231283
     Top: -1.0908642
-    Coral: 1
-  - Center: {x: 20.649202, y: -23.098186}
-    Radius: 0.12049847
-    Bottom: -1.2363931
-    Top: -1.1429294
-    Coral: 1
-  - Center: {x: 20.622353, y: -20.264917}
-    Radius: 0.22748072
-    Bottom: -1.1787106
-    Top: -1.002267
-    Coral: 1
-  - Center: {x: 23.717648, y: -21.52345}
-    Radius: 0.1872923
-    Bottom: -1.1977029
-    Top: -0.80941117
-    Coral: 1
-  - Center: {x: 20.96647, y: -21.580698}
-    Radius: 0.079815246
-    Bottom: -1.212379
-    Top: -1.1032602
     Coral: 1
   - Center: {x: 22.090364, y: -20.93792}
     Radius: 0.14591874
     Bottom: -1.1916202
     Top: -0.9921284
     Coral: 1
-  - Center: {x: -24.45283, y: -16.866322}
-    Radius: 0.223004
-    Bottom: -1.2544768
-    Top: -1.0815055
-    Coral: 1
-  - Center: {x: -23.709755, y: -14.72113}
-    Radius: 0.151612
-    Bottom: -1.2059224
-    Top: -0.998647
-    Coral: 1
-  - Center: {x: -23.43082, y: -14.894412}
-    Radius: 0.3990705
-    Bottom: -1.2006063
-    Top: -0.6050801
-    Coral: 0
-  - Center: {x: -23.700409, y: -14.986867}
-    Radius: 0.1174015
-    Bottom: -1.2095084
-    Top: -1.0191321
-    Coral: 1
-  - Center: {x: -23.07052, y: -15.837039}
-    Radius: 0.14068156
-    Bottom: -1.2052898
-    Top: -1.0129579
-    Coral: 1
-  - Center: {x: -25.313795, y: -15.95052}
-    Radius: 0.20231318
-    Bottom: -1.2549362
-    Top: -1.0980136
-    Coral: 1
-  - Center: {x: -25.48766, y: -15.217148}
-    Radius: 0.17459948
-    Bottom: -1.2476137
-    Top: -1.112187
-    Coral: 1
-  - Center: {x: -23.357695, y: -18.349493}
-    Radius: 0.23546574
-    Bottom: -1.255802
-    Top: -1.0731649
-    Coral: 1
-  - Center: {x: -25.74635, y: -16.032484}
-    Radius: 0.23900993
-    Bottom: -1.2598208
-    Top: -1.0744346
-    Coral: 1
   - Center: {x: -23.53251, y: -18.262197}
     Radius: 0.16327421
     Bottom: -1.2579792
     Top: -1.0347598
-    Coral: 1
-  - Center: {x: -22.99125, y: -18.472763}
-    Radius: 0.09506675
-    Bottom: -1.250208
-    Top: -1.1202382
-    Coral: 1
-  - Center: {x: -24.81989, y: -16.263018}
-    Radius: 0.12747565
-    Bottom: -1.2519637
-    Top: -1.1530883
-    Coral: 1
-  - Center: {x: -23.49088, y: -17.012312}
-    Radius: 0.35345334
-    Bottom: -1.2363073
-    Top: -0.7088548
-    Coral: 0
-  - Center: {x: -21.89759, y: -17.560225}
-    Radius: 0.18743826
-    Bottom: -1.202953
-    Top: -0.8990063
-    Coral: 1
-  - Center: {x: -24.127766, y: -14.630458}
-    Radius: 0.18004861
-    Bottom: -1.2152538
-    Top: -0.92329013
-    Coral: 1
-  - Center: {x: -23.965878, y: -15.243075}
-    Radius: 0.13731503
-    Bottom: -1.2202368
-    Top: -0.9975691
-    Coral: 1
-  - Center: {x: -22.712015, y: -17.192837}
-    Radius: 0.33196273
-    Bottom: -1.2193071
-    Top: -0.72392464
-    Coral: 0
-  - Center: {x: -24.178877, y: -15.474489}
-    Radius: 0.12063506
-    Bottom: -1.2285022
-    Top: -1.0328825
     Coral: 1
   - Center: {x: 24.512766, y: 6.879443}
     Radius: 0.19349574
@@ -23872,11 +22342,6 @@ MonoBehaviour:
     Radius: 0.09495725
     Bottom: -1.3987451
     Top: -1.201881
-    Coral: 1
-  - Center: {x: 25.166588, y: 6.5026126}
-    Radius: 0.1261086
-    Bottom: -1.4377486
-    Top: -1.26534
     Coral: 1
   - Center: {x: 23.268364, y: 3.3709373}
     Radius: 0.19506934
@@ -24003,51 +22468,11 @@ MonoBehaviour:
     Bottom: -1.2197773
     Top: -1.1054618
     Coral: 1
-  - Center: {x: -21.00077, y: -20.453484}
-    Radius: 0.13320243
-    Bottom: -1.2467177
-    Top: -0.9705643
-    Coral: 1
-  - Center: {x: -20.372444, y: -20.693977}
-    Radius: 0.32860267
-    Bottom: -1.2387354
-    Top: -0.7483672
-    Coral: 0
-  - Center: {x: -19.232538, y: -22.30239}
-    Radius: 0.12762162
-    Bottom: -1.260413
-    Top: -1.085936
-    Coral: 1
-  - Center: {x: -19.61979, y: -20.49912}
-    Radius: 0.18824849
-    Bottom: -1.2151991
-    Top: -0.824925
-    Coral: 1
-  - Center: {x: -18.845274, y: -21.832077}
-    Radius: 0.17932945
-    Bottom: -1.2404855
-    Top: -1.1013901
-    Coral: 1
-  - Center: {x: -20.367403, y: -23.089994}
-    Radius: 0.09563948
-    Bottom: -1.2916393
-    Top: -1.1608864
-    Coral: 1
   - Center: {x: -21.636625, y: -22.249891}
     Radius: 0.30740947
     Bottom: -1.292263
     Top: -0.83352107
     Coral: 0
-  - Center: {x: -21.231012, y: -22.072222}
-    Radius: 0.46230468
-    Bottom: -1.2850692
-    Top: -0.5951797
-    Coral: 0
-  - Center: {x: -19.284054, y: -19.965916}
-    Radius: 0.1687823
-    Bottom: -1.1894965
-    Top: -1.058582
-    Coral: 1
   - Center: {x: -19.86515, y: -19.228539}
     Radius: 0.16341627
     Bottom: -1.1826311
@@ -24058,80 +22483,10 @@ MonoBehaviour:
     Bottom: -1.2632558
     Top: -0.96159184
     Coral: 1
-  - Center: {x: -18.939928, y: -21.852219}
-    Radius: 0.14864771
-    Bottom: -1.2429016
-    Top: -1.001857
-    Coral: 1
-  - Center: {x: -20.777666, y: -23.385677}
-    Radius: 0.16224135
-    Bottom: -1.339086
-    Top: -1.1172788
-    Coral: 1
-  - Center: {x: -20.842258, y: -20.359745}
-    Radius: 0.16939177
-    Bottom: -1.2407401
-    Top: -1.1093527
-    Coral: 1
-  - Center: {x: -22.215862, y: -20.735949}
-    Radius: 0.146657
-    Bottom: -1.2759145
-    Top: -1.1621612
-    Coral: 1
-  - Center: {x: -19.567617, y: -22.42356}
-    Radius: 0.18849304
-    Bottom: -1.268725
-    Top: -0.87794393
-    Coral: 1
-  - Center: {x: -19.499033, y: -23.092178}
-    Radius: 0.08345321
-    Bottom: -1.2789242
-    Top: -1.1648316
-    Coral: 1
-  - Center: {x: -18.5283, y: -22.200022}
-    Radius: 0.61727715
-    Bottom: -1.2461523
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: -21.224941, y: -21.02141}
-    Radius: 0.16638048
-    Bottom: -1.2644382
-    Top: -0.9195005
-    Coral: 1
   - Center: {x: -18.234098, y: -21.781084}
     Radius: 0.17063197
     Bottom: -1.2275766
     Top: -0.95088273
-    Coral: 1
-  - Center: {x: -18.80892, y: -20.709213}
-    Radius: 0.15564074
-    Bottom: -1.2023554
-    Top: -1.0816339
-    Coral: 1
-  - Center: {x: -21.140684, y: -20.630491}
-    Radius: 0.13493544
-    Bottom: -1.2538683
-    Top: -0.9741221
-    Coral: 1
-  - Center: {x: -19.037529, y: -20.094645}
-    Radius: 0.23318854
-    Bottom: -1.1870044
-    Top: -1.0061337
-    Coral: 1
-  - Center: {x: -18.508501, y: -20.591019}
-    Radius: 0.5803873
-    Bottom: -1.1911023
-    Top: -0.32500005
-    Coral: 0
-  - Center: {x: -19.117977, y: -21.096657}
-    Radius: 0.14427577
-    Bottom: -1.222545
-    Top: -0.98858994
-    Coral: 1
-  - Center: {x: 13.825448, y: -19.996025}
-    Radius: 0.12235072
-    Bottom: -1.0038291
-    Top: -0.75017333
     Coral: 1
   - Center: {x: 10.974466, y: -18.4599}
     Radius: 0.17260385
@@ -24168,26 +22523,11 @@ MonoBehaviour:
     Bottom: -0.9931152
     Top: -0.8344791
     Coral: 1
-  - Center: {x: 13.049676, y: -17.205343}
-    Radius: 0.12959069
-    Bottom: -0.70767623
-    Top: -0.43901065
-    Coral: 1
   - Center: {x: 14.584568, y: -17.93859}
     Radius: 0.4054849
     Bottom: -0.93009835
     Top: -0.325
     Coral: 0
-  - Center: {x: 12.909016, y: -18.046158}
-    Radius: 0.38572288
-    Bottom: -0.90060776
-    Top: -0.325
-    Coral: 0
-  - Center: {x: 13.04759, y: -20.817734}
-    Radius: 0.13826227
-    Bottom: -1.0271049
-    Top: -0.83808047
-    Coral: 1
   - Center: {x: 10.976706, y: -20.191925}
     Radius: 0.10366079
     Bottom: -0.97557056
@@ -24228,205 +22568,15 @@ MonoBehaviour:
     Bottom: -1.0181413
     Top: -0.34191358
     Coral: 0
-  - Center: {x: 10.67769, y: -19.61801}
-    Radius: 0.15945245
-    Bottom: -0.9499701
-    Top: -0.61939555
-    Coral: 1
   - Center: {x: 14.551012, y: -19.177986}
     Radius: 0.109082334
     Bottom: -0.9805225
     Top: -0.8036365
     Coral: 1
-  - Center: {x: 14.315791, y: -18.87137}
-    Radius: 0.42693165
-    Bottom: -0.96210295
-    Top: -0.325
-    Coral: 0
-  - Center: {x: -24.032818, y: 1.7212545}
-    Radius: 0.10344586
-    Bottom: -0.9529155
-    Top: -0.8114901
-    Coral: 1
-  - Center: {x: -21.505209, y: -0.16857454}
-    Radius: 0.31394532
-    Bottom: -0.8668229
-    Top: -0.39832756
-    Coral: 0
-  - Center: {x: -22.94431, y: 3.7644355}
-    Radius: 0.39955464
-    Bottom: -0.9212486
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: -23.002443, y: 2.5868382}
-    Radius: 0.085503645
-    Bottom: -0.91448176
-    Top: -0.79758596
-    Coral: 1
-  - Center: {x: -23.01356, y: 1.2760249}
-    Radius: 0.15991859
-    Bottom: -0.91034067
-    Top: -0.6917089
-    Coral: 1
-  - Center: {x: -23.180632, y: 1.2779254}
-    Radius: 0.39641294
-    Bottom: -0.91656035
-    Top: -0.325
-    Coral: 0
   - Center: {x: -22.320662, y: -0.17482308}
     Radius: 0.09744301
     Bottom: -0.88729984
     Top: -0.68528235
-    Coral: 1
-  - Center: {x: -21.559603, y: 3.4842072}
-    Radius: 0.3679708
-    Bottom: -0.8741166
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: -23.487007, y: 1.5534694}
-    Radius: 0.15159644
-    Bottom: -0.92925197
-    Top: -0.72199786
-    Coral: 1
-  - Center: {x: -21.983042, y: 0.7378231}
-    Radius: 0.17530699
-    Bottom: -0.87721175
-    Top: -0.7412363
-    Coral: 1
-  - Center: {x: -22.715393, y: 3.6558766}
-    Radius: 0.1723364
-    Bottom: -0.9117775
-    Top: -0.5544921
-    Coral: 1
-  - Center: {x: -20.903744, y: 2.2731278}
-    Radius: 0.14435658
-    Bottom: -0.8554997
-    Top: -0.7435307
-    Coral: 1
-  - Center: {x: -20.766123, y: 0.28204286}
-    Radius: 0.14001313
-    Bottom: -0.8531825
-    Top: -0.62613964
-    Coral: 1
-  - Center: {x: -23.917332, y: 0.79942924}
-    Radius: 0.15626614
-    Bottom: -0.9457601
-    Top: -0.73212177
-    Coral: 1
-  - Center: {x: -21.93526, y: 2.9087784}
-    Radius: 0.37223697
-    Bottom: -0.880483
-    Top: -0.325
-    Coral: 0
-  - Center: {x: -21.02604, y: 1.7819526}
-    Radius: 0.35652745
-    Bottom: -0.85703987
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: -21.681927, y: 0.06361427}
-    Radius: 0.1489216
-    Bottom: -0.86989254
-    Top: -0.56115043
-    Coral: 1
-  - Center: {x: -21.339108, y: 0.22289352}
-    Radius: 0.109649196
-    Bottom: -0.862605
-    Top: -0.68479973
-    Coral: 1
-  - Center: {x: -21.938816, y: 0.4955381}
-    Radius: 0.13980927
-    Bottom: -0.8759562
-    Top: -0.5861056
-    Coral: 1
-  - Center: {x: 8.104618, y: 29.11644}
-    Radius: 0.1260426
-    Bottom: -1.1418879
-    Top: -1.044124
-    Coral: 1
-  - Center: {x: 8.134211, y: 29.28399}
-    Radius: 0.11622914
-    Bottom: -1.1450464
-    Top: -0.90408176
-    Coral: 1
-  - Center: {x: 6.826114, y: 29.258183}
-    Radius: 0.22466978
-    Bottom: -1.1340985
-    Top: -0.95983523
-    Coral: 1
-  - Center: {x: 6.646042, y: 26.750418}
-    Radius: 0.3943598
-    Bottom: -1.0746409
-    Top: -0.48614433
-    Coral: 0
-  - Center: {x: 9.120931, y: 28.52938}
-    Radius: 0.2151302
-    Bottom: -1.1375642
-    Top: -0.9707002
-    Coral: 1
-  - Center: {x: 8.152069, y: 28.767664}
-    Radius: 0.12311179
-    Bottom: -1.1352363
-    Top: -1.0397456
-    Coral: 1
-  - Center: {x: 9.084447, y: 25.925472}
-    Radius: 0.14874361
-    Bottom: -1.0650743
-    Top: -0.7567012
-    Coral: 1
-  - Center: {x: 7.482774, y: 28.540201}
-    Radius: 0.1443885
-    Bottom: -1.1253554
-    Top: -0.89121747
-    Coral: 1
-  - Center: {x: 7.609094, y: 25.713566}
-    Radius: 0.16019112
-    Bottom: -1.0476989
-    Top: -0.8286946
-    Coral: 1
-  - Center: {x: 6.5077944, y: 28.816004}
-    Radius: 0.24776605
-    Bottom: -1.1240706
-    Top: -0.93189293
-    Coral: 1
-  - Center: {x: 10.042822, y: 26.699978}
-    Radius: 0.15483181
-    Bottom: -1.0970445
-    Top: -0.88536716
-    Coral: 1
-  - Center: {x: 7.024204, y: 28.845106}
-    Radius: 0.5382634
-    Bottom: -1.1282414
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: 9.240343, y: 28.3175}
-    Radius: 0.11000555
-    Bottom: -1.1335905
-    Top: -0.98319703
-    Coral: 1
-  - Center: {x: 9.585506, y: 28.54277}
-    Radius: 0.08656616
-    Bottom: -1.1413039
-    Top: -1.0229555
-    Coral: 1
-  - Center: {x: 7.7400436, y: 28.287407}
-    Radius: 0.3763993
-    Bottom: -1.1214557
-    Top: -0.5597613
-    Coral: 0
-  - Center: {x: 7.3439612, y: 29.677189}
-    Radius: 0.10755184
-    Bottom: -1.1447829
-    Top: -0.92180794
-    Coral: 1
-  - Center: {x: 10.17762, y: 29.081097}
-    Radius: 0.13644934
-    Bottom: -1.156304
-    Top: -0.9697581
-    Coral: 1
-  - Center: {x: 8.3911705, y: 26.961164}
-    Radius: 0.18253039
-    Bottom: -1.0911311
-    Top: -0.7127117
     Coral: 1
   - Center: {x: 3.6729357, y: -27.824818}
     Radius: 0.15333052
@@ -24653,260 +22803,35 @@ MonoBehaviour:
     Bottom: -1.0770714
     Top: -0.89497334
     Coral: 1
-  - Center: {x: -27.104637, y: -3.9116747}
-    Radius: 0.079378575
-    Bottom: -1.1278957
-    Top: -1.0193739
-    Coral: 1
-  - Center: {x: -29.27563, y: -4.4478226}
-    Radius: 0.14997795
-    Bottom: -1.198449
-    Top: -0.88751686
-    Coral: 1
   - Center: {x: -27.887274, y: -4.8407736}
     Radius: 0.11257999
     Bottom: -1.1656339
     Top: -0.9322347
-    Coral: 1
-  - Center: {x: -28.199226, y: -4.523261}
-    Radius: 0.17751975
-    Bottom: -1.1719049
-    Top: -0.80387354
-    Coral: 1
-  - Center: {x: -27.258371, y: -4.288804}
-    Radius: 0.14750841
-    Bottom: -1.1388175
-    Top: -0.8996205
-    Coral: 1
-  - Center: {x: -26.444105, y: -4.537639}
-    Radius: 0.082823284
-    Bottom: -1.1130046
-    Top: -0.9997732
-    Coral: 1
-  - Center: {x: -26.547802, y: -5.852274}
-    Radius: 0.54678035
-    Bottom: -1.1409512
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: -27.9732, y: -5.4057856}
-    Radius: 0.15434802
-    Bottom: -1.174279
-    Top: -0.96326303
-    Coral: 1
-  - Center: {x: -26.706966, y: -7.7498736}
-    Radius: 0.28152573
-    Bottom: -1.1791904
-    Top: -0.7590742
-    Coral: 0
-  - Center: {x: -26.280407, y: -7.5597095}
-    Radius: 0.20594819
-    Bottom: -1.1666434
-    Top: -0.83268136
-    Coral: 1
-  - Center: {x: -29.854452, y: -5.855473}
-    Radius: 0.21444848
-    Bottom: -1.2605672
-    Top: -0.91282123
-    Coral: 1
-  - Center: {x: -28.130625, y: -6.6454463}
-    Radius: 0.15371801
-    Bottom: -1.1898341
-    Top: -0.8711481
-    Coral: 1
-  - Center: {x: -26.47099, y: -5.1082487}
-    Radius: 0.16324492
-    Bottom: -1.1245884
-    Top: -0.90140915
-    Coral: 1
-  - Center: {x: -29.332567, y: -7.3197007}
-    Radius: 0.10433393
-    Bottom: -1.2742015
-    Top: -1.131562
     Coral: 1
   - Center: {x: -26.85834, y: 2.1081376}
     Radius: 0.11593093
     Bottom: -1.0914706
     Top: -0.93297637
     Coral: 1
-  - Center: {x: -26.66454, y: 2.628696}
-    Radius: 0.15446188
-    Bottom: -1.0850073
-    Top: -0.76477915
-    Coral: 1
-  - Center: {x: -29.206125, y: 4.148868}
-    Radius: 0.20464723
-    Bottom: -1.204145
-    Top: -0.8722926
-    Coral: 1
-  - Center: {x: -26.458, y: 3.8484616}
-    Radius: 0.50463825
-    Bottom: -1.0857234
-    Top: -0.33266023
-    Coral: 0
-  - Center: {x: -27.985851, y: 4.5596657}
-    Radius: 0.18818997
-    Bottom: -1.1603585
-    Top: -0.85519296
-    Coral: 1
-  - Center: {x: -27.698347, y: 2.798774}
-    Radius: 0.27849057
-    Bottom: -1.1350442
-    Top: -0.7194574
-    Coral: 0
-  - Center: {x: -26.11927, y: 5.181316}
-    Radius: 0.16276127
-    Bottom: -1.086498
-    Top: -0.7490637
-    Coral: 1
-  - Center: {x: -24.898031, y: 4.254659}
-    Radius: 0.3903752
-    Bottom: -1.0144963
-    Top: -0.43194595
-    Coral: 0
   - Center: {x: -26.053673, y: 1.6100614}
     Radius: 0.122888185
     Bottom: -1.0493333
     Top: -0.7945633
-    Coral: 1
-  - Center: {x: -28.000174, y: 3.1426432}
-    Radius: 0.14659475
-    Bottom: -1.1505609
-    Top: -1.0368558
     Coral: 1
   - Center: {x: -28.9503, y: 3.3944783}
     Radius: 0.18187435
     Bottom: -1.1893405
     Top: -0.89441615
     Coral: 1
-  - Center: {x: -25.385303, y: 3.6846764}
-    Radius: 0.11397838
-    Bottom: -1.0313792
-    Top: -0.84655386
-    Coral: 1
-  - Center: {x: -28.388422, y: 5.191868}
-    Radius: 0.10914238
-    Bottom: -1.186767
-    Top: -1.0375537
-    Coral: 1
-  - Center: {x: -22.308374, y: -11.532638}
-    Radius: 0.11836424
-    Bottom: -1.1188394
-    Top: -0.926902
-    Coral: 1
-  - Center: {x: -22.091599, y: -8.544536}
-    Radius: 0.14632921
-    Bottom: -1.0625625
-    Top: -0.86250937
-    Coral: 1
-  - Center: {x: -20.634735, y: -9.937866}
-    Radius: 0.16413489
-    Bottom: -1.0331696
-    Top: -0.69288754
-    Coral: 1
-  - Center: {x: -22.904247, y: -10.071444}
-    Radius: 0.15545356
-    Bottom: -1.1221086
-    Top: -0.7998245
-    Coral: 1
-  - Center: {x: -23.930206, y: -8.897126}
-    Radius: 0.11839988
-    Bottom: -1.1319469
-    Top: -0.886482
-    Coral: 1
-  - Center: {x: -21.62395, y: -9.2765875}
-    Radius: 0.15616769
-    Bottom: -1.061105
-    Top: -0.7373404
-    Coral: 1
   - Center: {x: -22.49098, y: -11.89039}
     Radius: 0.22398548
     Bottom: -1.1294218
     Top: -0.9556893
     Coral: 1
-  - Center: {x: -21.486954, y: -10.583029}
-    Radius: 0.18292207
-    Bottom: -1.0770737
-    Top: -0.9351917
-    Coral: 1
-  - Center: {x: -22.697067, y: -10.612896}
-    Radius: 0.13899411
-    Bottom: -1.1229228
-    Top: -0.93289787
-    Coral: 1
-  - Center: {x: -22.547163, y: -12.645635}
-    Radius: 0.13689215
-    Bottom: -1.1402397
-    Top: -0.9530885
-    Coral: 1
-  - Center: {x: -21.78165, y: -11.065032}
-    Radius: 0.122239955
-    Bottom: -1.0943197
-    Top: -0.84089357
-    Coral: 1
-  - Center: {x: -20.925117, y: -10.824384}
-    Radius: 0.11901419
-    Bottom: -1.0565728
-    Top: -0.9642604
-    Coral: 1
-  - Center: {x: -20.735844, y: -11.247706}
-    Radius: 0.17586266
-    Bottom: -1.0526505
-    Top: -0.7674746
-    Coral: 1
-  - Center: {x: -23.33483, y: -11.810058}
-    Radius: 0.4164282
-    Bottom: -1.1569542
-    Top: -0.5355253
-    Coral: 0
   - Center: {x: -22.16462, y: -8.736435}
     Radius: 0.112904206
     Bottom: -1.0694469
     Top: -0.83537555
-    Coral: 1
-  - Center: {x: -21.76804, y: -12.705123}
-    Radius: 0.5274165
-    Bottom: -1.1120548
-    Top: -0.32499996
-    Coral: 0
-  - Center: {x: -23.314762, y: -9.022573}
-    Radius: 0.14863233
-    Bottom: -1.1153207
-    Top: -0.91211885
-    Coral: 1
-  - Center: {x: -22.649792, y: -9.854779}
-    Radius: 0.22283597
-    Bottom: -1.1094838
-    Top: -0.93664294
-    Coral: 1
-  - Center: {x: -23.066326, y: -9.091402}
-    Radius: 0.12504366
-    Bottom: -1.1085205
-    Top: -0.9057519
-    Coral: 1
-  - Center: {x: -23.20414, y: -10.91772}
-    Radius: 0.15739584
-    Bottom: -1.1437795
-    Top: -0.8174687
-    Coral: 1
-  - Center: {x: -23.329147, y: -12.3146105}
-    Radius: 0.18204933
-    Bottom: -1.1625501
-    Top: -0.86734205
-    Coral: 1
-  - Center: {x: -22.957712, y: -11.504431}
-    Radius: 0.13902211
-    Bottom: -1.1414793
-    Top: -0.8532606
-    Coral: 1
-  - Center: {x: -22.103924, y: -11.336427}
-    Radius: 0.29717347
-    Bottom: -1.1095223
-    Top: -0.6660553
-    Coral: 0
-  - Center: {x: -22.114832, y: -8.939723}
-    Radius: 0.15448348
-    Bottom: -1.07224
-    Top: -0.86103886
     Coral: 1
   - Center: {x: 10.66376, y: -20.849726}
     Radius: 0.42703053
@@ -25273,151 +23198,6 @@ MonoBehaviour:
     Bottom: -2.538873
     Top: -2.118022
     Coral: 1
-  - Center: {x: 24.788315, y: -23.073475}
-    Radius: 0.46480048
-    Bottom: -1.8568192
-    Top: -1.1031067
-    Coral: 1
-  - Center: {x: 26.629322, y: -24.207874}
-    Radius: 0.68101066
-    Bottom: -2.5512342
-    Top: -1.4469191
-    Coral: 1
-  - Center: {x: 26.65418, y: -22.941639}
-    Radius: 0.5107156
-    Bottom: -2.3169234
-    Top: -1.4887558
-    Coral: 1
-  - Center: {x: 29.63908, y: -24.977375}
-    Radius: 0.56082857
-    Bottom: -2.2266476
-    Top: -1.4599144
-    Coral: 1
-  - Center: {x: 25.359575, y: -24.835299}
-    Radius: 0.56577706
-    Bottom: -2.3688169
-    Top: -1.4513625
-    Coral: 1
-  - Center: {x: 27.522987, y: -23.239113}
-    Radius: 0.43510664
-    Bottom: -2.5306256
-    Top: -1.9357722
-    Coral: 1
-  - Center: {x: 28.36039, y: -25.414099}
-    Radius: 0.1563328
-    Bottom: -1.8113399
-    Top: -1.504385
-    Coral: 0
-  - Center: {x: 28.08828, y: -25.5005}
-    Radius: 0.68615717
-    Bottom: -1.7477819
-    Top: -0.6351213
-    Coral: 1
-  - Center: {x: 28.428318, y: -24.3858}
-    Radius: 0.58994687
-    Bottom: -2.5272112
-    Top: -1.7206689
-    Coral: 1
-  - Center: {x: 25.824215, y: -27.951052}
-    Radius: 0.41235828
-    Bottom: -1.236865
-    Top: -0.6215097
-    Coral: 0
-  - Center: {x: 28.482054, y: -26.72193}
-    Radius: 0.55376047
-    Bottom: -1.1794893
-    Top: -0.35312176
-    Coral: 0
-  - Center: {x: 27.486605, y: -25.21881}
-    Radius: 0.8512065
-    Bottom: -2.028789
-    Top: -1.3685576
-    Coral: 1
-  - Center: {x: 26.921206, y: -26.646315}
-    Radius: 0.43978846
-    Bottom: -1.2367631
-    Top: -0.325
-    Coral: 1
-  - Center: {x: 25.419027, y: -24.11347}
-    Radius: 0.62965757
-    Bottom: -2.3372004
-    Top: -1.3161585
-    Coral: 1
-  - Center: {x: 27.4802, y: -23.808794}
-    Radius: 0.757799
-    Bottom: -2.576549
-    Top: -1.3477153
-    Coral: 1
-  - Center: {x: 29.503946, y: -24.911278}
-    Radius: 0.618879
-    Bottom: -2.269903
-    Top: -0.98685175
-    Coral: 1
-  - Center: {x: 26.492083, y: -27.541317}
-    Radius: 0.48523784
-    Bottom: -1.1118532
-    Top: -0.32499996
-    Coral: 1
-  - Center: {x: 27.012562, y: -24.949577}
-    Radius: 0.68218863
-    Bottom: -2.280669
-    Top: -1.7515348
-    Coral: 1
-  - Center: {x: 25.336506, y: -24.872293}
-    Radius: 0.72655284
-    Bottom: -2.3679926
-    Top: -1.1898271
-    Coral: 1
-  - Center: {x: 25.26496, y: -27.81827}
-    Radius: 0.8341863
-    Bottom: -1.408436
-    Top: -0.76140606
-    Coral: 1
-  - Center: {x: 25.744717, y: -23.411781}
-    Radius: 0.69233656
-    Bottom: -2.2214983
-    Top: -1.0988172
-    Coral: 1
-  - Center: {x: 24.29196, y: -26.509163}
-    Radius: 0.4616347
-    Bottom: -2.134906
-    Top: -1.503785
-    Coral: 1
-  - Center: {x: 27.898632, y: -22.605215}
-    Radius: 0.56651074
-    Bottom: -2.4466393
-    Top: -2.0072298
-    Coral: 1
-  - Center: {x: 25.467945, y: -24.344631}
-    Radius: 0.46255234
-    Bottom: -2.410793
-    Top: -1.7784176
-    Coral: 1
-  - Center: {x: 25.685904, y: -26.352411}
-    Radius: 0.61444485
-    Bottom: -1.6343783
-    Top: -0.6380051
-    Coral: 1
-  - Center: {x: 24.563213, y: -26.940628}
-    Radius: 0.680218
-    Bottom: -1.87582
-    Top: -0.7727903
-    Coral: 1
-  - Center: {x: 27.241543, y: -22.592943}
-    Radius: 0.5180073
-    Bottom: -2.3086853
-    Top: -1.2347599
-    Coral: 1
-  - Center: {x: 28.90265, y: -26.238085}
-    Radius: 0.5489992
-    Bottom: -1.3095039
-    Top: -0.5589431
-    Coral: 1
-  - Center: {x: 26.308746, y: -25.211473}
-    Radius: 0.7495745
-    Bottom: -2.19547
-    Top: -0.979973
-    Coral: 1
   - Center: {x: -27.545527, y: 25.539194}
     Radius: 0.8822043
     Bottom: -2.5171413
@@ -25558,680 +23338,65 @@ MonoBehaviour:
     Bottom: -2.554471
     Top: -1.86626
     Coral: 1
-  - Center: {x: -8.758074, y: 30.810806}
-    Radius: 0.6053268
-    Bottom: -2.5013697
-    Top: -2.031853
-    Coral: 1
-  - Center: {x: -11.641283, y: 33.28929}
-    Radius: 0.3354808
-    Bottom: -2.5312984
-    Top: -2.030666
-    Coral: 0
-  - Center: {x: -13.429771, y: 31.426937}
-    Radius: 0.66046476
-    Bottom: -2.6065183
-    Top: -1.2372521
-    Coral: 1
-  - Center: {x: -12.364506, y: 30.124697}
-    Radius: 0.5189688
-    Bottom: -2.5453947
-    Top: -1.8358896
-    Coral: 1
-  - Center: {x: -9.373047, y: 28.73282}
-    Radius: 0.5587008
-    Bottom: -2.0621636
-    Top: -1.6288118
-    Coral: 1
-  - Center: {x: -9.742405, y: 32.86324}
-    Radius: 0.38217768
-    Bottom: -2.501936
-    Top: -1.9794441
-    Coral: 1
-  - Center: {x: -10.971768, y: 28.554375}
-    Radius: 0.8605241
-    Bottom: -2.0641787
-    Top: -1.3967202
-    Coral: 1
-  - Center: {x: -10.035816, y: 32.562366}
-    Radius: 0.5028439
-    Bottom: -2.5036724
-    Top: -1.8162124
-    Coral: 1
   - Center: {x: -13.668204, y: 30.757166}
     Radius: 0.51610035
     Bottom: -2.6201766
     Top: -1.7832772
-    Coral: 1
-  - Center: {x: -12.455524, y: 30.552626}
-    Radius: 0.62484145
-    Bottom: -2.5637171
-    Top: -1.2683047
-    Coral: 1
-  - Center: {x: -8.063929, y: 30.71243}
-    Radius: 0.8585882
-    Bottom: -2.503283
-    Top: -1.837326
-    Coral: 1
-  - Center: {x: -8.729567, y: 31.66721}
-    Radius: 0.23137924
-    Bottom: -2.4998693
-    Top: -2.045563
-    Coral: 0
-  - Center: {x: -12.139857, y: 28.954323}
-    Radius: 0.73101735
-    Bottom: -2.283563
-    Top: -1.0981578
-    Coral: 1
-  - Center: {x: -12.117828, y: 29.200499}
-    Radius: 0.6789669
-    Bottom: -2.354256
-    Top: -1.8276207
-    Coral: 1
-  - Center: {x: -9.016196, y: 30.911121}
-    Radius: 0.37199524
-    Bottom: -2.5012107
-    Top: -1.9460884
-    Coral: 0
-  - Center: {x: -9.719554, y: 28.880999}
-    Radius: 0.65898377
-    Bottom: -2.1239593
-    Top: -1.0553626
-    Coral: 1
-  - Center: {x: -13.030464, y: 29.090387}
-    Radius: 0.16698243
-    Bottom: -2.402782
-    Top: -2.0749168
-    Coral: 0
-  - Center: {x: -11.125782, y: 28.345442}
-    Radius: 0.5247665
-    Bottom: -1.9979082
-    Top: -1.2804769
-    Coral: 1
-  - Center: {x: -13.719935, y: 31.07064}
-    Radius: 0.21655084
-    Bottom: -2.622301
-    Top: -2.19711
-    Coral: 0
-  - Center: {x: -10.572099, y: 28.495535}
-    Radius: 0.66563594
-    Bottom: -2.0222142
-    Top: -1.505919
-    Coral: 1
-  - Center: {x: -12.414018, y: 30.826143}
-    Radius: 0.49221423
-    Bottom: -2.561396
-    Top: -1.8884683
-    Coral: 1
-  - Center: {x: -9.431046, y: 32.111683}
-    Radius: 0.5974885
-    Bottom: -2.5006344
-    Top: -1.5317574
     Coral: 1
   - Center: {x: -10.079803, y: 31.951872}
     Radius: 0.20458677
     Bottom: -2.5044615
     Top: -2.1027615
     Coral: 0
-  - Center: {x: -11.52145, y: 32.638615}
-    Radius: 0.27801833
-    Bottom: -2.5273187
-    Top: -1.981438
-    Coral: 0
-  - Center: {x: 23.971815, y: -31.305105}
-    Radius: 0.450649
-    Bottom: -2.699089
-    Top: -2.0829873
-    Coral: 1
-  - Center: {x: 24.433273, y: -31.644192}
-    Radius: 0.6730891
-    Bottom: -2.6936324
-    Top: -1.6021627
-    Coral: 1
-  - Center: {x: 26.708614, y: -29.313473}
-    Radius: 0.40015948
-    Bottom: -1.1753871
-    Top: -0.6283116
-    Coral: 1
-  - Center: {x: 22.987204, y: -29.933283}
-    Radius: 0.5849118
-    Bottom: -2.7234592
-    Top: -1.9238006
-    Coral: 1
-  - Center: {x: 25.870846, y: -29.018625}
-    Radius: 0.4934815
-    Bottom: -1.3503351
-    Top: -0.6139209
-    Coral: 0
-  - Center: {x: 25.939318, y: -28.982086}
-    Radius: 0.48056623
-    Bottom: -1.3137646
-    Top: -0.65676147
-    Coral: 1
-  - Center: {x: 25.715187, y: -31.87468}
-    Radius: 0.56109726
-    Bottom: -2.6845698
-    Top: -1.9174691
-    Coral: 1
-  - Center: {x: 22.067842, y: -31.245575}
-    Radius: 0.70022184
-    Bottom: -2.6973703
-    Top: -2.154249
-    Coral: 1
   - Center: {x: 24.575443, y: -32.85063}
     Radius: 0.66747034
     Bottom: -2.6674833
     Top: -1.2836934
-    Coral: 1
-  - Center: {x: 22.966434, y: -30.12041}
-    Radius: 0.23178267
-    Bottom: -2.720776
-    Top: -2.2656777
-    Coral: 0
-  - Center: {x: 24.508196, y: -31.586142}
-    Radius: 0.56453085
-    Bottom: -2.6953714
-    Top: -1.9235765
-    Coral: 1
-  - Center: {x: 24.942558, y: -29.739338}
-    Radius: 0.5026794
-    Bottom: -2.0523312
-    Top: -1.0101835
-    Coral: 1
-  - Center: {x: 23.820951, y: -28.651714}
-    Radius: 0.4067901
-    Bottom: -2.308379
-    Top: -1.7522383
-    Coral: 1
-  - Center: {x: 25.620554, y: -29.473059}
-    Radius: 0.56861
-    Bottom: -1.5748143
-    Top: -1.1337765
-    Coral: 1
-  - Center: {x: 24.011396, y: -30.174864}
-    Radius: 0.4566848
-    Bottom: -2.5725148
-    Top: -1.6257224
-    Coral: 1
-  - Center: {x: 25.967627, y: -31.0221}
-    Radius: 0.59802866
-    Bottom: -2.309713
-    Top: -1.8458568
-    Coral: 1
-  - Center: {x: 22.748627, y: -30.815771}
-    Radius: 0.59378296
-    Bottom: -2.7074637
-    Top: -1.4764414
-    Coral: 1
-  - Center: {x: 26.666397, y: -30.741993}
-    Radius: 0.42845878
-    Bottom: -1.8697215
-    Top: -0.9814469
-    Coral: 1
-  - Center: {x: 24.269922, y: -30.931433}
-    Radius: 0.45520237
-    Bottom: -2.6700802
-    Top: -1.9907894
-    Coral: 0
-  - Center: {x: 22.90108, y: -30.233896}
-    Radius: 0.68121827
-    Bottom: -2.7187886
-    Top: -1.3064966
-    Coral: 1
-  - Center: {x: 23.114407, y: -29.957222}
-    Radius: 0.75690544
-    Bottom: -2.7233696
-    Top: -1.4959848
-    Coral: 1
-  - Center: {x: 26.65916, y: -30.748796}
-    Radius: 0.59327453
-    Bottom: -1.8761708
-    Top: -0.91412705
-    Coral: 1
-  - Center: {x: 24.604273, y: -28.909481}
-    Radius: 0.8583759
-    Bottom: -1.9072895
-    Top: -1.2414972
-    Coral: 1
-  - Center: {x: 21.794044, y: -28.836231}
-    Radius: 0.35852262
-    Bottom: -2.7370408
-    Top: -2.2468889
-    Coral: 1
-  - Center: {x: 25.820747, y: -27.886982}
-    Radius: 0.56425554
-    Bottom: -1.239987
-    Top: -0.325
-    Coral: 1
-  - Center: {x: 21.84033, y: -29.446445}
-    Radius: 0.4482891
-    Bottom: -2.7311866
-    Top: -2.118311
-    Coral: 1
-  - Center: {x: 22.83896, y: -32.448257}
-    Radius: 0.5524999
-    Bottom: -2.6662085
-    Top: -1.7702842
-    Coral: 1
-  - Center: {x: 24.979456, y: -32.04202}
-    Radius: 0.5285096
-    Bottom: -2.6886594
-    Top: -2.2787251
     Coral: 1
   - Center: {x: -39.422447, y: -11.497873}
     Radius: 0.56511754
     Bottom: -2.4528725
     Top: -1.281279
     Coral: 1
-  - Center: {x: -38.746403, y: -11.063117}
-    Radius: 0.79653525
-    Bottom: -2.4872942
-    Top: -1.8694681
-    Coral: 1
-  - Center: {x: -39.1798, y: -10.106846}
-    Radius: 0.46001792
-    Bottom: -2.47598
-    Top: -1.8470694
-    Coral: 1
-  - Center: {x: -35.70348, y: -10.499694}
-    Radius: 0.5850588
-    Bottom: -2.5601902
-    Top: -1.6871166
-    Coral: 0
-  - Center: {x: -35.939487, y: -13.054984}
-    Radius: 0.543736
-    Bottom: -2.5733314
-    Top: -1.6916184
-    Coral: 1
-  - Center: {x: -35.913307, y: -11.35302}
-    Radius: 0.15509894
-    Bottom: -2.5555756
-    Top: -2.2510433
-    Coral: 0
-  - Center: {x: -36.46371, y: -8.184482}
-    Radius: 0.74761754
-    Bottom: -2.5462537
-    Top: -1.3339299
-    Coral: 1
-  - Center: {x: -37.41008, y: -8.874023}
-    Radius: 0.27361616
-    Bottom: -2.5159676
-    Top: -1.9787304
-    Coral: 0
-  - Center: {x: -34.513416, y: -10.299369}
-    Radius: 0.8708111
-    Bottom: -2.5936708
-    Top: -1.9182333
-    Coral: 1
-  - Center: {x: -34.359394, y: -11.468106}
-    Radius: 0.4105496
-    Bottom: -2.5947654
-    Top: -2.033485
-    Coral: 1
-  - Center: {x: -35.389248, y: -11.674038}
-    Radius: 0.4725332
-    Bottom: -2.5704594
-    Top: -1.5908103
-    Coral: 1
-  - Center: {x: -38.249573, y: -12.742134}
-    Radius: 0.55168957
-    Bottom: -2.5141306
-    Top: -1.7598916
-    Coral: 1
-  - Center: {x: -39.463184, y: -12.32002}
-    Radius: 0.5701865
-    Bottom: -2.3568575
-    Top: -1.4322529
-    Coral: 1
   - Center: {x: -38.73613, y: -11.337804}
     Radius: 0.75157803
     Bottom: -2.4905536
     Top: -1.2718077
-    Coral: 1
-  - Center: {x: -35.770836, y: -13.4411125}
-    Radius: 0.5330836
-    Bottom: -2.5822244
-    Top: -1.7177852
-    Coral: 1
-  - Center: {x: -38.015095, y: -9.60038}
-    Radius: 0.47196504
-    Bottom: -2.499275
-    Top: -1.8540308
-    Coral: 1
-  - Center: {x: -38.751637, y: -10.004714}
-    Radius: 0.6858599
-    Bottom: -2.4832075
-    Top: -1.0612925
     Coral: 1
   - Center: {x: -38.268585, y: -9.86139}
     Radius: 0.5902116
     Bottom: -2.4930446
     Top: -1.6861405
     Coral: 1
-  - Center: {x: -37.45955, y: -13.609909}
-    Radius: 0.43867263
-    Bottom: -2.4688535
-    Top: -1.5594037
-    Coral: 1
-  - Center: {x: -36.29525, y: -8.241842}
-    Radius: 0.5360393
-    Bottom: -2.551327
-    Top: -1.6820948
-    Coral: 1
   - Center: {x: -35.151886, y: -12.980109}
     Radius: 0.4880543
     Bottom: -2.5856864
     Top: -1.9184461
-    Coral: 1
-  - Center: {x: -38.233864, y: -9.451864}
-    Radius: 0.5468132
-    Bottom: -2.494459
-    Top: -1.3608136
-    Coral: 1
-  - Center: {x: -37.928463, y: -12.075968}
-    Radius: 0.5528603
-    Bottom: -2.5173454
-    Top: -1.6208366
-    Coral: 1
-  - Center: {x: -37.281536, y: -9.860621}
-    Radius: 0.37582603
-    Bottom: -2.5169272
-    Top: -2.003119
-    Coral: 1
-  - Center: {x: -34.66949, y: -9.662065}
-    Radius: 0.5286055
-    Bottom: -2.592259
-    Top: -2.1822503
     Coral: 1
   - Center: {x: -36.486996, y: -8.637547}
     Radius: 0.45836037
     Bottom: -2.5436082
     Top: -1.5933421
     Coral: 1
-  - Center: {x: -36.99816, y: -10.568468}
-    Radius: 0.6012604
-    Bottom: -2.5239146
-    Top: -1.548921
-    Coral: 1
-  - Center: {x: -37.241207, y: -9.059924}
-    Radius: 0.6307011
-    Bottom: -2.520254
-    Top: -1.2126933
-    Coral: 1
-  - Center: {x: -38.246647, y: -10.07071}
-    Radius: 0.48191816
-    Bottom: -2.4932892
-    Top: -1.4941833
-    Coral: 1
-  - Center: {x: 19.176105, y: 35.850014}
-    Radius: 0.38316444
-    Bottom: -2.6677623
-    Top: -2.1439214
-    Coral: 1
-  - Center: {x: 18.490915, y: 34.279705}
-    Radius: 0.5805119
-    Bottom: -2.5940704
-    Top: -1.7277822
-    Coral: 0
-  - Center: {x: 20.360264, y: 33.275333}
-    Radius: 0.75654405
-    Bottom: -2.5606625
-    Top: -1.3338637
-    Coral: 1
-  - Center: {x: 18.462, y: 38.144245}
-    Radius: 0.6496594
-    Bottom: -2.8666153
-    Top: -1.8131388
-    Coral: 1
-  - Center: {x: 20.836693, y: 33.866264}
-    Radius: 0.57416624
-    Bottom: -2.5816195
-    Top: -1.7966516
-    Coral: 1
-  - Center: {x: 19.007643, y: 32.76525}
-    Radius: 0.54533386
-    Bottom: -2.543523
-    Top: -1.7979733
-    Coral: 1
-  - Center: {x: 18.867361, y: 36.76381}
-    Radius: 0.7514314
-    Bottom: -2.7050095
-    Top: -1.4865013
-    Coral: 1
   - Center: {x: 16.866716, y: 37.365932}
     Radius: 0.3857783
     Bottom: -2.6906614
     Top: -2.1632469
-    Coral: 1
-  - Center: {x: 16.069382, y: 34.849693}
-    Radius: 0.38916928
-    Bottom: -2.5799901
-    Top: -2.0479398
-    Coral: 1
-  - Center: {x: 20.324118, y: 36.973843}
-    Radius: 0.43573734
-    Bottom: -2.7861016
-    Top: -1.8827372
-    Coral: 1
-  - Center: {x: 19.385342, y: 33.536858}
-    Radius: 0.5588087
-    Bottom: -2.5698216
-    Top: -1.7359207
-    Coral: 0
-  - Center: {x: 17.802055, y: 36.689003}
-    Radius: 0.5357508
-    Bottom: -2.6859298
-    Top: -1.9534813
-    Coral: 1
-  - Center: {x: 17.900967, y: 36.313812}
-    Radius: 0.42920443
-    Bottom: -2.67223
-    Top: -2.085446
-    Coral: 1
-  - Center: {x: 16.980965, y: 33.25431}
-    Radius: 0.4470619
-    Bottom: -2.5430682
-    Top: -1.6162258
-    Coral: 1
-  - Center: {x: 20.943727, y: 36.535336}
-    Radius: 0.60072285
-    Bottom: -2.748094
-    Top: -2.2821484
-    Coral: 1
-  - Center: {x: 17.90691, y: 32.97948}
-    Radius: 0.60596126
-    Bottom: -2.544195
-    Top: -1.5615785
-    Coral: 1
-  - Center: {x: 19.682074, y: 35.29}
-    Radius: 0.4512596
-    Bottom: -2.6427996
-    Top: -2.0258627
-    Coral: 1
-  - Center: {x: 20.882767, y: 35.076977}
-    Radius: 0.4347408
-    Bottom: -2.6329017
-    Top: -1.7316033
-    Coral: 1
-  - Center: {x: 20.818386, y: 35.231598}
-    Radius: 0.60078657
-    Bottom: -2.6400993
-    Top: -1.3945571
-    Coral: 1
-  - Center: {x: 18.947456, y: 34.615936}
-    Radius: 0.55354685
-    Bottom: -2.6107183
-    Top: -2.181364
-    Coral: 1
-  - Center: {x: 18.92231, y: 34.682346}
-    Radius: 0.6492537
-    Bottom: -2.6134498
-    Top: -1.5606312
-    Coral: 1
-  - Center: {x: 21.486391, y: 35.665512}
-    Radius: 0.38846853
-    Bottom: -2.6707482
-    Top: -2.139656
-    Coral: 1
-  - Center: {x: 19.472097, y: 37.618973}
-    Radius: 0.7794776
-    Bottom: -2.8267305
-    Top: -2.222135
-    Coral: 1
-  - Center: {x: 21.705223, y: 34.380215}
-    Radius: 0.7420643
-    Bottom: -2.6022341
-    Top: -1.3989154
-    Coral: 1
-  - Center: {x: 21.665703, y: 36.35244}
-    Radius: 0.5610415
-    Bottom: -2.807184
-    Top: -2.0401597
-    Coral: 1
-  - Center: {x: -15.776147, y: 31.697155}
-    Radius: 0.7607701
-    Bottom: -2.740229
-    Top: -1.5065773
-    Coral: 1
-  - Center: {x: -18.931433, y: 29.888668}
-    Radius: 0.3588365
-    Bottom: -2.875054
-    Top: -2.3844728
     Coral: 1
   - Center: {x: -21.441158, y: 30.845594}
     Radius: 0.45298654
     Bottom: -2.8932981
     Top: -1.954173
     Coral: 1
-  - Center: {x: -18.088417, y: 28.831882}
-    Radius: 0.5722687
-    Bottom: -2.826259
-    Top: -1.8982779
-    Coral: 1
-  - Center: {x: -18.071463, y: 33.912678}
-    Radius: 0.7274314
-    Bottom: -2.8492305
-    Top: -2.2850041
-    Coral: 1
-  - Center: {x: -16.88469, y: 33.289097}
-    Radius: 0.46399367
-    Bottom: -2.797965
-    Top: -1.83602
-    Coral: 1
-  - Center: {x: -19.10562, y: 31.428743}
-    Radius: 0.39521465
-    Bottom: -2.8922112
-    Top: -2.351896
-    Coral: 1
-  - Center: {x: -21.06923, y: 31.213717}
-    Radius: 0.64359266
-    Bottom: -2.9024143
-    Top: -1.5681272
-    Coral: 1
-  - Center: {x: -19.018204, y: 31.916714}
-    Radius: 0.8688568
-    Bottom: -2.8917284
-    Top: -2.2178066
-    Coral: 1
-  - Center: {x: -19.099081, y: 28.158733}
-    Radius: 0.60831213
-    Bottom: -2.824825
-    Top: -2.3529928
-    Coral: 1
-  - Center: {x: -17.883604, y: 31.295845}
-    Radius: 0.59092057
-    Bottom: -2.8504167
-    Top: -1.9685959
-    Coral: 0
-  - Center: {x: -17.372076, y: 28.489363}
-    Radius: 0.69327307
-    Bottom: -2.763088
-    Top: -2.2253563
-    Coral: 1
-  - Center: {x: -17.26777, y: 31.592892}
-    Radius: 0.5459164
-    Bottom: -2.8220153
-    Top: -1.9367666
-    Coral: 1
-  - Center: {x: -16.259443, y: 31.761003}
-    Radius: 0.23438787
-    Bottom: -2.7680066
-    Top: -2.307793
-    Coral: 0
-  - Center: {x: -16.258926, y: 31.19354}
-    Radius: 0.5563395
-    Bottom: -2.7677758
-    Top: -2.3362556
-    Coral: 1
   - Center: {x: -16.4814, y: 32.229237}
     Radius: 0.644666
     Bottom: -2.7799692
     Top: -1.7345899
     Coral: 1
-  - Center: {x: -17.174782, y: 29.624733}
-    Radius: 0.2675779
-    Bottom: -2.806305
-    Top: -2.2809236
-    Coral: 0
-  - Center: {x: -19.28867, y: 32.74034}
-    Radius: 0.56157583
-    Bottom: -2.8962102
-    Top: -1.7319592
-    Coral: 1
   - Center: {x: -16.761665, y: 29.380217}
     Radius: 0.5630863
     Bottom: -2.7839117
     Top: -1.6165292
-    Coral: 1
-  - Center: {x: -16.169485, y: 29.358822}
-    Radius: 0.65457124
-    Bottom: -2.7498407
-    Top: -1.773035
-    Coral: 0
-  - Center: {x: -17.365376, y: 29.235153}
-    Radius: 0.39503905
-    Bottom: -2.8086798
-    Top: -2.2686048
-    Coral: 1
-  - Center: {x: -17.01227, y: 28.483387}
-    Radius: 0.5876879
-    Bottom: -2.721055
-    Top: -1.5026689
-    Coral: 1
-  - Center: {x: -20.983606, y: 29.69968}
-    Radius: 0.43131295
-    Bottom: -2.882322
-    Top: -1.9881302
-    Coral: 1
-  - Center: {x: -17.995274, y: 31.043468}
-    Radius: 0.6822423
-    Bottom: -2.85353
-    Top: -1.4391149
-    Coral: 1
-  - Center: {x: -17.564491, y: 33.155224}
-    Radius: 0.78098315
-    Bottom: -2.8329268
-    Top: -2.2271636
-    Coral: 1
-  - Center: {x: -19.09879, y: 33.18218}
-    Radius: 0.76775426
-    Bottom: -2.8888674
-    Top: -1.6438904
-    Coral: 1
-  - Center: {x: -20.338041, y: 31.15576}
-    Radius: 0.6714883
-    Bottom: -2.905619
-    Top: -1.9035681
-    Coral: 0
-  - Center: {x: -17.424482, y: 31.488955}
-    Radius: 0.7313081
-    Bottom: -2.8295257
-    Top: -1.6436491
-    Coral: 1
-  - Center: {x: -17.081085, y: 31.077179}
-    Radius: 0.6609388
-    Bottom: -2.8116176
-    Top: -1.4413688
     Coral: 1
   - Center: {x: 30.625992, y: 11.18336}
     Radius: 0.71127194
@@ -26513,110 +23678,15 @@ MonoBehaviour:
     Bottom: -2.848071
     Top: -1.8347657
     Coral: 1
-  - Center: {x: 6.9613376, y: 33.567303}
-    Radius: 0.4311474
-    Bottom: -2.2763216
-    Top: -1.382473
-    Coral: 1
-  - Center: {x: 10.290303, y: 34.466145}
-    Radius: 0.37017456
-    Bottom: -2.461292
-    Top: -1.9552101
-    Coral: 1
-  - Center: {x: 10.485743, y: 35.419487}
-    Radius: 0.43103516
-    Bottom: -2.4927764
-    Top: -1.9034895
-    Coral: 1
-  - Center: {x: 7.9603786, y: 34.99761}
-    Radius: 0.48727778
-    Bottom: -2.4725518
-    Top: -1.4623345
-    Coral: 1
-  - Center: {x: 7.7285423, y: 38.26633}
-    Radius: 0.6228271
-    Bottom: -2.5131977
-    Top: -2.0301068
-    Coral: 1
-  - Center: {x: 8.2656, y: 35.968357}
-    Radius: 0.5405815
-    Bottom: -2.4875023
-    Top: -2.0682046
-    Coral: 1
   - Center: {x: 9.59577, y: 36.473404}
     Radius: 0.5702463
     Bottom: -2.5048363
     Top: -1.5801347
     Coral: 1
-  - Center: {x: 7.7482195, y: 35.729736}
-    Radius: 0.547903
-    Bottom: -2.480703
-    Top: -1.6630766
-    Coral: 0
   - Center: {x: 8.579471, y: 38.06467}
     Radius: 0.5672734
     Bottom: -2.522384
     Top: -1.7468396
-    Coral: 1
-  - Center: {x: 8.56741, y: 33.979595}
-    Radius: 0.5904282
-    Bottom: -2.3588066
-    Top: -1.5516064
-    Coral: 1
-  - Center: {x: 10.215861, y: 38.047035}
-    Radius: 0.4939247
-    Bottom: -2.5366473
-    Top: -1.8613812
-    Coral: 1
-  - Center: {x: 10.545672, y: 34.04604}
-    Radius: 0.69556916
-    Bottom: -2.4113991
-    Top: -1.2834761
-    Coral: 1
-  - Center: {x: 9.622423, y: 37.86618}
-    Radius: 0.17315339
-    Bottom: -2.5293663
-    Top: -2.1893847
-    Coral: 0
-  - Center: {x: 9.877621, y: 34.9813}
-    Radius: 0.20680213
-    Bottom: -2.4816146
-    Top: -2.0755649
-    Coral: 0
-  - Center: {x: 9.297319, y: 35.800137}
-    Radius: 0.5077748
-    Bottom: -2.4916024
-    Top: -1.7974013
-    Coral: 1
-  - Center: {x: 5.614603, y: 36.274715}
-    Radius: 0.49805588
-    Bottom: -2.4670374
-    Top: -1.4344751
-    Coral: 1
-  - Center: {x: 7.21529, y: 34.385284}
-    Radius: 0.3555451
-    Bottom: -2.4436076
-    Top: -1.9575263
-    Coral: 1
-  - Center: {x: 9.182787, y: 38.902588}
-    Radius: 0.5822829
-    Bottom: -2.540707
-    Top: -1.5964872
-    Coral: 1
-  - Center: {x: 6.7108927, y: 34.317142}
-    Radius: 0.36105633
-    Bottom: -2.4418802
-    Top: -1.9482644
-    Coral: 1
-  - Center: {x: 9.25987, y: 34.14712}
-    Radius: 0.47465178
-    Bottom: -2.3994358
-    Top: -1.7505187
-    Coral: 1
-  - Center: {x: 7.5109, y: 38.832123}
-    Radius: 0.4600741
-    Bottom: -2.5163255
-    Top: -1.887338
     Coral: 1
   - Center: {x: 32.987877, y: 0.46284404}
     Radius: 0.43500313
@@ -26773,145 +23843,10 @@ MonoBehaviour:
     Bottom: -2.5964746
     Top: -1.8094394
     Coral: 1
-  - Center: {x: 31.239767, y: -11.979011}
-    Radius: 0.47892284
-    Bottom: -2.6534762
-    Top: -1.6605803
-    Coral: 1
-  - Center: {x: 35.53864, y: -11.741542}
-    Radius: 0.46665725
-    Bottom: -2.7743156
-    Top: -2.0175922
-    Coral: 1
-  - Center: {x: 34.54393, y: -14.280304}
-    Radius: 0.58769375
-    Bottom: -2.6737936
-    Top: -1.4553952
-    Coral: 1
-  - Center: {x: 36.61436, y: -11.919727}
-    Radius: 0.58247787
-    Bottom: -2.793769
-    Top: -1.9245468
-    Coral: 0
-  - Center: {x: 33.994366, y: -15.368361}
-    Radius: 0.2682618
-    Bottom: -2.6230247
-    Top: -2.0963006
-    Coral: 0
-  - Center: {x: 34.58058, y: -13.710876}
-    Radius: 0.60633796
-    Bottom: -2.6947145
-    Top: -1.7898865
-    Coral: 0
-  - Center: {x: 33.89904, y: -14.852198}
-    Radius: 0.5244433
-    Bottom: -2.640281
-    Top: -1.9232917
-    Coral: 1
-  - Center: {x: 32.61657, y: -13.74293}
-    Radius: 0.8797395
-    Bottom: -2.6569521
-    Top: -1.9745893
-    Coral: 1
-  - Center: {x: 32.346294, y: -10.895874}
-    Radius: 0.8301779
-    Bottom: -2.7174551
-    Top: -2.0735343
-    Coral: 1
-  - Center: {x: 32.196056, y: -12.112887}
-    Radius: 0.53455406
-    Bottom: -2.6940215
-    Top: -1.8271978
-    Coral: 1
   - Center: {x: 33.55232, y: -14.880579}
     Radius: 0.55979645
     Bottom: -2.6333249
     Top: -2.1991234
-    Coral: 1
-  - Center: {x: 31.8781, y: -11.476031}
-    Radius: 0.3786928
-    Bottom: -2.7008219
-    Top: -2.1830943
-    Coral: 1
-  - Center: {x: 34.770283, y: -10.97381}
-    Radius: 0.7638213
-    Bottom: -2.768212
-    Top: -1.5296127
-    Coral: 1
-  - Center: {x: 32.301014, y: -12.475401}
-    Radius: 0.5767549
-    Bottom: -2.6883423
-    Top: -1.7530864
-    Coral: 1
-  - Center: {x: 34.797966, y: -11.79334}
-    Radius: 0.6452761
-    Bottom: -2.7549338
-    Top: -1.4171565
-    Coral: 1
-  - Center: {x: 31.287477, y: -12.444621}
-    Radius: 0.4989152
-    Bottom: -2.652409
-    Top: -1.9703202
-    Coral: 1
-  - Center: {x: 35.863438, y: -12.035189}
-    Radius: 0.7115527
-    Bottom: -2.774291
-    Top: -1.6204495
-    Coral: 1
-  - Center: {x: 34.299297, y: -13.062781}
-    Radius: 0.563942
-    Bottom: -2.71036
-    Top: -1.9393702
-    Coral: 1
-  - Center: {x: 33.342316, y: -12.245122}
-    Radius: 0.48062283
-    Bottom: -2.7135868
-    Top: -2.0565064
-    Coral: 1
-  - Center: {x: 35.211514, y: -14.602344}
-    Radius: 0.67433697
-    Bottom: -2.675508
-    Top: -2.152464
-    Coral: 1
-  - Center: {x: 34.362934, y: -13.719438}
-    Radius: 0.7291668
-    Bottom: -2.6896226
-    Top: -2.1240504
-    Coral: 1
-  - Center: {x: 36.65428, y: -13.054668}
-    Radius: 0.8365878
-    Bottom: -2.7621357
-    Top: -2.113243
-    Coral: 1
-  - Center: {x: 34.479877, y: -11.999259}
-    Radius: 0.5405361
-    Bottom: -2.7432866
-    Top: -1.6226549
-    Coral: 1
-  - Center: {x: 31.789587, y: -11.722813}
-    Radius: 0.7045479
-    Bottom: -2.694082
-    Top: -1.5515993
-    Coral: 1
-  - Center: {x: 35.645508, y: -10.753347}
-    Radius: 0.6188908
-    Bottom: -2.79243
-    Top: -1.5093544
-    Coral: 1
-  - Center: {x: 31.089197, y: -12.156676}
-    Radius: 0.37035242
-    Bottom: -2.628465
-    Top: -2.12214
-    Coral: 1
-  - Center: {x: 32.949306, y: -11.3773}
-    Radius: 0.8641591
-    Bottom: -2.7230885
-    Top: -2.0528104
-    Coral: 1
-  - Center: {x: 34.76634, y: -14.171099}
-    Radius: 0.5232771
-    Bottom: -2.682085
-    Top: -1.9666901
     Coral: 1
   - Center: {x: 28.425087, y: 22.334648}
     Radius: 0.4620039
@@ -27043,155 +23978,10 @@ MonoBehaviour:
     Bottom: -2.6332402
     Top: -1.854419
     Coral: 1
-  - Center: {x: -38.260185, y: -0.914236}
-    Radius: 0.5643973
-    Bottom: -2.4713712
-    Top: -1.5561543
-    Coral: 1
-  - Center: {x: -36.565937, y: 3.4047003}
-    Radius: 0.6280877
-    Bottom: -2.545337
-    Top: -2.0581658
-    Coral: 1
   - Center: {x: -38.66727, y: 1.4273853}
     Radius: 0.49356803
     Bottom: -2.4516485
     Top: -1.4283903
-    Coral: 1
-  - Center: {x: -39.991795, y: 1.2517755}
-    Radius: 0.87216806
-    Bottom: -2.4155734
-    Top: -1.7390833
-    Coral: 1
-  - Center: {x: -39.404007, y: 2.474527}
-    Radius: 0.50367785
-    Bottom: -2.42442
-    Top: -1.6076648
-    Coral: 1
-  - Center: {x: -38.64289, y: -1.8678412}
-    Radius: 0.161272
-    Bottom: -2.4579782
-    Top: -2.1413255
-    Coral: 0
-  - Center: {x: -38.62574, y: 1.4003905}
-    Radius: 0.62627906
-    Bottom: -2.4534059
-    Top: -1.1550131
-    Coral: 1
-  - Center: {x: -35.314617, y: 1.9850134}
-    Radius: 0.6547073
-    Bottom: -2.6278868
-    Top: -2.1200683
-    Coral: 1
-  - Center: {x: -36.716984, y: -1.2114474}
-    Radius: 0.5044723
-    Bottom: -2.551404
-    Top: -1.5055392
-    Coral: 1
-  - Center: {x: -38.457123, y: 2.7709875}
-    Radius: 0.49068102
-    Bottom: -2.4554129
-    Top: -1.6597329
-    Coral: 1
-  - Center: {x: -39.666954, y: -1.275661}
-    Radius: 0.6517
-    Bottom: -2.4252937
-    Top: -1.4527727
-    Coral: 0
-  - Center: {x: -36.28492, y: 0.8416325}
-    Radius: 0.57923263
-    Bottom: -2.576159
-    Top: -2.1268818
-    Coral: 1
-  - Center: {x: -38.128048, y: -1.9070132}
-    Radius: 0.48780787
-    Bottom: -2.479262
-    Top: -1.8123585
-    Coral: 1
-  - Center: {x: -38.62105, y: 1.47975}
-    Radius: 0.5415949
-    Bottom: -2.4534135
-    Top: -1.7129754
-    Coral: 1
-  - Center: {x: -35.712555, y: -1.556582}
-    Radius: 0.49615282
-    Bottom: -2.609529
-    Top: -1.9312168
-    Coral: 1
-  - Center: {x: -39.373966, y: -0.28044444}
-    Radius: 0.4357558
-    Bottom: -2.430582
-    Top: -1.5271794
-    Coral: 1
-  - Center: {x: -35.064735, y: -0.021129098}
-    Radius: 0.21563254
-    Bottom: -2.6109977
-    Top: -2.1876097
-    Coral: 0
-  - Center: {x: -38.243393, y: 3.6199312}
-    Radius: 0.31896412
-    Bottom: -2.4601095
-    Top: -1.9841245
-    Coral: 0
-  - Center: {x: -37.74931, y: -1.794264}
-    Radius: 0.5815294
-    Bottom: -2.4967878
-    Top: -1.2911694
-    Coral: 1
-  - Center: {x: -35.57942, y: -0.36568218}
-    Radius: 0.63834506
-    Bottom: -2.6152146
-    Top: -1.2918067
-    Coral: 1
-  - Center: {x: -36.05463, y: 1.3581457}
-    Radius: 0.6690871
-    Bottom: -2.588018
-    Top: -1.5030378
-    Coral: 1
-  - Center: {x: -35.153503, y: 1.799884}
-    Radius: 0.557843
-    Bottom: -2.6271808
-    Top: -1.8645291
-    Coral: 1
-  - Center: {x: -39.6855, y: 0.21253507}
-    Radius: 0.51690376
-    Bottom: -2.4222524
-    Top: -1.350615
-    Coral: 1
-  - Center: {x: -35.596893, y: 2.5753272}
-    Radius: 0.6766964
-    Bottom: -2.607414
-    Top: -1.5975912
-    Coral: 0
-  - Center: {x: -37.845135, y: -0.5763528}
-    Radius: 0.6369224
-    Bottom: -2.4906516
-    Top: -1.1701931
-    Coral: 1
-  - Center: {x: -35.37825, y: 1.4953452}
-    Radius: 0.706252
-    Bottom: -2.62665
-    Top: -1.4814041
-    Coral: 1
-  - Center: {x: -36.08767, y: 1.8519275}
-    Radius: 0.628876
-    Bottom: -2.5836067
-    Top: -2.0958242
-    Coral: 1
-  - Center: {x: -36.95053, y: -1.760752}
-    Radius: 0.73456013
-    Bottom: -2.5382695
-    Top: -1.3471195
-    Coral: 1
-  - Center: {x: -37.33083, y: 0.93401235}
-    Radius: 0.42399284
-    Bottom: -2.5158477
-    Top: -1.6368318
-    Coral: 1
-  - Center: {x: -36.788136, y: -0.66575587}
-    Radius: 0.65775293
-    Bottom: -2.5475655
-    Top: -2.0373847
     Coral: 1
   - Center: {x: -36.403435, y: -1.7204795}
     Radius: 0.3910699
@@ -27343,295 +24133,25 @@ MonoBehaviour:
     Bottom: -2.537621
     Top: -1.3061327
     Coral: 1
-  - Center: {x: 11.265299, y: 33.920856}
-    Radius: 0.6207938
-    Bottom: -2.415654
-    Top: -1.4089854
-    Coral: 1
-  - Center: {x: 15.682802, y: 31.669449}
-    Radius: 0.16805694
-    Bottom: -2.3275754
-    Top: -1.9976007
-    Coral: 0
-  - Center: {x: 14.274452, y: 34.015404}
-    Radius: 0.44193056
-    Bottom: -2.5212095
-    Top: -1.917027
-    Coral: 1
-  - Center: {x: 15.380517, y: 31.63428}
-    Radius: 0.82860625
-    Bottom: -2.2754593
-    Top: -1.6327575
-    Coral: 1
-  - Center: {x: 12.898095, y: 36.35946}
-    Radius: 0.85150117
-    Bottom: -2.5486562
-    Top: -1.8881962
-    Coral: 1
-  - Center: {x: 16.536995, y: 34.06186}
-    Radius: 0.5646549
-    Bottom: -2.5617387
-    Top: -1.7897743
-    Coral: 1
-  - Center: {x: 14.233016, y: 31.957108}
-    Radius: 0.6386438
-    Bottom: -2.189514
-    Top: -1.694155
-    Coral: 1
-  - Center: {x: 11.981593, y: 33.816643}
-    Radius: 0.5574941
-    Bottom: -2.4316735
-    Top: -1.9992577
-    Coral: 1
-  - Center: {x: 14.179663, y: 34.894306}
-    Radius: 0.571729
-    Bottom: -2.5416632
-    Top: -1.6145573
-    Coral: 1
-  - Center: {x: 14.078815, y: 36.96647}
-    Radius: 0.468653
-    Bottom: -2.5957916
-    Top: -1.9550755
-    Coral: 1
   - Center: {x: 14.014531, y: 33.80129}
     Radius: 0.3976841
     Bottom: -2.5094917
     Top: -1.9160345
     Coral: 0
-  - Center: {x: 15.25335, y: 33.701065}
-    Radius: 0.5392732
-    Bottom: -2.530352
-    Top: -2.1120691
-    Coral: 1
-  - Center: {x: 14.251444, y: 36.054333}
-    Radius: 0.5788733
-    Bottom: -2.5749834
-    Top: -1.3748716
-    Coral: 1
-  - Center: {x: 11.834871, y: 33.874767}
-    Radius: 0.69426215
-    Bottom: -2.434821
-    Top: -0.9954865
-    Coral: 1
   - Center: {x: 13.899571, y: 33.502243}
     Radius: 0.60038894
     Bottom: -2.4899995
     Top: -1.2452818
-    Coral: 1
-  - Center: {x: 13.024981, y: 36.85161}
-    Radius: 0.4209561
-    Bottom: -2.5633304
-    Top: -1.9878229
-    Coral: 1
-  - Center: {x: 14.756756, y: 36.182552}
-    Radius: 0.2580592
-    Bottom: -2.5925257
-    Top: -2.0858343
-    Coral: 0
-  - Center: {x: 15.811488, y: 34.700333}
-    Radius: 0.54717624
-    Bottom: -2.5696888
-    Top: -1.8216202
-    Coral: 1
-  - Center: {x: 14.239776, y: 32.394314}
-    Radius: 0.56784636
-    Bottom: -2.3138897
-    Top: -1.8734443
-    Coral: 1
-  - Center: {x: 11.831042, y: 34.704872}
-    Radius: 0.36487803
-    Bottom: -2.4952648
-    Top: -1.9507635
-    Coral: 0
-  - Center: {x: 12.769754, y: 34.530113}
-    Radius: 0.46676615
-    Bottom: -2.5062928
-    Top: -1.7493929
-    Coral: 1
-  - Center: {x: 13.793791, y: 34.133442}
-    Radius: 0.55522484
-    Bottom: -2.5153618
-    Top: -1.7562897
-    Coral: 1
-  - Center: {x: 15.667083, y: 34.326614}
-    Radius: 0.4152139
-    Bottom: -2.5552897
-    Top: -1.9876325
-    Coral: 1
-  - Center: {x: 12.46364, y: 32.682476}
-    Radius: 0.42000815
-    Bottom: -2.1835697
-    Top: -1.6093583
-    Coral: 1
-  - Center: {x: 16.394638, y: 34.337917}
-    Radius: 0.45997912
-    Bottom: -2.5686543
-    Top: -1.9397968
     Coral: 1
   - Center: {x: 15.276978, y: 31.615828}
     Radius: 0.6200111
     Bottom: -2.2523613
     Top: -1.246962
     Coral: 1
-  - Center: {x: 13.976038, y: 35.28909}
-    Radius: 0.5374847
-    Bottom: -2.5476377
-    Top: -1.433332
-    Coral: 1
-  - Center: {x: 12.921272, y: 33.894123}
-    Radius: 0.4913311
-    Bottom: -2.4844446
-    Top: -1.8127242
-    Coral: 1
-  - Center: {x: 11.786508, y: 34.876335}
-    Radius: 0.59031194
-    Bottom: -2.4974248
-    Top: -1.6903836
-    Coral: 1
   - Center: {x: 13.934125, y: 32.864143}
     Radius: 0.6529841
     Bottom: -2.3892334
     Top: -1.0354761
-    Coral: 1
-  - Center: {x: -36.82858, y: -15.922507}
-    Radius: 0.7116325
-    Bottom: -2.5207462
-    Top: -1.9687743
-    Coral: 1
-  - Center: {x: -36.39614, y: -18.18655}
-    Radius: 0.61845917
-    Bottom: -2.6909704
-    Top: -2.2112675
-    Coral: 1
-  - Center: {x: -32.396942, y: -18.927246}
-    Radius: 0.4115018
-    Bottom: -2.6154523
-    Top: -2.05287
-    Coral: 1
-  - Center: {x: -35.528515, y: -14.613883}
-    Radius: 0.2625663
-    Bottom: -2.6057963
-    Top: -2.0902553
-    Coral: 0
-  - Center: {x: -35.2715, y: -14.576618}
-    Radius: 0.77410465
-    Bottom: -2.6068542
-    Top: -1.3515794
-    Coral: 1
-  - Center: {x: -31.48582, y: -17.596167}
-    Radius: 0.5647597
-    Bottom: -2.5983136
-    Top: -1.4274619
-    Coral: 1
-  - Center: {x: -35.920322, y: -16.292473}
-    Radius: 0.5576124
-    Bottom: -2.6415393
-    Top: -1.8792028
-    Coral: 1
-  - Center: {x: -35.54391, y: -16.693546}
-    Radius: 0.5832447
-    Bottom: -2.6478674
-    Top: -1.8504881
-    Coral: 1
-  - Center: {x: -33.31694, y: -19.387014}
-    Radius: 0.45285046
-    Bottom: -2.6411755
-    Top: -2.0220637
-    Coral: 1
-  - Center: {x: -35.0399, y: -14.069477}
-    Radius: 0.6151654
-    Bottom: -2.6006575
-    Top: -1.3253053
-    Coral: 1
-  - Center: {x: -35.661983, y: -16.375074}
-    Radius: 0.5860369
-    Bottom: -2.6414557
-    Top: -1.8402588
-    Coral: 1
-  - Center: {x: -32.77843, y: -16.803574}
-    Radius: 0.4768014
-    Bottom: -2.6128538
-    Top: -1.8396808
-    Coral: 1
-  - Center: {x: -32.80879, y: -16.23033}
-    Radius: 0.6631623
-    Bottom: -2.6122336
-    Top: -1.237375
-    Coral: 1
-  - Center: {x: -33.816044, y: -15.301083}
-    Radius: 0.56248814
-    Bottom: -2.6161458
-    Top: -1.4500035
-    Coral: 1
-  - Center: {x: -33.99418, y: -15.868468}
-    Radius: 0.47482795
-    Bottom: -2.621785
-    Top: -1.9132072
-    Coral: 0
-  - Center: {x: -33.72975, y: -18.877682}
-    Radius: 0.48269737
-    Bottom: -2.6464963
-    Top: -1.8637626
-    Coral: 1
-  - Center: {x: -32.828724, y: -14.8635}
-    Radius: 0.47633848
-    Bottom: -2.6124308
-    Top: -1.6248927
-    Coral: 1
-  - Center: {x: -33.552605, y: -15.226094}
-    Radius: 0.58549464
-    Bottom: -2.6142297
-    Top: -1.6648016
-    Coral: 1
-  - Center: {x: -34.649868, y: -14.64672}
-    Radius: 0.35396525
-    Bottom: -2.6099863
-    Top: -2.08177
-    Coral: 0
-  - Center: {x: -32.15311, y: -16.764616}
-    Radius: 0.6870255
-    Bottom: -2.6059504
-    Top: -1.1816189
-    Coral: 1
-  - Center: {x: -36.085514, y: -16.31298}
-    Radius: 0.76534706
-    Bottom: -2.6431072
-    Top: -2.0494719
-    Coral: 1
-  - Center: {x: -36.403515, y: -16.446384}
-    Radius: 0.18432526
-    Bottom: -2.648041
-    Top: -2.2861238
-    Coral: 0
-  - Center: {x: -34.517956, y: -14.140412}
-    Radius: 0.6516497
-    Bottom: -2.6056619
-    Top: -1.6332159
-    Coral: 0
-  - Center: {x: -33.072666, y: -19.408375}
-    Radius: 0.63649243
-    Bottom: -2.6350005
-    Top: -2.1413102
-    Coral: 1
-  - Center: {x: -36.430878, y: -18.561708}
-    Radius: 0.64501894
-    Bottom: -2.6990426
-    Top: -1.7364916
-    Coral: 0
-  - Center: {x: -35.916847, y: -16.109093}
-    Radius: 0.60004795
-    Bottom: -2.637324
-    Top: -1.3933133
-    Coral: 1
-  - Center: {x: -36.289425, y: -17.307547}
-    Radius: 0.57914156
-    Bottom: -2.6693962
-    Top: -1.805153
-    Coral: 0
-  - Center: {x: -33.39794, y: -14.251251}
-    Radius: 0.37482154
-    Bottom: -2.6116173
-    Top: -2.0991826
     Coral: 1
   - Center: {x: 8.369204, y: -40.166412}
     Radius: 0.21260872
@@ -27778,225 +24298,30 @@ MonoBehaviour:
     Bottom: -2.832195
     Top: -1.8846263
     Coral: 1
-  - Center: {x: -23.112793, y: -25.842716}
-    Radius: 0.5578017
-    Bottom: -2.4253793
-    Top: -1.662784
-    Coral: 1
-  - Center: {x: -20.534595, y: -28.324759}
-    Radius: 0.44270605
-    Bottom: -1.388129
-    Top: -0.78288615
-    Coral: 1
-  - Center: {x: -23.331957, y: -29.352629}
-    Radius: 0.6297399
-    Bottom: -1.834552
-    Top: -0.8133767
-    Coral: 1
-  - Center: {x: -21.262495, y: -28.911549}
-    Radius: 0.79529315
-    Bottom: -1.3852662
-    Top: -0.7684035
-    Coral: 1
-  - Center: {x: -23.074245, y: -25.839998}
-    Radius: 0.64299655
-    Bottom: -2.4151835
-    Top: -1.3725114
-    Coral: 1
-  - Center: {x: -21.610157, y: -25.618647}
-    Radius: 0.42517832
-    Bottom: -1.9848458
-    Top: -1.4035659
-    Coral: 1
-  - Center: {x: -21.873447, y: -27.87436}
-    Radius: 0.19898577
-    Bottom: -1.5709254
-    Top: -1.1802227
-    Coral: 0
-  - Center: {x: -20.776085, y: -30.069717}
-    Radius: 0.39733562
-    Bottom: -1.3701297
-    Top: -0.8269148
-    Coral: 1
-  - Center: {x: -23.152815, y: -26.964844}
-    Radius: 0.5450317
-    Bottom: -2.276849
-    Top: -1.1468971
-    Coral: 1
-  - Center: {x: -24.079287, y: -28.01993}
-    Radius: 0.63010937
-    Bottom: -2.3793468
-    Top: -1.0730131
-    Coral: 1
-  - Center: {x: -23.436647, y: -27.479006}
-    Radius: 0.57614523
-    Bottom: -2.2501733
-    Top: -1.803291
-    Coral: 1
-  - Center: {x: -21.898788, y: -30.558514}
-    Radius: 0.5531775
-    Bottom: -1.4791715
-    Top: -0.33233184
-    Coral: 1
-  - Center: {x: -23.204453, y: -30.873964}
-    Radius: 0.51572865
-    Bottom: -1.8701923
-    Top: -0.800991
-    Coral: 1
-  - Center: {x: -22.452148, y: -27.93999}
-    Radius: 0.71863145
-    Bottom: -1.7484672
-    Top: -1.1910665
-    Coral: 1
-  - Center: {x: -22.67641, y: -25.356813}
-    Radius: 0.5638752
-    Bottom: -2.2710955
-    Top: -1.5001969
-    Coral: 1
-  - Center: {x: -21.411497, y: -30.449444}
-    Radius: 0.49138978
-    Bottom: -1.4059806
-    Top: -0.6091514
-    Coral: 1
-  - Center: {x: -24.782045, y: -27.965992}
-    Radius: 0.47033873
-    Bottom: -2.498989
-    Top: -1.8559684
-    Coral: 1
-  - Center: {x: -20.245457, y: -26.775156}
-    Radius: 0.52768075
-    Bottom: -1.5226914
-    Top: -0.8012759
-    Coral: 1
-  - Center: {x: -21.360905, y: -30.074936}
-    Radius: 0.5029675
-    Bottom: -1.3890775
-    Top: -0.5734741
-    Coral: 1
-  - Center: {x: -20.314016, y: -29.266556}
-    Radius: 0.45365277
-    Bottom: -1.3620014
-    Top: -0.421495
-    Coral: 1
-  - Center: {x: -22.681183, y: -29.946035}
-    Radius: 0.6288925
-    Bottom: -1.5903152
-    Top: -1.1025199
-    Coral: 1
-  - Center: {x: -20.455202, y: -27.649393}
-    Radius: 0.22576247
-    Bottom: -1.4182374
-    Top: -0.97495955
-    Coral: 0
-  - Center: {x: -22.622196, y: -27.882067}
-    Radius: 0.7847112
-    Bottom: -1.8160334
-    Top: -1.2073785
-    Coral: 1
-  - Center: {x: -24.107763, y: -29.716711}
-    Radius: 0.66459846
-    Bottom: -2.1153119
-    Top: -1.5998214
-    Coral: 1
-  - Center: {x: -21.516567, y: -27.722097}
-    Radius: 0.69820714
-    Bottom: -1.5197711
-    Top: -0.38757044
-    Coral: 1
-  - Center: {x: -20.448828, y: -27.693487}
-    Radius: 0.79502016
-    Bottom: -1.4158885
-    Top: -0.7992376
-    Coral: 1
-  - Center: {x: -21.362135, y: -29.838547}
-    Radius: 0.55769235
-    Bottom: -1.3846867
-    Top: -0.95211715
-    Coral: 1
-  - Center: {x: -25.585844, y: -28.433878}
-    Radius: 0.5084221
-    Bottom: -2.551695
-    Top: -1.7272466
-    Coral: 1
-  - Center: {x: -25.351244, y: -26.903843}
-    Radius: 0.5682426
-    Bottom: -2.5825336
-    Top: -1.8056643
-    Coral: 1
   - Center: {x: -36.00138, y: 7.277581}
     Radius: 0.67026496
     Bottom: -2.5402606
     Top: -1.1506768
-    Coral: 1
-  - Center: {x: -33.4036, y: 4.1916814}
-    Radius: 0.6833674
-    Bottom: -2.535564
-    Top: -1.1188165
-    Coral: 1
-  - Center: {x: -32.857697, y: 4.4974904}
-    Radius: 0.66209894
-    Bottom: -2.4305294
-    Top: -1.0578753
     Coral: 1
   - Center: {x: -34.14402, y: 9.633035}
     Radius: 0.57978654
     Bottom: -2.6081498
     Top: -1.8154984
     Coral: 1
-  - Center: {x: -32.913136, y: 8.358807}
-    Radius: 0.61537004
-    Bottom: -2.657797
-    Top: -1.6599237
-    Coral: 1
   - Center: {x: -35.47739, y: 7.826321}
     Radius: 0.53560925
     Bottom: -2.5609317
     Top: -1.4505142
-    Coral: 1
-  - Center: {x: -35.049328, y: 7.939287}
-    Radius: 0.5281377
-    Bottom: -2.579871
-    Top: -1.4849435
     Coral: 1
   - Center: {x: -31.048616, y: 6.274088}
     Radius: 0.2676648
     Bottom: -2.1600463
     Top: -1.6344944
     Coral: 0
-  - Center: {x: -31.08171, y: 6.836542}
-    Radius: 0.63987964
-    Bottom: -2.3220181
-    Top: -1.2844003
-    Coral: 1
-  - Center: {x: -33.022102, y: 5.594391}
-    Radius: 0.5261384
-    Bottom: -2.6094162
-    Top: -1.8901095
-    Coral: 1
-  - Center: {x: -33.65462, y: 4.353311}
-    Radius: 0.70670277
-    Bottom: -2.5968144
-    Top: -1.4508374
-    Coral: 1
-  - Center: {x: -32.79347, y: 4.703627}
-    Radius: 0.39318582
-    Bottom: -2.4461884
-    Top: -1.908647
-    Coral: 1
-  - Center: {x: -34.038074, y: 5.879412}
-    Radius: 0.67897546
-    Bottom: -2.6485984
-    Top: -2.1219566
-    Coral: 1
   - Center: {x: -34.925575, y: 8.441874}
     Radius: 0.4232849
     Bottom: -2.5816677
     Top: -2.0029764
-    Coral: 1
-  - Center: {x: -32.393616, y: 8.347032}
-    Radius: 0.46373013
-    Bottom: -2.6704328
-    Top: -2.036447
     Coral: 1
   - Center: {x: -31.514631, y: 6.6637774}
     Radius: 0.52080667
@@ -28008,50 +24333,10 @@ MonoBehaviour:
     Bottom: -2.626856
     Top: -1.3926926
     Coral: 1
-  - Center: {x: -36.749313, y: 6.823205}
-    Radius: 0.63877934
-    Bottom: -2.5077245
-    Top: -1.5544847
-    Coral: 0
-  - Center: {x: -33.399326, y: 5.652243}
-    Radius: 0.6466686
-    Bottom: -2.6530528
-    Top: -1.6044261
-    Coral: 1
-  - Center: {x: -33.86795, y: 8.786492}
-    Radius: 0.64558816
-    Bottom: -2.6230152
-    Top: -1.2845911
-    Coral: 1
-  - Center: {x: -36.538116, y: 7.6707473}
-    Radius: 0.6510784
-    Bottom: -2.5116386
-    Top: -1.5400453
-    Coral: 0
-  - Center: {x: -32.20023, y: 8.659065}
-    Radius: 0.54732174
-    Bottom: -2.6707878
-    Top: -1.9225203
-    Coral: 1
-  - Center: {x: -33.274757, y: 8.172895}
-    Radius: 0.82318294
-    Bottom: -2.6487908
-    Top: -2.0102956
-    Coral: 1
   - Center: {x: -32.75599, y: 4.8307586}
     Radius: 0.46659592
     Bottom: -2.4547496
     Top: -1.4874096
-    Coral: 1
-  - Center: {x: -36.44259, y: 7.463552}
-    Radius: 0.61108655
-    Bottom: -2.5176592
-    Top: -1.5267318
-    Coral: 1
-  - Center: {x: -32.762627, y: 4.3471837}
-    Radius: 0.46212944
-    Bottom: -2.3740706
-    Top: -1.7422733
     Coral: 1
   - Center: {x: -35.66987, y: 7.6910486}
     Radius: 0.8076856
@@ -28293,500 +24578,40 @@ MonoBehaviour:
     Bottom: -2.5308564
     Top: -1.896131
     Coral: 1
-  - Center: {x: -3.7586613, y: 35.620953}
-    Radius: 0.54216766
-    Bottom: -2.4632292
-    Top: -1.3392149
-    Coral: 1
-  - Center: {x: -6.21814, y: 35.363777}
-    Radius: 0.60140425
-    Bottom: -2.4865787
-    Top: -1.511352
-    Coral: 1
-  - Center: {x: -4.5583158, y: 36.849586}
-    Radius: 0.5284509
-    Bottom: -2.4612308
-    Top: -2.051342
-    Coral: 1
-  - Center: {x: -4.643708, y: 37.06212}
-    Radius: 0.68690324
-    Bottom: -2.4614415
-    Top: -1.0373634
-    Coral: 1
-  - Center: {x: -5.695386, y: 35.947735}
-    Radius: 0.3686498
-    Bottom: -2.4799106
-    Top: -1.9759134
-    Coral: 1
-  - Center: {x: -6.4164977, y: 36.325424}
-    Radius: 0.7052599
-    Bottom: -2.488145
-    Top: -1.3445078
-    Coral: 1
-  - Center: {x: -3.3146498, y: 36.713}
-    Radius: 0.74218273
-    Bottom: -2.4453065
-    Top: -1.8696384
-    Coral: 1
-  - Center: {x: -5.847763, y: 36.733223}
-    Radius: 0.56271315
-    Bottom: -2.4802737
-    Top: -2.04381
-    Coral: 1
-  - Center: {x: -6.9806223, y: 37.859417}
-    Radius: 0.6500289
-    Bottom: -2.5023491
-    Top: -1.4482735
-    Coral: 1
-  - Center: {x: -6.548204, y: 39.374283}
-    Radius: 0.5753134
-    Bottom: -2.5043414
-    Top: -1.3116099
-    Coral: 1
-  - Center: {x: -6.342699, y: 38.24969}
-    Radius: 0.36341822
-    Bottom: -2.4928136
-    Top: -1.9959687
-    Coral: 1
-  - Center: {x: -6.5687895, y: 36.49534}
-    Radius: 0.51774603
-    Bottom: -2.490418
-    Top: -1.4170341
-    Coral: 1
-  - Center: {x: -6.7728434, y: 37.025665}
-    Radius: 0.65094197
-    Bottom: -2.4947653
-    Top: -1.439209
-    Coral: 1
-  - Center: {x: -7.035966, y: 37.885376}
-    Radius: 0.44856015
-    Bottom: -2.5034468
-    Top: -1.5734984
-    Coral: 1
-  - Center: {x: -6.231368, y: 33.843033}
-    Radius: 0.7418082
-    Bottom: -2.492511
-    Top: -1.2896076
-    Coral: 1
-  - Center: {x: -5.9391613, y: 37.47067}
-    Radius: 0.73058856
-    Bottom: -2.4825451
-    Top: -1.9158701
-    Coral: 1
-  - Center: {x: -3.624095, y: 37.92586}
-    Radius: 0.51210684
-    Bottom: -2.4408631
-    Top: -1.7407395
-    Coral: 1
-  - Center: {x: -4.4675856, y: 34.433865}
-    Radius: 0.5349637
-    Bottom: -2.4825494
-    Top: -1.3734703
-    Coral: 1
-  - Center: {x: -5.1900096, y: 38.865593}
-    Radius: 0.59847987
-    Bottom: -2.4717977
-    Top: -2.0075917
-    Coral: 1
   - Center: {x: -6.0946026, y: 35.374775}
     Radius: 0.876131
     Bottom: -2.485597
     Top: -1.806033
-    Coral: 1
-  - Center: {x: -5.7883096, y: 38.613834}
-    Radius: 0.5264933
-    Bottom: -2.483529
-    Top: -1.7637371
-    Coral: 1
-  - Center: {x: -6.0191183, y: 34.078594}
-    Radius: 0.5263689
-    Bottom: -2.4907656
-    Top: -1.6372148
-    Coral: 1
-  - Center: {x: -8.396543, y: 34.704025}
-    Radius: 0.67267144
-    Bottom: -2.5011137
-    Top: -1.4972974
-    Coral: 0
-  - Center: {x: -4.9338408, y: 37.408325}
-    Radius: 0.48372263
-    Bottom: -2.4650073
-    Top: -1.4621605
-    Coral: 1
-  - Center: {x: -5.597805, y: 33.901676}
-    Radius: 0.76033264
-    Bottom: -2.4910798
-    Top: -1.9013339
-    Coral: 1
-  - Center: {x: -6.9325376, y: 36.02749}
-    Radius: 0.3261128
-    Bottom: -2.4937165
-    Top: -2.0070636
-    Coral: 0
-  - Center: {x: -37.714195, y: 0.17943515}
-    Radius: 0.46132305
-    Bottom: -2.496541
-    Top: -1.865846
-    Coral: 1
-  - Center: {x: -37.669212, y: -5.323547}
-    Radius: 0.7091427
-    Bottom: -2.5076575
-    Top: -1.3577241
-    Coral: 1
-  - Center: {x: -37.93767, y: -4.883408}
-    Radius: 0.40103656
-    Bottom: -2.4965377
-    Top: -1.948263
-    Coral: 1
-  - Center: {x: -35.90776, y: -2.969928}
-    Radius: 0.71456003
-    Bottom: -2.5928051
-    Top: -2.0385625
-    Coral: 1
-  - Center: {x: -37.95663, y: -5.6372685}
-    Radius: 0.801236
-    Bottom: -2.4982893
-    Top: -1.8768171
-    Coral: 1
-  - Center: {x: -36.09183, y: -4.7336073}
-    Radius: 0.585026
-    Bottom: -2.5755675
-    Top: -1.3626999
-    Coral: 1
-  - Center: {x: -34.612324, y: -1.507407}
-    Radius: 0.65154684
-    Bottom: -2.559396
-    Top: -1.5871036
-    Coral: 0
-  - Center: {x: -38.13776, y: -4.173033}
-    Radius: 0.5663927
-    Bottom: -2.486721
-    Top: -1.7123809
-    Coral: 1
-  - Center: {x: -35.515724, y: -1.911861}
-    Radius: 0.5728986
-    Bottom: -2.6168413
-    Top: -1.6878388
-    Coral: 1
-  - Center: {x: -36.43327, y: -4.6584578}
-    Radius: 0.6038244
-    Bottom: -2.560149
-    Top: -1.5809978
-    Coral: 1
-  - Center: {x: -39.52386, y: -0.97195977}
-    Radius: 0.21897516
-    Bottom: -2.427778
-    Top: -1.9978268
-    Coral: 0
-  - Center: {x: -36.042717, y: -3.9263628}
-    Radius: 0.48025793
-    Bottom: -2.5817757
-    Top: -1.5861118
-    Coral: 1
-  - Center: {x: -35.273956, y: -4.4442263}
-    Radius: 0.46501774
-    Bottom: -2.6160812
-    Top: -1.6520131
-    Coral: 1
-  - Center: {x: -37.5887, y: -5.524392}
-    Radius: 0.6713818
-    Bottom: -2.5111861
-    Top: -1.9904343
     Coral: 1
   - Center: {x: -35.809937, y: -2.6049082}
     Radius: 0.3997443
     Bottom: -2.6001952
     Top: -2.0536873
     Coral: 1
-  - Center: {x: -37.092632, y: -3.8588471}
-    Radius: 0.77553314
-    Bottom: -2.530651
-    Top: -1.2730598
-    Coral: 1
-  - Center: {x: -36.188614, y: -5.0780163}
-    Radius: 0.66969436
-    Bottom: -2.5694835
-    Top: -1.4835187
-    Coral: 1
-  - Center: {x: -38.562668, y: -0.1361752}
-    Radius: 0.43020856
-    Bottom: -2.4580185
-    Top: -1.8698616
-    Coral: 1
   - Center: {x: -38.055202, y: -3.2679784}
     Radius: 0.5449615
     Bottom: -2.4866138
     Top: -1.7415731
     Coral: 1
-  - Center: {x: -39.804108, y: -4.183192}
-    Radius: 0.7704866
-    Bottom: -2.4410863
-    Top: -1.1916785
-    Coral: 1
-  - Center: {x: -38.159714, y: -5.3400335}
-    Radius: 0.20474613
-    Bottom: -2.4903076
-    Top: -2.0882947
-    Coral: 0
   - Center: {x: -38.718887, y: -1.8543557}
     Radius: 0.64562744
     Bottom: -2.4553053
     Top: -1.408367
-    Coral: 1
-  - Center: {x: -37.32747, y: -0.79846865}
-    Radius: 0.63097876
-    Bottom: -2.5174859
-    Top: -1.2093496
-    Coral: 1
-  - Center: {x: -37.449936, y: -2.789377}
-    Radius: 0.357424
-    Bottom: -2.5129485
-    Top: -2.0242987
     Coral: 1
   - Center: {x: -36.90774, y: -1.0063083}
     Radius: 0.6429568
     Bottom: -2.5407436
     Top: -2.0420394
     Coral: 1
-  - Center: {x: -34.892944, y: -2.0340471}
-    Radius: 0.4690503
-    Bottom: -2.604203
-    Top: -1.9629438
-    Coral: 1
-  - Center: {x: -36.902184, y: 0.13025638}
-    Radius: 0.6396382
-    Bottom: -2.541003
-    Top: -1.5037768
-    Coral: 1
-  - Center: {x: -35.7404, y: -1.4219208}
-    Radius: 0.5478644
-    Bottom: -2.6082258
-    Top: -1.8592163
-    Coral: 1
-  - Center: {x: -35.724915, y: -2.1755807}
-    Radius: 0.3984637
-    Bottom: -2.6065207
-    Top: -2.0617635
-    Coral: 1
-  - Center: {x: -9.44226, y: 30.907959}
-    Radius: 0.787343
-    Bottom: -2.5019944
-    Top: -1.8912982
-    Coral: 1
-  - Center: {x: -7.2725945, y: 34.85821}
-    Radius: 0.522532
-    Bottom: -2.4946725
-    Top: -1.6473436
-    Coral: 1
-  - Center: {x: -6.726423, y: 30.950054}
-    Radius: 0.4080895
-    Bottom: -2.5095427
-    Top: -1.9516257
-    Coral: 1
-  - Center: {x: -8.270503, y: 30.30105}
-    Radius: 0.4759424
-    Bottom: -2.4665322
-    Top: -1.6947522
-    Coral: 1
-  - Center: {x: -8.579892, y: 35.14704}
-    Radius: 0.6656798
-    Bottom: -2.5046084
-    Top: -1.9882792
-    Coral: 1
-  - Center: {x: -7.786905, y: 34.282787}
-    Radius: 0.5344834
-    Bottom: -2.4967222
-    Top: -1.6300132
-    Coral: 1
-  - Center: {x: -8.897544, y: 33.6301}
-    Radius: 0.51635265
-    Bottom: -2.4997623
-    Top: -1.7938341
-    Coral: 1
   - Center: {x: -6.493394, y: 34.989063}
     Radius: 0.48199484
     Bottom: -2.4893475
     Top: -1.4900826
     Coral: 1
-  - Center: {x: -9.6815405, y: 33.570084}
-    Radius: 0.50663865
-    Bottom: -2.5031466
-    Top: -1.8104988
-    Coral: 1
-  - Center: {x: -5.0929613, y: 31.511362}
-    Radius: 0.156858
-    Bottom: -2.5170283
-    Top: -2.2090423
-    Coral: 0
-  - Center: {x: -5.4862275, y: 31.854067}
-    Radius: 0.59368074
-    Bottom: -2.510923
-    Top: -2.0504394
-    Coral: 1
-  - Center: {x: -9.958047, y: 32.78794}
-    Radius: 0.70552987
-    Bottom: -2.5028524
-    Top: -1.3587774
-    Coral: 1
-  - Center: {x: -7.1811194, y: 32.493946}
-    Radius: 0.60236585
-    Bottom: -2.4990356
-    Top: -2.0318155
-    Coral: 1
-  - Center: {x: -6.801776, y: 34.785816}
-    Radius: 0.2744246
-    Bottom: -2.4917912
-    Top: -1.9529667
-    Coral: 0
-  - Center: {x: -5.8051634, y: 31.220793}
-    Radius: 0.68715733
-    Bottom: -2.5140612
-    Top: -1.3997787
-    Coral: 1
-  - Center: {x: -9.071506, y: 30.164564}
-    Radius: 0.44964415
-    Bottom: -2.4529686
-    Top: -1.8382405
-    Coral: 1
-  - Center: {x: -7.462902, y: 35.02379}
-    Radius: 0.6985924
-    Bottom: -2.4960315
-    Top: -1.3632061
-    Coral: 1
-  - Center: {x: -7.5947313, y: 29.754547}
-    Radius: 0.55566514
-    Bottom: -2.3630948
-    Top: -1.6034205
-    Coral: 1
-  - Center: {x: -6.9753137, y: 32.178577}
-    Radius: 0.18526302
-    Bottom: -2.501151
-    Top: -2.1373928
-    Coral: 0
-  - Center: {x: -5.259797, y: 32.423985}
-    Radius: 0.8723388
-    Bottom: -2.506374
-    Top: -1.8297514
-    Coral: 1
-  - Center: {x: -6.9946756, y: 34.074493}
-    Radius: 0.5813274
-    Bottom: -2.4935749
-    Top: -1.5509044
-    Coral: 1
-  - Center: {x: -5.604573, y: 33.83562}
-    Radius: 0.76819545
-    Bottom: -2.491609
-    Top: -1.2459166
-    Coral: 1
-  - Center: {x: -8.662496, y: 30.819487}
-    Radius: 0.55190724
-    Bottom: -2.501632
-    Top: -1.6780301
-    Coral: 0
-  - Center: {x: -10.066391, y: 31.6888}
-    Radius: 0.42155236
-    Bottom: -2.5045273
-    Top: -1.8754518
-    Coral: 0
-  - Center: {x: -7.698872, y: 30.48054}
-    Radius: 0.39249596
-    Bottom: -2.4837914
-    Top: -1.947193
-    Coral: 1
-  - Center: {x: -8.667111, y: 34.628994}
-    Radius: 0.5787103
-    Bottom: -2.5023966
-    Top: -1.5639699
-    Coral: 1
-  - Center: {x: -7.9437146, y: 30.906206}
-    Radius: 0.47472328
-    Bottom: -2.5035667
-    Top: -1.5193772
-    Coral: 1
-  - Center: {x: -9.829126, y: 30.997944}
-    Radius: 0.4997384
-    Bottom: -2.5047786
-    Top: -1.6944114
-    Coral: 1
-  - Center: {x: -8.415514, y: 32.1644}
-    Radius: 0.58896804
-    Bottom: -2.4988613
-    Top: -1.6936574
-    Coral: 1
-  - Center: {x: 1.9938136, y: 40.40242}
-    Radius: 0.56164265
-    Bottom: -2.4205735
-    Top: -1.9849399
-    Coral: 1
-  - Center: {x: -1.8753147, y: 38.025322}
-    Radius: 0.8704403
-    Bottom: -2.4148204
-    Top: -1.7396705
-    Coral: 1
-  - Center: {x: 0.035487797, y: 38.255688}
-    Radius: 0.69758034
-    Bottom: -2.4017594
-    Top: -1.2705752
-    Coral: 1
-  - Center: {x: 3.1516387, y: 37.766037}
-    Radius: 0.5701498
-    Bottom: -2.4326658
-    Top: -1.9904338
-    Coral: 1
-  - Center: {x: -1.4438268, y: 39.198914}
-    Radius: 0.39431697
-    Bottom: -2.4065633
-    Top: -1.8674753
-    Coral: 1
-  - Center: {x: 1.4970678, y: 37.158573}
-    Radius: 0.36819553
-    Bottom: -2.4204514
-    Top: -1.9170753
-    Coral: 1
   - Center: {x: -1.285505, y: 38.412125}
     Radius: 0.4991295
     Bottom: -2.4068155
     Top: -1.3720274
-    Coral: 1
-  - Center: {x: 0.61356616, y: 40.617924}
-    Radius: 0.23403259
-    Bottom: -2.4105337
-    Top: -1.9510176
-    Coral: 0
-  - Center: {x: 2.7649806, y: 40.333324}
-    Radius: 0.56066173
-    Bottom: -2.435134
-    Top: -1.6686287
-    Coral: 1
-  - Center: {x: -1.8436162, y: 39.553852}
-    Radius: 0.4265506
-    Bottom: -2.411773
-    Top: -1.8286171
-    Coral: 1
-  - Center: {x: -0.5323266, y: 39.128464}
-    Radius: 0.45733112
-    Bottom: -2.399839
-    Top: -1.4517065
-    Coral: 1
-  - Center: {x: -0.21269636, y: 39.39023}
-    Radius: 0.45338482
-    Bottom: -2.399255
-    Top: -1.7794129
-    Coral: 1
-  - Center: {x: -0.22150633, y: 36.848133}
-    Radius: 0.82480663
-    Bottom: -2.4204128
-    Top: -1.7806582
-    Coral: 1
-  - Center: {x: -0.8875763, y: 36.384823}
-    Radius: 0.723805
-    Bottom: -2.4303703
-    Top: -1.2566606
-    Coral: 1
-  - Center: {x: 0.71725744, y: 38.317856}
-    Radius: 0.6630858
-    Bottom: -2.4035404
-    Top: -1.3282918
     Coral: 1
   - Center: {x: 0.8827636, y: 39.606987}
     Radius: 0.20534018
@@ -28798,185 +24623,10 @@ MonoBehaviour:
     Bottom: -2.4234858
     Top: -1.3331294
     Coral: 1
-  - Center: {x: 0.9294494, y: 39.82003}
-    Radius: 0.43254274
-    Bottom: -2.4040923
-    Top: -1.5073508
-    Coral: 1
-  - Center: {x: 2.30334, y: 36.70032}
-    Radius: 0.8536628
-    Bottom: -2.4328554
-    Top: -1.7707187
-    Coral: 1
-  - Center: {x: 2.6603382, y: 38.91974}
-    Radius: 0.4350938
-    Bottom: -2.4222448
-    Top: -1.5202146
-    Coral: 1
-  - Center: {x: 1.0678732, y: 35.946476}
-    Radius: 0.375436
-    Bottom: -2.4393733
-    Top: -1.9260982
-    Coral: 1
-  - Center: {x: -0.9115007, y: 41.095856}
-    Radius: 0.631669
-    Bottom: -2.4324427
-    Top: -1.1228755
-    Coral: 1
-  - Center: {x: 3.452893, y: 38.492107}
-    Radius: 0.58796257
-    Bottom: -2.43525
-    Top: -1.6314207
-    Coral: 1
-  - Center: {x: 1.3792113, y: 41.114025}
-    Radius: 0.50052005
-    Bottom: -2.4617562
-    Top: -1.4240851
-    Coral: 1
-  - Center: {x: 1.1794043, y: 37.260086}
-    Radius: 0.64093304
-    Bottom: -2.4172819
-    Top: -1.0885087
-    Coral: 1
-  - Center: {x: 1.4122077, y: 38.54038}
-    Radius: 0.5369324
-    Bottom: -2.4071681
-    Top: -1.6731042
-    Coral: 1
-  - Center: {x: 0.17534813, y: 41.514782}
-    Radius: 0.7474188
-    Bottom: -2.524811
-    Top: -1.9450817
-    Coral: 1
-  - Center: {x: 31.002083, y: -22.904411}
-    Radius: 0.25938216
-    Bottom: -2.5433762
-    Top: -2.034087
-    Coral: 0
-  - Center: {x: 30.45823, y: -25.88612}
-    Radius: 0.60207933
-    Bottom: -1.7500418
-    Top: -1.2830439
-    Coral: 1
-  - Center: {x: 32.370514, y: -22.561613}
-    Radius: 0.42914242
-    Bottom: -2.5299568
-    Top: -1.9432575
-    Coral: 1
-  - Center: {x: 30.469475, y: -21.41151}
-    Radius: 0.8283509
-    Bottom: -2.501122
-    Top: -1.8586183
-    Coral: 1
-  - Center: {x: 30.814821, y: -24.567081}
-    Radius: 0.65529734
-    Bottom: -2.5004652
-    Top: -1.4378463
-    Coral: 1
-  - Center: {x: 30.62003, y: -20.452887}
-    Radius: 0.56985015
-    Bottom: -2.4863544
-    Top: -1.7072873
-    Coral: 1
-  - Center: {x: 29.192257, y: -25.49826}
-    Radius: 0.6464406
-    Bottom: -1.8449826
-    Top: -1.3435762
-    Coral: 1
-  - Center: {x: 28.6646, y: -25.994535}
-    Radius: 0.55571896
-    Bottom: -1.4047973
-    Top: -0.6450496
-    Coral: 1
-  - Center: {x: 30.66819, y: -25.156412}
-    Radius: 0.38825205
-    Bottom: -2.3440082
-    Top: -1.8132118
-    Coral: 1
-  - Center: {x: 30.12761, y: -21.723347}
-    Radius: 0.65905887
-    Bottom: -2.5110326
-    Top: -1.442314
-    Coral: 1
-  - Center: {x: 29.098091, y: -25.358171}
-    Radius: 0.53035337
-    Bottom: -1.9266299
-    Top: -1.5152656
-    Coral: 1
-  - Center: {x: 27.430042, y: -22.384562}
-    Radius: 0.6542423
-    Bottom: -2.2958744
-    Top: -1.7884166
-    Coral: 1
-  - Center: {x: 30.26024, y: -25.527096}
-    Radius: 0.2888061
-    Bottom: -1.964801
-    Top: -1.5338205
-    Coral: 0
-  - Center: {x: 31.369106, y: -22.48571}
-    Radius: 0.81895816
-    Bottom: -2.5291064
-    Top: -1.8938881
-    Coral: 1
-  - Center: {x: 27.230734, y: -23.210493}
-    Radius: 0.2929007
-    Bottom: -2.4831982
-    Top: -2.0461073
-    Coral: 0
-  - Center: {x: 30.10859, y: -20.731361}
-    Radius: 0.45731068
-    Bottom: -2.4915566
-    Top: -1.8663473
-    Coral: 1
-  - Center: {x: 29.428, y: -22.990725}
-    Radius: 0.45133403
-    Bottom: -2.5550253
-    Top: -1.619326
-    Coral: 1
-  - Center: {x: 29.04217, y: -24.30462}
-    Radius: 0.64798766
-    Bottom: -2.4669178
-    Top: -1.4999367
-    Coral: 0
-  - Center: {x: 27.358538, y: -22.054018}
-    Radius: 0.25232115
-    Bottom: -2.1052585
-    Top: -1.6098334
-    Coral: 0
-  - Center: {x: 30.415936, y: -21.417746}
-    Radius: 0.7107428
-    Bottom: -2.501183
-    Top: -1.3486549
-    Coral: 1
-  - Center: {x: 28.221975, y: -24.66332}
-    Radius: 0.47610575
-    Bottom: -2.37503
-    Top: -1.6029851
-    Coral: 1
   - Center: {x: 32.107597, y: -21.983515}
     Radius: 0.5723194
     Bottom: -2.5154645
     Top: -1.7330216
-    Coral: 1
-  - Center: {x: 30.03034, y: -21.66356}
-    Radius: 0.6492861
-    Bottom: -2.5102072
-    Top: -1.1641165
-    Coral: 1
-  - Center: {x: 29.327442, y: -22.641634}
-    Radius: 0.37587577
-    Bottom: -2.5443077
-    Top: -2.0304315
-    Coral: 1
-  - Center: {x: 32.245213, y: -21.890633}
-    Radius: 0.76404905
-    Bottom: -2.51326
-    Top: -1.2742912
-    Coral: 1
-  - Center: {x: 28.942038, y: -22.275944}
-    Radius: 0.5547475
-    Bottom: -2.5360057
-    Top: -1.385911
     Coral: 1
   - Center: {x: 23.39134, y: -35.38229}
     Radius: 0.8587563
@@ -29043,11 +24693,6 @@ MonoBehaviour:
     Bottom: -2.6453664
     Top: -1.5698652
     Coral: 1
-  - Center: {x: 21.5925, y: -32.986195}
-    Radius: 0.49526128
-    Bottom: -2.6497524
-    Top: -1.9726589
-    Coral: 1
   - Center: {x: 21.239357, y: -34.619064}
     Radius: 0.71175945
     Bottom: -2.6071675
@@ -29098,11 +24743,6 @@ MonoBehaviour:
     Bottom: -2.5878334
     Top: -2.170743
     Coral: 0
-  - Center: {x: 19.89999, y: -35.81533}
-    Radius: 0.59126097
-    Bottom: -2.5946276
-    Top: -2.136021
-    Coral: 1
   - Center: {x: 21.32504, y: -34.137142}
     Radius: 0.7031618
     Bottom: -2.6185014
@@ -29113,215 +24753,20 @@ MonoBehaviour:
     Bottom: -2.6459286
     Top: -2.0581794
     Coral: 1
-  - Center: {x: -42.15233, y: -4.416497}
-    Radius: 0.6072283
-    Bottom: -2.4247851
-    Top: -1.9537934
-    Coral: 1
-  - Center: {x: -43.492615, y: -2.010286}
-    Radius: 0.16944383
-    Bottom: -2.4019902
-    Top: -2.0692923
-    Coral: 0
-  - Center: {x: -42.250343, y: -1.0574024}
-    Radius: 0.17310688
-    Bottom: -2.39693
-    Top: -2.0570397
-    Coral: 0
-  - Center: {x: -38.39228, y: -4.3610663}
-    Radius: 0.7586339
-    Bottom: -2.4783173
-    Top: -1.889889
-    Coral: 1
-  - Center: {x: -41.62745, y: -3.461739}
-    Radius: 0.6134894
-    Bottom: -2.4173405
-    Top: -1.9414924
-    Coral: 1
-  - Center: {x: -41.114246, y: -2.1540644}
-    Radius: 0.7181548
-    Bottom: -2.4106338
-    Top: -1.8536029
-    Coral: 1
-  - Center: {x: -39.824512, y: -2.8300443}
-    Radius: 0.49337736
-    Bottom: -2.4308991
-    Top: -1.4080362
-    Coral: 1
-  - Center: {x: -42.36881, y: -2.437646}
-    Radius: 0.4509015
-    Bottom: -2.4054697
-    Top: -1.7890224
-    Coral: 1
   - Center: {x: -42.300644, y: -1.3612912}
     Radius: 0.46963477
     Bottom: -2.3985076
     Top: -1.4248675
-    Coral: 1
-  - Center: {x: -44.054104, y: -4.1186767}
-    Radius: 0.54662776
-    Bottom: -2.5887249
-    Top: -2.1647375
-    Coral: 1
-  - Center: {x: -39.59246, y: -5.6303325}
-    Radius: 0.160709
-    Bottom: -2.4554558
-    Top: -2.1399086
-    Coral: 0
-  - Center: {x: -42.478657, y: -3.1363053}
-    Radius: 0.6395748
-    Bottom: -2.4112175
-    Top: -1.08526
-    Coral: 1
-  - Center: {x: -40.39277, y: -1.1506903}
-    Radius: 0.63373953
-    Bottom: -2.4135396
-    Top: -1.3858786
-    Coral: 1
-  - Center: {x: -41.72037, y: -2.245981}
-    Radius: 0.3806164
-    Bottom: -2.406789
-    Top: -1.8864317
-    Coral: 1
-  - Center: {x: -39.912533, y: -4.7824397}
-    Radius: 0.7003691
-    Bottom: -2.443906
-    Top: -1.3081995
-    Coral: 1
-  - Center: {x: -39.79499, y: -2.888447}
-    Radius: 0.6866062
-    Bottom: -2.431747
-    Top: -1.8991864
-    Coral: 1
-  - Center: {x: -43.38374, y: -2.4962735}
-    Radius: 0.518416
-    Bottom: -2.405931
-    Top: -1.3311584
-    Coral: 1
-  - Center: {x: -39.08575, y: -5.362995}
-    Radius: 0.6255279
-    Bottom: -2.4637783
-    Top: -1.5303134
-    Coral: 0
-  - Center: {x: -41.23326, y: -3.9670694}
-    Radius: 0.6525758
-    Bottom: -2.424371
-    Top: -1.9182059
-    Coral: 1
-  - Center: {x: -42.11755, y: -5.2826114}
-    Radius: 0.652525
-    Bottom: -2.433877
-    Top: -1.0810715
-    Coral: 1
-  - Center: {x: -43.936947, y: -4.3788147}
-    Radius: 0.67474115
-    Bottom: -2.579232
-    Top: -2.0558746
-    Coral: 1
-  - Center: {x: -40.03946, y: -4.8001213}
-    Radius: 0.17661412
-    Bottom: -2.4424436
-    Top: -2.0956671
-    Coral: 0
-  - Center: {x: -40.129227, y: -3.6517296}
-    Radius: 0.44873855
-    Bottom: -2.4321566
-    Top: -1.5018382
     Coral: 1
   - Center: {x: -42.391426, y: -3.31903}
     Radius: 0.48620325
     Bottom: -2.413214
     Top: -1.4052243
     Coral: 1
-  - Center: {x: -11.4822235, y: 33.64909}
-    Radius: 0.49066088
-    Bottom: -2.528245
-    Top: -1.8574411
-    Coral: 1
-  - Center: {x: -15.074001, y: 36.159542}
-    Radius: 0.5300025
-    Bottom: -2.7048805
-    Top: -1.8454375
-    Coral: 1
-  - Center: {x: -16.475348, y: 34.616417}
-    Radius: 0.3539722
-    Bottom: -2.7678192
-    Top: -2.2395923
-    Coral: 0
-  - Center: {x: -11.760456, y: 34.381428}
-    Radius: 0.6656817
-    Bottom: -2.5384057
-    Top: -2.022075
-    Coral: 1
-  - Center: {x: -17.269892, y: 33.06314}
-    Radius: 0.4977251
-    Bottom: -2.8187115
-    Top: -2.1382496
-    Coral: 1
-  - Center: {x: -12.770847, y: 31.117548}
-    Radius: 0.21588346
-    Bottom: -2.5752826
-    Top: -2.1514018
-    Coral: 0
-  - Center: {x: -16.986446, y: 34.9304}
-    Radius: 0.5013934
-    Bottom: -2.7945678
-    Top: -1.7550862
-    Coral: 1
-  - Center: {x: -16.775282, y: 35.10369}
-    Radius: 0.6642778
-    Bottom: -2.787427
-    Top: -1.4102557
-    Coral: 1
   - Center: {x: -15.522353, y: 36.17322}
     Radius: 0.4649394
     Bottom: -2.7486804
     Top: -1.7847747
-    Coral: 1
-  - Center: {x: -13.62337, y: 32.44714}
-    Radius: 0.5350882
-    Bottom: -2.6145618
-    Top: -1.8830194
-    Coral: 1
-  - Center: {x: -15.1271, y: 32.420753}
-    Radius: 0.4668035
-    Bottom: -2.7005262
-    Top: -1.7327559
-    Coral: 1
-  - Center: {x: -14.313581, y: 33.00731}
-    Radius: 0.48361918
-    Bottom: -2.6518433
-    Top: -1.9906663
-    Coral: 1
-  - Center: {x: -15.565756, y: 35.70438}
-    Radius: 0.5789401
-    Bottom: -2.7170217
-    Top: -2.2679715
-    Coral: 1
-  - Center: {x: -14.7804575, y: 32.865303}
-    Radius: 0.8452369
-    Bottom: -2.6789126
-    Top: -2.0233114
-    Coral: 1
-  - Center: {x: -12.034279, y: 33.12439}
-    Radius: 0.6826327
-    Bottom: -2.5432353
-    Top: -1.1280109
-    Coral: 1
-  - Center: {x: -12.466715, y: 33.856564}
-    Radius: 0.55428314
-    Bottom: -2.5606182
-    Top: -1.6618022
-    Coral: 1
-  - Center: {x: -13.397818, y: 32.106922}
-    Radius: 0.65003735
-    Bottom: -2.603184
-    Top: -1.2555357
-    Coral: 1
-  - Center: {x: -15.14308, y: 33.640102}
-    Radius: 0.4346264
-    Bottom: -2.6978312
-    Top: -1.7967699
     Coral: 1
   - Center: {x: -14.314947, y: 35.32221}
     Radius: 0.7488761
@@ -29333,11 +24778,6 @@ MonoBehaviour:
     Bottom: -2.783154
     Top: -1.4705344
     Coral: 1
-  - Center: {x: -15.335276, y: 32.992256}
-    Radius: 0.47146288
-    Bottom: -2.7112784
-    Top: -2.066721
-    Coral: 1
   - Center: {x: -14.949729, y: 34.28088}
     Radius: 0.44438642
     Bottom: -2.6851056
@@ -29348,370 +24788,30 @@ MonoBehaviour:
     Bottom: -2.5947049
     Top: -2.2792053
     Coral: 0
-  - Center: {x: -13.272934, y: 33.884613}
-    Radius: 0.54364556
-    Bottom: -2.5959163
-    Top: -2.174242
-    Coral: 1
-  - Center: {x: -15.140907, y: 31.51424}
-    Radius: 0.42419064
-    Bottom: -2.702758
-    Top: -1.8233321
-    Coral: 1
-  - Center: {x: -30.229307, y: -25.322506}
-    Radius: 0.55006176
-    Bottom: -2.6427658
-    Top: -1.8219178
-    Coral: 0
-  - Center: {x: -31.073812, y: -22.582357}
-    Radius: 0.48769966
-    Bottom: -2.6312025
-    Top: -1.6201105
-    Coral: 1
-  - Center: {x: -28.50926, y: -22.263882}
-    Radius: 0.53938085
-    Bottom: -2.6250992
-    Top: -2.2067327
-    Coral: 1
-  - Center: {x: -29.189653, y: -23.094402}
-    Radius: 0.15810248
-    Bottom: -2.630177
-    Top: -2.3197474
-    Coral: 0
-  - Center: {x: -29.862509, y: -25.599781}
-    Radius: 0.6317486
-    Bottom: -2.6422687
-    Top: -2.152258
-    Coral: 1
-  - Center: {x: -26.80096, y: -24.200865}
-    Radius: 0.736759
-    Bottom: -2.6288898
-    Top: -2.0574286
-    Coral: 1
-  - Center: {x: -31.544363, y: -26.512737}
-    Radius: 0.5805532
-    Bottom: -2.6530447
-    Top: -1.7116297
-    Coral: 1
-  - Center: {x: -28.020897, y: -23.672472}
-    Radius: 0.52380943
-    Bottom: -2.6344087
-    Top: -1.7850083
-    Coral: 1
-  - Center: {x: -28.708, y: -26.803707}
-    Radius: 0.51292515
-    Bottom: -2.6333628
-    Top: -1.5699736
-    Coral: 1
-  - Center: {x: -28.823256, y: -24.063168}
-    Radius: 0.63683563
-    Bottom: -2.635845
-    Top: -1.3155664
-    Coral: 1
-  - Center: {x: -28.498167, y: -25.592403}
-    Radius: 0.5152814
-    Bottom: -2.6364098
-    Top: -1.5681357
-    Coral: 1
-  - Center: {x: -30.612474, y: -24.606739}
-    Radius: 0.5179167
-    Bottom: -2.6421905
-    Top: -1.8023456
-    Coral: 1
-  - Center: {x: -27.247328, y: -23.528528}
-    Radius: 0.6356779
-    Bottom: -2.6252272
-    Top: -2.1321688
-    Coral: 1
-  - Center: {x: -32.287365, y: -25.631485}
-    Radius: 0.6153247
-    Bottom: -2.663129
-    Top: -1.3874468
-    Coral: 1
-  - Center: {x: -30.625261, y: -24.16326}
-    Radius: 0.6183397
-    Bottom: -2.6394103
-    Top: -2.1598
-    Coral: 1
-  - Center: {x: -29.995193, y: -22.921907}
-    Radius: 0.41930947
-    Bottom: -2.628439
-    Top: -2.0551827
-    Coral: 1
-  - Center: {x: -29.719503, y: -25.693766}
-    Radius: 0.7446852
-    Bottom: -2.6419473
-    Top: -2.0643382
-    Coral: 1
-  - Center: {x: -30.286589, y: -22.726734}
-    Radius: 0.48478147
-    Bottom: -2.6268103
-    Top: -1.9640443
-    Coral: 1
-  - Center: {x: -27.546797, y: -26.78662}
-    Radius: 0.5710576
-    Bottom: -2.6197975
-    Top: -1.8390795
-    Coral: 1
-  - Center: {x: -31.689348, y: -24.881342}
-    Radius: 0.5782237
-    Bottom: -2.6532462
-    Top: -1.8627312
-    Coral: 1
-  - Center: {x: -30.122236, y: -26.037395}
-    Radius: 0.6683074
-    Bottom: -2.6431098
-    Top: -1.559394
-    Coral: 1
-  - Center: {x: -31.454288, y: -22.770596}
-    Radius: 0.54818267
-    Bottom: -2.6372755
-    Top: -1.5007911
-    Coral: 1
-  - Center: {x: -29.36249, y: -24.203642}
-    Radius: 0.6515104
-    Bottom: -2.6371381
-    Top: -2.1317995
-    Coral: 1
-  - Center: {x: -31.151333, y: -24.969683}
-    Radius: 0.43904412
-    Bottom: -2.6474829
-    Top: -1.7372628
-    Coral: 1
-  - Center: {x: -29.326797, y: -22.51471}
-    Radius: 0.85648286
-    Bottom: -2.6249173
-    Top: -1.9605932
-    Coral: 1
-  - Center: {x: -28.448765, y: -22.647612}
-    Radius: 0.6813556
-    Bottom: -2.6283357
-    Top: -2.0998478
-    Coral: 1
-  - Center: {x: 30.581652, y: -9.071453}
-    Radius: 0.31146076
-    Bottom: -2.5892634
-    Top: -2.124476
-    Coral: 0
-  - Center: {x: 32.861084, y: -11.02412}
-    Radius: 0.43846506
-    Bottom: -2.7266881
-    Top: -2.1272435
-    Coral: 1
   - Center: {x: 32.01732, y: -10.741841}
     Radius: 0.3729612
     Bottom: -2.7125843
     Top: -2.2026927
     Coral: 1
-  - Center: {x: 33.13755, y: -8.623648}
-    Radius: 0.45786604
-    Bottom: -2.7317276
-    Top: -1.7824863
-    Coral: 1
-  - Center: {x: 35.49789, y: -8.4030485}
-    Radius: 0.6199832
-    Bottom: -2.77371
-    Top: -2.292825
-    Coral: 1
-  - Center: {x: 30.578594, y: -9.800451}
-    Radius: 0.2352811
-    Bottom: -2.567834
-    Top: -2.1058664
-    Coral: 0
   - Center: {x: 32.387836, y: -9.9645815}
     Radius: 0.44940925
     Bottom: -2.7239199
     Top: -2.1095128
     Coral: 1
-  - Center: {x: 30.819847, y: -9.538187}
-    Radius: 0.53457206
-    Bottom: -2.6342301
-    Top: -1.7673774
-    Coral: 1
-  - Center: {x: 34.516987, y: -7.4121256}
-    Radius: 0.7482153
-    Bottom: -2.734293
-    Top: -2.153946
-    Coral: 1
-  - Center: {x: 34.54529, y: -11.707671}
-    Radius: 0.6326248
-    Bottom: -2.751203
-    Top: -2.2605128
-    Coral: 1
-  - Center: {x: 34.487896, y: -10.625272}
-    Radius: 0.59090316
-    Bottom: -2.7657976
-    Top: -1.9579479
-    Coral: 1
-  - Center: {x: 34.796284, y: -7.0730505}
-    Radius: 0.7191608
-    Bottom: -2.7289014
-    Top: -1.5627226
-    Coral: 1
-  - Center: {x: 32.284256, y: -6.808927}
-    Radius: 0.6199601
-    Bottom: -2.691641
-    Top: -1.6863245
-    Coral: 1
-  - Center: {x: 32.994724, y: -6.5376196}
-    Radius: 0.51993746
-    Bottom: -2.6948788
-    Top: -1.9840494
-    Coral: 1
-  - Center: {x: 30.757038, y: -9.545288}
-    Radius: 0.58072037
-    Bottom: -2.6192756
-    Top: -1.8253473
-    Coral: 1
-  - Center: {x: 32.46814, y: -9.348038}
-    Radius: 0.50957406
-    Bottom: -2.7242515
-    Top: -1.897935
-    Coral: 1
-  - Center: {x: 32.499424, y: -8.259273}
-    Radius: 0.5566383
-    Bottom: -2.71632
-    Top: -1.8136849
-    Coral: 1
-  - Center: {x: 32.27113, y: -10.903566}
-    Radius: 0.7828052
-    Bottom: -2.7157948
-    Top: -2.1086183
-    Coral: 1
-  - Center: {x: 33.072826, y: -11.80569}
-    Radius: 0.60059595
-    Bottom: -2.7188082
-    Top: -1.4736613
-    Coral: 1
-  - Center: {x: 33.648098, y: -9.681084}
-    Radius: 0.48889843
-    Bottom: -2.7491322
-    Top: -2.019557
-    Coral: 0
   - Center: {x: 30.556335, y: -9.446102}
     Radius: 0.62348866
     Bottom: -2.57341
     Top: -1.5623716
-    Coral: 1
-  - Center: {x: 31.993177, y: -11.303991}
-    Radius: 0.2075831
-    Bottom: -2.7053576
-    Top: -2.2977743
-    Coral: 0
-  - Center: {x: 30.614851, y: -8.304609}
-    Radius: 0.6214226
-    Bottom: -2.6194243
-    Top: -2.137423
     Coral: 1
   - Center: {x: 34.75312, y: -7.743072}
     Radius: 0.41870132
     Bottom: -2.7461596
     Top: -2.1737347
     Coral: 1
-  - Center: {x: 31.797203, y: -9.260361}
-    Radius: 0.6285765
-    Bottom: -2.7109609
-    Top: -1.407805
-    Coral: 1
-  - Center: {x: 32.68811, y: -7.44792}
-    Radius: 0.7412535
-    Bottom: -2.7079432
-    Top: -1.5059394
-    Coral: 1
-  - Center: {x: -37.69766, y: 5.3213835}
-    Radius: 0.5696016
-    Bottom: -2.4738076
-    Top: -1.6950804
-    Coral: 1
-  - Center: {x: -42.04002, y: 4.4011493}
-    Radius: 0.64901817
-    Bottom: -2.420406
-    Top: -1.074871
-    Coral: 1
-  - Center: {x: -37.203762, y: 5.120394}
-    Radius: 0.40026596
-    Bottom: -2.4985437
-    Top: -1.9012337
-    Coral: 0
-  - Center: {x: -38.38275, y: 4.2522454}
-    Radius: 0.843827
-    Bottom: -2.4509144
-    Top: -1.7964067
-    Coral: 1
-  - Center: {x: -39.665184, y: 7.2672215}
-    Radius: 0.421769
-    Bottom: -2.4657438
-    Top: -1.836345
-    Coral: 0
-  - Center: {x: -41.198265, y: 3.3566701}
-    Radius: 0.60325813
-    Bottom: -2.3961182
-    Top: -1.4178852
-    Coral: 1
-  - Center: {x: -40.146866, y: 3.7596762}
-    Radius: 0.8148062
-    Bottom: -2.4050963
-    Top: -1.7730985
-    Coral: 1
-  - Center: {x: -37.890602, y: 6.5692625}
-    Radius: 0.20203231
-    Bottom: -2.457624
-    Top: -2.0609396
-    Coral: 0
-  - Center: {x: -37.20831, y: 5.749752}
-    Radius: 0.5330999
-    Bottom: -2.4935544
-    Top: -1.7647302
-    Coral: 1
-  - Center: {x: -36.843307, y: 4.725937}
-    Radius: 0.5486656
-    Bottom: -2.5197773
-    Top: -1.6300707
-    Coral: 1
-  - Center: {x: -39.39102, y: 6.98833}
-    Radius: 0.5383706
-    Bottom: -2.4226596
-    Top: -1.5496471
-    Coral: 1
-  - Center: {x: -37.685658, y: 5.476518}
-    Radius: 0.80974716
-    Bottom: -2.4733355
-    Top: -1.8452617
-    Coral: 1
   - Center: {x: -39.42615, y: 4.0182333}
     Radius: 0.60977054
     Bottom: -2.4177313
     Top: -1.9447677
-    Coral: 1
-  - Center: {x: -38.27303, y: 3.3884475}
-    Radius: 0.5151044
-    Bottom: -2.4599187
-    Top: -1.3920115
-    Coral: 1
-  - Center: {x: -38.180134, y: 7.503932}
-    Radius: 0.4514189
-    Bottom: -2.440998
-    Top: -1.8238436
-    Coral: 1
-  - Center: {x: -38.72209, y: 6.19868}
-    Radius: 0.7331437
-    Bottom: -2.4278045
-    Top: -1.2389513
-    Coral: 1
-  - Center: {x: -42.019135, y: 3.672659}
-    Radius: 0.5858237
-    Bottom: -2.3935263
-    Top: -1.4435647
-    Coral: 1
-  - Center: {x: -38.226463, y: 7.292078}
-    Radius: 0.37435332
-    Bottom: -2.4403389
-    Top: -1.9285442
-    Coral: 1
-  - Center: {x: -38.095013, y: 7.6930203}
-    Radius: 0.68093956
-    Bottom: -2.451342
-    Top: -1.0396279
     Coral: 1
   - Center: {x: -39.25575, y: 5.1012936}
     Radius: 0.5465552
@@ -29723,45 +24823,10 @@ MonoBehaviour:
     Bottom: -2.5530376
     Top: -1.6648109
     Coral: 1
-  - Center: {x: -41.964302, y: 4.6786814}
-    Radius: 0.16983214
-    Bottom: -2.434364
-    Top: -2.1009037
-    Coral: 0
   - Center: {x: -39.368065, y: 5.7790365}
     Radius: 0.26771557
     Bottom: -2.4109097
     Top: -1.8852581
-    Coral: 0
-  - Center: {x: -40.367947, y: 6.240319}
-    Radius: 0.6039645
-    Bottom: -2.429906
-    Top: -1.9614457
-    Coral: 1
-  - Center: {x: -37.96004, y: 4.0533304}
-    Radius: 0.41601732
-    Bottom: -2.4701526
-    Top: -1.8493369
-    Coral: 0
-  - Center: {x: -40.467415, y: 3.0954711}
-    Radius: 0.56610554
-    Bottom: -2.4036727
-    Top: -1.629725
-    Coral: 1
-  - Center: {x: -41.65051, y: 3.4391077}
-    Radius: 0.6668388
-    Bottom: -2.3938234
-    Top: -1.3124892
-    Coral: 1
-  - Center: {x: -38.410034, y: 5.181968}
-    Radius: 0.48718345
-    Bottom: -2.444809
-    Top: -1.6548007
-    Coral: 1
-  - Center: {x: -37.50445, y: 6.10667}
-    Radius: 0.23835808
-    Bottom: -2.477506
-    Top: -2.009497
     Coral: 0
   - Center: {x: -30.834793, y: 23.231695}
     Radius: 0.15922262
@@ -29926,6 +24991,11 @@ MonoBehaviour:
     TwilightSpeed: 1.15
     NightForaging: 0.5
     RainForaging: 0.75
+    NightExploration: 0.25
+    RainExploration: 0.55
+    TwilightShelter: 0.75
+    NightShelter: 0.85
+    RainShelter: 0.4
     TransitionSeconds: 5
     PassageLookAhead: 1.6
     PassageStagger: 0.6
@@ -29939,6 +25009,18 @@ MonoBehaviour:
     MaximumBirds: 10
     MinimumCrabs: 5
     MaximumCrabs: 9
+  CoastalRhythm:
+    BirdTwilightFlight: 0.3
+    BirdRainFlight: 0
+    BirdTwilightForaging: 0.55
+    BirdRainForaging: 0.15
+    CrabDayMotion: 0.75
+    CrabNightMotion: 1
+    CrabRainMotion: 0.55
+    CrabDayForaging: 0.7
+    CrabNightForaging: 1.35
+    CrabRainForaging: 0.35
+    TransitionSeconds: 6
   FishPopulations:
   - Species: 0
     Minimum: 6
@@ -30213,7 +25295,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -30296,7 +25378,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -30573,7 +25655,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -30764,7 +25846,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9cdd38b73b6f6114db1b184b2e69215b, type: 2}
+  - {fileID: 2100000, guid: 009a160495c93a34a8a40e77d00e3df6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -30832,13 +25914,13 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 2
-  Rocks: 2
-  Grasses: 12
-  Corals: 12
+  Rocks: 0
+  Grasses: 2
+  Corals: 1
   Sponges: 0
-  Stars: 3
-  Shells: 3
-  SmallCorals: 12
+  Stars: 0
+  Shells: 0
+  SmallCorals: 1
   LargeCorals: 0
 --- !u!1 &9181426622340110921
 GameObject:
@@ -30886,14 +25968,14 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   Biome: 5
-  Rocks: 1
-  Grasses: 9
-  Corals: 18
-  Sponges: 2
-  Stars: 3
+  Rocks: 0
+  Grasses: 0
+  Corals: 2
+  Sponges: 0
+  Stars: 1
   Shells: 1
   SmallCorals: 0
-  LargeCorals: 18
+  LargeCorals: 2
 --- !u!1001 &6826283602095258696
 PrefabInstance:
   m_ObjectHideFlags: 0

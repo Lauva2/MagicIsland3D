@@ -22,6 +22,8 @@ Walk 使用 StrideRate 调整步频：实际速度除以 PlayerAnimation.Referen
 
 ToolManager 成功提交农务 / 采集后设置动作锁、朝向、角色动作和手持模型，再发出成功事件播放音效；失败和重复请求不启动动画。角色动作由 ToolManager 的 ActionProgress 直接采样，手持工具也使用同一进度，改变 GameConfig.ToolActionDuration 仍可保持一致。
 
+动作起手不再瞬间跳转朝向：Visual 在前 20% 动作进度内平滑转向目标，根位置与 CharacterController 不随转身移动。暂停冻结该进度，关闭弹窗继续原来的转身；退出时直接清理待播放表现，避免额外旋转已离开的角色。接触特效由同一动作进度触发，角色 Animator 仍不承担业务结算。
+
 动画始终仅负责表现：扣体力、扣种子、收获和采集都由已有系统提交一次。Animator 不通过 AnimationEvent 发放物品。动作结束释放移动锁，工具恢复当前选择，角色以 0.12 秒过渡到待机。
 
 PlayerManager.SetInputEnabled 同时控制 PlayerMovement 和 PlayerAnimation。弹窗打开时，正常移动回到静止待机；已有工具动作保留姿态，ToolManager 的动作锁与进度一起冻结。关闭后继续原动作。场景切换、读档和恢复位置重置为待机。

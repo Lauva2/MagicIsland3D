@@ -11,16 +11,17 @@ using Object=UnityEngine.Object;
 namespace MagicIsland.EditorTools
 {
     // Restores the actual authored placement of each member in existing combined habitat meshes.
-    public static class OceanReefArtSetup
+    public static partial class OceanReefArtSetup
     {
         public const string DataPath="Assets/Art/Meshes/Ocean/Reef.meshdata.json",LayoutPath="Assets/Art/Meshes/Ocean/ReefLayout.json";
         const string Marker="OceanReefArt:1:";
         public static readonly string[] Names={"Branch Coral","Fan Coral","Table Coral","Boulder Coral","Seagrass Blades","Tube Sponge","Sea Star","Clam Shell","Reef Rock"};
         public static string SourcePath(string n)=>(n=="Branch Coral"||n=="Seagrass Blades"||n=="Clam Shell"||n=="Reef Rock"?CoastArtSetup.MeshFolder:OceanBiomeSetup.MeshFolder)+"/"+n+".asset";
         [Serializable] public sealed class Source { public string name; public float radius,bottom,top; public int triangles; }
-        [Serializable] public sealed class Member { public int source; public Vector3 position; public float yaw,scale; public Color tint; }
-        [Serializable] public sealed class Group { public string path; public Bounds bounds; public Member[] members; }
-        [Serializable] public sealed class Layout { public int version=1; public Source[] sources; public Group[] groups; public string originalDigest; }
+        [Serializable] public sealed class Member { public int source; public Vector3 position; public float yaw,scale; public Color tint; public bool hidden; }
+        [Serializable] public sealed class Group { public string path; public Bounds bounds; public Member[] members; public bool terrace; }
+        [Serializable] public sealed class Layout { public int version=1; public Source[] sources; public Group[] groups; public string originalDigest; public Density density; public OceanSwimObstacle[] originalObstacles; }
+        [Serializable] public sealed class Density { public int seed=20261018; public float sparseRetention=.08f, richRetention=1f; }
         static void Require(bool b,string why){if(!b)throw new InvalidOperationException(why);}
         static string Hash(string s){using(var sha=SHA256.Create())return BitConverter.ToString(sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(s))).Replace("-","").ToLowerInvariant();}
         static string Normalize(string path)=>string.Join("\n",File.ReadAllLines(path).Select(s=>s.TrimEnd()))+"\n";
@@ -86,7 +87,7 @@ namespace MagicIsland.EditorTools
         static Mesh Combine(Group group,Mesh[] sources)
         {
             var v=new List<Vector3>();var n=new List<Vector3>();var c=new List<Color>();var t=new List<Vector4>();var indices=new List<int>();
-            foreach(var member in group.members)
+            foreach(var member in group.members.Where(m=>!m.hidden))
             {
                 var mesh=sources[member.source];var rotation=Quaternion.Euler(0,member.yaw,0);var sv=mesh.vertices;var sn=mesh.normals;var sc=mesh.colors;var st=mesh.tangents;int offset=v.Count;
                 for(int j=0;j<sv.Length;j++)

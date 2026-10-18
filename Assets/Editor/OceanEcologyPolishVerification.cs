@@ -16,7 +16,8 @@ namespace MagicIsland.EditorTools
             {
                 var surface=root.GetComponent<OceanSurface>();var patches=root.GetComponentsInChildren<OceanHabitatPatch>(true);
                 Require(patches.Length==84&&patches.Count(p=>p.Biome==OceanBiome.ReefSlope)==36,"Both shallow gardens and deeper coral terrace are populated");
-                Require(patches.Sum(p=>p.SmallCorals)>500&&patches.Sum(p=>p.LargeCorals)>650,"Small multicolour corals and larger terrace colonies");
+                Require(patches.Any(p=>p.SmallCorals>10)&&patches.Any(p=>p.LargeCorals>18)
+                    &&patches.All(p=>p.SmallCorals+p.LargeCorals==p.Corals),"Rich shallow and terrace colonies coexist with deliberately sparse patches; visible counters agree");
                 float shallowY=patches.Where(p=>p.SmallCorals>0).Average(p=>p.transform.localPosition.y),reefY=patches.Where(p=>p.LargeCorals>0).Average(p=>p.transform.localPosition.y);
                 Require(shallowY-reefY>.7f,"Reef terrace occupies a distinctly deeper water column");
                 var water=surface.Water.sharedMaterial;

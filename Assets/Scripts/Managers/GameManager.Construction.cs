@@ -14,7 +14,7 @@ namespace MagicIsland.Managers
         { var recipe = Crafting?.Catalog?.FindItem(id); return recipe != null && recipe.IsPlaceable && recipe.IsFurniture == Housing.Inside; }
         private bool craftingOpening, craftingCommitting, placementOpening, placementCommitting;
         private int constructionGeneration;
-        private bool ConstructionBusy => MapBusy || advancingDay || DailyReportBusy || InventoryUpgradeBusy || AnimalBusy || HouseUpgradeBusy || craftingOpening || craftingCommitting || UI.HasCrafting || placementOpening || placementCommitting || Placements.Active || Furniture.Active;
+        private bool ConstructionBusy => MagicBusy || MapBusy || advancingDay || DailyReportBusy || InventoryUpgradeBusy || AnimalBusy || HouseUpgradeBusy || craftingOpening || craftingCommitting || UI.HasCrafting || placementOpening || placementCommitting || Placements.Active || Furniture.Active;
         public void OpenCrafting()
         {
             if (State != GameFlowState.Playing || ModalOpen || Tools.Busy || !ToolUpgrades.InRange(Players.Player.transform.position, Configuration.Config.InteractionReach)) return;

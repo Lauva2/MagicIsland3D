@@ -11,7 +11,7 @@ namespace MagicIsland.Managers
         {
             if (MapBusy) { CloseMap(); return; }
             if (State != GameFlowState.Playing || ModalOpen || Tools.Busy || AnyGameplayCommit || !Map.Ready) return;
-            Map.Capture(); mapOpening = true; SetInputEnabled(false); StartCoroutine(LoadMap(++mapGeneration));
+            Map.PrepareOpen(); mapOpening = true; SetInputEnabled(false); StartCoroutine(LoadMap(++mapGeneration));
         }
         private IEnumerator LoadMap(int generation)
         {

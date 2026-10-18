@@ -33,7 +33,7 @@ try {
         'Assets/Scripts/Ocean/OceanFishSteering.cs','Assets/Scripts/Ocean/OceanSchool.cs',
         'Assets/Scripts/Ocean/OceanFishMotion.cs','Assets/Scripts/Ocean/OceanSwimNavigation.cs',
         'Assets/Scripts/Ocean/WildlifeAlarm.cs','Assets/Scripts/Ocean/OceanGeography.cs',
-        'Assets/Scripts/Interaction/IslandLayout.cs','Assets/Scripts/Ocean/OceanFishPopulation.cs',
+        'Assets/Scripts/Interaction/IslandLayout.cs','Assets/Scripts/Interaction/StarterIslandLayout.cs','Assets/Scripts/Ocean/OceanFishPopulation.cs',
         'Assets/Scripts/Ocean/OceanFishAnimation.cs','Assets/Scripts/Ocean/OceanFishPassage.cs')
     & $taskMono $taskCompiler @taskReferences /main:VerifyOceanFishPopulation /out:Logs/VerifyOceanFishPopulation.exe @taskSources Tools/VerifyOceanFishPopulation.cs
     if($LASTEXITCODE -ne 0){throw 'Population check compilation failed.'}

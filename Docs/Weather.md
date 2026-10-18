@@ -14,6 +14,10 @@ WeatherManager 控制当天晴雨、昼夜光照、雨滴表现和雨水浇灌�
 
 ## 光照与表现
 
+视觉过渡参数位于原 AA WeatherConfig：WeatherTransitionSeconds 默认 3 秒，范围 0–20，0 表示立即切换；TwilightSky、TwilightAmbient 和 TwilightStrength（默认 0.22）控制晨昏的柔和暖色。暖色在半明半暗时最明显，完全白天与夜间归零，雨天按实际雨量减弱；不增加夜间太阳亮度。
+
+天气规则仍立即读取当天 WeatherState，雨水浇灌不等待动画。晴雨改变后，WeatherManager 统一推进 RainAmount，太阳 / 月光、环境光、背景、海水、云色、局部夜灯与雨滴发射量使用同一混合量。普通暂停与室内冻结渐变，退出清空；初始化 / 读档直接使用已保存天气的端点，避免从上一局晴雨淡入。不改变风、云位移、鱼鸟蟹的行为时钟、随机源、天气概率或存档格式。
+
 TimeManager 的游戏分钟决定阳光强度、颜色、方向、环境光和相机天空背景。默认 05:00 开始天亮，08:00 达到日间光照，17:00 开始变暗，20:00 进入夜间；黎明和傍晚平滑过渡并带暖色阳光。
 
 白天以暖白直射阳光为主，采用 Trilight 环境光：天空提供偏冷补光，水平方向更弱，地面仅提供少量暖色反射，保留受光面与背光面的明暗差。太阳方位从 -105° 移至 75°，高度沿弧线变化，最高 65°；默认 12:30 达到最高点。08:00–17:00 的日照平台内，太阳和阴影仍持续移动。晴天峰值强度 1.05，采用柔和阴影；雨天直射光降为 32%，阴影减弱、天空变灰蓝。
@@ -27,6 +31,8 @@ WeatherConfig 中可调整四个时刻、阳光峰值、月光强度（NightInte
 背包、商店和睡觉弹窗暂停时钟及雨滴运动；关闭后恢复。HUD 的 WeatherText 位于 `FarmHudPanel.prefab`，由 FarmHudModel / FarmHudController / PrototypeHud 显示中文“晴天”或“雨天”。面板继续使用 AA 同名地址和 Common 层。离开场景后清理月光、雨滴、场景引用和天气状态；在原场景内清理时恢复原有方向光、阴影参数、环境光模式和三色、反射及背景，重复进入只创建一盏月光。
 
 天空的 IslandClouds 预制体通过 AA 加载并由 WeatherManager 更新。晴天投下稀疏柔和的移动云影，暂停冻结，进入室内隐藏；雨天与夜间取消独立云影。资源、参数和渲染检查见 [云层与云影](Clouds.md)。
+
+大型大陆上，WeatherManager 将同一有界雨场和云场跟随至玩家位置／高度，避免雪山高于雨场或大陆没有云层。水平云朵以世界周期坐标漂移，原生活区保持原场位置；模态暂停与室内冻结跟随，不新增粒子系统、独立 Update 或天气存档。湖河沿用 OceanSurface 的统一昼夜／雨量与动画时钟。高处跟随和暂停由 StarterIslandWorldFlowVerification 实际验证，详见 [大型初始岛屿](StarterIslandWorld.md)。
 
 ## 小屋与码头局部夜灯
 
@@ -42,6 +48,10 @@ WeatherManager 同时绑定已存在与后续 AA 加载的本世界灯组，以�
 2026-10-16 在隔离工程执行上述 Prepare、LightingFlowVerification 及 PauseSleepFlowVerification，均退出 0 并输出 PASSED；检查白天、傍晚、晴夜和雨夜截图后下调了初版灯光的强度与范围。Prepare 额外改动合法的灯光强度、窗光强度及位置，确认普通 Setup 保留编辑，再恢复原资产字节。本次未重新测量独立 Player 的灯光耗时。
 
 ## 存档与验证
+
+AtmospherePolishVerification 随 LightingFlowVerification 运行，检查四季及年份颜色边界、短季节和禁用渐变、单调插值与全局恢复，以及雨量暂停、半程、端点、反向、低帧率、云色 / 海水 / 雨滴同步和晨昏暖色。原 LightingFlowVerification 的强制晴雨截图先显式推进完视觉过渡，再检查既有夜间 / 雨天照明端点；真实暂停中不会推进。
+
+2026-10-17 已实际通过 Lighting（含 AtmospherePolishVerification）、Seasonal、PauseSleep 与 InteractionPrompt 四组 Packed AA 流程，检查新参数非法值、季节单调过渡 / 短季节 / 年份边界、真实睡觉跨季、室内加载后的天气端点、暂停和菜单清理。已检查同步海面时刻的晨昏预览；没有新存档字段或独立 Player 构建。SeasonalFlowVerification 先还原镜头淡化副本，再记录原始材质基线，避免把镜头清理误报为季节改写材质。
 
 存档保存 WeatherSeed 和当天 Weather；本次光照调整不新增存档字段。版本 1–5 沿用原有迁移规则，再补固定种子 1 与晴天；版本 5 原有的混种农田、当前种子、金币、时刻和体力保持不变。非法天气枚举或非正种子拒绝恢复。读档雨天只补浇水，不增加生长进度或赠送种子。
 

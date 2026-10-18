@@ -17,11 +17,11 @@ namespace MagicIsland.UI.Controllers
         private readonly TimeManager time;
         private readonly StaminaManager stamina;
         private readonly WeatherManager weather;
-        private readonly UnityAction nextDay, returnMenu, inventory, map;
+        private readonly UnityAction nextDay, returnMenu, inventory, map, magic;
         private readonly UnityAction[] tools;
 
         public FarmHudController(PrototypeHud view, FarmManager farm, InteractionManager interaction, EconomyManager economy, TimeManager time, StaminaManager stamina, WeatherManager weather,
-            Action advanceDay, Action returnToMenu, Action toggleInventory, Action toggleMap = null)
+            Action advanceDay, Action returnToMenu, Action toggleInventory, Action toggleMap = null, Action toggleMagic = null)
         {
             this.view = view;
             this.farm = farm;
@@ -41,6 +41,7 @@ namespace MagicIsland.UI.Controllers
             inventory = () => toggleInventory();
             view.InventoryButton.onClick.AddListener(inventory);
             map = () => toggleMap?.Invoke(); view.MapButton.onClick.AddListener(map);
+            magic = () => toggleMagic?.Invoke(); if (view.MagicButton != null) view.MagicButton.onClick.AddListener(magic);
             tools = new UnityAction[view.ToolButtons.Length];
             for (int i = 0; i < tools.Length; i++)
             {
@@ -83,6 +84,7 @@ namespace MagicIsland.UI.Controllers
             view.ReturnMenuButton.onClick.RemoveListener(returnMenu);
             view.InventoryButton.onClick.RemoveListener(inventory);
             view.MapButton.onClick.RemoveListener(map);
+            if (view.MagicButton != null) view.MagicButton.onClick.RemoveListener(magic);
             for (int i = 0; i < tools.Length; i++) view.ToolButtons[i].onClick.RemoveListener(tools[i]);
         }
     }

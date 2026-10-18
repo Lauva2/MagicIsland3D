@@ -35,16 +35,16 @@ Material:
     - _OceanTime: 0
     - _Rain: 0
     - _ReflectionStrength: 0.38
-    - _ShallowOpacity: 0.22
+    - _ShallowOpacity: 0.38
     - _Sparkle: 0.1
     - _SunIntensity: 1
     - _WaveHeight: 0.035
     - _WaveSpeed: 0.65
     m_Colors:
-    - _DeepColor: {r: 0.08, g: 0.25, b: 0.35, a: 1}
-    - _FoamColor: {r: 0.87, g: 0.92, b: 0.87, a: 1}
-    - _MidColor: {r: 0.19, g: 0.46, b: 0.52, a: 1}
-    - _ShallowColor: {r: 0.38, g: 0.68, b: 0.64, a: 1}
+    - _DeepColor: {r: 0.035, g: 0.28, b: 0.5, a: 1}
+    - _FoamColor: {r: 0.95, g: 0.95, b: 0.88, a: 1}
+    - _MidColor: {r: 0.055, g: 0.56, b: 0.67, a: 1}
+    - _ShallowColor: {r: 0.055, g: 0.78, b: 0.73, a: 1}
     - _SunColor: {r: 1, g: 0.97499996, b: 0.92, a: 1}
     - _SunDirection: {r: 0.3, g: 0.8, b: -0.4, a: 0}
   m_BuildTextureStacks: []

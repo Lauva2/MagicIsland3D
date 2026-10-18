@@ -90,7 +90,11 @@ class VerifyOceanFishSteering
         }).ToArray();
         float sea=Number(Field(prefab,"SeaLevel"));
         float waves=Number(Field(File.ReadAllText(Path.Combine(root,"Assets/Art/Materials/Ocean/Water.mat")),"_WaveHeight"));
-        Check(obstacles.Length>1500,"Read full-height reef obstacles");
+        string reef=File.ReadAllText(Path.Combine(root,"Assets/Art/Meshes/Ocean/ReefLayout.json"));
+        var recorded=Regex.Matches(reef,@"""source"":\s*(\d+)(?:(?!""source"").)*?""hidden"":\s*(true|false)",RegexOptions.Singleline).Cast<Match>().ToArray();
+        int expected=recorded.Length==0?Regex.Matches(reef,@"""source"":\s*([0-3]|5|8)\s*,").Count
+            :recorded.Count(m=>m.Groups[2].Value=="false"&&(int.Parse(m.Groups[1].Value)<4||m.Groups[1].Value=="5"||m.Groups[1].Value=="8"));
+        Check(expected>0&&obstacles.Length==expected&&obstacles.All(o=>o.Radius>0&&o.Bottom<o.Top),"Read every visible solid reef envelope at full height; density may leave deliberate clearings");
         string ranges=Regex.Match(prefab,@"(?ms)^  FishPopulations:\r?\n(.*?)(?=^  \w+:|\z)").Groups[1].Value;
         var populations=Regex.Split(ranges,@"(?m)^  - Species: ").Skip(1).Select(entry=>{
             string data="    Species: "+entry;

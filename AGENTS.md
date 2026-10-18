@@ -11,7 +11,7 @@
 - `Docs/` 中的版本号、配置数量和「第一版」描述可能是模块加入时的历史记录。若旧段落提到白天自动保存、面板手动保存、返回菜单保存或任意位置调试跨日，以本文件第 5 节的现行规则为准。
 - 文档与实现不一致时，核对当前代码和需求，修正相关说明；不能仅凭较旧文档改回历史行为。涉及不明确的玩法变化，应说明冲突后确定需求。
 - Unity 固定为 **2022.3.62f2**，使用内置渲染管线、旧版 Input、UGUI / TMP；Addressables **1.21.17**、TextMeshPro **3.0.7**。未经当前任务要求，不顺带升级 Unity、依赖包、渲染管线或输入方案。
-- 当前基线：**25 份 AA 配置、28 个 UI 面板预制体、进度存档版本 29**。它们是当前状态，增加系统时按实际变更更新，不能当作永远固定的上限。
+- 当前基线：**26 份 AA 配置、29 个 UI 面板预制体、进度存档版本 31**。它们是当前状态，增加系统时按实际变更更新，不能当作永远固定的上限。
 - 本文标注的数值是当前默认值；实际运行读取 AA 配置并执行对应校验。不要将默认值重新硬编码到 UI 或业务逻辑，也不要借自动配置覆盖成员已经调整的合法参数。
 - 游戏方向为休闲经营成长、3D 斜俯视镜头，中文界面，圆润模型和奶油白、草绿、暖沙、柔和海蓝配色。保持现有玩法和视觉的一致性。
 
@@ -51,6 +51,7 @@
 - 文本使用 TextMeshProUGUI，脚本引用 `TMP_Text`。中文字体为 `Assets/Art/Fonts/IslandUI.asset`，沿用 TMP 默认和回退设置；新增文案提前补字形，不能依赖运行时碰运气显示。
 - 层级顺序为 `Bottom < Common < PopUp < Top`，由 `UIView.Layer` 与 UIManager 决定。主菜单 Bottom；HUD、作物信息、交互提示、任务、摆放 Common；普通模态面板 PopUp；操作反馈与场景切换 Top。
 - UI 点击阻断世界交互；反馈、作物信息、交互提示和高亮本身不拦截点击。面板预加载保持隐藏，不播放打开音效；可见状态真正改变才播放面板声音。
+- 常驻游戏界面采用紧凑布局：右上按钮横排，目标 / 作物卡互斥并与任务卡错开，底部工具栏保留 1–7。布局保存在原 AA 预制体，TaskView.ExpandedHeight 保留人工高度；仅显式 Apply Compact Gameplay Layout 重新应用设计，普通 Setup 不覆盖。维护与多分辨率验证见 Docs/GameplayLayout.md。
 - 主菜单背景随 UI AA 依赖加载，等比铺满裁切，不拉伸；背景图不嵌入文字、按钮等实际 UI 元素。
 
 ## 5. 统一存档、睡觉、设置与迁移
@@ -75,11 +76,11 @@
 
 ### 5.3 兼容规则
 
-- 当前 `SaveData.CurrentVersion=29`，保留版本 1–28 的迁移链。增加持久化字段时统一安排版本、默认值、校验、深快照、捕获、恢复和迁移，不允许两个分支各自占用同一版本定义。
+- 当前 `SaveData.CurrentVersion=31`，保留版本 1–30 的迁移链。增加持久化字段时统一安排版本、默认值、校验、深快照、捕获、恢复和迁移，不允许两个分支各自占用同一版本定义。
 - 稳定物品 / 作物 / NPC / 任务 / 订单 / 配方 ID、枚举值及有序配置不能随意改名、删除、重排。`ItemType` 当前值为 Seed=0、Crop=1、Material=2、Tool=3、Food=4、Fish=5、Placeable=6、Furniture=7、AnimalProduct=8；新值追加。
 - 改动农田尺寸、每季天数、已保存订单的生成规则、任务 ID / 顺序 / 目标、NPC 路线和摆放定义前，评估旧档校验与语义兼容，必要时补迁移，不能默默重置进度。
 - 迁移保留已有金币、库存格序、农田、人物关系、奖励与位置，不赠送物品、不补发奖励、不再次扣费。旧档时间 / 位置按迁移规则保留，下一次实际睡觉再应用新清晨快照。
-- 近期字段：v20 养殖，v21 鸡舍订单池标记，v22 亲密度 / 抚摸日期，v23 品质蛋，v24 日报，v25 背包扩容，v26 出货，v27 肥料 / 作物品质，v28 果树，v29 海滩拾取。历史模块文档里的“当前版本”不代表全项目现行版本。
+- 近期字段：v20 养殖，v21 鸡舍订单池标记，v22 亲密度 / 抚摸日期，v23 品质蛋，v24 日报，v25 背包扩容，v26 出货，v27 肥料 / 作物品质，v28 果树，v29 海滩拾取，v30 魔法启蒙，v31 魔法探索。历史模块文档里的“当前版本”不代表全项目现行版本。
 - 会话、动画、指针 / 拖拽、预览、面板页码、高亮、淡化、环境生态和声音不加入进度存档；只保存可持续的玩法状态。
 
 ## 6. 事务、库存、经济与交互暂停
@@ -88,7 +89,10 @@
 - 业务失败不扣费、不扣物品 / 体力、不改变进度、不发送成功事件。写盘失败与业务失败分开：已完成睡觉结算保留，用固定快照重试。
 - 提交期间阻止事件重入和重复请求；所有相关状态完成后再通知，观察者不能看到半完成事务。数量汇总使用足够宽的整数并检查边界，不用浮点数计算物品或金币。
 - 只读准备检查不产生状态或事件；实际点击仍重新校验。交互提示、目标轮廓和实际点击共享 InteractionManager 的同一个目标判定，不能各自选不同对象。
+- 点击时用同一指针射线重新核对目标、距离、工具与准备条件，提交后立即刷新提示；目标通知期间阻止重复分发。农田与实体按射线深度比较，地块后方物体不抢占目标；UI、失焦、弹窗和退出清除旧指针及鼠标手势。
+- 交互刷新实时检查条件，相同结果复用不可变目标快照，仅变化时通知提示和轮廓。作物卡以字段值检查原位变化，反馈淡出仅更新透明度；不能通过缓存可变对象引用或降低点击校验频率来减少刷新。
 - 工具成功提交一次后才启动动作锁、角色动作、特效和成功音效；动画事件不发物品、不扣费。失败、取消和重复操作不播放成功表现。
+- 工具起手朝向、角色动作与手持工具共用 ToolManager 动作进度，转身不移动碰撞根；特效及采集受击反应到接触点才播放一次，低帧率跨过接触点 / 结束也须正确处理。模态暂停冻结转身及待播放接触表现，退出清除待播放状态；结算和成功反馈仍在提交时完成，不等待动画。
 - 玩家使用 WASD 按画面方向移动、鼠标点击目标；交互默认距离2.25米。工具快捷键沿用1–7映射，动作锁期间禁止切换工具和重复提交；提示使用 Top 层 FeedbackPanel。
 - 基础背包默认 10 格，两次扩容各 +10，默认费用 300 / 800。实际容量是保存的 BaseSlots + 升级增量，旧档按原槽位数保留；不能截断合法旧包，兼容最大 56 格。
 - 扩容原位扩展同一 InventoryState，保留对象、已有格索引和空格；费用、等级、容量提交后再通知。UI 每页 3×10，未开放格不响应；超过 30 格分页映射真实索引，送礼等格池覆盖兼容容量。
@@ -118,6 +122,9 @@
 - CookingManager 制作、FoodManager 食用，原料允许配置的 Crop / Fish / AnimalProduct，Food 不作原料。生鱼、生蛋不能直接食用、播种或送礼；料理才可食用和按礼物规则送出。
 - 当前7种料理，事件食谱保持锁定至事件完整完成；食用只扣选中格的一份，体力恢复不超上限。料理 / 订单支持的普通作物和普通蛋可由对应优质物替代，优先普通；先预留显式要求的优质材料，避免被替代逻辑提前消耗。
 - 农务任务只统计实际成功操作，雨水、读档、自然成熟和失败不计数；提前完成的进度保留，顺序领奖。出售作物任务只统计商店 / 出货真正成功售出的作物，不统计订单、存入出货箱或鱼 / 蛋。
+
+- 魔法启蒙由 MagicManager 管理，手札 MVC/PopUp，K 打开、R 对同一实时农田目标施放唤雨术；保留 1–7。月光花沿用 AA 作物、品质和交易，研读一次发种子、亲手成功收获后交付一朵学习。进度与库存/体力原子提交，施法只浇灌缺水幼苗，不改天气/成长、不计水壶任务；表现共用动作锁/接触/暂停，退出释放。v29→v30 仅初始化未研读，不赠送旧档物品，唯一保存点仍为睡觉。资源、配置和验证见 Docs/Magic.md。
+- 魔法探索在学会唤雨术后按月光花林→灵辉古树→琥珀遗迹顺序推进，沿用 MagicManager、原魔法手札 MVC 与同一实时射线目标；三枚 AA 符文仅有点击触发器，不阻挡行走、不改地形或旧建设。阅读会话不保存，最后一页确认后奖励与完成数一起提交，满包、取消、越序及重复均不发奖；回调期间阻止重复请求。v30→v31 保留启蒙与库存，只初始化零段探索；白天不写盘。详见 Docs/Magic.md。
 
 ## 8. 订单、NPC、关系与钓鱼
 
@@ -153,9 +160,26 @@
 
 ## 10. 地形、角色、美术、环境与声音
 
+- 大型初始岛屿以 `StarterIslandLayout` 统一北侧大陆、湖河、桥梁、步道和高度；原生活区、海滩出生点、码头与旧坐标保持。`IslandLayout.CoastRadius/LegacyHeight` 继续用于原海洋生态，不拿大型大陆半径重排鱼群或海床。新地形和景观编辑器分块烘焙在原 IslandTerrain AA 依赖中，只能显式 Rebuild Large Starter Island 重建；普通 Setup 保留已有网格、布置和材质。湖河不可步行，桥面与恢复位置读取实际地面碰撞；摆放保留步道、水岸、景观点和陡坡。地图提供生活区／全岛视图，魔法地标仅为景观，存档仍为 v30 且只在睡觉保存。详见 Docs/StarterIslandWorld.md。
+- 琥珀遗迹使用 `SourceArt/WorldPlanning/Models` 下的 Blender 源模型和顶点色导出数据；显式重建大型岛屿时原位更新原网格 GUID，运行时只加载合并网格及共享材质，不加载源 JSON、不新增组件逐帧生成。天气的有界雨场与云场沿用 WeatherManager，在大陆跟随玩家位置／高度，暂停和室内冻结，原生活区保持原场位置。
+- 初次探索路线的岬角／湖岸精修只向旧水域增加陆地，保留旧大陆有效坐标、干燥地面高度与可摆放资格。景观树丛从原固定候选筛疏，不移动或新增实体树干；路肩花草／路标和岸边芦苇／岩丛按区域合并烘焙，保持主路中心及旧建设通行，不新增装饰碰撞或逐件运行逻辑。只能显式 Rebuild Large Starter Island 更新，普通 Setup 保留人工编辑；资源与兼容验证见 Docs/StarterIslandWorld.md。
+- 灵辉古树使用独立 Blender 源模型、原网格 GUID 和原地标碰撞；垂叶、花光及合并微光随 OceanSurface 同一时钟／日照，暂停冻结、室内隐藏。大型岛屿的湖鱼／水草与近海四种鱼／珊瑚沿用原 Blender 模板、共享材质、鱼身转向和避障，由 IslandTerrain 内 WorldWaterEcology 随 AA 加载，OceanManager 在输入前绑定并在释放前清理；不增加独立 Update、逐鱼对象、进度字段或掉落。淡水不放珊瑚鱼，湖面涟漪采用统一湖水位和湖水材质波浪。仅显式 Rebuild Ancient Tree And Water Ecology 重建该子树，保留原 IslandOcean 全部生态、岸线、旧布局和手调材质；普通 Setup 不重建。详见 Docs/StarterIslandWorld.md。
+- 草原至西部沙漠入口仅显式 Refine Grassland Desert Approach 调整原局部网格顶点色／草色权重，保留原分区、全部几何、碰撞、树干和建设资格。UV2 保留原权重与本工具烘焙标记，拒绝覆盖其他自定义频道，重复执行及普通 Setup 保留后续手调。草簇／砂岩／仙人掌按区合并在原地形 AA 依赖中，只占既有不可建设路肩，完整脚印避开主路与可建设格，不加碰撞、拾取、逐件逻辑、Update 或存档字段；详见 Docs/StarterIslandWorld.md。
+- 湖泊东北侧草原至雪地入口仅显式 Refine Grassland Snow Approach 精修原局部网格颜色／草色权重，沿原 SnowWeight 分区延展灰绿、薄雪及积雪表现，保留高度、几何、碰撞、实体树干与建设资格。UV3（Mesh.uv4）保存原权重和 -732 标记，与沙漠 UV2 独立，拒绝覆盖自定义频道；重复执行及普通 Setup 保留后续手调。覆雪岩石／矮针叶灌丛复用原模板、共享材质并按区合并，仅占原不可建设路肩，不增加碰撞、拾取、Update 或进度字段；详见 Docs/StarterIslandWorld.md。
+- 湖岸至雪地步道仅显式 Refine Lake Snow Trail 替换原上山三段及两端短连接的可见路面，原 Exploration paths 只移除对应三角面，保留其余全部顶点频道、面与 GUID。连续带状路面使用共享美术网格／材质与边缘淡化，限定原不可建设道路预留带，不改路线、地形、碰撞、建设资格或存档。普通 Setup 不执行；已有 Lake snow trail 子树保留后续手调，非原四边形布局或孤立同名资源在写入前拒绝覆盖。详见 Docs/StarterIslandWorld.md。
+- 中央草原至沙漠步道仅显式 Refine Grassland Desert Trail 更新三段主路及四处短连接；三岔口与各路臂合并为无重叠的连续路面，复用 Exploration Trail 共享材质，保留原草簇、砂岩、仙人掌及湖雪步道。只从原稀疏四边形索引移除选中面，保留其余频道、面、GUID 与全部碰撞／建设规则。整岛显式重建先排除湖雪路段，再排除草漠路段，保留各自手调网格；普通 Setup 不执行。详见 Docs/StarterIslandWorld.md。
+- 东部靠湖林缘仅显式 Refine Lakeside Forest Edge 调整原树冠叶片的形状／层次与局部地表色，保留树干、全部碰撞、地面几何、道路和建设资格；月光花地标周边留白。UV4（Mesh 第 4 号 UV 频道）使用 -736 标记，拒绝覆盖其他自定义频道，重复操作和普通 Setup 保留后续手调。灌木、蕨草与苔藓岩簇只烘焙在原不可建设路肩，按区合并、复用 Biome Details 材质，无新碰撞、拾取、脚本、灯光或存档字段；详见 Docs/StarterIslandWorld.md。
+- 群系美术按沙滩→草原→沙漠→林地→雪地推进，显式 Refine Biomes In Order 或其单区入口执行，普通 Setup 不执行。保留已精修入口／林缘，原网格 UV5（第 5 号频道）用 -740 与步骤位标记保留后续手调，拒绝覆盖自定义频道。仅调整椰叶／灌木、非树干景观与局部地表色；新增小簇合并烘焙在原不可建设路肩或林地斜坡，保持旧 GUID、地面几何、实体碰撞、路线和建设资格。详见 Docs/BiomeArtSequence.md。
+
 - `IslandLayout` 统一岸线规则，地形、海床、边界、角色完整脚印、摆放、NPC、地图和存档落点同步。改轮廓不能只移动可见网格，保留旧岛内 / 沙滩坐标、真实码头与入口。
+- 初始岛屿为连续草原、沙漠、常年雪地及外围沙滩，参数随 IslandTerrain.Biomes AA 依赖加载。群系只改变烘焙表现及装饰筛选，保留原岸线、碰撞、农田、设施、路线及旧存档位置，不新增天气 / 作物限制或进度字段。新游戏使用 AA NewGameSpawn 的干沙滩点，经真实地面和完整角色碰撞解析后开放操作；继续游戏和进出小屋沿原区域规则。普通 Setup 只补缺，重应用空间 / 色板 / 装饰须显式 Rebuild Island Biomes；地图使用同一份分区，维护与验证见 Docs/IslandBiomes.md。
 - TerrainManager 恢复实际地面 / 码头高度及安全落点；旧摆放与新椰树冲突时先隐藏新景观，不移动或删除玩家记录。装饰树与可采集树分开，不误发资源。
-- 椰树按 IslandTerrain.PalmScatter 独立固定种子在编辑器混合小簇与零散单株，连续随机岸内位置、朝向与大小，并检查树干间距及村落 / 码头 / NPC 通道。仅显式 Rebuild Coastal Palms 重排椰树，保留其他海岸布置、网格、GUID 及已有实例的组件覆盖；普通 Setup 保留手调布局与参数，进出 / 读档不重抽，不增加进度字段或消费玩法随机序列。
+- 椰树按 IslandTerrain.PalmScatter 独立固定种子在编辑器混合松散小簇与零散单株，连续随机岸内位置、朝向与大小，同时检查树干间距、随两树体型变化的树冠间距及村落 / 码头 / NPC 通道。仅显式 Rebuild Coastal Palms 重排椰树，保留其他海岸布置、网格、GUID 及已有实例的组件覆盖；普通 Setup 保留手调布局与参数，进出 / 读档不重抽，不增加进度字段或消费玩法随机序列。
+- 岸边灌木、装饰贝壳与小石子由 IslandTerrain.DetailScatter 独立种子混合小簇、单件与空隙，检查岸内脚印、设施通道和实际椰树树干；只通过显式 Rebuild Coastal Details 重排，复用原嵌套实例，不增加碰撞或拾取节点。草沙交界只通过显式 Rebuild Coastal Ground Colours 更新原网格顶点色，保留几何、岸线、碰撞和建设区；普通 Setup 保留人工编辑。
+- 干湿沙由原 Shore／Biome Ground 着色器按地面高度与沙色渐变，保留顶点色、几何、草地季节色和海水；柔和断续反光读取既有光照，不加自发光、对象或独立时钟。高度带／深浅／柔光为共享材质美术参数，普通 Setup 保留。岸边留白仅显式 Thin Beach Shells And Pebbles 筛疏原无碰撞装饰的激活状态，保留全部实例和变换，不影响拾取、生态、出生点和玩法碰撞；资源与验收见 Docs/CoastalArt.md。
+- 出生沙滩至码头的小簇组合仅显式 Refine Beach Arrival Composition 烘焙；Blender 源模型位于 SourceArt/BeachComposition，四处岩组／漂流木／草簇合并为原 IslandTerrain AA 依赖中的一份网格，共用 Biome Details 材质。完整脚印只占原不可建设岸边空隙，避开所有种子的海滩拾取包络，读取实际 Ground／Shore 沙面高度贴地；保留原布局、碰撞、路线和建设资格，无新拾取、脚本、灯光或存档字段。重复执行及普通 Setup 保留手调，孤立同名网格拒绝覆盖；调整拾取站点数或包络须同步重验。详见 Docs/CoastalArt.md。
+- 出生点至生活区的小径精修仅显式 Refine Beach Arrival Route 更新 Village Grass 原色／草色权重、原道路 UV／共享材质和六簇共用四季地表草丛，保留几何、原布置、道路与设施碰撞及建设资格。TerrainManager 在原 ConfigurePaths 调用中向地面实例 MPB 传入 AA 出生点与实际道路连接，随农田尺寸适配；仅配置时有界检查弯曲候选，绕开实体、受阻则关闭磨损，退出清空查询引用，不增加 Update 或共享材质写入。草丛沿原 SeasonalGroundCover 随建设遮盖／回收，普通 Setup 保留手调与布局；详见 Docs/VillageArt.md。
+- 海底疏密只通过显式 Rebuild Reef Density 调整 ReefLayout 原成员的 hidden 标记，保留完整位置 / 大小 / 色调记录及原障碍快照，合并可见成员并仅移除对应鱼群障碍。保留群落 GUID、地貌、模板、鱼鸟蟹与活动参数；布局 / 障碍 / 网格不匹配时拒绝覆盖。普通 Apply / Setup 保留疏密和手调；模型 Rebuild 沿用当前可见标记，不重新随机生态。
 - 美术替换保持原碰撞与交互范围；树冠、受击摇晃、农田 / 作物、建筑新增细节和水下景观不额外阻挡点击。按已有约定使用 Ignore Raycast；树干的实体行走碰撞仍保留。
 - 玩家根控制 CharacterController / 位置，Visual 控朝向，Animator 控模型，禁用 root motion。行走和脚步按实际水平位移，撞墙不踏步；工具表现采样 ToolManager 同一动作进度，暂停保留并冻结已有动作。
 - 锄头、水壶、斧头、镐子使用编辑器烘焙的 IslandFarmTools，作为 FarmActionEffects 的 AA 依赖加载。ToolPresentation 在原 ToolSocket 下复用同一套模型与共享材质，退出先清理实例再释放依赖，不回退为运行时拼装占位几何。普通 Setup 只补缺失工具引用，保留合法替换、握持调整、网格和材质；更新源美术须显式 Rebuild。
@@ -164,9 +188,14 @@
 - WeatherManager 统一昼夜、晴雨、风与阵风。夜间太阳关闭，环境 / 反射 / 海水同步变暗，室内照明隔离；风动只改变视觉顶点，不动根、碰撞、果实或受击逻辑。
 - 小屋窗光 / 门灯和码头两盏矮灯烘焙在原 AA 预制体中，OutdoorNightLighting 由 WeatherManager 绑定和驱动；默认合计三盏无阴影局部灯，随日照渐亮、雨天提前，室内关闭并排除室内层。共享发光材质通过 MPB 设置亮度，不改全局夜间亮度、不新增存档；退出恢复实例原灯光与 MPB。Setup 只补缺失资源和引用，保留合法人工参数，不增加装饰碰撞或独立 Update。
 - 四季地形 / 植被配色读取 AA SeasonConfig，由 WeatherManager 根据 CalendarManager 的日期在初始化和睡觉跨日时应用；草地、普通树冠、常绿叶片分别配置，椰树保持常绿。沿用原网格、风动及透明淡化，不改共享材质、碰撞、果实或水下生态，不新增季节存档状态；退出恢复原全局配色。Setup 只补缺失字段，保留人工色板与常绿标记。
+- SeasonConfig.PaletteTransitionDays 仅控制季末向下一季色板的日期插值，短季节自动收窄，每季一天不混色；不改变季节玩法。WeatherConfig 的晴雨时长与晨昏暖色仅控制表现，WeatherManager 统一 RainAmount 驱动光照、云色、海水、雨滴及夜灯，暂停 / 室内冻结，读档直接采用已保存天气；不能延迟雨水浇灌、重抽天气或写入进度。
 - 四季花草、地面落叶和薄霜使用编辑器固定种子随机烘焙的 SeasonalGroundDetails，连续随机位置、数量范围、尺寸及朝向随预制体配置，随 IslandTerrain 的 AA 依赖加载；进出 / 读档不重新抽取。TerrainManager 绑定实际设施、道路、农田 / NPC 路线及摆放事务，玩家建设优先，遮盖处隐藏、回收后恢复；不加碰撞、不占玩法格、不改变旧记录。WeatherManager 统一季节与室内显示，飘叶沿用风动时钟在 GPU 运动，砍去对应树冠后停止飘落。退出解除摆放与采集订阅，不逐帧生成对象或重建网格；普通 Setup 不覆盖已有布置与网格，重新随机布置只能显式 Rebuild Seasonal Ground Details。
 - 云朵 / 云影随统一暂停和室内状态，云位移累计速度保持晴雨切换连续；退出恢复原太阳 Cookie / 参数。风动退出恢复原全局参数，不叠加第二套风场。
+- 云影采用编辑器周期噪声烘焙的大块浅淡不规则轮廓，默认最大遮挡直射光约 8%；ShadowScale 默认 3，仅扩大云影周期，太阳投影位移须使用同一周期，保留天空云场与统一风速。只有显式 Refine Cloud Shadows 更新已有 Cookie，保留原 GUID、层级与美术参数；userData 烘焙标记与普通 Setup 保留后续手绘，不新增光源、材质副本、逐帧纹理或存档字段。详见 Docs/Clouds.md。
 - OceanManager 统一海洋 / 生态 / 海鸥 / 螃蟹 / 特效，依赖固定种子编辑器烘焙，不消耗玩法随机序列；环境鱼不参与钓鱼掉落和背包。正常进入 / 读档沿用烘焙结果。
+- 海水浅滩采用透水的青绿色，随真实水深渐变为青蓝与深蓝；远海在有限海床外缘前转为不透明。表面反射与明暗读取真实日照和太阳，初始化即绑定恢复后的太阳。细波不使用铺满深海的周期性白斑覆盖层；浪高／时间继续与 OceanSurface.HeightAt 一致。浪带使用同一海洋时间驱动的错向涌浪、连续噪声与断续蓝色浪脊，仅影响片元明暗／法线，浅水减弱，不增加白色覆盖、几何高度或独立 Update。普通 Setup 保留既有水材质与美术参数，清晨／昼夜／雨天及共享湖水的画面验收见 Docs/Ocean.md。
+- 原海床的离岸缓坡仅通过显式 Soften Offshore Seabed 更新 Island Shore 原网格；只压低空旷水域突起，保留拓扑、顶点色、近岸七米、完整礁群（含隐藏成员）脚印及鱼群活动范围所触及的三角面，鱼群安全海床高度不变。过渡在保护区外羽化，不移动生态、岸线或玩法碰撞，不改水材质。重复执行以网格签名保留结果；已有结果再被人工修改时拒绝覆盖，普通 Setup 不执行。完整地貌重建会覆盖此局部美术处理，详见 Docs/Ocean.md。
+- 岸边碎浪沿真实水深从深向浅推进，两组局部错相浪头在到岸与周期交界前消散，连续噪声形成断续浪脊与轻薄拖尾；只在近岸浅水显现，保留原水色／透明度、几何、HeightAt 与统一暂停时钟。沿用 FoamWidth／FoamStrength，随已有 WaveHeight 减弱湖水表现；不增加泡沫对象、材质副本或独立 Update，画面与关闭泡沫的对照验收见 Docs/Ocean.md。
 - 四种环境鱼、海鸥身体 / 双翼和螃蟹使用 Blender 源文件及编辑器烘焙网格，沿用 IslandOcean 的共享顶点色材质和原关节 / 鱼身动画。更新美术仅显式 Rebuild Blender Ocean Wildlife，保留原网格 GUID、鱼群成员枢轴 / 缩放 / 出生记录、鸟蟹布局、活动参数及安全包络；不重抽地貌或生态，不增加逐鱼 / 逐腿对象。普通 Apply / Setup 保留人工编辑，源文件改变要求显式重建；交接方式见 SourceArt/Ocean/README.md。
 - 珊瑚、海草、海绵、海星与装饰贝壳使用 Blender 源文件及原位烘焙网格。显式 Rebuild Blender Reef Models 根据 ReefLayout 保留原群落 / 成员的位置、旋转、尺寸、色调和障碍，只更新模板与合并群落网格，沿用原 GUID、材质及统一海草摆动。模板及成员布局与记录不匹配时拒绝覆盖；普通 Apply / Setup 保留手调，不重随机生态，不增加碰撞、单件运行时对象或存档字段。海岸共用模板同步验证，编辑 / 布局交接见 SourceArt/OceanReef/README.md。
 - 海鸥 / 螃蟹由 IslandOcean.CoastalPopulation 独立种子抽取含端点的数量，默认 6–10 / 5–9；连续随机位置保留至少 10 / 6.1 米家园间距，螃蟹完整横移 / 逃离包络与停栖落点避开海水和码头入口。只有显式 Rebuild Coastal Wildlife 重烘焙鸟蟹，保留地貌、珊瑚、鱼群、共享材质及受惊参数；普通 Setup / 读档不重抽。活动周期、停留比例、体型与相位错开，海鸥受惊后持续盘旋而非悬停，螃蟹腿部用原共享网格的关节元数据与 MPB 变形，不增加逐腿对象、材质副本、独立 Update 或存档。
@@ -184,9 +213,19 @@
 - 生物受惊使用同一计时逻辑，持续威胁不反复起落；成功抛竿触发一次落水，忙碌 / 失败不触发。涟漪贴合真实波浪，沙尘贴合实际海床，沿用固定84槽复用；农务 / 采集特效沿用最多48实例。
 - 玩家靠岸对浅水鱼的惊扰检查实际成员位置，默认水平 6.5 米、垂直差小于 1.65 米；初次感知后以该位置保留 0.8 米释放余量，持续靠近维持一次威胁，离开后沿用原安静 / 恢复期归群。不扩大既有鱼身逃离包络，不把普通靠近当作落水特效或成功抛竿。
 - 海面保持现有内置管线单透明 Pass 与深度方案；共享 AA 材质不在运行时改写。OceanManager 只添加并恢复自己拥有的镜头深度标记，清理不覆盖其他系统设置。
+- 珊瑚群落使用独立共享的 Reef Palette 材质增强水下色差，鱼鸟蟹保留原 Ecosystem 材质和默认配色；不以自发光绕过昼夜光照，不重建布局或增加逐件对象。显式 Apply Reef Color Palette 只补材质与原默认引用，保留合法手调参数和替换材质；普通 Setup 不重新应用色板，地貌显式重建复用已存在的群落材质。参数与验证见 Docs/Ocean.md。
 - AudioManager 统一音源、AA 音频句柄、唯一持久监听器和音乐切换；操作音效只在事务真正成功时播放，UI组件不承担业务。保留总音量，原位替换音频保留 `.meta` / 地址。
 - 继续使用有界音源池：2音乐、8操作音效、3环境循环、2鸟声、1脚步，共16。海浪依离岸距离、风雨依天气，鸟声依实际可见生物和昼夜 / 雨天，脚步依实际贴地位移与材质。
 - 弹窗停止瞬时世界声音 / 鸟声计时并降低环境循环，音乐保留；室内淡出户外声，菜单解绑世界事件并清场景音，音频可缓存复用，最终 Clear / 取消加载释放句柄与恢复监听器。
+
+- 草原主路第二轮仅显式 Refine Grassland Route Composition 调整原位树冠与烘焙路肩组合；原网格 UV6（第七组 UV）使用 -742 标记，拒绝覆盖自定义频道并保留 UV0–5、树干、地面与碰撞。Blender 源模型位于 SourceArt/GrasslandComposition，新增苔石／矮草／野花按区合并、复用 Biome Details，仅占完整脚印检查通过的原不可建设路肩，避开道路中心、路标和建设格；已有子树及后续手调保留，普通 Setup 不执行。细节见 Docs/GrasslandComposition.md。
+- 草原腹地／支路收尾仅显式 Finish Grassland Biome 调整原地表颜色、原位绿色树冠和原主路花草疏密；UV7（第八组、最后一组 UV）用 -744 标记并拒绝自定义频道，保留 UV0–6 与上一轮树冠。筛疏只移除仍符合原模板的完整花草组件三角面，保留全部顶点频道、岩石和其余面顺序；地面几何、树干、碰撞与建设资格保持。南侧支路和西侧湖岸复用原 Blender 模板，完整脚印仅占原不可建设路肩并按区合并，无逐件逻辑、碰撞或存档字段；已有子树及手调保留，普通 Setup 不执行。详见 Docs/GrasslandFinish.md；后续工具不得再分配额外 Mesh UV 频道。
+
+- 草原昆虫与花草风动仅显式 Add Grassland Ecology 烘焙；复用已有花丛脚印、Blender 模板和分区共享网格，不新增逐只对象、Update、碰撞、掉落或灯光。WorldWaterEcology 的可选 GrasslandAmbient 沿用 OceanSurface 时钟／暂停／室内隐藏及 AA 清理，Bind 保存、Clear 恢复原属性块；蝴蝶访花／受惊由该拥有者持有固定容量临时数组，经原相位寻址和 MPB 上传，绑定时读取原花粉顶点作为落点，不改模型或源数据。停留、散开与风动完整包络仍在原路肩内，暂停和室内停止，退出清空。风动沿用 WeatherManager 风场，原花草仅在空 UV0 烘焙根部权重，保留几何、UV1–7、岩石、其他材质与建设资格。自定义频道／材质拒绝覆盖，已有完整子树与手调保留，普通 Setup 不执行，不增加存档字段。详见 Docs/GrasslandEcology.md。
+
+- 草原小兔仅显式 Add Grassland Rabbits 烘焙 Blender 模板、四处路肩活动区和一个共享网格，沿用 IslandTerrain AA 与 WorldWaterEcology／OceanSurface 调度。新网格 UV0–2 保存关节／个体／中心，不占原网格额外频道；完整身体与跳跃包络避开道路、建设格和既有景观。固定 30Hz 插值移动／转身，起跳前及途中用所属世界的非分配查询检查完整路线；玩家局部惊扰后连续避让与返回，受阻等待，旧建设优先，被覆盖活动区初始隐藏，不删除记录或瞬移可见兔子。暂停／室内冻结，Bind 保存、Clear 恢复原属性块并清空查询；不新增逐只对象、碰撞、Animator、Update、材质副本、玩法随机数、捕捉掉落或存档。普通 Setup、重复入口及完整子树保留人工编辑，详见 Docs/MeadowRabbits.md。
+
+- 草原生态组合仅显式 Refine Meadow Ecology Composition 将原兔子活动区靠近已有蝴蝶花丛，整条路线保留花草风动与完整身体间距，保持原道路、建设资格和碰撞。原位更新兔子网格／Track，保留 GUID、调参和共享材质；首次拒绝自定义形状、颜色、UV、bounds、变换、Track 或导入器元数据，userData 的 MagicIsland.MeadowComposition.v1 标记使重复与普通 Setup 保留后续手调。兔子自然休息／短跳按原配置、个体相位和访问次数变化，转身抬头后起跳，左右耳最多额外 0.04 弧度异步轻摆；新增数组随原固定时钟、暂停、室内与属性块清理，不增 Update、对象、随机源或存档。正常游玩镜头必须检查四处可见性，详见 Docs/MeadowRabbits.md。
 
 ## 11. 验证、提交内容与完成标准
 
@@ -209,13 +248,16 @@
 | 流程与存档 | [系统框架](Docs/GameArchitecture.md)、[存档](Docs/Saving.md)、[暂停 / 设置 / 睡觉](Docs/PauseAndSettings.md) |
 | 农田与时间 | [作物](Docs/Crops.md)、[作物模型](Docs/CropVisuals.md)、[日期季节](Docs/CalendarAndSeasons.md)、[时间与睡觉](Docs/TimeAndSleep.md)、[天气](Docs/Weather.md)、[体力](Docs/Stamina.md)、[工具与反馈](Docs/ToolsAndFeedback.md)、[肥料与品质](Docs/FertilizerAndCropQuality.md) |
 | 库存与商店 | [背包](Docs/Inventory.md)、[背包扩容](Docs/InventoryUpgrades.md)、[储物](Docs/Storage.md)、[商店](Docs/Shop.md)、[工具升级](Docs/ToolUpgrades.md) |
+| 魔法 | [魔法启蒙、月光花与唤雨术](Docs/Magic.md) |
 | 成长与经营 | [新手任务](Docs/Tasks.md)、[订单](Docs/Orders.md)、[养殖订单](Docs/AnimalOrders.md)、[出货](Docs/Shipping.md)、[日报](Docs/DailyReports.md) |
 | 采集与制作 | [采集](Docs/Gathering.md)、[海滩拾取](Docs/BeachForaging.md)、[制作 / 摆放](Docs/CraftingAndPlacement.md)、[饲料](Docs/FeedCrafting.md) |
 | 料理与钓鱼 | [料理 / 食物](Docs/CookingAndFood.md)、[鱼类料理](Docs/FishCooking.md)、[蛋料理](Docs/EggCooking.md)、[钓鱼](Docs/Fishing.md) |
 | 居民 | [NPC / 对话](Docs/NPCAndDialogue.md)、[日程](Docs/NPCSchedules.md)、[关系 / 送礼](Docs/Relationships.md)、[好感度事件](Docs/StoryEvents.md) |
 | 小屋与养殖 | [小屋](Docs/Housing.md)、[扩建](Docs/HouseUpgrades.md)、[家具](Docs/Furniture.md)、[鸡舍](Docs/Animals.md)、[亲密度](Docs/AnimalFriendship.md)、[品质蛋](Docs/QualityEggs.md)、[果树](Docs/Orchard.md) |
 | 交互与角色 | [角色 / 动画](Docs/PlayerCharacterAndAnimation.md)、[工具动作](Docs/ToolsAndFeedback.md)、[交互提示](Docs/InteractionPrompts.md)、[地图](Docs/Map.md)、[镜头遮挡](Docs/CameraOcclusion.md) |
-| 环境与美术 | [海岸 / 码头](Docs/WalkableCoast.md)、[海洋](Docs/Ocean.md)、[海岸美术](Docs/CoastalArt.md)、[村落](Docs/VillageArt.md)、[农田](Docs/FarmArt.md)、[采集美术](Docs/GatheringArt.md)、[设施](Docs/FacilityArt.md)、[云层](Docs/Clouds.md)、[植被风动](Docs/VegetationWind.md)、[四季地表](Docs/SeasonalGroundDetails.md)、[主菜单背景](Docs/MainMenuArtwork.md) |
+| 常驻界面 | [紧凑布局、资源维护与多分辨率检查](Docs/GameplayLayout.md) |
+| 环境与美术 | [海岸 / 码头](Docs/WalkableCoast.md)、[海洋](Docs/Ocean.md)、[海岸美术](Docs/CoastalArt.md)、[群系逐区优化](Docs/BiomeArtSequence.md)、[村落](Docs/VillageArt.md)、[农田](Docs/FarmArt.md)、[采集美术](Docs/GatheringArt.md)、[设施](Docs/FacilityArt.md)、[云层](Docs/Clouds.md)、[植被风动](Docs/VegetationWind.md)、[四季地表](Docs/SeasonalGroundDetails.md)、[主菜单背景](Docs/MainMenuArtwork.md) |
 | 声音 | [音效 / 配乐](Docs/Audio.md)、[海岸环境音 / 脚步](Docs/CoastalAudio.md) |
+| 草原生态 | [主路景观](Docs/GrasslandComposition.md)、[腹地收尾](Docs/GrasslandFinish.md)、[花丛与昆虫](Docs/GrasslandEcology.md)、[环境小兔](Docs/MeadowRabbits.md) |
 
 配置字段以 `Assets/Config`、配置脚本及 ConfigurationManager 校验为准；包与编辑器版本见 `Packages/manifest.json`、`Packages/packages-lock.json`、`ProjectSettings/ProjectVersion.txt`；文本与提交规则见 `.gitattributes`、`.gitignore`。

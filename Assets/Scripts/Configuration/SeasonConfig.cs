@@ -8,6 +8,8 @@ namespace MagicIsland.Configuration
     {
         public const string Address = "SeasonConfig";
         [Range(1, 365)] public int DaysPerSeason = 28;
+        [Tooltip("Blend vegetation into the next season during these final days. Zero disables blending; one-day seasons keep their own palette.")]
+        [Range(0, 365)] public int PaletteTransitionDays = 7;
         [Range(0, 1)] public float SpringRainChance = 0.3f;
         [Range(0, 1)] public float SummerRainChance = 0.2f;
         [Range(0, 1)] public float AutumnRainChance = 0.4f;
@@ -17,6 +19,7 @@ namespace MagicIsland.Configuration
         public SeasonPalette Autumn = new SeasonPalette(new Color(.69f,.63f,.36f),new Color(.79f,.46f,.24f),new Color(.40f,.57f,.32f),.88f);
         public SeasonPalette Winter = new SeasonPalette(new Color(.58f,.63f,.54f),new Color(.50f,.57f,.51f),new Color(.39f,.52f,.43f),.82f);
         public bool IsValid => DaysPerSeason >= 1 && DaysPerSeason <= 365
+            && PaletteTransitionDays >= 0 && PaletteTransitionDays <= 365
             && ValidChance(SpringRainChance) && ValidChance(SummerRainChance)
             && ValidChance(AutumnRainChance) && ValidChance(WinterRainChance)
             && Spring != null && Spring.IsValid && Summer != null && Summer.IsValid

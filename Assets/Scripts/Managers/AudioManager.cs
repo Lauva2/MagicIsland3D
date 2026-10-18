@@ -94,6 +94,7 @@ namespace MagicIsland.Managers
             {
                 case ToolActionKind.Hoe: PlaySound(AudioCue.Hoe); break;
                 case ToolActionKind.Seed: PlaySound(AudioCue.Plant); break;
+                case ToolActionKind.RainSpell:
                 case ToolActionKind.Water: PlaySound(AudioCue.Water); break;
                 case ToolActionKind.Harvest: PlaySound(AudioCue.Harvest); break;
                 case ToolActionKind.Axe: PlaySound(AudioCue.Axe); break;

@@ -78,7 +78,7 @@ internal static class VerifyBeachForage
         Check(snapshot.BeachForage.Entries.Length == 9 && snapshot.Version == SaveData.CurrentVersion, "World snapshot includes remaining beach loot");
         var old = SaveData.Capture(farm, bag, 0, 0, 0); old.Version = 28; old.BeachForage = null; old.Gold = 123;
         old.Upgrade(100); old.Validate(2, 3, new InventoryState(10, items));
-        Check(old.Version == 29 && old.BeachForage.Day == 1 && old.BeachForage.Entries.Length == 10 && old.Gold == 123, "Version 28 adds fresh beach without changing inventory or gold");
+        Check(old.Version == SaveData.CurrentVersion && old.BeachForage.Day == 1 && old.BeachForage.Entries.Length == 10 && old.Gold == 123, "Version 28 adds fresh beach without changing inventory or gold");
         snapshot.Upgrade(999); Check(snapshot.BeachForage.Entries.Length == 9, "Current save upgrade never refills picked loot");
         var malformed = SaveData.Capture(farm, bag, 0, 0, 0); malformed.BeachForage = null;
         Reject(() => malformed.Validate(2, 3, new InventoryState(10, items)));
