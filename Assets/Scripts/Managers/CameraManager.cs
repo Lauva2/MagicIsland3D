@@ -44,10 +44,13 @@ namespace MagicIsland.Managers
                         || occluder.Blocks(view, feet + Vector3.up * 1.5f, margin));
                 occluder.Fade(blocked, minimumOpacity, fadeDuration, Mathf.Max(0, deltaTime));
             }
+            foreach (var crown in LandscapeCrownOccluder.Active)
+                if (crown != null) crown.Tick(view, controller.Target, minimumOpacity, fadeDuration, margin, deltaTime);
         }
         public void RestoreOccluders()
         {
             foreach (var occluder in CameraOccluder.Active) if (occluder != null) occluder.Restore();
+            foreach (var crown in LandscapeCrownOccluder.Active) if (crown != null) crown.Restore();
         }
         public void Clear() { RestoreOccluders(); occlusionEnabled = false; controller = null; view = null; }
         private void OnDisable() => RestoreOccluders();

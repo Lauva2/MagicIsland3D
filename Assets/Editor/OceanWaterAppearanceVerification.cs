@@ -55,6 +55,10 @@ namespace MagicIsland.EditorTools
         public static void RunMeadowBehaviour()=>Begin("MeadowBehaviour");
         public static void RunMeadowRabbits()=>Begin("MeadowRabbits");
         public static void RunMeadowPolish()=>Begin("MeadowPolish");
+        public static void RunLivingGrasslandBaseline()=>Begin("LivingGrasslandBefore");
+        public static void RunLivingGrassland()=>Begin("LivingGrassland");
+        public static void RunDesertCompositionBaseline()=>Begin("DesertCompositionBefore");
+        public static void RunDesertComposition()=>Begin("DesertComposition");
         static void Begin(string variant)
         {
             var material=File.ReadAllBytes(OceanSetup.MaterialFolder+"/Water.mat");
@@ -93,6 +97,8 @@ namespace MagicIsland.EditorTools
                     if(SessionState.GetString(Key+".Variant","")=="Forest")ForestEdgeVerification.VerifyRuntime(g);
                     if(SessionState.GetString(Key+".Variant","")=="Biomes")BiomePolishVerification.VerifyRuntime(g);
                     if(SessionState.GetString(Key+".Variant","")=="Composition")BeachCompositionVerification.VerifyRuntime(g);
+                    if(SessionState.GetString(Key+".Variant","")=="LivingGrassland")GrasslandRevitalizationVerification.VerifyRuntime(g);
+                    if(SessionState.GetString(Key+".Variant","")=="DesertComposition")DesertCompositionVerification.VerifyRuntime(g);
                     if(SessionState.GetString(Key+".Variant","")=="GrasslandComposition")GrasslandCompositionVerification.VerifyRuntime(g);
                     if(SessionState.GetString(Key+".Variant","")=="GrasslandFinish")GrasslandFinishVerification.VerifyRuntime(g);
                     if(SessionState.GetString(Key+".Variant","")=="GrasslandEcology")GrasslandEcologyVerification.VerifyRuntime(g);
@@ -101,7 +107,14 @@ namespace MagicIsland.EditorTools
                     if(SessionState.GetString(Key+".Variant","")=="MeadowPolish"){GrasslandEcologyVerification.VerifyRuntime(g);MeadowBehaviourVerification.VerifyRuntime(g);MeadowRabbitVerification.VerifyRuntime(g);MeadowPolishVerification.VerifyRuntime(g);}
                     if(SessionState.GetString(Key+".Variant","")=="Arrival")
                     {ArrivalRouteVerification.BeginPlacement(g);SessionState.SetInt(Key+".Phase",3);return;}
+                    if(SessionState.GetString(Key+".Variant","")=="LivingGrassland"){GrasslandRevitalizationVerification.BeginPlacement(g);SessionState.SetInt(Key+".Phase",4);return;}
                     Debug.Log("Ocean water appearance verification PASSED: Packed AA, morning/day/night/rain and lake renders; paused clock and shared materials preserved.");
+                    SessionState.SetInt(Key+".Phase",2);EditorApplication.isPlaying=false;
+                }
+                else if(phase==4&&g.Placements.Ready)
+                {
+                    GrasslandRevitalizationVerification.VerifyPlacement(g);
+                    Debug.Log("Living grassland appearance and construction verification PASSED.");
                     SessionState.SetInt(Key+".Phase",2);EditorApplication.isPlaying=false;
                 }
                 else if(phase==3&&g.Placements.Ready)
@@ -147,6 +160,10 @@ namespace MagicIsland.EditorTools
             if(biomes){folder="Logs/BiomePolish/"+(variant=="BiomesBefore"?"BeforeRender":"AfterRender");Directory.CreateDirectory(folder);}
             bool composition=variant=="Composition"||variant=="CompositionBefore";
             if(composition){folder="Logs/BeachComposition/"+(variant=="CompositionBefore"?"BeforeRender":"AfterRender");Directory.CreateDirectory(folder);}
+            bool livingGrassland=variant=="LivingGrassland"||variant=="LivingGrasslandBefore";
+            if(livingGrassland){folder="Logs/LivingGrassland/"+(variant=="LivingGrasslandBefore"?"BeforeRender":"AfterRender");Directory.CreateDirectory(folder);}
+            bool desertComposition=variant=="DesertComposition"||variant=="DesertCompositionBefore";
+            if(desertComposition){folder="Logs/DesertComposition/"+(variant=="DesertCompositionBefore"?"BeforeRender":"AfterRender");Directory.CreateDirectory(folder);}
             bool grasslandComposition=variant=="GrasslandComposition"||variant=="GrasslandCompositionBefore";
             if(grasslandComposition){folder="Logs/GrasslandComposition/"+(variant=="GrasslandCompositionBefore"?"BeforeRender":"AfterRender");Directory.CreateDirectory(folder);}
             bool grasslandFinish=variant=="GrasslandFinish"||variant=="GrasslandFinishBefore";
@@ -270,6 +287,30 @@ namespace MagicIsland.EditorTools
                         Shot(camera,folder+"/"+light.Name+"Shore",new Vector3(9,0,-16),4.5f);
                         Shot(camera,folder+"/"+light.Name+"Dock",new Vector3(15,0,-10),5);
                         Shot(camera,folder+"/"+light.Name+"Overview",new Vector3(6,0,-10),12);
+                    }
+                    if(livingGrassland)
+                    {
+                        DesertShot(camera,folder+"/"+light.Name+"Main",-122,440,size);
+                        DesertShot(camera,folder+"/"+light.Name+"Interior",-60,450,size);
+                        DesertShot(camera,folder+"/"+light.Name+"East",150,315,size);
+                        DesertShot(camera,folder+"/"+light.Name+"Tree",-55,318,12);
+                        DesertShot(camera,folder+"/"+light.Name+"Wide",-60,450,65);
+                        DesertShot(camera,folder+"/"+light.Name+"LakeEdge",-106,625,size);
+                        DesertShot(camera,folder+"/"+light.Name+"DesertControl",-410,695,26);
+                        DesertShot(camera,folder+"/"+light.Name+"ForestControl",473,563,25);
+                    }
+                    if(desertComposition)
+                    {
+                        DesertShot(camera,folder+"/"+light.Name+"Entry",-225,445,22);
+                        DesertShot(camera,folder+"/"+light.Name+"Bend",-344,538,22);
+                        DesertShot(camera,folder+"/"+light.Name+"Interior",-410,695,26);
+                        DesertShot(camera,folder+"/"+light.Name+"North",-420,760,26);
+                        DesertShot(camera,folder+"/"+light.Name+"Overview",-347,590,110);
+                        DesertShot(camera,folder+"/"+light.Name+"GrassControl",-122,440,18);
+                        DesertShot(camera,folder+"/"+light.Name+"ForestControl",473,563,25);
+                        var spots=DesertCompositionSetup.Sites(g.Terrain.Terrain);
+                        foreach(int index in new[]{0,spots.Length/3,spots.Length*2/3,spots.Length-1})
+                        {var point=spots[index].Point;DesertShot(camera,folder+"/"+light.Name+"Play"+index,point.x,point.y,size);}
                     }
                     if(grasslandComposition)
                     {

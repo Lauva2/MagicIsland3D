@@ -171,6 +171,7 @@ namespace MagicIsland.Managers
             else if (paused) { if (Rain.isPlaying) Rain.Pause(true); }
             else if (!Rain.isPlaying) Rain.Play(true);
             TickWind(UnityEngine.Time.deltaTime,paused);
+            TickMeadowTouch(UnityEngine.Time.deltaTime,paused);
             groundCover?.Present(calendar==null?MagicIsland.CalendarSystem.Season.Spring:calendar.Date.Season,IsOutside());
             if (Clouds != null) Clouds.Tick(paused ? 0 : UnityEngine.Time.deltaTime, light, raining, IsOutside(),WindFactor,config.WindDirection,RainAmount);
         }
@@ -192,6 +193,12 @@ namespace MagicIsland.Managers
             Vector2 direction=config.WindDirection.normalized;
             Shader.SetGlobalVector("_IslandWindDirection",new Vector4(direction.x,direction.y,0,0));
             Shader.SetGlobalFloat("_IslandWindTime",(float)Wind.Time);Shader.SetGlobalFloat("_IslandWindStrength",(float)Wind.Strength);
+        }
+
+        internal void TickMeadowTouch(float seconds,bool paused)
+        {
+            var player=GameManager.Instance?.Players?.Player;
+            groundCover?.TickTouch(seconds,player!=null?(Vector3?)player.transform.position:null,paused,IsOutside());
         }
 
         private static bool IsOutside()

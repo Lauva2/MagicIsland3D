@@ -35,7 +35,9 @@ namespace MagicIsland.Ocean
         {
             get
             {
-                if(ArtVersion!=1||Habitats==null||Habitats.Length==0||Ambient==null||AncientTree==null||LakeSurface==null)return false;
+                if((ArtVersion!=1&&ArtVersion!=2)||Habitats==null||Ambient==null||AncientTree==null)return false;
+                if(ArtVersion==1&&(Habitats.Length==0||LakeSurface==null))return false;
+                if(ArtVersion==2&&(Habitats.Length!=0||LakeSurface!=null))return false;
                 foreach(var h in Habitats)
                     if(h==null||h.School==null||h.Floor==null||h.Floor.sharedMesh==null||h.School.Swimmers.Length!=h.School.Members
                         ||h.School.transform.parent!=transform||h.Floor.transform.parent!=transform||!Finite(h.WaterLevel))return false;

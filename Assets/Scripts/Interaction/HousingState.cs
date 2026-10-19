@@ -21,7 +21,7 @@ namespace MagicIsland.Interaction
         public static bool ValidPosition(string area, double x, double y, double z, int houseLevel = 0)
         {
             if (!Finite(x) || !Finite(y) || !Finite(z) || houseLevel < 0 || houseLevel > 1) return false;
-            if (area == Island) return IslandLayout.Contains(x, z) && y >= -1 && y <= (z>23?StarterIslandLayout.Ground(x,z)+10:10);
+            if (area == Island) return IslandLayout.Contains(x, z) && y >= -1 && y <= (z>23?BiomeIslandLayout.Height(x,z)+10:10);
             if (area == Home) return x >= -5.8 && x <= 5.8 + houseLevel * 4 && z >= -4.8 && z <= 4.8 + houseLevel * 2 && y >= -.1 && y <= 2;
             return false;
         }

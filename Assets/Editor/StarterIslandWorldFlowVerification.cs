@@ -23,6 +23,8 @@ namespace MagicIsland.EditorTools
         static void Phase(int n){SessionState.SetInt(Key+".Phase",n);Debug.Log("Starter world phase "+n);}
         public static void Run()
         {
+            if(UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(TerrainSetup.PrefabPath).GetComponent<IslandTerrain>().World?.ArtVersion==3)
+            {BiomeIslandsVerification.Run();return;}
             StarterIslandWorldVerification.Run();
             StarterIslandNatureVerification.Run();
             string[] paths={TerrainSetup.PrefabPath,OceanSetup.PrefabPath,MapPanelSetup.Path,"Assets/Art/Materials/Terrain/Lake Water.mat"};

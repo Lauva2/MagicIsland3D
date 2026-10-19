@@ -6,11 +6,12 @@ namespace MagicIsland.TerrainSystem
     public sealed class StarterIslandWorld : MonoBehaviour
     {
         public int ArtVersion;
+        [HideInInspector] public int GrasslandCoastArtVersion;
         public MeshCollider[] Grounds = System.Array.Empty<MeshCollider>();
         public Renderer[] Waters = System.Array.Empty<Renderer>();
         public Transform Scenery;
-        public bool IsValid => (ArtVersion==1||ArtVersion==2)&&Grounds!=null&&Grounds.Length>0&&System.Array.TrueForAll(Grounds,c=>c!=null&&c.sharedMesh!=null&&!c.convex&&!c.isTrigger&&c.enabled)
-            &&Waters!=null&&Waters.Length>0&&System.Array.TrueForAll(Waters,r=>r!=null&&r.sharedMaterial!=null)&&Scenery!=null;
+        public bool IsValid => (ArtVersion==1||ArtVersion==2||ArtVersion==3)&&Grounds!=null&&Grounds.Length>0&&System.Array.TrueForAll(Grounds,c=>c!=null&&c.sharedMesh!=null&&!c.convex&&!c.isTrigger&&c.enabled)
+            &&Waters!=null&&(ArtVersion==3||Waters.Length>0)&&System.Array.TrueForAll(Waters,r=>r!=null&&r.sharedMaterial!=null)&&Scenery!=null;
         public bool Raycast(Ray ray,out RaycastHit hit,float distance)
         {
             hit=default;bool found=false;

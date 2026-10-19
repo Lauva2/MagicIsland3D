@@ -77,7 +77,7 @@ namespace MagicIsland.Managers
             bool raining=game.Weather.State.Kind==WeatherKind.Rainy;
             if(outside)
             {
-                float distance=(float)System.Math.Max(0,p.z>100?StarterIslandLayout.CoastDistance(p.x,p.z):IslandLayout.CoastRadius(System.Math.Atan2(p.z,p.x))-System.Math.Sqrt(p.x*p.x+p.z*p.z));
+                float distance=(float)System.Math.Max(0,p.z>100?BiomeIslandLayout.CoastDistance(p.x,p.z):IslandLayout.CoastRadius(System.Math.Atan2(p.z,p.x))-System.Math.Sqrt(p.x*p.x+p.z*p.z));
                 float shore=1-Mathf.SmoothStep(0,1,Mathf.Clamp01(distance/catalog.ShoreHearingDistance));
                 float duck=paused?.45f:1;
                 ambientTargets[0]=catalog.EffectsVolume*catalog.WavesVolume*catalog.Find(AudioCue.Waves).Gain*shore*(raining?1.12f:1)*duck;
@@ -154,8 +154,7 @@ namespace MagicIsland.Managers
             if(inside||IslandLayout.ContainsPier(position.x,position.z))return AudioCue.StepWood;
             if(position.z>23)
             {
-                if(StarterIslandLayout.Corridor(position.x,position.z)||StarterIslandLayout.Bridge(position.x,position.z))return AudioCue.StepWood;
-                return StarterIslandLayout.Region(position.x,position.z)==1||StarterIslandLayout.CoastDistance(position.x,position.z)<20?AudioCue.StepSand:AudioCue.StepGrass;
+                return BiomeIslandLayout.At(position.x,position.z)==MagicIsland.TerrainSystem.IslandBiome.Desert||BiomeIslandLayout.CoastDistance(position.x,position.z)<20?AudioCue.StepSand:AudioCue.StepGrass;
             }
             double radius=System.Math.Sqrt(position.x*position.x+position.z*position.z);
             return IslandLayout.CoastRadius(System.Math.Atan2(position.z,position.x))-radius<3.4?AudioCue.StepSand:AudioCue.StepGrass;

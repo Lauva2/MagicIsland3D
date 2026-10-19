@@ -14,6 +14,8 @@ namespace MagicIsland.EditorTools
         static void Check(bool b,string why){if(!b)throw new InvalidOperationException("Starter world: "+why);}
         public static void Run()
         {
+            if(AssetDatabase.LoadAssetAtPath<GameObject>(TerrainSetup.PrefabPath).GetComponent<IslandTerrain>().World?.ArtVersion==3)
+            {BiomeIslandsVerification.VerifyAssets();return;}
             var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(TerrainSetup.PrefabPath);var t=prefab.GetComponent<IslandTerrain>();
             Check(t.IsValid&&t.World!=null&&t.World.IsValid,"baked AA terrain references");
             Check(t.Ground.sharedMesh==AssetDatabase.LoadAssetAtPath<Mesh>(TerrainSetup.MeshFolder+"/Island Land.asset"),"original ground collision preserved");

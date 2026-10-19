@@ -149,6 +149,9 @@ namespace MagicIsland.Saving
             if (!HouseUpgradeState.Valid(HouseUpgrade, Day)) throw new InvalidOperationException("Invalid saved house upgrade");
             if (schedules != null) new NPCScheduleState(schedules, ClockMinute).Restore(NPCSchedules);
             PlacementState restoredPlacements = null;
+            if (PlacedObjects != null && PlacedObjects.Any(p => p != null && !IslandLayout.ContainsLand(p.GridX,p.GridZ)
+                && StarterIslandLayout.Contains(p.GridX,p.GridZ)))
+                throw new InvalidOperationException("旧存档的建筑位于已移除的大陆区域，无法在当前群岛布局恢复；原存档未修改");
             if (placeables != null) { restoredPlacements = new PlacementState(placeables, farmSize, schedules); restoredPlacements.Restore(PlacedObjects); }
             if (Orchard == null) throw new InvalidOperationException("Missing orchard records");
             if (orchards != null) { if (restoredPlacements == null) throw new InvalidOperationException("Missing orchard placement definitions"); new OrchardState(orchards, restoredPlacements, Day).Restore(Orchard); }
@@ -193,7 +196,8 @@ namespace MagicIsland.Saving
                     throw new InvalidOperationException("Invalid saved farm cell");
             }
             if (!HousingState.ValidPosition(PlayerArea, PlayerX, PlayerY, PlayerZ, HouseUpgrade.Level))
-                throw new InvalidOperationException("Invalid saved player area or position");
+                throw new InvalidOperationException(PlayerArea==HousingState.Island && StarterIslandLayout.Contains(PlayerX,PlayerZ) && !IslandLayout.Contains(PlayerX,PlayerZ)
+                    ? "旧存档的角色位于已移除的大陆区域，无法在当前群岛布局恢复；原存档未修改" : "Invalid saved player area or position");
             if (Slots == null || Slots.Length != inventory.Capacity) throw new InvalidOperationException("Saved inventory capacity changed");
             var restored = new InventorySlot[Slots.Length];
             for (int i = 0; i < Slots.Length; i++)

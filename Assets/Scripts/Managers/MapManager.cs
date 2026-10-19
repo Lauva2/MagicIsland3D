@@ -13,7 +13,7 @@ namespace MagicIsland.Managers
         public void ToggleScale(){Model.WorldOverview=!Model.WorldOverview;selectedId=Model.WorldOverview?"village":"farm";Capture();}
         public void PrepareOpen(){bool overview=game!=null&&!game.Housing.Inside&&game.Players.Player.transform.position.z>100;if(overview!=Model.WorldOverview)selectedId=overview?"village":"farm";Model.WorldOverview=overview;Capture();}
         private Vector2 DisplayProject(Vector3 point)=>Model.WorldOverview?WorldProject(point):Project(point);
-        public static Vector2 WorldProject(Vector3 point)=>new Vector2(Mathf.Clamp01((point.x-(float)StarterIslandLayout.MinX)/(float)(StarterIslandLayout.MaxX-StarterIslandLayout.MinX)),Mathf.Clamp01((point.z-(float)StarterIslandLayout.MinZ)/(float)(StarterIslandLayout.MaxZ-StarterIslandLayout.MinZ)));
+        public static Vector2 WorldProject(Vector3 point)=>new Vector2(Mathf.Clamp01((point.x-(float)BiomeIslandLayout.MinX)/(float)(BiomeIslandLayout.MaxX-BiomeIslandLayout.MinX)),Mathf.Clamp01((point.z-(float)BiomeIslandLayout.MinZ)/(float)(BiomeIslandLayout.MaxZ-BiomeIslandLayout.MinZ)));
         public static Vector2 Project(Vector3 point) => new Vector2((float)MapProjection.Normalize(point.x), (float)MapProjection.Normalize(point.z));
         public void Initialize(GameManager manager) { Clear(); game = manager;Model.WorldOverview=game.Players.Player.transform.position.z>100; Capture(); }
         public void Capture()
@@ -22,17 +22,16 @@ namespace MagicIsland.Managers
             var g = game; Model.Locations.Clear(); Model.FarmSize = g.Farm.State.Size;
             if(Model.WorldOverview)
             {
-                Add("village","初始生活区",Vector3.zero,"南岸沙滩旁的生活区。\n切换生活区地图查看农田和设施。");
-                Add("grassland","中央草原",new Vector3(-150,12,370),"沿栈道向北进入草原，步道通向湖畔与各地景观。");
-                Add("desert","西部沙漠",new Vector3(-480,15,640),"暖色沙丘与砂岩，琥珀遗迹位于沙漠腹地。");
-                Add("snow","北境雪山",new Vector3(-180,100,1070),"从山麓步道登上雪地，远处可见霜晶石阵。");
-                Add("woodland","东部林地",new Vector3(510,12,760),"林间步道环绕大湖东岸，向南连通河口木桥。");
-                Add("lake","中央大湖",new Vector3(160,12,630),"沿岸欣赏湖景。\n湖面与河道不可步行，过河请走木桥。");
-                Add("amber","琥珀遗迹",new Vector3(-420,15,590),"大型琥珀晶石与古老石台。\n当前为可探索的魔法景观。");
-                Add("tree","灵辉古树",new Vector3(-8,12.6f,700),"沿西岸石径走上小岛，寻找银绿色古树。");
-                Add("flowers","月光花林",new Vector3(480,12,650),"林间石拱门与月光花景观。\n实际种植与唤雨术沿用魔法手札。");
-                Add("frost","霜晶石阵",new Vector3(-40,100,1000),"雪地山麓的古老石阵与冰蓝晶石。");
-                Add("bridge","河口木桥",new Vector3(490,12,440),"跨过大湖出水河道，连接环湖步道。");
+                foreach(var biome in BiomeIslandLayout.Biomes)
+                {
+                    BiomeIslandLayout.Landing(biome,out double x,out double z);
+                    Add(biome.ToString(),BiomeIslandLayout.Name(biome),new Vector3((float)x,(float)IslandLayout.Height(x,z),(float)z),
+                        biome==MagicIsland.TerrainSystem.IslandBiome.Beach?"原生活区和沙滩，农田与设施位于此岛。":"独立群系岛屿，目前通过编辑器测试窗口传送。岛屿之间没有桥梁。");
+                }
+                Add("amber","琥珀遗迹",new Vector3(-420,15,590),"沙漠岛上的琥珀遗迹。");
+                Add("tree","灵辉古树",new Vector3(-8,12.6f,700),"草原岛北部的灵辉古树。");
+                Add("flowers","月光花林",new Vector3(480,12,650),"林地岛上的月光花林。");
+                Add("frost","霜晶石阵",new Vector3(-40,100,1000),"雪地岛上的霜晶石阵。");
                 Model.Roads=new Vector4[0];Model.Biomes=null;Model.Selected=Mathf.Max(0,Model.Locations.FindIndex(p=>p.Id==selectedId));RefreshPlayer();return;
             }
             Add("farm", "农田", g.Farm.Grid.transform.position, "翻土、播种、浇水与收获。\n作物浇水后在睡觉跨日时成长。");
@@ -82,7 +81,7 @@ namespace MagicIsland.Managers
                 Model.Region = "当前位置：" + MagicIsland.TerrainSystem.IslandBiomeSettings.Name(Model.Biomes.At(local.x, local.z));
             }
             var selected = Model.Locations[Model.Selected]; float distance = Vector3.ProjectOnPlane(selected.WorldPosition - point, Vector3.up).magnitude;
-            if(!inside&&game.Terrain.Terrain.World!=null)Model.Region="当前位置："+(point.z>23?StarterIslandLayout.RegionName(point.x,point.z):game.Terrain.Terrain.Biomes.At(point.x,point.z)==MagicIsland.TerrainSystem.IslandBiome.Beach?"沙滩":"初始生活区");
+            if(!inside&&game.Terrain.Terrain.World!=null)Model.Region="当前位置："+BiomeIslandLayout.Name(BiomeIslandLayout.At(point.x,point.z));
             Model.DetailTitle = selected.Name; Model.DetailText = selected.Description + "\n\n" + (inside ? "距小屋门口约 " : "距你约 ") + Mathf.RoundToInt(distance) + " 米";
         }
         public void Clear() { game = null; selectedId = "farm";Model.WorldOverview=false; Model.Locations.Clear(); Model.Roads = new Vector4[0]; Model.Biomes = null; Model.Region = Model.DetailTitle = Model.DetailText = null; }

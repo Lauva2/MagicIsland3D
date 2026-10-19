@@ -25,3 +25,11 @@
 运行报告为 `Logs/CameraOcclusionVerification.txt`。预览包括 `CameraTreeOpaquePreview.png`、`CameraTreeFadePreview.png`、`CameraHallFadePreview.png`、`CameraInteriorFadePreview.png` 和 `CameraExpandedInteriorFadePreview.png`。
 
 游戏进度仍仅在每天睡觉结算后保存，淡化状态不进入存档。
+
+## 合并草原树冠
+
+草原景观树沿用原合并网格，由 `LandscapeCrownOccluder` 保存每棵树的局部包围盒与原风动相位，仍由 CameraManager 的同一轮检测驱动。只淡化挡住角色的叶团，树干、石头和同网格其他树保持原样。完整风动包络包含在检测盒中，边缘可能稍提前淡化。
+
+这条路径使用 MPB 与稳定像素覆盖实现细颗粒淡化，读取原 AA 相机参数；保留原阴影与风动，不创建透明材质副本或逐树对象。近看可见细小点阵，不使用会影响整个合并景观排序的透明队列。首次淡化捕获原实例 MPB，恢复、禁用、切换和退出还原；同一 Renderer 只能由一个遮挡组件拥有，不能同时配置 CameraOccluder。
+
+资源准备、手调保护及验证见 [草原树冠遮挡](GrasslandCrownOcclusion.md)。

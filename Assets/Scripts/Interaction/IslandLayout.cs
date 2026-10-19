@@ -17,14 +17,14 @@ namespace MagicIsland.Interaction
         public static bool ContainsLand(double x,double z,double margin=0)
         {
             if(!Finite(x)||!Finite(z)||!Finite(margin)||margin<0)return false;
-            return Math.Sqrt(x*x+z*z)+margin<=CoastRadius(Math.Atan2(z,x))-.45 || StarterIslandLayout.Contains(x,z,margin);
+            return Math.Sqrt(x*x+z*z)+margin<=CoastRadius(Math.Atan2(z,x))-.45 || BiomeIslandLayout.Contains(x,z,margin);
         }
         public static bool ContainsPier(double x,double z,double margin=0)
             => Finite(x)&&Finite(z)&&Finite(margin)&&margin>=0&&x>=PierX-2+margin&&x<=PierX+3.4-margin&&Math.Abs(z-PierZ)<=1.2-margin;
         public static bool Contains(double x,double z,double margin=0) => ContainsLand(x,z,margin)||ContainsPier(x,z,margin);
         public static bool CanPlace(int x,int z)
         {
-            if(z>23)return StarterIslandLayout.CanPlace(x,z);
+            if(z>23)return BiomeIslandLayout.CanPlace(x,z);
             // Keep complete 1m cells on land; leave a clear strip along the water.
             foreach(double dx in new[]{-.5,.5})foreach(double dz in new[]{-.5,.5})if(!ContainsLand(x+dx,z+dz,.4))return false;
             return true;
@@ -32,7 +32,7 @@ namespace MagicIsland.Interaction
         public static bool PierReserved(double x,double z)
             => x+.5>PierX-2.5&&x-.5<PierX+3.7&&z+.5>PierZ-1.6&&z-.5<PierZ+1.6;
         public static double Height(double x,double z)
-            => z>18 && StarterIslandLayout.Contains(x,z) ? StarterIslandLayout.Ground(x,z) : LegacyHeight(x,z);
+            => z>23 ? BiomeIslandLayout.Height(x,z) : LegacyHeight(x,z);
         public static double LegacyHeight(double x,double z)
         {
             double radius=Math.Sqrt(x*x+z*z),edge=CoastRadius(Math.Atan2(z,x));

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MagicIsland.TerrainSystem
 {
-    public enum IslandBiome { Grassland, Desert, Snow, Beach }
+    public enum IslandBiome { Grassland, Desert, Snow, Beach, Forest }
 
     // Authored in the terrain AA prefab. Region weights never alter land, weather or save rules.
     [Serializable] public sealed class IslandBiomeSettings
@@ -42,12 +42,13 @@ namespace MagicIsland.TerrainSystem
         { var w = Weights(x, z); return original * w.x + DesertColor * w.y + SnowColor * w.z; }
         public IslandBiome At(float x, float z)
         {
+            if(z>23)return BiomeIslandLayout.At(x,z);
             float inset = (float)IslandLayout.CoastRadius(Math.Atan2(z, x)) - new Vector2(x, z).magnitude;
             if (inset < 2.8f) return IslandBiome.Beach;
             var w = Weights(x, z); return w.y > .5f ? IslandBiome.Desert : w.z > .5f ? IslandBiome.Snow : IslandBiome.Grassland;
         }
         public float Weight(IslandBiome biome, float x, float z)
         { var w = Weights(x, z); return biome == IslandBiome.Desert ? w.y : biome == IslandBiome.Snow ? w.z : biome == IslandBiome.Beach ? (At(x, z) == biome ? 1 : 0) : w.x; }
-        public static string Name(IslandBiome biome) => biome == IslandBiome.Desert ? "沙漠" : biome == IslandBiome.Snow ? "雪地" : biome == IslandBiome.Beach ? "沙滩" : "草原";
+        public static string Name(IslandBiome biome) => biome == IslandBiome.Desert ? "沙漠" : biome == IslandBiome.Snow ? "雪地" : biome == IslandBiome.Beach ? "沙滩" : biome == IslandBiome.Forest ? "林地" : "草原";
     }
 }

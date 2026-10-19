@@ -106,6 +106,28 @@ namespace MagicIsland.Managers
             if(found)point+=Vector3.up*.05f;return found;
         }
         public float GroundHeight(int x,int z)=>TryResolve(new Vector3(x,0,z),out var p)?p.y-.05f:0;
+        // Read-only preparation. Resolve real ground and the entire character capsule before travel.
+        public bool TryBiomeLanding(IslandBiome biome,CharacterController character,out Vector3 point)
+        {
+            point=default;
+            if(Terrain?.World?.ArtVersion!=3||character==null)return false;
+            BiomeIslandLayout.Landing(biome,out double x,out double z);
+            Physics.SyncTransforms();
+            for(int ring=0;ring<=12;ring++)for(int i=0;i<(ring==0?1:24);i++)
+            {
+                float a=i*Mathf.PI/12;var candidate=Terrain.transform.TransformPoint(new Vector3((float)x+Mathf.Cos(a)*ring,0,(float)z+Mathf.Sin(a)*ring));
+                if(!Contains(candidate,character.radius+character.skinWidth+.1f)||!TryResolve(candidate,out var ground))continue;
+                var local=Terrain.transform.InverseTransformPoint(ground);
+                if(BiomeIslandLayout.At(local.x,local.z)!=biome)continue;
+                var center=ground+character.center;float radius=character.radius+character.skinWidth,half=Mathf.Max(0,character.height*.5f-radius);
+                int count=Physics.OverlapCapsuleNonAlloc(center-Vector3.up*half,center+Vector3.up*half,radius,approachOverlaps,~0,QueryTriggerInteraction.Ignore);
+                bool free=count<approachOverlaps.Length;
+                for(int j=0;j<count&&free;j++)
+                    if(!Terrain.IsGround(approachOverlaps[j])&&!approachOverlaps[j].transform.IsChildOf(character.transform))free=false;
+                if(free){point=ground;System.Array.Clear(approachOverlaps,0,approachOverlaps.Length);return true;}
+            }
+            System.Array.Clear(approachOverlaps,0,approachOverlaps.Length);return false;
+        }
         public bool ReservesTile(int x,int z)=>IslandLayout.PierReserved(x,z);
         public Vector3 Constrain(Vector3 before,Vector3 after,float radius)
         {

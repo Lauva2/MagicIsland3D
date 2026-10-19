@@ -46,19 +46,14 @@ namespace MagicIsland.UI
             const int nx=100,nz=80;
             for(int i=0;i<nx;i++)for(int j=0;j<nz;j++)
             {
-                float x=Mathf.Lerp((float)StarterIslandLayout.MinX,(float)StarterIslandLayout.MaxX,i/(float)nx),z=Mathf.Lerp((float)StarterIslandLayout.MinZ,(float)StarterIslandLayout.MaxZ,j/(float)nz);
-                float dx=(float)(StarterIslandLayout.MaxX-StarterIslandLayout.MinX)/nx,dz=(float)(StarterIslandLayout.MaxZ-StarterIslandLayout.MinZ)/nz;
+                float x=Mathf.Lerp((float)BiomeIslandLayout.MinX,(float)BiomeIslandLayout.MaxX,i/(float)nx),z=Mathf.Lerp((float)BiomeIslandLayout.MinZ,(float)BiomeIslandLayout.MaxZ,j/(float)nz);
+                float dx=(float)(BiomeIslandLayout.MaxX-BiomeIslandLayout.MinX)/nx,dz=(float)(BiomeIslandLayout.MaxZ-BiomeIslandLayout.MinZ)/nz;
                 float cx=x+dx*.5f,cz=z+dz*.5f;bool land=IslandLayout.ContainsLand(cx,cz);
                 Color tint=Sea;
-                if(land)tint=cz<100?Grass:StarterIslandLayout.CoastDistance(cx,cz)<20?Sand:new[]{Grass,new Color(.88f,.72f,.43f),new Color(.88f,.93f,.95f),new Color(.31f,.52f,.36f)}[StarterIslandLayout.Region(cx,cz)];
-                else if(StarterIslandLayout.LakeDistance(cx,cz)<0)tint=new Color(.21f,.60f,.76f);
-                else if(StarterIslandLayout.CoastDistance(cx,cz)>-30)tint=Shallows;
+                var biome=BiomeIslandLayout.At(cx,cz);double coast=BiomeIslandLayout.CoastDistance(cx,cz);
+                if(land)tint=coast<12?Sand:biome==IslandBiome.Desert?new Color(.88f,.76f,.54f):biome==IslandBiome.Snow?new Color(.88f,.93f,.95f):biome==IslandBiome.Forest?new Color(.40f,.58f,.40f):Grass;
+                else if(coast>-28)tint=Shallows;
                 Quad(vh,LargePoint(x,z),LargePoint(x,z+dz),LargePoint(x+dx,z+dz),LargePoint(x+dx,z),tint);
-            }
-            for(int i=1;i<StarterIslandLayout.Route.GetLength(0);i++)
-            {
-                Vector2 a=LargePoint((float)StarterIslandLayout.Route[i-1,0],(float)StarterIslandLayout.Route[i-1,1]),b=LargePoint((float)StarterIslandLayout.Route[i,0],(float)StarterIslandLayout.Route[i,1]);
-                Vector2 side=new Vector2(-(b-a).y,(b-a).x).normalized*.8f;Quad(vh,a-side,a+side,b+side,b-side,Sand);
             }
         }
         private void Coast(VertexHelper vh, float offset, Color tint)

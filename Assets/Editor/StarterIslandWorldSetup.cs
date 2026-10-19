@@ -20,8 +20,9 @@ namespace MagicIsland.EditorTools
     {
         public const string Folder="Assets/Art/Meshes/Terrain/StarterWorld";
         static Material ground,details,magic,water;
-        [MenuItem("Magic Island/Art/Rebuild Large Starter Island (Explicit)")]
-        public static void Rebuild()
+        public static void Rebuild()=>BiomeIslandsSetup.Rebuild();
+        // Historical source authoring, deliberately absent from menus and normal setup.
+        static void RebuildLegacySource()
         {
             Directory.CreateDirectory(Folder);AssetDatabase.Refresh();
             ground=AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Terrain/Biome Ground.mat");

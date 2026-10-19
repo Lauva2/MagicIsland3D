@@ -14,6 +14,9 @@ namespace MagicIsland.TerrainSystem
         [Range(1,160)] public int MinimumPatches=85,MaximumPatches=110;
         [Range(.5f,1.4f)] public float MinimumScale=.75f,MaximumScale=1.15f;
         public SeasonalGroundPatch[] Patches=Array.Empty<SeasonalGroundPatch>();
+        public Renderer[] MeadowBatches=Array.Empty<Renderer>();
+        public MeadowTouchSettings TouchSample;
+        private MeadowCoverPresentation meadow;
         private PlacementManager placements;
         private GatheringState gathering;
         private bool[] available;
@@ -27,7 +30,9 @@ namespace MagicIsland.TerrainSystem
         public bool ScatterValid=>ScatterSeed>0&&MinimumPatches>=1&&MaximumPatches>=MinimumPatches&&MaximumPatches<=160
             &&MinimumScale>=.5f&&MaximumScale>=MinimumScale&&MaximumScale<=1.4f;
         public bool IsValid => ScatterValid&&Patches!=null&&Patches.Length>0&&Patches.Length<=160
-            &&Array.TrueForAll(Patches,p=>p!=null&&p.IsValid)&&GetComponentsInChildren<Collider>(true).Length==0;
+            &&Array.TrueForAll(Patches,p=>p!=null&&p.IsValid)&&GetComponentsInChildren<Collider>(true).Length==0
+            &&MeadowBatches!=null&&MeadowBatches.Length<=64&&Array.TrueForAll(MeadowBatches,r=>r!=null&&r.sharedMaterial!=null&&r.GetComponent<MeshFilter>()?.sharedMesh!=null)
+            &&TouchSample.IsValid&&(TouchSample.ArtVersion==0||Array.TrueForAll(TouchSample.Renderers,r=>Array.IndexOf(MeadowBatches,r)>=0));
         public int VisibleCount {get;private set;}
 
         // TerrainManager calls once all facilities/placement instances are ready. Observes only
@@ -51,6 +56,7 @@ namespace MagicIsland.TerrainSystem
                 if(nodes!=null&&!string.IsNullOrEmpty(p.TreeId))
                     for(int n=0;n<nodes.Count;n++)if(nodes.Definitions[n].Id==p.TreeId){trees[i]=n;break;}
             }
+            meadow=new MeadowCoverPresentation(MeadowBatches,TouchSample,terrain.transform);
             bound=true;placements.Placed+=OnPlaced;placements.Recovered+=OnRecovered;
             if(gathering!=null)gathering.Changed+=RefreshCanopies;
             RefreshCanopies();RefreshPlacement();
@@ -96,7 +102,7 @@ namespace MagicIsland.TerrainSystem
         }
         public void RefreshPlacement()
         {
-            VisibleCount=0;if(!bound||season<0)return;
+            VisibleCount=0;if(!bound)return;meadow?.Refresh(placements);if(season<0)return;
             for(int i=0;i<Patches.Length;i++)
             {
                 bool show=available[i]&&ClearPlacement(Patches[i]);
@@ -113,6 +119,8 @@ namespace MagicIsland.TerrainSystem
             }
         }
         // WeatherManager supplies the date and outdoor state; wind globals supply the paused clock.
+        public void TickTouch(float seconds,Vector3? player,bool paused,bool isOutside)
+        { if(bound)meadow?.TickTouch(seconds,player,paused,isOutside); }
         public void Present(Season value,bool isOutside)
         {
             if(!bound)return;
@@ -122,10 +130,12 @@ namespace MagicIsland.TerrainSystem
                 foreach(var p in Patches)p.Filter.sharedMesh=p.Seasons[season];
                 RefreshPlacement();
             }
+            meadow?.Present(isOutside);
             if(outside!=isOutside||gameObject.activeSelf!=isOutside){outside=isOutside;gameObject.SetActive(isOutside);}
         }
         public void Unbind()
         {
+            meadow?.Clear();meadow=null;
             if(placements!=null){placements.Placed-=OnPlaced;placements.Recovered-=OnRecovered;}
             if(gathering!=null)gathering.Changed-=RefreshCanopies;
             placements=null;gathering=null;terrainTransform=null;placementItem=null;available=null;trees=null;bound=false;season=-1;VisibleCount=0;

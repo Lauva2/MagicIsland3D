@@ -19,6 +19,8 @@ Unity 2022.3.62f2，内置渲染管线，旧版 Input，Addressables 1.21.17。
 
 可以直接 Play MainGame 调试农务，仍会由 GameManager 加载配置并初始化系统，但这条路径不验证 AA 场景加载。
 
+当前世界使用五个独立群系岛屿。进入游戏后可从 `Magic Island > 测试工具窗口` 点击群系按钮传送；先重建 AA 内容。布局、使用条件与旧大陆存档限制见 [独立群系岛屿](Docs/BiomeIslands.md)。
+
 ## 操作
 
 - ESC / HUD“暂停（ESC）”：继续游戏、设置和返回主菜单；返回会确认丢弃当天未睡觉进度。
@@ -134,3 +136,21 @@ Unity 2022.3.62f2，内置渲染管线，旧版 Input，Addressables 1.21.17。
 新版鱼群可用 `./Tools/VerifyOceanFish.ps1 -Seconds 600` 复现 Windows 托管长时检查；Unity 菜单 `Verify Fish Presentation And CPU` 检查插值、着色器参数及 CPU 开销，`OceanFlowVerification.Run` 验收真正打包的 AA 内容。固定步检查使用真实步起点，避免把跨越多个模拟步的弯曲路径误当作直线。验收结果与隔离说明见 [实机验收](Docs/Ocean.md#实机验收与复现2026-10-16)，Logs 保留本地。
 
 正常游戏镜头只提交可见鱼群的插值 / GPU 姿态，屏幕外继续完整模拟，重新进入画面立即刷新。独立 Windows 验证构建及正常镜头晴雨 / 昼夜采样入口见 [可见性与 Player 验收](Docs/Ocean.md#正常镜头可见性与独立-player-验收)。
+
+沙漠入口至内部主路的第二轮景观精修见 [沙漠景观组合](Docs/DesertComposition.md)，通过显式 Refine Desert Route Composition 烘焙。资源更新后执行 Build Prototype Addressables；普通 Setup 保留已有布局与手调。
+
+草原整轮优化与内部植被见 [草原完整一轮优化](Docs/GrasslandRevitalization.md)。低草和花丛按斑块烘焙，建设覆盖处自动隐藏，显式入口 Revitalize Grassland In Order，普通 Setup 保留人工编辑。
+
+草原花色群落、花草形态与分层风动见 [草原花草细化](Docs/GrasslandFlora.md)。显式 Refine Grassland Flowers And Grass 原位处理既有批次，沿用建设遮盖和统一风场；资源更新后重新 Build Prototype Addressables。
+
+草原低草打底、花坡渐疏及树下／路肩地色见 [草原地表层次](Docs/GrasslandGroundLayers.md)，仅显式 Refine Grassland Ground Layers 烘焙，复用原风场与建设遮盖。
+
+已有灌木叶团、半埋苔石与原位小景精修见 [草原灌木与苔石](Docs/GrasslandShrubStone.md)，显式 Refine Grassland Shrubs And Moss Stones 更新原网格，保留批次数和整组建设遮盖。
+
+草原树型与圆润叶团精修见 [草原树冠层次](Docs/GrasslandCrowns.md)，显式 Refine Grassland Tree Crowns 更新原树冠，保留树干碰撞、共享资源和原镜头淡化绑定。
+
+草原树冠的错峰轻风摆动见 [草原树冠风动](Docs/GrasslandCrownWind.md)，显式 Prepare Grassland Crown Wind 只给已细化叶团补风动数据，沿用统一天气风场与暂停清理。
+
+草原合并景观树支持逐树冠遮挡淡化，沿用 CameraManager 与 AA 相机参数，同网格其他树保持正常；资源准备、细颗粒覆盖与验证见 [草原树冠遮挡](Docs/GrasslandCrownOcclusion.md)。
+
+草原传送落点附近增加角色拨草、平滑回弹、叶形变化及统一风场草浪样区；参数随原地形 AA 加载，显式维护与验证见 [草原拨草样区](Docs/GrasslandTouch.md)。

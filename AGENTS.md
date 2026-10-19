@@ -160,6 +160,11 @@
 
 ## 10. 地形、角色、美术、环境与声音
 
+- **当前布局改为独立群系岛屿（2026-10-19）**：沙滩生活区、草原、沙漠、林地、雪地各一岛，暂不生成连接大陆的栈道、旧大陆、大湖和河口桥。`BiomeIslandLayout` 统一范围、高度、建设、地图和测试传送；原 `StarterIslandLayout` 仅用于历史美术源与内陆高度，不再决定活动世界的可通行范围。以下涉及大陆/湖河/入口的条目作为历史资源维护约束保留，不得据此重新生成旧世界。地形继续随原 IslandTerrain AA 加载，原生活区与海洋生态保留；源预制体和旧美术资产保留，普通 Setup 不重建，版本 3 重复显式操作保留手调。旧档在被移除范围内的角色/建设拒绝整份恢复且不改写，不静默删除或移动。没有新增存档字段或版本号；编辑器测试窗口仅五岛按钮，经 GameManager 校验整体流程、TerrainManager 校验真实地面和完整碰撞后传送，不写盘，Player 不含测试接口。详见 Docs/BiomeIslands.md。
+- 草原岛岸线仅显式 Refine Grassland Island Coast 精修，在原群岛外海增加不对称岬角与变化浅台，不内缩旧陆地；原干地高度、建设资格及完整支撑三角面保持，Z<100 原生活区海洋、其他岛、植被、树干、地标和道路不重建。共享 GrasslandIslandCoast / BiomeIslandLayout 统一地图、地面、建设和角色完整脚印，原网格 GUID、原索引与 UV1–7 保留，内陆手调颜色／权重／法线保留。只新增烘焙地面，不新增运行时组件、Update、配置或进度字段；首次先校验／规划，失败回滚资源，专用艺术版本和 importer 标记使重复及普通 Setup 保留手调，未知或自定义数据拒绝覆盖。详见 Docs/GrasslandIslandCoast.md。
+
+
+
 - 大型初始岛屿以 `StarterIslandLayout` 统一北侧大陆、湖河、桥梁、步道和高度；原生活区、海滩出生点、码头与旧坐标保持。`IslandLayout.CoastRadius/LegacyHeight` 继续用于原海洋生态，不拿大型大陆半径重排鱼群或海床。新地形和景观编辑器分块烘焙在原 IslandTerrain AA 依赖中，只能显式 Rebuild Large Starter Island 重建；普通 Setup 保留已有网格、布置和材质。湖河不可步行，桥面与恢复位置读取实际地面碰撞；摆放保留步道、水岸、景观点和陡坡。地图提供生活区／全岛视图，魔法地标仅为景观，存档仍为 v30 且只在睡觉保存。详见 Docs/StarterIslandWorld.md。
 - 琥珀遗迹使用 `SourceArt/WorldPlanning/Models` 下的 Blender 源模型和顶点色导出数据；显式重建大型岛屿时原位更新原网格 GUID，运行时只加载合并网格及共享材质，不加载源 JSON、不新增组件逐帧生成。天气的有界雨场与云场沿用 WeatherManager，在大陆跟随玩家位置／高度，暂停和室内冻结，原生活区保持原场位置。
 - 初次探索路线的岬角／湖岸精修只向旧水域增加陆地，保留旧大陆有效坐标、干燥地面高度与可摆放资格。景观树丛从原固定候选筛疏，不移动或新增实体树干；路肩花草／路标和岸边芦苇／岩丛按区域合并烘焙，保持主路中心及旧建设通行，不新增装饰碰撞或逐件运行逻辑。只能显式 Rebuild Large Starter Island 更新，普通 Setup 保留人工编辑；资源与兼容验证见 Docs/StarterIslandWorld.md。
@@ -169,7 +174,7 @@
 - 湖岸至雪地步道仅显式 Refine Lake Snow Trail 替换原上山三段及两端短连接的可见路面，原 Exploration paths 只移除对应三角面，保留其余全部顶点频道、面与 GUID。连续带状路面使用共享美术网格／材质与边缘淡化，限定原不可建设道路预留带，不改路线、地形、碰撞、建设资格或存档。普通 Setup 不执行；已有 Lake snow trail 子树保留后续手调，非原四边形布局或孤立同名资源在写入前拒绝覆盖。详见 Docs/StarterIslandWorld.md。
 - 中央草原至沙漠步道仅显式 Refine Grassland Desert Trail 更新三段主路及四处短连接；三岔口与各路臂合并为无重叠的连续路面，复用 Exploration Trail 共享材质，保留原草簇、砂岩、仙人掌及湖雪步道。只从原稀疏四边形索引移除选中面，保留其余频道、面、GUID 与全部碰撞／建设规则。整岛显式重建先排除湖雪路段，再排除草漠路段，保留各自手调网格；普通 Setup 不执行。详见 Docs/StarterIslandWorld.md。
 - 东部靠湖林缘仅显式 Refine Lakeside Forest Edge 调整原树冠叶片的形状／层次与局部地表色，保留树干、全部碰撞、地面几何、道路和建设资格；月光花地标周边留白。UV4（Mesh 第 4 号 UV 频道）使用 -736 标记，拒绝覆盖其他自定义频道，重复操作和普通 Setup 保留后续手调。灌木、蕨草与苔藓岩簇只烘焙在原不可建设路肩，按区合并、复用 Biome Details 材质，无新碰撞、拾取、脚本、灯光或存档字段；详见 Docs/StarterIslandWorld.md。
-- 群系美术按沙滩→草原→沙漠→林地→雪地推进，显式 Refine Biomes In Order 或其单区入口执行，普通 Setup 不执行。保留已精修入口／林缘，原网格 UV5（第 5 号频道）用 -740 与步骤位标记保留后续手调，拒绝覆盖自定义频道。仅调整椰叶／灌木、非树干景观与局部地表色；新增小簇合并烘焙在原不可建设路肩或林地斜坡，保持旧 GUID、地面几何、实体碰撞、路线和建设资格。详见 Docs/BiomeArtSequence.md。
+- 当前群系美术迭代集中优化草原，直到用户明确确认满意后才推进其他群系；此前沙滩→草原→沙漠→林地→雪地是首轮历史顺序，不作为自动切换后续工作的依据。本轮已获用户授权按地表、小径、花草组合、树木与生态的顺序完成整轮，并改善草原空旷感；以正常游玩镜头对照检查，后续跨群系仍需用户明确满意。原显式 Refine Biomes In Order 或其单区入口保留，普通 Setup 不执行。保留已精修入口／林缘，原网格 UV5（第 5 号频道）用 -740 与步骤位标记保留后续手调，拒绝覆盖自定义频道。仅调整椰叶／灌木、非树干景观与局部地表色；新增小簇合并烘焙在原不可建设路肩或林地斜坡，保持旧 GUID、地面几何、实体碰撞、路线和建设资格。详见 Docs/BiomeArtSequence.md。
 
 - `IslandLayout` 统一岸线规则，地形、海床、边界、角色完整脚印、摆放、NPC、地图和存档落点同步。改轮廓不能只移动可见网格，保留旧岛内 / 沙滩坐标、真实码头与入口。
 - 初始岛屿为连续草原、沙漠、常年雪地及外围沙滩，参数随 IslandTerrain.Biomes AA 依赖加载。群系只改变烘焙表现及装饰筛选，保留原岸线、碰撞、农田、设施、路线及旧存档位置，不新增天气 / 作物限制或进度字段。新游戏使用 AA NewGameSpawn 的干沙滩点，经真实地面和完整角色碰撞解析后开放操作；继续游戏和进出小屋沿原区域规则。普通 Setup 只补缺，重应用空间 / 色板 / 装饰须显式 Rebuild Island Biomes；地图使用同一份分区，维护与验证见 Docs/IslandBiomes.md。
@@ -183,7 +188,7 @@
 - 美术替换保持原碰撞与交互范围；树冠、受击摇晃、农田 / 作物、建筑新增细节和水下景观不额外阻挡点击。按已有约定使用 Ignore Raycast；树干的实体行走碰撞仍保留。
 - 玩家根控制 CharacterController / 位置，Visual 控朝向，Animator 控模型，禁用 root motion。行走和脚步按实际水平位移，撞墙不踏步；工具表现采样 ToolManager 同一动作进度，暂停保留并冻结已有动作。
 - 锄头、水壶、斧头、镐子使用编辑器烘焙的 IslandFarmTools，作为 FarmActionEffects 的 AA 依赖加载。ToolPresentation 在原 ToolSocket 下复用同一套模型与共享材质，退出先清理实例再释放依赖，不回退为运行时拼装占位几何。普通 Setup 只补缺失工具引用，保留合法替换、握持调整、网格和材质；更新源美术须显式 Rebuild。
-- CameraManager 统一遮挡检测；CameraOccluder 明确 Renderer，不允许多个组件管理同一 Renderer。淡化不修改 AA 原材质，使用可释放副本，退出 / 禁用 / 切场景立即恢复；风动透明态使用相同形变算法。
+- CameraManager 统一遮挡检测；CameraOccluder 明确 Renderer，不允许多个组件管理同一 Renderer。淡化不修改 AA 原材质，普通模型使用可释放副本，合并草原树冠使用下述 MPB 覆盖；退出 / 禁用 / 切场景立即恢复，风动淡化态使用相同形变算法。
 - 地形道路由 IslandTerrain 嵌套 IslandPaths 携带，TerrainManager 初始化配置；道路为表现，不新加碰撞，不因铺路清掉旧建设。地图读取实际设施 / 道路与统一岸线，室内使用小屋门口作标记与距离起点，选择地点不传送。
 - WeatherManager 统一昼夜、晴雨、风与阵风。夜间太阳关闭，环境 / 反射 / 海水同步变暗，室内照明隔离；风动只改变视觉顶点，不动根、碰撞、果实或受击逻辑。
 - 小屋窗光 / 门灯和码头两盏矮灯烘焙在原 AA 预制体中，OutdoorNightLighting 由 WeatherManager 绑定和驱动；默认合计三盏无阴影局部灯，随日照渐亮、雨天提前，室内关闭并排除室内层。共享发光材质通过 MPB 设置亮度，不改全局夜间亮度、不新增存档；退出恢复实例原灯光与 MPB。Setup 只补缺失资源和引用，保留合法人工参数，不增加装饰碰撞或独立 Update。
@@ -227,6 +232,25 @@
 
 - 草原生态组合仅显式 Refine Meadow Ecology Composition 将原兔子活动区靠近已有蝴蝶花丛，整条路线保留花草风动与完整身体间距，保持原道路、建设资格和碰撞。原位更新兔子网格／Track，保留 GUID、调参和共享材质；首次拒绝自定义形状、颜色、UV、bounds、变换、Track 或导入器元数据，userData 的 MagicIsland.MeadowComposition.v1 标记使重复与普通 Setup 保留后续手调。兔子自然休息／短跳按原配置、个体相位和访问次数变化，转身抬头后起跳，左右耳最多额外 0.04 弧度异步轻摆；新增数组随原固定时钟、暂停、室内与属性块清理，不增 Update、对象、随机源或存档。正常游玩镜头必须检查四处可见性，详见 Docs/MeadowRabbits.md。
 
+- 沙漠入口至内部主路仅显式 Refine Desert Route Composition 精修原地表／砂岩配色，并复用原 Sandstone、Cactus 与 Blender 矮草模板烘焙交错组合；保留原几何、法线、碰撞、UV0–7、草色权重与建设资格。新组合只占完整脚印检查通过的原不可建设路肩，按区合并并共用 Biome Details，无新运行组件、碰撞或进度字段。原网格导入器 userData 使用 MagicIsland.DesertComposition.v1，一次性标记不占新 UV，自定义元数据／孤立资源拒绝覆盖；已有完整子树、重复和普通 Setup 保留人工编辑。详见 Docs/DesertComposition.md。
+
+- 草原完整一轮优化仅显式 Revitalize Grassland In Order 执行，顺序为地表、小径、内部花草组合、原位树冠与生态衔接。合并道路仅将草原内的完整面划分独立材质区，保留全部原顶点／三角面与其他路段原材质，不能整体替换材质而影响其他群系。原地面几何、碰撞、树干、建设资格和全部 UV0–7 保留，一次性导入器标记保留原有已知元数据并拒绝自定义覆盖。草甸内部低草／花丛可落在可建设格，依 SeasonalGroundCover 的可选 MeadowBatches 和既有摆放提交事件，通过固定容量 MPB 根部遮盖保留旧建设优先；不新增 Update、碰撞或进度字段。风动、季节、室内隐藏和 AA 清理沿原拥有者，普通 Setup／重复及已有子树保留手调，详见 Docs/GrasslandRevitalization.md。
+
+- 草原独立岛的小径与生态仅显式 Refine Grassland Island Trails And Ecology 烘焙；完整新路面只占原不可建设道路预留区，原地形／碰撞／建设资格不变，仅移除原道路完整位于草原岛内的可见面，保留其余顶点频道、GUID 和其他群系。草原测试落点微调到原路中心，不改旧档坐标。低草按独立固定种子烘焙斑块、花丛／灌丛按区合并，沿原 SeasonalGroundCover 遮盖建设；小兔和六处花丛昆虫沿原 WorldWaterEcology／OceanSurface 统一活动、暂停、室内隐藏及属性块清理，蝴蝶只使用原固定数组的空闲相位槽。无逐株／逐动物对象、Update、碰撞、掉落或存档字段；已有完整子树、普通 Setup 及重复入口保留手调，自定义元数据和孤立资源拒绝覆盖。详见 Docs/GrasslandIslandMeadow.md。
+
+- 草原树丛／花坡仅显式 Refine Grassland Groves And Clearings 烘焙；原位调整可识别绿色树冠的形状／色差，保留树冠底部、树干、其他群系、未选中顶点、全部 UV、面、碰撞与 GUID，不占新 UV；原碰撞网格、自定义元数据及孤立资源拒绝覆盖。树下高草／矮灌丛／落叶、花坡与路边小景使用固定独立种子、原模板和分区合并网格，完整脚印避开道路／实体／小兔活动区，沿原 SeasonalGroundCover 的风动、季节、建设遮盖及室内／退出清理；无新运行组件、Update、碰撞、掉落或存档字段。已有完整子树、重复与普通 Setup 保留手调，默认游玩镜头及资源保护验证见 Docs/GrasslandGroves.md。
+- 草原花色／花草形态仅显式 Refine Grassland Flowers And Grass 原位细化既有地表批次；奶白、淡黄、淡紫按空间群落分布，完整水平范围不扩张，保留拓扑、根部／季节数据、其余 UV、GUID 及未选中岩石／灌丛／落叶。独立共享 Meadow Flora 材质在原 UV0 权重中编码物种，沿 WeatherManager 原时钟／风向／风力与建设整簇遮盖，不加 Renderer、逐株对象、Update 或存档字段；蝴蝶停落花丛不改。已完成标记、重复入口和普通 Setup 保留后续手调，自定义元数据／材质、孤立资源及不完整迁移拒绝覆盖，详见 Docs/GrasslandFlora.md。
+
+- 草原贴地层仅显式 Refine Grassland Ground Layers 烘焙不规则矮草斑块与少量花坡外缘双茎花，按区合并并沿原 SeasonalGroundCover／Meadow Flora 风场、整簇建设遮盖、季节及室内清理；总批次不超过 64，原花草入口保留本轮已知标记。独立线性 RGBA 地色图与共享 Meadow Underlay 材质仅用于草原原地面，内陆渐入、路肩与树下柔和过渡，保留原地面全部几何／频道／碰撞／GUID、其他群系、原花草与生态落点。无新运行组件、Update、碰撞或进度字段；孤立资源／原自定义材质拒绝覆盖，重复和普通 Setup 保留手调。详见 Docs/GrasslandGroundLayers.md。
+
+- 草原灌木／苔石仅显式 Refine Grassland Shrubs And Moss Stones 原位细化既有完整组合；叶团圆润、分层高低／明暗，石块局部埋地与斑块苔色，完整水平范围不扩张。保留根部、原面、全部 UV、GUID、原花草／落叶／地表色、地形／碰撞及其他群系；沿原共享材质、风场、季节、整组建设遮盖和室内清理，不新增对象、Renderer、批次、Update 或进度字段。追加已知 importer 标记，未知配色／不完整模型保留，自定义元数据／材质／变换拒绝覆盖，重复和普通 Setup 保留手调。详见 Docs/GrasslandShrubStone.md。
+- 草原树冠仅显式 Refine Grassland Tree Crowns 细化原 Grove 树冠，按原树干锚点区分树型；只替换选中的树冠面并追加圆润叶团，叶片始终位于原冠椭球内。保留旧顶点及全部频道、未选中面、树干、碰撞、GUID、bounds、原 Renderer／共享材质／镜头淡化绑定与其他群系，不分配新 UV 或新增对象、运行逻辑、存档。追加 importer 标记，拒绝未知元数据／材质／变换和不完整迁移，完整标记后的重复入口与普通 Setup 保留手调。详见 Docs/GrasslandCrowns.md。
+- 草原树冠风动仅显式 Prepare Grassland Crown Wind 给上轮新增叶团的原空白 UV0 烘焙高度权重与错峰相位；不增加 UV 频道，保留旧顶点、其他频道、几何／颜色／面、碰撞、材质和其他群系。原 Biome Details 着色器仅形变已标记叶团，法线／阴影一致，沿 WeatherManager 统一风场及暂停／室内／退出恢复；只扩大保守裁剪 bounds，不新增对象、Update、Manager、材质副本或存档。追加 importer 标记，未知元数据／叶团 UV／材质、部分迁移拒绝覆盖，重复及普通 Setup 保留手调。详见 Docs/GrasslandCrownWind.md。
+
+- 草原合并景观的逐树冠遮挡沿用 CameraManager、原风动 UV0 相位与 AA 相机参数；显式 Prepare Grassland Crown Occlusion 只给原景观 Renderer 添加离线树冠包围盒组件，不改网格或新增逐树对象。MPB 稳定像素覆盖只作用于遮挡叶团，原树干、其他树和风动阴影保留；退出／禁用／Clear 恢复原 MPB，一个 Renderer 只能有一个遮挡拥有者。未知源数据、重复拥有者和部分迁移拒绝覆盖，重复及普通 Setup 保留合法手调，不新增存档。详见 Docs/GrasslandCrownOcclusion.md。
+
+- 草原拨草样区通过原 IslandTerrain AA 中 SeasonalGroundCover.TouchSample 配置，WeatherManager 沿统一暂停时钟调度固定容量接触与草浪；不增加 Update、逐草对象、碰撞、全局材质副本或进度字段。MeadowCoverPresentation 独占建设遮盖与接触 MPB，解绑恢复原属性。只显式 Prepare Grassland Touch Sample 细化原低草叶，保留根部、UV、株位及其他区域；限制完整形变与建设遮盖包络，未知资源和部分迁移拒绝，重复与普通 Setup 保留合法手调。先在传送落点附近样区验收，详见 Docs/GrasslandTouch.md。
+
 ## 11. 验证、提交内容与完成标准
 
 - 修改纯规则时执行受影响的 `Tools/Verify*.cs` 验证；涉及 UI / 资源 / 场景 / 生命周期时执行对应 `Assets/Editor/*FlowVerification`，并实际检查中文、布局、交互、暂停与退出清理。
@@ -256,8 +280,11 @@
 | 小屋与养殖 | [小屋](Docs/Housing.md)、[扩建](Docs/HouseUpgrades.md)、[家具](Docs/Furniture.md)、[鸡舍](Docs/Animals.md)、[亲密度](Docs/AnimalFriendship.md)、[品质蛋](Docs/QualityEggs.md)、[果树](Docs/Orchard.md) |
 | 交互与角色 | [角色 / 动画](Docs/PlayerCharacterAndAnimation.md)、[工具动作](Docs/ToolsAndFeedback.md)、[交互提示](Docs/InteractionPrompts.md)、[地图](Docs/Map.md)、[镜头遮挡](Docs/CameraOcclusion.md) |
 | 常驻界面 | [紧凑布局、资源维护与多分辨率检查](Docs/GameplayLayout.md) |
-| 环境与美术 | [海岸 / 码头](Docs/WalkableCoast.md)、[海洋](Docs/Ocean.md)、[海岸美术](Docs/CoastalArt.md)、[群系逐区优化](Docs/BiomeArtSequence.md)、[村落](Docs/VillageArt.md)、[农田](Docs/FarmArt.md)、[采集美术](Docs/GatheringArt.md)、[设施](Docs/FacilityArt.md)、[云层](Docs/Clouds.md)、[植被风动](Docs/VegetationWind.md)、[四季地表](Docs/SeasonalGroundDetails.md)、[主菜单背景](Docs/MainMenuArtwork.md) |
+| 环境与美术 | [海岸 / 码头](Docs/WalkableCoast.md)、[海洋](Docs/Ocean.md)、[海岸美术](Docs/CoastalArt.md)、[群系逐区优化](Docs/BiomeArtSequence.md)、[沙漠主路景观](Docs/DesertComposition.md)、[村落](Docs/VillageArt.md)、[农田](Docs/FarmArt.md)、[采集美术](Docs/GatheringArt.md)、[设施](Docs/FacilityArt.md)、[云层](Docs/Clouds.md)、[植被风动](Docs/VegetationWind.md)、[四季地表](Docs/SeasonalGroundDetails.md)、[主菜单背景](Docs/MainMenuArtwork.md) |
 | 声音 | [音效 / 配乐](Docs/Audio.md)、[海岸环境音 / 脚步](Docs/CoastalAudio.md) |
-| 草原生态 | [主路景观](Docs/GrasslandComposition.md)、[腹地收尾](Docs/GrasslandFinish.md)、[花丛与昆虫](Docs/GrasslandEcology.md)、[环境小兔](Docs/MeadowRabbits.md) |
+| 草原树冠风动 | [叶团错峰、统一风场与验证](Docs/GrasslandCrownWind.md) |
+| 草原树冠遮挡 | [逐树淡化、MPB 所有权与验证](Docs/GrasslandCrownOcclusion.md) |
+| 草原拨草样区 | [角色压草、回弹、草浪与属性拥有者](Docs/GrasslandTouch.md) |
+| 草原生态 | [整轮优化与内部植被](Docs/GrasslandRevitalization.md)、[树丛与花坡](Docs/GrasslandGroves.md)、[树冠层次](Docs/GrasslandCrowns.md)、[花色与花草风动](Docs/GrasslandFlora.md)、[地表层次](Docs/GrasslandGroundLayers.md)、[灌木与苔石](Docs/GrasslandShrubStone.md)、[主路景观](Docs/GrasslandComposition.md)、[腹地收尾](Docs/GrasslandFinish.md)、[花丛与昆虫](Docs/GrasslandEcology.md)、[环境小兔](Docs/MeadowRabbits.md) |
 
 配置字段以 `Assets/Config`、配置脚本及 ConfigurationManager 校验为准；包与编辑器版本见 `Packages/manifest.json`、`Packages/packages-lock.json`、`ProjectSettings/ProjectVersion.txt`；文本与提交规则见 `.gitattributes`、`.gitignore`。
