@@ -22,13 +22,23 @@ Shader "MagicIsland/Meadow Trail"
         float _LegacyRoad;
         float _EdgeSoftness,_GrainStrength,_SnowCover;
         float4 _SnowColor;
-        struct Input { float4 vertexColor; float2 trail; float blend; float3 worldPos; };
+        struct Input { float4 vertexColor; float2 trail; float blend; float3 worldPos; float shoulder; };
         void vert(inout appdata_full v,out Input o)
-        { UNITY_INITIALIZE_OUTPUT(Input,o);o.vertexColor=v.color;o.trail=v.texcoord.xy;o.blend=v.texcoord1.x; }
+        {
+            UNITY_INITIALIZE_OUTPUT(Input,o);o.vertexColor=v.color;o.trail=v.texcoord.xy;o.blend=v.texcoord1.x;
+            // Only explicitly baked road vertices opt in; legacy UV data retains its old rendering.
+            o.shoulder=v.texcoord1.y>=-914 && v.texcoord1.y<=-913 ? -v.texcoord1.y-913 : 0;
+        }
         void surf(Input IN,inout SurfaceOutputStandard o)
         {
             float4 meadow=tex2D(_MeadowMap,(IN.worldPos.xz-_MeadowRect.xy)/_MeadowRect.zw);
             float edge=lerp(abs(IN.trail.x),meadow.b*4/2.15,saturate(_LegacyRoad));
+            if(IN.shoulder>0)
+            {
+                float variation=(BeachNoise(IN.worldPos.xz*.33+34.2)-.5)*.28
+                    +(BeachNoise(IN.worldPos.xz*.93-14.8)-.5)*.08;
+                edge=max(0,edge+variation*saturate(IN.shoulder)*smoothstep(.45,.85,edge));
+            }
             float breakup=BeachNoise(IN.worldPos.xz*.65+7.1);
             float boundary=.99-(1-breakup)*.08;
             o.Alpha=lerp(1,1-smoothstep(boundary-_EdgeSoftness,boundary,edge),saturate(IN.blend));

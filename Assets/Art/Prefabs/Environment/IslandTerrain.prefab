@@ -13054,6 +13054,17 @@ MonoBehaviour:
   - {fileID: 7873887288592767632}
   - {fileID: 4886875413006008120}
   - {fileID: 2355008589171520980}
+  FlowerVisitVersion: 1
+  FlowerVisits:
+  - Source: {fileID: 8080574738969282280}
+    Vertex: 41532
+    Slot: 1
+  - Source: {fileID: 4606431120071097617}
+    Vertex: 92367
+    Slot: 3
+  - Source: {fileID: 8080574738969282280}
+    Vertex: 40956
+    Slot: 5
   MeadowRabbits: {fileID: 1110139575334352097}
   RabbitHabitats:
   - Track:

@@ -10,6 +10,8 @@ Shader "MagicIsland/Meadow Flora"
         #include "MeadowTouch.cginc"
         float _IslandWindTime,_IslandWindStrength,_MeadowCutCount;
         float4 _IslandWindDirection,_MeadowCuts[128];
+        #include "MeadowShrubWind.cginc"
+        #include "MeadowFlowerWind.cginc"
         struct Input {float4 vertexColor;float visible;float season;};
         void vert(inout appdata_full v,out Input o)
         {
@@ -17,6 +19,7 @@ Shader "MagicIsland/Meadow Flora"
             float3 root=mul(unity_ObjectToWorld,float4(v.texcoord1.x,v.texcoord2.x,v.texcoord1.y,1)).xyz;
             for(int i=0;i<(int)_MeadowCutCount;i++)
                 if(all(abs(root.xz-_MeadowCuts[i].xy)<=_MeadowCuts[i].zw)){o.visible=0;break;}
+            if(MeadowShrubWind(v,root))return;
             // Explicit authoring encodes species in the existing weight; other plants retain their motion.
             float encoded=v.texcoord.x;
             float flower=encoded<=-2 && encoded>=-3;
@@ -48,6 +51,7 @@ Shader "MagicIsland/Meadow Flora"
                 }
             }
             float2 direction=_IslandWindDirection.xy;
+            if(flower){MeadowFlowerVertex(v,root,phase,weight,sampleMask);return;}
             v.vertex.xz+=(direction*sway+float2(-direction.y,direction.x)*cross)
                 *(weight*weight*amplitude*clamp(_IslandWindStrength,0,1.6));
             MeadowTouch(v,root,sampleMask,grass,flower,authoredWeight);

@@ -8,6 +8,9 @@ Shader "MagicIsland/Meadow Underlay"
         _UnderlayMap ("Ground communities", 2D)="black" {}
         _UnderlayRect ("Ground communities bounds", Vector)=(-300,230,600,620)
         _UnderlayStrength ("Ground communities strength", Range(0,1))=.85
+        _GroundDetailMap ("Sample soil / moss / litter", 2D)="black" {}
+        _GroundDetailRect ("Sample detail bounds", Vector)=(0,0,0,0)
+        _GroundDetailStrength ("Sample detail strength", Range(0,1))=0
         _Color ("Tint", Color)=(1,1,1,1)
         _WetSandStrength ("湿沙深浅", Range(0,1))=.75
         _WetSandSmoothness ("湿沙柔光", Range(.03,.5))=.28
@@ -28,6 +31,9 @@ Shader "MagicIsland/Meadow Underlay"
         sampler2D _MeadowMap,_UnderlayMap;
         float4 _UnderlayRect;
         float _UnderlayStrength;
+        sampler2D _GroundDetailMap;
+        float4 _GroundDetailRect;
+        float _GroundDetailStrength;
         float4 _MeadowRect;
         float _MeadowStrength;
         float4 _Color;
@@ -64,6 +70,17 @@ Shader "MagicIsland/Meadow Underlay"
             o.Albedo=lerp(o.Albedo,dry,field.g*amount*.65);
             o.Albedo=lerp(o.Albedo,shade,field.b*amount*.65);
             o.Albedo*=1+mottling*.045*amount;
+            // Explicitly baked sample only. Zero strength preserves the original material path.
+            if(_GroundDetailStrength>0 && _GroundDetailRect.z>0 && _GroundDetailRect.w>0)
+            {
+                float4 local=tex2D(_GroundDetailMap,(IN.worldPos.xz-_GroundDetailRect.xy)/_GroundDetailRect.zw);
+                float coverage=local.a*saturate(IN.grass)*_GroundDetailStrength;
+                float3 soil=o.Albedo*float3(1.32,.94,.80);
+                float3 moss=o.Albedo*float3(.72,.92,.80);
+                o.Albedo=lerp(o.Albedo,soil,local.r*coverage*.90);
+                o.Albedo=lerp(o.Albedo,moss,local.g*coverage*.85);
+                o.Albedo=lerp(o.Albedo,o.Albedo*float3(1.52,1.08,.70),local.b*coverage*.90);
+            }
             IslandWetSand(IN.worldPos,IN.vertexColor.rgb,o.Albedo,o.Smoothness);
             o.Metallic=0;o.Alpha=1;
         }

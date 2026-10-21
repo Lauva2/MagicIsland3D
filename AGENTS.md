@@ -251,6 +251,35 @@
 
 - 草原拨草样区通过原 IslandTerrain AA 中 SeasonalGroundCover.TouchSample 配置，WeatherManager 沿统一暂停时钟调度固定容量接触与草浪；不增加 Update、逐草对象、碰撞、全局材质副本或进度字段。MeadowCoverPresentation 独占建设遮盖与接触 MPB，解绑恢复原属性。只显式 Prepare Grassland Touch Sample 细化原低草叶，保留根部、UV、株位及其他区域；限制完整形变与建设遮盖包络，未知资源和部分迁移拒绝，重复与普通 Setup 保留合法手调。先在传送落点附近样区验收，详见 Docs/GrasslandTouch.md。
 
+- 草原草丛可见度仅显式 Refine Grassland Grass Readability Sample 精修原拨草样区六份批次的低草高度／法线／颜色，以低中高斑块和路肩低草形成层次；草根、株位、水平轮廓、数量、面、UV0–7、GUID、原花朵／其他美术、地形／碰撞和建设资格保持。不改预制体、运行组件、配置或进度，仍沿原拨草／季节／建设遮盖拥有者与完整形变限幅。追加 importer 标记，写前完整规划、失败还原；未知资源／部分迁移拒绝，重复及普通 Setup 保留人工编辑。样区确认后才决定推广，详见 Docs/GrasslandReadability.md。
+
+- 草原草簇形态／成片分布仅显式 Refine Grassland Meadow Patch Sample 在原拨草样区内细化非根草叶，并将新草簇追加到两份原 Meadow undergrowth 网格；原根部／株位／颜色／UV／面前缀及未选中美术保持，完整新草运动包络避开道路、实体、非草景物与小兔路线。仍沿原 AA、拨草／季节／建设遮盖拥有者，不改预制体、碰撞、运行组件、配置或存档。仅追加已知 importer 标记，写前规划、失败还原、未知数据／部分迁移拒绝，重复及普通 Setup 保留手调；样区确认后才决定推广，详见 Docs/GrasslandPatch.md。
+
+- 草甸与地面融合仅显式 Blend Grassland Meadow Ground Sample 烘焙原拨草样区地色和草叶 RGB：原分布图保留全 alpha、未选中像素及完整双线性采样的道路／样区边界，按真实草簇密度和花石位置衔接；原六份网格保留全部几何／法线／UV／面／bounds／alpha、非草与样区外颜色。材质／着色器、预制体、碰撞、株位／数量、运行拥有者和存档不改。写前计划与备份，分布图先持久化进行中标记、最后提交完成；中断／部分迁移拒绝再叠色，异常还原，重复及普通 Setup 保留手绘／调色。只追加已知 importer 标记，未知资源拒绝，样区确认后才决定推广，详见 Docs/GrasslandBlend.md。
+
+- 草甸野花组合仅显式 Refine Grassland Wildflower Sample 调整原拨草样区装饰花束并追加草甸边缘小组：整枝筛疏保留旧顶点／UV、其余面序与非花美术，新增单株／两三株沿原两份网格及风动／拨草／建设遮盖拥有者，完整运动包络避开道路／实体／小兔。蝴蝶停落花粉所属 Meadow Foliage、昆虫活动区、地形／碰撞、地色、预制体和存档保持。不增对象／Renderer／材质／Update，写前规划备份、首份进行中标记最后提交完成，中断／部分迁移拒绝；未知资源拒绝，重复及普通 Setup 保留手调。样区确认后才决定推广，详见 Docs/GrasslandWildflower.md。
+
+- 草原样区小景仅显式 Refine Grassland Edge Sample 向原两份 undergrowth 网格追加少量灌木／苔石／低草／小花组合，组间留空，沿原根部与 AA／季节／风动／拨草／整组建设遮盖拥有者。完整包络避开道路／实体／非草景物／小兔；小景中心仅筛去整簇原草面，周边降高保留原草 XZ／颜色、全部旧顶点／UV、其余面序与样区外美术。原花石、蝴蝶落点、地色、树木、地形／碰撞、预制体、其他群系及存档保持。不新增对象／Renderer／材质／Update，写前规划备份、进行中标记最后提交完成；未知数据和部分迁移拒绝，重复／普通 Setup 保留手调。样区确认后再决定推广，详见 Docs/GrasslandEdge.md。
+
+- 草原小径边缘仅显式 Refine Grassland Path Edge Sample 在原样区烘焙原路面 RGB／原空白 UV1.y 的局部遮罩与两份 undergrowth 的矮草／碎石追加；完整插值三角面保护路中央、原网格外边界及样区外，保留道路几何／法线／面／bounds、UV0／UV1.x／UV2–7、alpha 和 GUID，原草花／小景与面／频道前缀保持。共享 Meadow Trail 仅对 -913 至 -914 烘焙遮罩采样连续片元噪声，零遮罩保留原效果并做旧新 Shader GPU 对照；原材质、分布图、地形／碰撞、预制体、建设与通行范围、生态、其他岛及存档不改。新草完整风动／拨草包络避开中央通行带与实体／非草景物／小兔，沿原共享批次与呈现拥有者，不增对象／Renderer／Update。写前规划备份、路面进行中标记最后提交完成，未知数据与部分迁移拒绝，重复和普通 Setup 保留手调；样区确认后再决定推广，详见 Docs/GrasslandPathEdge.md。
+
+- 草原样区整体收尾仅显式 Finish Grassland Sample Palette 在原六份样区花草网格柔化 RGB，并在大型装饰花旁筛疏少量完整纯草根面；保留原顶点／法线／bounds／UV0–7／根／alpha／索引格式／GUID 与剩余面顺序，不拆混合小景根，不改蝴蝶停落 Foliage、地色图、道路、预制体、碰撞或其他岛。不新增运行对象／材质／配置／存档字段，沿原呈现拥有者；写前规划备份、进行中／完成标记、异常回滚及未知／部分数据拒绝，重复、前序入口与普通 Setup 保留手调。实际 Packed AA 验证同镜头白天／黄昏／雨天及真实角色穿行，样区满意后再决定推广，详见 Docs/GrasslandSampleFinish.md。
+
+- 草原空间层次仅显式 Compose Grassland Spatial Sample 在原样区按三片不规则分布区组织灌木／前缘花带／草簇与低草空地；具体根部采用独立固定种子随机偏移与真实地面／实体／其他景物／小兔路线检查。局部调整旧纯草与混合小景正权重叶团的高度／法线，保留原 XZ、根、颜色、UV0–7、石／花、GUID、索引格式和剩余面序，道路附近原纯草保持。新组合追加原两份 undergrowth，原灌木完整叶团轻量变体与 Blender 花枝复用原材质和整根遮盖，完整运动范围不超过原 1.3 米；不改预制体、地色图、碰撞、地形／建设、生态或其他岛，不增对象／Renderer／Update／配置／存档。写前预检备份、进行中／完成标记与异常回滚，未知／部分数据拒绝，重复及普通 Setup 保留手调；实际 Packed 三种光照、角色穿行和建设遮盖验收后再决定推广，详见 Docs/GrasslandSpatial.md。
+
+- 草原灌木造型仅显式 Refine Grassland Shrub Detail Sample 细化原样区已有混合根部灌木；按根内位置接缝与正权重种子识别完整叶团，局部 XYZ／法线／RGB 可调整，保留原根、全部旧 UV、旧面序／GUID／索引格式及未选中的石／花／草。原根追加少量双面尖叶、细枝、低草和整枝花，复用原 AA、材质与呈现拥有者，全部细节随原根整组遮盖，细枝不染季节草色；完整静态半径不超过 1.16 米，运动范围仍为原 1.30 米。不改株位／群落布局／道路／碰撞／地形／预制体／生态／其他岛，不增对象／Renderer／Update／配置或进度字段。写前预检备份、进行中／完成标记和异常回滚，未知／部分数据拒绝，重复及普通 Setup 保留手调；实际 Packed 三种光照、正常／近景、穿行和建设遮盖验收后再决定推广，详见 Docs/GrasslandShrubDetail.md。
+
+- 草原灌木风动仅显式 Prepare Grassland Shrub Wind Sample 给原样区已细化灌木的 UV0 写入配对权重／相位，维度保持 2；叶团／尖叶／细枝分别用 -8／-10／-12 开头的单位权重段，同时要求负相位哨兵 -128-phase，原几何／根／UV1–7、非选中 UV0 和其他美术保持。共享 Meadow Flora 仅标记顶点进入专用函数，慢弯曲／叶团错峰／叶尖颤动沿原 WeatherManager 风场，叶基与母叶团同形变，根部锚定，法线／阴影一致，位移小于 0.112 米且仍在原完整 1.3 米范围；暂停／室内冻结、建设整根遮盖／退出复用原拥有者。不新增对象／Renderer／Update／材质副本／配置或进度。写前预检备份、进行中／完成标记与异常回滚，未知／部分数据拒绝，重复和普通 Setup 保留手调；真实 Packed GPU 浮点探针、未标记旧新 Shader、穿行／建设及正常／近景三种光照验收，详见 Docs/GrasslandShrubWind.md。
+
+- 草原样区访花仅显式 Link Grassland Flower Visit Sample 将原三只蝴蝶关联到三片已有花带的真实花粉顶点；原 WorldWaterEcology 保存 Renderer／顶点／槽位引用与一次性版本，绑定读取实际 AA 网格，不另造花位、个体或随机数。花与蝶共用原花茎风动／拨草函数，渲染前沿原相机回调只同步呈现，建设整根遮盖时隐藏对应蝶、回收恢复；暂停／室内／雨天／退出沿原拥有者。原植物和昆虫几何／频道、材质、对象和总数量保持，昆虫原 bounds 仅按完整活动范围补足；不改碰撞、建设资格、其他岛、配置或存档。写前预检备份、进行中／完成版本及异常回滚，未知／部分关联拒绝，重复和普通 Setup 保留合法手调；详见 Docs/GrasslandFlowerVisits.md。
+
+- 草原样区地面细节仅显式 Refine Grassland Sample Ground Detail 增加局部线性 RGBA 土色／苔色／落叶数据图，并给原地面材质补充可选字段；原整岛手绘图与其他参数保持，新图完整双线性采样保护样区外与主路中央，零强度保留旧 Shader 路径。原六份合并网格只降矮并柔化稀疏边缘纯草，保留株位／根／XZ、所有花与访花顶点、UV0–7／面／bounds／GUID、混合小景和道路；沿原呈现拥有者，不改预制体、碰撞、其他岛、配置或存档，不增加对象／Renderer／Update。先预检与备份、持久化进行中标记再提交，异常还原并清理新图，未知／部分数据拒绝；重复与普通 Setup 保留手绘／材质调节。详见 Docs/GrasslandGroundDetail.md。
+
+
+- 草原草叶造型仅显式 Refine Grassland Blade Detail Sample 在原六份样区合并网格内弯曲／卷转／收尖并柔化草叶法线；原三角草叶补两段截面成为七顶点双面弯叶，已有五／七顶点叶原位调整。保留株位、固定基部、旧顶点索引及全部 UV／相位／根／alpha、花朵与访花索引、原 bounds／GUID／索引格式，其他面序与未选中美术保持；新增中段插值原风动权重，不改 Shader、材质、预制体、碰撞、其他岛、配置或存档。静态／运动包络沿原 1.16／1.30 米并保护道路，不增运行对象／Renderer／Update；先完整预检容量与边界、备份和进行中标记，异常回滚，未知／部分状态拒绝，重复与普通 Setup 保留手调。详见 Docs/GrasslandBladeDetail.md。
+
+- 草原花朵造型仅显式 Refine Grassland Flower Detail Sample 在原样区合并网格内圆润原五瓣花、柔化茎叶及错开花头姿态；每瓣补两个外缘点，部分原花枝补一片小叶，不增加花株或移动花带根部。保留固定基部、所有旧索引／UV／相位／根／季节／alpha、原花蕊访花索引、未选中美术及面序、原 bounds／GUID／索引格式；原蝴蝶读取精修后实际 AA 顶点，沿原风动／拨草／建设遮盖拥有者。保持原材质／Shader／预制体／碰撞／其他岛／配置／存档，不增运行对象／Renderer／Update；完整预检拓扑、容量及原 1.16／1.30 米包络和道路，备份／进行中标记／完成提交／异常回滚，未知／部分状态拒绝，重复及普通 Setup 保留手调。详见 Docs/GrasslandFlowerDetail.md。
+
 ## 11. 验证、提交内容与完成标准
 
 - 修改纯规则时执行受影响的 `Tools/Verify*.cs` 验证；涉及 UI / 资源 / 场景 / 生命周期时执行对应 `Assets/Editor/*FlowVerification`，并实际检查中文、布局、交互、暂停与退出清理。
@@ -285,6 +314,20 @@
 | 草原树冠风动 | [叶团错峰、统一风场与验证](Docs/GrasslandCrownWind.md) |
 | 草原树冠遮挡 | [逐树淡化、MPB 所有权与验证](Docs/GrasslandCrownOcclusion.md) |
 | 草原拨草样区 | [角色压草、回弹、草浪与属性拥有者](Docs/GrasslandTouch.md) |
+| 草原草丛可见度 | [样区高度、柔和色差、斑块与验证](Docs/GrasslandReadability.md) |
+| 草原草簇形态 | [弯曲叶片、成片小簇与完整包络](Docs/GrasslandPatch.md) |
+| 草甸地色融合 | [局部分布图、草根渐变与中断保护](Docs/GrasslandBlend.md) |
+| 草甸野花组合 | [整枝筛疏、断续花带与停落点保护](Docs/GrasslandWildflower.md) |
+| 草甸小景衔接 | [矮灌木、苔石、低草与样区留白](Docs/GrasslandEdge.md) |
+| 草原路肩样区 | [断续草土过渡、贴地草与完整中央净空](Docs/GrasslandPathEdge.md) |
+| 草原样区收尾 | [柔和配色、花旁疏草与实景验收](Docs/GrasslandSampleFinish.md) |
+| 草原空间层次 | [成片群落、中层灌木与视线留白](Docs/GrasslandSpatial.md) |
+| 草原灌木造型 | [错落叶团、尖叶细枝与根部衔接](Docs/GrasslandShrubDetail.md) |
+| 草原灌木风动 | [叶团错峰、叶尖颤动与连接验证](Docs/GrasslandShrubWind.md) |
+| 草原样区访花 | [三片花带、真实落点与生态拥有者](Docs/GrasslandFlowerVisits.md) |
+| 草原地面细节 | [土色、苔色、细碎落叶与低草边缘](Docs/GrasslandGroundDetail.md) |
+| 草原草叶造型 | [弯叶截面、柔和法线与原风动保护](Docs/GrasslandBladeDetail.md) |
+| 草原花朵造型 | [圆润花瓣、柔和茎叶与访花保护](Docs/GrasslandFlowerDetail.md) |
 | 草原生态 | [整轮优化与内部植被](Docs/GrasslandRevitalization.md)、[树丛与花坡](Docs/GrasslandGroves.md)、[树冠层次](Docs/GrasslandCrowns.md)、[花色与花草风动](Docs/GrasslandFlora.md)、[地表层次](Docs/GrasslandGroundLayers.md)、[灌木与苔石](Docs/GrasslandShrubStone.md)、[主路景观](Docs/GrasslandComposition.md)、[腹地收尾](Docs/GrasslandFinish.md)、[花丛与昆虫](Docs/GrasslandEcology.md)、[环境小兔](Docs/MeadowRabbits.md) |
 
 配置字段以 `Assets/Config`、配置脚本及 ConfigurationManager 校验为准；包与编辑器版本见 `Packages/manifest.json`、`Packages/packages-lock.json`、`ProjectSettings/ProjectVersion.txt`；文本与提交规则见 `.gitattributes`、`.gitignore`。

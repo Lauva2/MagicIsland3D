@@ -23,6 +23,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _GroundDetailMap:
+        m_Texture: {fileID: 2800000, guid: a3280898b795ad04da0c98df05a93079, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MeadowMap:
         m_Texture: {fileID: 2800000, guid: c1b1cf0249a070c4192cfbf1c2e5e725, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -34,6 +38,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _ApproachStrength: 0.48
+    - _GroundDetailStrength: 0.86
     - _MeadowStrength: 0.65
     - _UnderlayStrength: 0.85
     - _VillageApproachCurve: 0
@@ -42,6 +47,7 @@ Material:
     m_Colors:
     - _ApproachColor: {r: 0.88, g: 0.78999996, b: 0.59, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _GroundDetailRect: {r: -149, g: 422, b: 50, a: 50}
     - _MeadowRect: {r: -180, g: 180, b: 660, a: 680}
     - _UnderlayRect: {r: -300, g: 230, b: 600, a: 620}
     - _VillageApproach: {r: 0, g: 0, b: 0, a: 0}

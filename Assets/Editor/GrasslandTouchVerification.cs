@@ -156,8 +156,8 @@ namespace MagicIsland.EditorTools
             var block=new MaterialPropertyBlock();foreach(var r in cover.TouchSample.Renderers){r.GetPropertyBlock(block);Check((!r.enabled||!r.gameObject.activeInHierarchy||(g.Players.Player.ViewCamera.cullingMask&(1<<r.gameObject.layer))==0)&&block.GetFloat("_MeadowTouchCount")==0,"indoor presentation hides and clears outdoor contacts");}
         }
         public static void Released(GameManager g) { Check(g.Terrain.Terrain==null,"terrain AA owner releases all meadow contact references"); }
-        static void Frame(Camera camera,Vector3 point){camera.transform.rotation=Quaternion.Euler(42,0,0);camera.orthographicSize=7;camera.transform.position=point+Vector3.up*.6f-camera.transform.forward*18;}
-        static byte[] Capture(Camera camera,string path)
+        internal static void Frame(Camera camera,Vector3 point){camera.transform.rotation=Quaternion.Euler(42,0,0);camera.orthographicSize=7;camera.transform.position=point+Vector3.up*.6f-camera.transform.forward*18;}
+        internal static byte[] Capture(Camera camera,string path)
         {
             var rt=new RenderTexture(1280,800,24);var old=camera.targetTexture;var active=RenderTexture.active;var image=new Texture2D(1280,800,TextureFormat.RGB24,false);
             try{camera.targetTexture=rt;camera.Render();camera.Render();RenderTexture.active=rt;image.ReadPixels(new Rect(0,0,1280,800),0,0);image.Apply();var bytes=image.EncodeToPNG();File.WriteAllBytes(path,bytes);return bytes;}

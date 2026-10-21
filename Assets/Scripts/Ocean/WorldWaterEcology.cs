@@ -19,6 +19,8 @@ namespace MagicIsland.Ocean
         public Renderer[] Ambient=Array.Empty<Renderer>();
         // Optional baked grassland batches; owned by IslandTerrain, driven by the same paused clock.
         public Renderer[] GrasslandAmbient=Array.Empty<Renderer>();
+        public int FlowerVisitVersion;
+        public MeadowFlowerVisit[] FlowerVisits=Array.Empty<MeadowFlowerVisit>();
         public Renderer MeadowRabbits;
         public MeadowRabbitHabitat[] RabbitHabitats=Array.Empty<MeadowRabbitHabitat>();
         public Renderer AncientTree;
@@ -44,6 +46,7 @@ namespace MagicIsland.Ocean
                 foreach(var r in Ambient)if(r==null||r.sharedMaterial==null)return false;
                 if(GrasslandAmbient==null)return false;
                 foreach(var r in GrasslandAmbient)if(r==null||r.sharedMaterial==null||r.GetComponent<MeshFilter>()?.sharedMesh==null)return false;
+                if(!MeadowInsectMotion.ValidVisits(FlowerVisitVersion,FlowerVisits,GrasslandAmbient))return false;
                 if(RabbitHabitats==null||RabbitHabitats.Length>8||(MeadowRabbits==null)!=(RabbitHabitats.Length==0))return false;
                 foreach(var habitat in RabbitHabitats)if(habitat==null||!habitat.IsValid)return false;
                 if(MeadowRabbits!=null&&(MeadowRabbits.sharedMaterial==null||MeadowRabbits.GetComponent<MeshFilter>()?.sharedMesh==null))return false;
@@ -57,7 +60,7 @@ namespace MagicIsland.Ocean
             if(!IsValid||animation==null||!animation.IsValid)throw new InvalidOperationException("Incomplete baked world water ecology");
             grasslandOriginals=new MaterialPropertyBlock[GrasslandAmbient.Length];meadowRain=raining?1:0;
             for(int i=0;i<GrasslandAmbient.Length;i++){grasslandOriginals[i]=new MaterialPropertyBlock();GrasslandAmbient[i].GetPropertyBlock(grasslandOriginals[i]);}
-            meadowMotion=new MeadowInsectMotion(GrasslandAmbient);
+            meadowMotion=new MeadowInsectMotion(GrasslandAmbient,FlowerVisits);
             foreach(var h in Habitats)
             {
                 var s=h.School;var mesh=h.Floor.sharedMesh;
@@ -101,6 +104,7 @@ namespace MagicIsland.Ocean
         public void Present(Camera camera)
         {
             LastFishSubmissions=0;if(!Bound||!gameObject.activeInHierarchy||camera==null)return;
+            meadowMotion?.RefreshPresentation(GrasslandAmbient,properties);
             GeometryUtility.CalculateFrustumPlanes(camera,planes);
             foreach(var h in Habitats)
                 if((camera.cullingMask&(1<<h.School.gameObject.layer))!=0&&GeometryUtility.TestPlanesAABB(planes,h.School.PresentationBounds)&&h.School.PresentLatest())LastFishSubmissions++;

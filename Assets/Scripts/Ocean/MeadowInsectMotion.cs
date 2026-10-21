@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MagicIsland.Ocean
@@ -12,11 +14,40 @@ namespace MagicIsland.Ocean
         readonly Vector3[] homes=new Vector3[Capacity];
         readonly float[] phases=new float[Capacity],scores=new float[Capacity];
         readonly bool[] active=new bool[Capacity],ready;
-        readonly Vector4[] flowers=new Vector4[Capacity],responses=new Vector4[Capacity];
+        readonly Vector4[] flowers=new Vector4[Capacity],responses=new Vector4[Capacity],visitingHomes=new Vector4[Capacity],roots=new Vector4[Capacity];
+        readonly MeadowFlowerVisit[] visits;
+        readonly MaterialPropertyBlock sourceBlock=new MaterialPropertyBlock();
+        readonly List<Vector4> cuts=new List<Vector4>(128),touches=new List<Vector4>(16);
+        Vector4 touchArea,touchShape,touchWave;int touchCount;
+        static readonly int HomesId=Shader.PropertyToID("_MeadowVisitingHomes"),RootsId=Shader.PropertyToID("_MeadowFlowerRoots"),CutsId=Shader.PropertyToID("_MeadowCuts");
+        static readonly int TouchesId=Shader.PropertyToID("_MeadowTouches"),TouchCountId=Shader.PropertyToID("_MeadowTouchCount");
+        public static bool ValidVisits(int version,MeadowFlowerVisit[] links,Renderer[] ambient)
+        {
+            if(links==null||links.Length>Capacity||version<0||version>1||(version==0)!=(links.Length==0))return false;
+            var used=new bool[Capacity];
+            foreach(var link in links)
+            {
+                if(link==null||link.Source==null||link.Source.sharedMaterial==null||link.Source.sharedMaterial.shader.name!="MagicIsland/Meadow Flora"
+                    ||link.Slot<0||link.Slot>=Capacity||used[link.Slot])return false;
+                used[link.Slot]=true;var m=link.Source.GetComponent<MeshFilter>()?.sharedMesh;
+                if(m==null||link.Vertex<0||link.Vertex>=m.vertexCount||Array.IndexOf(m.triangles,link.Vertex)<0)return false;
+                var uv=m.uv;var root=m.uv2;var season=m.uv3;var point=m.vertices;
+                if(uv.Length!=m.vertexCount||root.Length!=m.vertexCount||season.Length!=m.vertexCount||uv[link.Vertex].x> -2||uv[link.Vertex].x< -3)return false;
+                int v=link.Vertex;if(!Finite(uv[v].x)||!Finite(uv[v].y)||!Finite(root[v].x)||!Finite(root[v].y)||!Finite(season[v].x)
+                    ||!Finite(point[v].x)||!Finite(point[v].y)||!Finite(point[v].z))return false;
+                bool found=false;
+                foreach(var r in ambient)if(r.sharedMaterial.shader.name=="MagicIsland/Meadow Insects"&&r.sharedMaterial.GetFloat("_EcologyMode")<.5f)
+                    foreach(var p in r.GetComponent<MeshFilter>().sharedMesh.uv2)
+                    {int site=Mathf.FloorToInt((p.y+.0001f)/SitePhase),slot=site*2+Mathf.RoundToInt((p.y-site*SitePhase)/1.83f);if(slot==link.Slot&&r.transform.localToWorldMatrix==link.Source.transform.localToWorldMatrix)found=true;}
+                if(!found)return false;
+            }
+            return true;
+        }
         static bool Finite(float value)=>!float.IsNaN(value)&&!float.IsInfinity(value);
 
-        public MeadowInsectMotion(Renderer[] renderers)
+        public MeadowInsectMotion(Renderer[] renderers,MeadowFlowerVisit[] links)
         {
+            visits=links;
             ready=new bool[renderers.Length];
             for(int batch=0;batch<renderers.Length;batch++)
             {
@@ -66,10 +97,35 @@ namespace MagicIsland.Ocean
                     }
                 }
             }
+            foreach(var link in visits)
+            {
+                var m=link.Source.GetComponent<MeshFilter>().sharedMesh;int v=link.Vertex,i=link.Slot;
+                var p=link.Source.transform.TransformPoint(m.vertices[v]);var uv=m.uv[v];var root=m.uv2[v];var floor=m.uv3[v];
+                var worldRoot=link.Source.transform.TransformPoint(new Vector3(root.x,floor.x,root.y));
+                flowers[i]=new Vector4(p.x,p.y+.025f,p.z,uv.y);
+                roots[i]=new Vector4(worldRoot.x,worldRoot.y,worldRoot.z,-uv.x-2);
+                homes[i]=p+Vector3.up*.32f;visitingHomes[i]=new Vector4(homes[i].x,homes[i].y,homes[i].z,1);
+            }
+            RefreshFlowers();
+        }
+        void RefreshFlowers()
+        {
+            foreach(var link in visits)
+            {
+                link.Source.GetPropertyBlock(sourceBlock);cuts.Clear();sourceBlock.GetVectorArray(CutsId,cuts);
+                int count=Mathf.Min((int)sourceBlock.GetFloat("_MeadowCutCount"),cuts.Count);var root=roots[link.Slot];bool covered=false;
+                for(int n=0;n<count;n++)if(Mathf.Abs(root.x-cuts[n].x)<=cuts[n].z&&Mathf.Abs(root.z-cuts[n].y)<=cuts[n].w){covered=true;break;}
+                visitingHomes[link.Slot].w=covered?-1:1;
+            }
+            if(visits.Length==0)return;
+            visits[0].Source.GetPropertyBlock(sourceBlock);touches.Clear();sourceBlock.GetVectorArray(TouchesId,touches);
+            touchCount=Mathf.Min((int)sourceBlock.GetFloat("_MeadowTouchCount"),touches.Count);
+            touchArea=sourceBlock.GetVector("_MeadowTouchArea");touchShape=sourceBlock.GetVector("_MeadowTouchShape");touchWave=sourceBlock.GetVector("_MeadowTouchWave");
         }
 
         public void Tick(float seconds,Vector3? player)
         {
+            RefreshFlowers();
             if(seconds<=0)return;
             for(int i=0;i<Capacity;i++)
             {
@@ -92,11 +148,22 @@ namespace MagicIsland.Ocean
             }
         }
 
+        // The cover owner can update touch/cuts after OceanManager.Update. Read again before rendering.
+        // This refresh never advances either the visit clock or the startle state.
+        public void RefreshPresentation(Renderer[] renderers,MaterialPropertyBlock block)
+        {
+            if(visits.Length==0)return;RefreshFlowers();
+            for(int i=0;i<renderers.Length;i++)if(ready[i])
+            {renderers[i].GetPropertyBlock(block);Apply(i,block);renderers[i].SetPropertyBlock(block);}
+        }
         public void Apply(int batch,MaterialPropertyBlock block)
         {
             block.SetFloat(ReadyId,ready[batch]?1:0);
             if(!ready[batch])return;
             block.SetVectorArray(FlowersId,flowers);block.SetVectorArray(ResponsesId,responses);
+            block.SetVectorArray(HomesId,visitingHomes);block.SetVectorArray(RootsId,roots);
+            block.SetVector("_MeadowTouchArea",touchArea);block.SetVector("_MeadowTouchShape",touchShape);block.SetVector("_MeadowTouchWave",touchWave);
+            block.SetFloat(TouchCountId,touchCount);if(touches.Count>0)block.SetVectorArray(TouchesId,touches);
         }
     }
 }

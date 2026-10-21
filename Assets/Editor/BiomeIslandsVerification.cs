@@ -79,7 +79,7 @@ namespace MagicIsland.EditorTools
                 else if(phase==1&&g.State==GameFlowState.Playing)
                 {
                     Check(!File.Exists(g.Saves.SavePath),"new game does not save");
-                    VerifyTravel(g);GrasslandIslandCoastVerification.Visit(g);GrasslandIslandMeadowVerification.Visit(g);GrasslandGroveVerification.Visit(g);GrasslandFloraVerification.Visit(g);GrasslandGroundLayersVerification.Visit(g);GrasslandShrubStoneVerification.Visit(g);GrasslandCrownVerification.Visit(g);GrasslandCrownWindVerification.Visit(g);GrasslandCrownOcclusionVerification.Visit(g);GrasslandTouchVerification.Visit(g);
+                    VerifyTravel(g);GrasslandIslandCoastVerification.Visit(g);GrasslandIslandMeadowVerification.Visit(g);GrasslandGroveVerification.Visit(g);GrasslandFloraVerification.Visit(g);GrasslandGroundLayersVerification.Visit(g);GrasslandShrubStoneVerification.Visit(g);GrasslandCrownVerification.Visit(g);GrasslandCrownWindVerification.Visit(g);GrasslandCrownOcclusionVerification.Visit(g);GrasslandTouchVerification.Visit(g);GrasslandReadabilityVerification.Visit(g);GrasslandPatchVerification.Visit(g);GrasslandBlendVerification.Visit(g);GrasslandWildflowerVerification.Visit(g);GrasslandEdgeVerification.Visit(g);GrasslandPathEdgeVerification.Visit(g);GrasslandSampleFinishVerification.Visit(g);GrasslandSpatialVerification.Visit(g);GrasslandShrubDetailVerification.Visit(g);GrasslandShrubWindVerification.Visit(g);GrasslandFlowerVisitVerification.Visit(g);GrasslandGroundDetailVerification.Visit(g);GrasslandBladeDetailVerification.Visit(g);GrasslandFlowerDetailVerification.Visit(g);
                     if(GrasslandIslandMeadowVerification.BeginPlacement(g))Phase(12);
                     else{g.ToggleMap();Check(!g.TryTestBiomeTravel(IslandBiome.Desert),"map loading blocks travel");Phase(2);}
                 }
@@ -99,7 +99,7 @@ namespace MagicIsland.EditorTools
                 }
                 else if(phase==3&&g.State==GameFlowState.Playing&&g.Housing.Inside)
                 {
-                    Check(!g.TryTestBiomeTravel(IslandBiome.Grassland),"indoor travel blocked");GrasslandCrownWindVerification.Inside(g);GrasslandCrownOcclusionVerification.Inside(g);GrasslandTouchVerification.Inside(g);
+                    Check(!g.TryTestBiomeTravel(IslandBiome.Grassland),"indoor travel blocked");GrasslandCrownWindVerification.Inside(g);GrasslandCrownOcclusionVerification.Inside(g);GrasslandTouchVerification.Inside(g);GrasslandShrubWindVerification.Inside(g);
                     g.Players.RestorePosition(g.Configuration.Housing.InteriorOrigin+new Vector3(-1.5f,.1f,2));g.RequestRest();Phase(4);
                 }
                 else if(phase==4&&Object.FindObjectOfType<SleepView>()!=null){Object.FindObjectOfType<SleepView>().ConfirmButton.onClick.Invoke();Phase(5);}
